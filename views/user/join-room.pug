@@ -1,0 +1,18 @@
+extends ./layout
+
+append styles
+  link(rel="stylesheet", href="/styles/user/join-room.css")
+
+block contentMain
+  #from-join.mx-auto
+    form(action="", method="get")
+      label(for="name") Tên hiển thị
+      input#name.form-control(type="text", name="name", required)
+      label(for="room")
+      select#room.form-control(name="room")
+        option(value="Javascript") Javascript
+        option(value="C++") C++
+        option(value="Java") Java
+        option(value="C#") C#
+      .text-center.mt-2
+        button.btn.btn-success Tham gia

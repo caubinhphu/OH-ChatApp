@@ -1,0 +1,12 @@
+extend ../layout
+
+append styles
+  link(rel="stylesheet", href="/styles/user/layout.css")
+
+block main
+  div#main
+    block contentMain
+
+block footer
+  div#footer.text-center.py-3.bg-secondary
+    span.text-white= `© ${new Date().getFullYear()} - OH`
