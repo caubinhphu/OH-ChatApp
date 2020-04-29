@@ -5,21 +5,16 @@ append styles
 
 block contentMain
   #chat-main.d-flex.flex-column
-    #chat-main-top.p-3 Top
+    #chat-main-top.p-3.d-flex.justify-content-between
+      button#hide-time-btn.btn.btn-light(data-status="on") Hide time
+      a.btn.btn-info(role="button", href="/") Rời phòng
     #chat-main-middle.flex-fill
-      .message
-        img.message-avatar(src="/images/avatar-1586267910056-769250908.png", alt="a")
-        small.message-time 1:10 AM
-        small.message-name Anh Hải
-        small.message-content Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate harum, asperiores saepe iure, ut quia maiores, aperiam possimus quas repellat deleniti. Consequatur voluptate quidem fuga possimus ad quo suscipit quae?
-      .message
-        img.message-avatar(src="/images/avatar-1586267910056-769250908.png", alt="a")
-        small.message-time 1:10 AM
-        small.message-name Anh Hải
-        small.message-content Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-      
     #chat-main-bottom.p-3
-      form.d-flex
-        input#mgs.form-control(type="text", name="message")
+      form.d-flex(name="sendMgsForm")
+        input#mgs.form-control(type="text", name="message", placeholder="Say something", autocomplete="off")
         button.btn.btn-default
           i.fas.fa-paper-plane
+
+append scripts
+  script(src="/socket.io/socket.io.js")
+  script(src="/scripts/user/chat-room.js")
