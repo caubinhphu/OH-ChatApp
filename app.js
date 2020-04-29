@@ -2,9 +2,11 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 
+// init server
 const app = express();
 const server = http.createServer(app);
 
+// io
 const io = require('socket.io')(server);
 
 // port of server
@@ -25,10 +27,10 @@ const RoomManagement = require('./utils/RoomManagement');
 const Room = require('./utils/Room');
 const User = require('./utils/User');
 
-// name bot
+// names bot
 const botName = 'OH Bot';
 
-// RoomManagement
+// roomManagement
 const roomManagement = new RoomManagement();
 
 // handle socket
@@ -40,14 +42,13 @@ io.on('connection', (socket) => {
       roomManagement.addRoom(new Room(room));
     }
 
-    console.log({ rooms: roomManagement.rooms });
-
+    // find room by socket room
     const roomChat = roomManagement.getRoom(room);
 
     // add user to room
     roomChat.addUser(new User(socket.id, username));
 
-    // join socket (user) in room
+    // join socket (user) to the room
     socket.join(roomChat.name);
 
     // emit welcome room
@@ -61,7 +62,7 @@ io.on('connection', (socket) => {
         formatMessage(botName, `${username} đã tham gia vào phòng`)
       );
 
-    // send room info (name & users)
+    // update room info => send room info (name & users)
     io.to(roomChat.name).emit('roomInfo', {
       nameRoom: roomChat.name,
       users: roomChat.users,
@@ -70,19 +71,24 @@ io.on('connection', (socket) => {
 
   // receive message from client
   socket.on('messageChat', (message) => {
+    // find room by user id
     const roomChat = roomManagement.findRoomIncludeUser(socket.id);
+    // find user by the room
     const user = roomChat.getUser(socket.id);
 
-    // send message to all user in room
+    // send message to all user in the room
     io.to(roomChat.name).emit('message', formatMessage(user.name, message));
   });
 
   // disconnect
   socket.on('disconnect', () => {
+    // find room by user id
     const roomChat = roomManagement.findRoomIncludeUser(socket.id);
     if (roomChat) {
+      // remove user from this room
       const user = roomChat.removeUser(socket.id);
       if (user) {
+        // send message notify for remaining users in the room
         socket
           .to(roomChat.name)
           .broadcast.emit(
@@ -90,17 +96,17 @@ io.on('connection', (socket) => {
             formatMessage(botName, `${user.name} đã rời phòng`)
           );
 
+        // if not exists user in the room => delete this room
         if (roomChat.users.length <= 0) {
           roomManagement.removeRoom(roomChat.name);
         } else {
-          // send room info (name & users)
+          // update room info => send room info (name & users)
           io.to(roomChat.name).emit('roomInfo', {
             nameRoom: roomChat.name,
             users: roomChat.users,
           });
         }
       }
-      console.log({ rooms: roomManagement.rooms });
     }
   });
 });

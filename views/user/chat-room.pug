@@ -4,16 +4,35 @@ append styles
   link(rel="stylesheet", href="/styles/user/chat-room.css")
 
 block contentMain
-  #chat-main.d-flex.flex-column
-    #chat-main-top.p-3.d-flex.justify-content-between
-      button#hide-time-btn.btn.btn-light(data-status="on") Hide time
-      a.btn.btn-info(role="button", href="/") Rời phòng
-    #chat-main-middle.flex-fill
-    #chat-main-bottom.p-3
-      form.d-flex(name="sendMgsForm")
-        input#mgs.form-control(type="text", name="message", placeholder="Say something", autocomplete="off")
-        button.btn.btn-default
-          i.fas.fa-paper-plane
+  .d-flex.justify-content-center
+    #room-info.d-flex.flex-column
+      #room-info-title
+        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+        span.text-secondary OH Chat
+      #room-info-room.p-2
+        div
+          i.fas.fa-comments
+          span &nbsp; Phòng
+        #room-name.p-2
+          span#room-info-name-room phong 1          
+      #room-info-participant.p-2.flex-fill.d-flex.flex-column
+        .mb-2
+          i.fas.fa-users
+          div
+            span &nbsp; Thành viên
+            span#amount-participants.ml-2
+        #room-users.flex-fill
+    #chat-main.d-flex.flex-column
+      #chat-main-top.p-3.d-flex.justify-content-between
+        button#hide-time-btn.btn.btn-light(data-status="on") Ẩn thời gian
+        a.btn.btn-link.text-danger(role="button", href="/")
+          b Rời phòng
+      #chat-main-middle.flex-fill
+      #chat-main-bottom.p-3
+        form.d-flex(name="sendMgsForm")
+          input#mgs.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+          button.btn.btn-default
+            i.fas.fa-paper-plane
 
 append scripts
   script(src="/socket.io/socket.io.js")

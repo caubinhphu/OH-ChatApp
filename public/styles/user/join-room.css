@@ -1,9 +1,20 @@
-#from-join {
+#form-join {
   max-width: 350px;
   padding: 10px;
-  background-color: #5555;
+  background-color: rgba(199, 187, 187, 0.333);
+  border: 1px solid #555;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px #555;
 }
 
 #main {
   padding-top: 100px;
+}
+
+#chat-join-title {
+  text-align: center;
+  padding: 10px;
+  font-size: large;
+  font-weight: 700;
+  border-bottom: 1px dotted #555;
 }

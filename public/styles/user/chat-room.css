@@ -1,13 +1,57 @@
 #main {
   padding-top: 20px;
 }
+
+#room-info {
+  width: 300px;
+  height: 550px;
+  background-color: white;
+  border: 1px solid #666;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px #a19999;
+  overflow: hidden;
+}
+
+#room-info-title {
+  text-align: center;
+  padding: 23px;
+  
+}
+
+#room-info-title span {
+  font-size: large;
+  font-weight: 700;
+}
+
+#room-info-room, #room-info-participant{
+  color: #7f7f7f;
+  font-weight: 700;
+}
+
+#room-info-participant {
+  overflow: hidden;
+}
+
+#room-name, #room-users {
+  background-color: #f9f9f9;
+  font-weight: 500;
+  color: #555;
+}
+
+#room-users {
+  overflow-y: auto;
+}
+
+.room-user-name {
+  font-size: smaller;
+}
+
 #chat-main {
   width: 400px;
   height: 550px;
   background-color: white;
-  margin: 0 auto;
   border: 1px solid #666;
-  border-radius: 2%;
+  border-radius: 10px;
   box-shadow: 5px 5px 10px #a19999;
   overflow: hidden;
 }
@@ -15,7 +59,7 @@
 #chat-main-middle {
   background-color: #f9f9f9;
   padding: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 input:focus, button:focus {
@@ -40,7 +84,7 @@ input:focus, button:focus {
   padding: 5px;
 }
 
-.message-avatar {
+.message-avatar, .room-user-avatar {
   width: 25px;
   height: 25px;
   border-radius: 100%;
