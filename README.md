@@ -6,8 +6,9 @@
 ### Tác giả: NAH - Nguyễn Anh Hải
 
 ### Quá trình phát triển
+#### Nền tảng web
 <details>
-  <summary>Version 1.0.0</summary>
+  <summary>Version 1.0.0 (30/4/2020)</summary>
   Chức năng thêm:
 
   - Tham gia vào 1 phòng trong danh sách có sẵn (10 phòng)

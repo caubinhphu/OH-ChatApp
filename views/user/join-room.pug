@@ -8,9 +8,13 @@ block contentMain
     #chat-join-title
       img.mr-2(src="/images/logo.png", alt="OH", width="30px")
       span.text-secondary OH Chat
-    form.mt-2(action="/chat")
-      label(for="name") Tên hiển thị
-      input#name.form-control(type="text", name="name", required, placeholder="Nhập tên hiển thị trong phòng")
+    form.mt-2(name="joinRoomForm", action="/chat")
+      label(for="name")
+        span Tên hiển thị
+        span.text-danger &nbsp;*
+      input#name.form-control(type="text", name="name", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự")
+      div
+        em#err-join-name.text-danger
       label.mt-2(for="room") Phòng
       select#room.form-control(name="room")
         option(value="room-1") Phòng 1
@@ -25,3 +29,6 @@ block contentMain
         option(value="room-10") Phòng 10
       .text-center.mt-2
         button.btn.btn-light Tham gia
+
+append scripts
+  script(src="/scripts/user/join-room.js")
