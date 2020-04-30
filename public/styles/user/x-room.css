@@ -1,4 +1,4 @@
-#form-join {
+#form-x {
   max-width: 350px;
   padding: 10px;
   background-color: rgba(199, 187, 187, 0.333);
@@ -11,10 +11,14 @@
   padding-top: 100px;
 }
 
-#chat-join-title {
+#chat-company {
   text-align: center;
   padding: 10px;
   font-size: large;
   font-weight: 700;
   border-bottom: 1px dotted #555;
+}
+
+#message-area {
+  max-width: 600px;
 }

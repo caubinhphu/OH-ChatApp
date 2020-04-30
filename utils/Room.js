@@ -1,5 +1,6 @@
-const Room = function (name) {
-  this.name = name;
+const Room = function (id, password) {
+  this.id = id;
+  this.password = password;
   this.users = [];
 };
 
@@ -8,9 +9,9 @@ Room.prototype.addUser = function (user) {
   this.users.push(user);
 };
 
-// remove the user in the room by idUser and return this user
-Room.prototype.removeUser = function (idUser) {
-  let index = this.users.findIndex((user) => user.id === idUser);
+// remove the user in the room by socketId and return this user
+Room.prototype.removeUser = function (socketId) {
+  let index = this.users.findIndex((user) => user.socketId === socketId);
 
   if (index !== -1) {
     return this.users.splice(index, 1)[0];
@@ -22,9 +23,9 @@ Room.prototype.getUser = function (idUser) {
   return this.users.find((user) => user.id === idUser);
 };
 
-// checked the user already exists in the room by idUser
-Room.prototype.checkUserInRoom = function (idUser) {
-  return this.users.some((user) => user.id === idUser);
+// checked the user already exists in the room by socketId
+Room.prototype.checkUserInRoom = function (socketId) {
+  return this.users.some((user) => user.socketId === socketId);
 };
 
 module.exports = Room;

@@ -1,0 +1,21 @@
+extends ./layout
+
+append styles
+  link(rel="stylesheet", href="/styles/user/index.css")
+
+block contentMain
+  #main-area
+    #chat-company.p-3
+      img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+      span.text-secondary OH Chat
+    #choose-area.d-flex
+      .choose-item.mr-4.text-center
+        a(href="/create", role="button")
+          #create-room
+            i.fas.fa-plus-square.fa-2x
+        span.text-secondary Tạo phòng
+      .choose-item.text-center
+        a(href="/join", role="button")
+          #join-room
+            i.fas.fa-sign-in-alt.fa-2x
+        span.text-secondary Tham gia

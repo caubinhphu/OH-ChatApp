@@ -1,5 +1,5 @@
 #main {
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 #room-info {
@@ -102,4 +102,22 @@ input:focus, button:focus {
 
 .message-content {
   margin-left: 10px;
+}
+
+#message-area {
+  max-width: 600px;
+}
+
+#chat-main-top > button:last-child {
+  color: rgb(223, 8, 8);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+#chat-main-top > button:last-child:hover {
+  color: rgb(173, 3, 3);
+}
+
+.modal-body > span{
+  font-size: large;
 }

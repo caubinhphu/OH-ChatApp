@@ -1,11 +1,12 @@
 extends ./layout
 
 append styles
-  link(rel="stylesheet", href="/styles/user/join-room.css")
+  link(rel="stylesheet", href="/styles/user/x-room.css")
 
 block contentMain
-  #form-join.mx-auto
-    #chat-join-title
+  #message-area.mb-3.mx-auto
+  #form-x.mx-auto
+    #chat-company
       img.mr-2(src="/images/logo.png", alt="OH", width="30px")
       span.text-secondary OH Chat
     form.mt-2(name="joinRoomForm", action="/chat")
@@ -15,20 +16,19 @@ block contentMain
       input#name.form-control(type="text", name="name", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự")
       div
         em#err-join-name.text-danger
-      label.mt-2(for="room") Phòng
-      select#room.form-control(name="room")
-        option(value="room-1") Phòng 1
-        option(value="room-2") Phòng 2
-        option(value="room-3") Phòng 3
-        option(value="room-4") Phòng 4
-        option(value="room-5") Phòng 5
-        option(value="room-6") Phòng 6
-        option(value="room-7") Phòng 7
-        option(value="room-8") Phòng 8
-        option(value="room-9") Phòng 9
-        option(value="room-10") Phòng 10
+      label.mt-2(for="room")
+        span Phòng
+        span.text-danger &nbsp;*
+      input#room.form-control(type="text", name="idRoom", required=true, placeholder="Nhập id phòng")
+      label.mt-2(for="passRoom")
+        span Mật khẩu phòng
+        span.text-danger &nbsp;*
+      input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng")
       .text-center.mt-2
-        button.btn.btn-light Tham gia
+        button.btn.btn-info.mr-4 Tham gia
+        a.btn.btn-light(role="button", href="/") Quay lại
 
 append scripts
+  script(src="/socket.io/socket.io.js")
+  script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/join-room.js")

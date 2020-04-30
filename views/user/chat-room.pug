@@ -4,6 +4,7 @@ append styles
   link(rel="stylesheet", href="/styles/user/chat-room.css")
 
 block contentMain
+  #message-area.mb-3.mx-auto
   .d-flex.justify-content-center
     #room-info.d-flex.flex-column
       #room-info-title
@@ -25,8 +26,7 @@ block contentMain
     #chat-main.d-flex.flex-column
       #chat-main-top.p-3.d-flex.justify-content-between
         button#hide-time-btn.btn.btn-light(data-status="on") Ẩn thời gian
-        a.btn.btn-link.text-danger(role="button", href="/")
-          b Rời phòng
+        button.btn.btn-link.text-link(type="button", data-toggle="modal", data-target="#leave-room-modal") Rời phòng
       #chat-main-middle.flex-fill
       #chat-main-bottom.p-3
         form.d-flex(name="sendMgsForm")
@@ -34,6 +34,15 @@ block contentMain
           button.btn.btn-default
             i.fas.fa-paper-plane
 
+  #leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content
+        .modal-body
+          span Bạn có chắc muốn rời phòng?
+          .text-right
+            button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
+            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
 append scripts
   script(src="/socket.io/socket.io.js")
+  script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/chat-room.js")
