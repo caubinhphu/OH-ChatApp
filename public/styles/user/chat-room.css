@@ -23,7 +23,7 @@
   font-weight: 700;
 }
 
-#room-info-room, #room-info-participant{
+#room-info-room, #room-info-participant, #waiting-room-info{
   color: #7f7f7f;
   font-weight: 700;
 }
@@ -32,17 +32,21 @@
   overflow: hidden;
 }
 
-#room-name, #room-users {
+#room-name, #room-users, #waiting-room-users {
   background-color: #f9f9f9;
   font-weight: 500;
   color: #555;
 }
 
-#room-users {
+#room-users, #waiting-room-users {
   overflow-y: auto;
 }
 
-.room-user-name {
+#waiting-room-users {
+  max-height: 85px;
+}
+
+.room-user-name, .waiting-room-user-name {
   font-size: smaller;
 }
 
@@ -84,7 +88,7 @@ input:focus, button:focus {
   padding: 5px;
 }
 
-.message-avatar, .room-user-avatar {
+.message-avatar, .room-user-avatar, .waiting-room-user-avatar {
   width: 25px;
   height: 25px;
   border-radius: 100%;

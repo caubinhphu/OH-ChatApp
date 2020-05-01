@@ -3,7 +3,7 @@ const btnChangeStatusTime = document.querySelector('#hide-time-btn'); // Change 
 const roomName = document.getElementById('room-info-name-room'); // room name
 const participants = document.getElementById('room-users'); // participants area
 const amountParticipants = document.getElementById('amount-participants'); // amount participants
-const mgsForm = document.sendMgsForm; // form chat
+const msgForm = document.sendMsgForm; // form chat
 
 // socket.io
 const socket = io();
@@ -15,9 +15,9 @@ const qs = new URLSearchParams(location.search);
 socket.emit('joinChat', { token: qs.get('token') });
 
 // receive  message from server
-socket.on('message', (mgsObj) => {
+socket.on('message', (msgObj) => {
   // output message
-  outputMessage(mgsObj);
+  outputMessage(msgObj);
 
   // scroll bottom
   chatMain.scrollTop = chatMain.scrollHeight;
@@ -29,49 +29,51 @@ socket.on('roomInfo', (roomInfo) => {
 });
 
 // event submit form chat
-mgsForm.addEventListener('submit', (e) => {
+msgForm.addEventListener('submit', (e) => {
   // stop submit form
   e.preventDefault();
 
   // input message
-  const inputMgs = e.target.elements.message;
+  const inputMsg = e.target.elements.message;
 
-  // send message to server
-  socket.emit('messageChat', {
-    message: inputMgs.value,
-    token: qs.get('token'),
-  });
+  if (inputMsg.value !== '') {
+    // send message to server
+    socket.emit('messageChat', {
+      message: inputMsg.value,
+      token: qs.get('token'),
+    });
 
-  // set value for input message
-  inputMgs.value = '';
+    // set value for input message
+    inputMsg.value = '';
 
-  // focus input message
-  inputMgs.focus();
+    // focus input message
+    inputMsg.focus();
+  }
 });
 
 // output message in main chat area
-function outputMessage(mgsObj) {
+function outputMessage(msgObj) {
   const div = document.createElement('div');
   div.className = 'message';
   div.innerHTML = `<img class="message-avatar" src="/images/avatar-1586267910056-769250908.png" alt="a" />
     <small class="message-time" style="display:${
       btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline'
-    }">${mgsObj.time}</small>
-    <small class="message-name">${mgsObj.username}</small>
-    <small class="message-content">${mgsObj.message}</small>`;
+    }">${msgObj.time}</small>
+    <small class="message-name">${msgObj.username}</small>
+    <small class="message-content">${msgObj.message}</small>`;
 
   // append message
   chatMain.appendChild(div);
 }
 
 // receive error message from server when has error
-socket.on('errorMessage', (mgs) => {
-  outputErrorMessage(mgs);
+socket.on('errorMessage', (msg) => {
+  outputErrorMessage(msg);
 });
 
 // receive message from server when leave
-socket.on('leaveComplete', (mgs) => {
-  if (mgs === 'OK') {
+socket.on('leaveComplete', (msg) => {
+  if (msg === 'OK') {
     location.href = 'http://localhost:3000';
   } else {
     location.reload();
@@ -79,8 +81,8 @@ socket.on('leaveComplete', (mgs) => {
 });
 
 // receive message from server when leave all
-socket.on('leaveAllComplete', (mgs) => {
-  if (mgs === 'OK') {
+socket.on('leaveAllComplete', (msg) => {
+  if (msg === 'OK') {
     document.querySelector('#leave-room-modal').style.display = 'block';
     const leaveBtn = document.getElementById('leave-btn');
     let time = 4;

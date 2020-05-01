@@ -31,8 +31,8 @@ socket.on('errorMessage', (message) => {
 });
 
 // receive info waiting room from server
-socket.on('toWaitingRoom', ({ mgs: message, idRoom, idUser }) => {
-  outputHtmlWaitingRoom(message, idRoom, idUser);
+socket.on('toWaitingRoom', ({ msg, idRoom, idUser }) => {
+  outputHtmlWaitingRoom(msg, idRoom, idUser);
 });
 
 // receive message leaveWaitingRoomComplete after leave waiting room complete

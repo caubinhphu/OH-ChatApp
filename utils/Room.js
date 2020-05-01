@@ -50,4 +50,9 @@ Room.prototype.getUserInWaitingRoom = function (idUser) {
   return this.waitingRoom.find((user) => user.id === idUser);
 };
 
+// get host of the room
+Room.prototype.getHost = function () {
+  return this.users.find((user) => user.host);
+};
+
 module.exports = Room;

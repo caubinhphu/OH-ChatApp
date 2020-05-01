@@ -38,9 +38,9 @@ const roomManagement = new RoomManagement();
 // handle socket
 io.on('connection', (socket) => {
   // handle error
-  socket.on('error', (errorMgs) => {
-    // console.log(errorMgs);
-    socket.emit('errorMessage', errorMgs);
+  socket.on('error', (errorMsg) => {
+    // console.log(errorMsg);
+    socket.emit('errorMessage', errorMsg);
   });
 
   // receive event create a room from client
@@ -121,11 +121,18 @@ io.on('connection', (socket) => {
           let user = new User(idUser, username, false);
           roomChat.addUserToWaitingRoom(user);
 
-          console.log(roomChat);
+          // find host of this room
+          let host = roomChat.getHost();
+          if (host) {
+            // send to host of this room info waiting room
+            io.to(host.socketId).emit('changeWaitingRoom', {
+              waitingRoom: roomChat.waitingRoom,
+            });
+          }
 
           // emit notify to client
           socket.emit('toWaitingRoom', {
-            mgs: 'Phòng đang ở chế độ phòng chờ, cần chờ host phê duyệt',
+            msg: 'Phòng đang ở chế độ phòng chờ, cần chờ host phê duyệt',
             idRoom: roomChat.id,
             idUser,
           });
@@ -184,7 +191,6 @@ io.on('connection', (socket) => {
             nameRoom: roomChat.id,
             users: roomChat.users,
           });
-
           // send password of room if user is host
           if (user.host) {
             socket.emit('sendPasswordRoom', roomChat.password);
@@ -306,6 +312,15 @@ io.on('connection', (socket) => {
         if (user) {
           // emit notify leave waiting room to client
           socket.emit('leaveWaitingRoomComplete', 'OK');
+
+          // find host of this room
+          let host = roomChat.getHost();
+          if (host) {
+            // send to host of this room info waiting room
+            io.to(host.socketId).emit('changeWaitingRoom', {
+              waitingRoom: roomChat.waitingRoom,
+            });
+          }
         }
       }
     }

@@ -27,6 +27,6 @@ socket.on('createRoomCompleted', (token) => {
 });
 
 // receive error message from server when has error
-socket.on('errorMessage', (mgs) => {
-  outputErrorMessage(mgs);
+socket.on('errorMessage', (msg) => {
+  outputErrorMessage(msg);
 });
