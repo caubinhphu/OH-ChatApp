@@ -87,26 +87,31 @@ io.on('connection', (socket) => {
       // room exists
       // check password of room
       if (roomChat.password === passRoom) {
-        // join successful
-        // create new user
-        // generate id user
-        let idUser = Math.round(Math.random() * 1e9)
-          .toString()
-          .padStart(9, '0');
-        let user = new User(idUser, username, false);
-        roomChat.addUser(user);
+        if (roomChat.status === 'open') {
+          // join successful
+          // create new user
+          // generate id user
+          let idUser = Math.round(Math.random() * 1e9)
+            .toString()
+            .padStart(9, '0');
+          let user = new User(idUser, username, false);
+          roomChat.addUser(user);
 
-        // join socket (user) to the room
-        // socket.join(roomChat.id);
+          // join socket (user) to the room
+          // socket.join(roomChat.id);
 
-        // generate jwt token
-        let token = jwt.sign(
-          { data: { idUser: user.id, idRoom: idRoom } },
-          process.env.JWT_SECRET
-        );
+          // generate jwt token
+          let token = jwt.sign(
+            { data: { idUser: user.id, idRoom: idRoom } },
+            process.env.JWT_SECRET
+          );
 
-        // send token to client
-        socket.emit('joinRoomSuccess', token);
+          // send token to client
+          socket.emit('joinRoomSuccess', token);
+        } else if (roomChat.status === 'locked') {
+          // room is locked
+          socket.emit('error', 'Phòng đã bị host khóa, không thể tham gia');
+        }
       } else {
         // password not match
         // send message to client
@@ -223,12 +228,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // receive event require disconnect from client
-  socket.on('disconnectRequire', (reason) => {
-    // emit disconnect
-    socket.emit('disconnect', reason);
-  });
-
   // receive info management of host room form client
   socket.on('changeManagement', ({ token, value, status }) => {
     try {
@@ -251,6 +250,13 @@ io.on('connection', (socket) => {
                 key: 'allowChat',
                 value: roomChat.allowChat,
               });
+            } else if (value === 'lock-room') {
+              // look the room
+              if (status) {
+                roomChat.status = 'locked';
+              } else {
+                roomChat.status = 'open';
+              }
             }
           } else {
             socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
@@ -264,6 +270,12 @@ io.on('connection', (socket) => {
     } catch (err) {
       socket.emit('error', 'Access token không hợp lệ, hãy kiểm tra lại');
     }
+  });
+
+  // receive event require disconnect from client
+  socket.on('disconnectRequire', (reason) => {
+    // emit disconnect
+    socket.emit('disconnect', reason);
   });
 
   // disconnect
