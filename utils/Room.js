@@ -4,6 +4,7 @@ const Room = function (id, password) {
   this.allowChat = true;
   this.status = 'open';
   this.users = [];
+  this.waitingRoom = [];
 };
 
 // add a new user to the room
@@ -28,6 +29,25 @@ Room.prototype.getUser = function (idUser) {
 // checked the user already exists in the room by socketId
 Room.prototype.checkUserInRoom = function (socketId) {
   return this.users.some((user) => user.socketId === socketId);
+};
+
+// add a new user to waiting room
+Room.prototype.addUserToWaitingRoom = function (user) {
+  this.waitingRoom.push(user);
+};
+
+// remove the user in the waiting room by idUser
+Room.prototype.removeUserInWaitingRoom = function (idUser) {
+  let index = this.waitingRoom.findIndex((user) => user.id === idUser);
+
+  if (index !== -1) {
+    return this.waitingRoom.splice(index, 1)[0];
+  }
+};
+
+// get the user in the waiting room by idUser
+Room.prototype.getUserInWaitingRoom = function (idUser) {
+  return this.waitingRoom.find((user) => user.id === idUser);
 };
 
 module.exports = Room;

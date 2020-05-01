@@ -22,3 +22,19 @@
 #message-area {
   max-width: 600px;
 }
+
+#waiting-modal-main button {
+  color: rgb(223, 8, 8);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+#waiting-modal-main button:hover {
+  color: rgb(173, 3, 3);
+}
+
+.waiting-room-id {
+  color: #555;
+  font-weight: 700;
+  font-size: larger;
+}

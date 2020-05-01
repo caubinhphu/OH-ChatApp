@@ -111,6 +111,24 @@ io.on('connection', (socket) => {
         } else if (roomChat.status === 'locked') {
           // room is locked
           socket.emit('error', 'Phòng đã bị host khóa, không thể tham gia');
+        } else if (roomChat.status === 'waiting') {
+          // room is waiting
+          // create new user
+          // generate id user
+          let idUser = Math.round(Math.random() * 1e9)
+            .toString()
+            .padStart(9, '0');
+          let user = new User(idUser, username, false);
+          roomChat.addUserToWaitingRoom(user);
+
+          console.log(roomChat);
+
+          // emit notify to client
+          socket.emit('toWaitingRoom', {
+            mgs: 'Phòng đang ở chế độ phòng chờ, cần chờ host phê duyệt',
+            idRoom: roomChat.id,
+            idUser,
+          });
         }
       } else {
         // password not match
@@ -197,26 +215,24 @@ io.on('connection', (socket) => {
       // find room
       const roomChat = roomManagement.getRoom(data.idRoom);
       if (roomChat) {
-        // check allowed chat of the room
-        if (roomChat.allowChat) {
-          // allowed chat
-          const user = roomChat.getUser(data.idUser);
-          if (user) {
+        const user = roomChat.getUser(data.idUser);
+        if (user) {
+          if (roomChat.allowChat || user.host) {
             // send message to all user in the room
             io.to(roomChat.id).emit(
               'message',
               formatMessage(user.name, message)
             );
           } else {
-            // not exists participant
-            socket.emit(
-              'error',
-              'Thành viên không tồn tại, xin hãy kiểm tra lại'
-            );
+            // not allowed chat
+            socket.emit('error', 'Chat bị cấm bởi host');
           }
         } else {
-          // not allowed chat
-          socket.emit('error', 'Chat bị cấm bởi host');
+          // not exists participant
+          socket.emit(
+            'error',
+            'Thành viên không tồn tại, xin hãy kiểm tra lại'
+          );
         }
       } else {
         // not exist room
@@ -254,8 +270,16 @@ io.on('connection', (socket) => {
               // look the room
               if (status) {
                 roomChat.status = 'locked';
-              } else {
+              }
+            } else if (value === 'open-room') {
+              // open the room
+              if (status) {
                 roomChat.status = 'open';
+              }
+            } else if (value === 'waiting-room') {
+              // set waiting the room
+              if (status) {
+                roomChat.status = 'waiting';
               }
             }
           } else {
@@ -269,6 +293,21 @@ io.on('connection', (socket) => {
       }
     } catch (err) {
       socket.emit('error', 'Access token không hợp lệ, hãy kiểm tra lại');
+    }
+  });
+
+  // receive info leave waiting room form client
+  socket.on('leaveWaitingRoom', ({ typeLeave, idRoom, idUser }) => {
+    // find the room
+    const roomChat = roomManagement.getRoom(idRoom);
+    if (roomChat) {
+      if (typeLeave === 'self') {
+        const user = roomChat.removeUserInWaitingRoom(idUser);
+        if (user) {
+          // emit notify leave waiting room to client
+          socket.emit('leaveWaitingRoomComplete', 'OK');
+        }
+      }
     }
   });
 

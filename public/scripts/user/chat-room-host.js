@@ -16,7 +16,11 @@ socket.on('leaveAllCompleteForHost', (mgs) => {
 
 // event change management
 document.getElementsByName('management').forEach((checkbox) => {
-  checkbox.addEventListener('click', function () {
+  checkbox.addEventListener('change', function () {
+    console.log({
+      value: this.value,
+      status: this.checked,
+    });
     socket.emit('changeManagement', {
       value: this.value,
       status: this.checked,

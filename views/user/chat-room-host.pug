@@ -39,18 +39,20 @@ block contentMain
       #room-management-title
         span.text-secondary Quản lý phòng
       #management-area.p-2
-        form
-          .management-title Phòng
-          .custom-control.custom-checkbox.my-1.ml-3
-            input#management-lock-room.custom-control-input(type="checkbox", name="management", value="lock-room")
-            label.custom-control-label(for="management-lock-room") Khóa phòng
-          .custom-control.custom-checkbox.my-1.ml-3
-            input#management-waiting-room.custom-control-input(type="checkbox", name="management", value="set-waiting-room")
-            label.custom-control-label(for="management-waiting-room") Đặt trạng thái phòng chờ
-          .management-title Chat
-          .custom-control.custom-checkbox.my-1.ml-3
-            input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
-            label.custom-control-label(for="management-turnoff-chat") Tắt chat
+        .management-title Phòng
+        .custom-control.custom-radio.my-1.ml-3
+          input#management-open-room.custom-control-input(type="radio", name="management", value="open-room", checked=true)
+          label.custom-control-label(for="management-open-room") Mở phòng
+        .custom-control.custom-radio.my-1.ml-3
+          input#management-lock-room.custom-control-input(type="radio", name="management", value="lock-room")
+          label.custom-control-label(for="management-lock-room") Khóa phòng
+        .custom-control.custom-radio.my-1.ml-3
+          input#management-waiting-room.custom-control-input(type="radio", name="management", value="waiting-room")
+          label.custom-control-label(for="management-waiting-room") Đặt trạng thái phòng chờ
+        .management-title Chat
+        .custom-control.custom-checkbox.my-1.ml-3
+          input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
+          label.custom-control-label(for="management-turnoff-chat") Tắt chat
         
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
