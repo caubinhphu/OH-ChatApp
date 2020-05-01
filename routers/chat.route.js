@@ -12,4 +12,6 @@ router.get('/create', controller.getCreate);
 
 router.get('/chat', controller.getChat);
 
+router.get('/host/chat', controller.getHostChat);
+
 module.exports = router;

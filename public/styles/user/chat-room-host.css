@@ -1,0 +1,24 @@
+#room-management {
+  width: 300px;
+  height: 550px;
+  background-color: white;
+  border: 1px solid #666;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px #a19999;
+  overflow: hidden;
+}
+
+#room-management-title {
+  text-align: center;
+  padding: 23px;
+  
+}
+
+#room-management-title span {
+  font-size: large;
+  font-weight: 700;
+}
+
+.management-title {
+  font-weight: 600;
+}

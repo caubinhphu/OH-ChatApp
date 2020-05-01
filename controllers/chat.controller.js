@@ -16,6 +16,12 @@ module.exports.getChat = (req, res, next) => {
   });
 };
 
+module.exports.getHostChat = (req, res, next) => {
+  res.render('user/chat-room-host', {
+    titleSite: 'Chat',
+  });
+};
+
 module.exports.getCreate = (req, res, next) => {
   // create id room random
   let idRandom = Math.round(Math.random() * 1e9)

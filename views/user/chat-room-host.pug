@@ -2,6 +2,7 @@ extends ./layout
 
 append styles
   link(rel="stylesheet", href="/styles/user/chat-room.css")
+  link(rel="stylesheet", href="/styles/user/chat-room-host.css")
 
 block contentMain
   #message-area.mb-3.mx-auto
@@ -15,13 +16,14 @@ block contentMain
           i.fas.fa-comments
           span &nbsp; Phòng
         #room-name.p-2
-          span#room-info-name-room         
+          span#room-info-name-room
+          span#room-info-password-room.ml-2
       #room-info-participant.p-2.flex-fill.d-flex.flex-column
         .mb-2
           i.fas.fa-users
           div.d-inline-block
             span &nbsp; Thành viên
-            span#amount-participants.ml-2
+            span#amount-participants.ml-1
         #room-users.flex-fill
     #chat-main.d-flex.flex-column
       #chat-main-top.p-3.d-flex.justify-content-between
@@ -33,22 +35,34 @@ block contentMain
           input#mgs.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
           button.btn.btn-default
             i.fas.fa-paper-plane
-
+    #room-management.d-flex.flex-column
+      #room-management-title
+        span.text-secondary Quản lý phòng
+      #management-area.p-2
+        form
+          .management-title Phòng
+          .custom-control.custom-checkbox.my-1.ml-3
+            input#management-look-room.custom-control-input(type="checkbox", name="management", value="look-room")
+            label.custom-control-label(for="management-look-room") Khóa phòng
+          .custom-control.custom-checkbox.my-1.ml-3
+            input#management-waiting-room.custom-control-input(type="checkbox", name="management", value="set-waiting-room")
+            label.custom-control-label(for="management-waiting-room") Đặt trạng thái phòng chờ
+          .management-title Chat
+          .custom-control.custom-checkbox.my-1.ml-3
+            input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
+            label.custom-control-label(for="management-turnoff-chat") Tắt chat
+        
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
       .modal-content
         .modal-body
           span Bạn có chắc muốn rời phòng?
           .text-right.mt-4
-            button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
+            button#disconnect-all-btn.btn.btn-danger(type='button') Rời phòng tất cả
+            button#disconnect-btn.btn.btn-warning.ml-3(type='button') Rời phòng
             button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
-  #leave-room-modal(style="display: none")
-    #leave-modal.d-flex.justify-content-center.align-items-center
-      #leave-modal-main
-        span Host đã kết thúc chat cho tất cả mọi người, quay lại trang chủ
-        .text-right
-          a#leave-btn.btn.btn-primary.mt-2(href="/", role="button") OK
 append scripts
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/chat-room.js")
+  script(src="/scripts/user/chat-room-host.js")

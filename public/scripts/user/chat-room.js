@@ -77,9 +77,28 @@ socket.on('leaveComplete', (mgs) => {
   }
 });
 
+// receive message from server when leave all
+socket.on('leaveAllComplete', (mgs) => {
+  if (mgs === 'OK') {
+    document.querySelector('#leave-room-modal').style.display = 'block';
+    const leaveBtn = document.getElementById('leave-btn');
+    let time = 4;
+    leaveBtn.innerHTML = `OK (5s)`;
+    setInterval(() => {
+      leaveBtn.innerHTML = `OK (${time}s)`;
+      time--;
+    }, 1000);
+    setTimeout(() => {
+      location.href = 'http://localhost:3000';
+    }, 5000);
+  } else {
+    location.reload();
+  }
+});
+
 // output room info
 function outputRoomInfo(roomInfo, socketId) {
-  console.log(roomInfo, socketId);
+  // console.log(roomInfo, socketId);
   // room name
   roomName.innerHTML = roomInfo.nameRoom;
   // amount participants
@@ -124,6 +143,7 @@ btnChangeStatusTime.addEventListener('click', function () {
   }
 });
 
+// disconnect for self
 document
   .querySelector('#disconnect-btn')
   .addEventListener('click', function () {

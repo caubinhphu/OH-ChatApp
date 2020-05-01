@@ -155,6 +155,11 @@ io.on('connection', (socket) => {
             nameRoom: roomChat.id,
             users: roomChat.users,
           });
+
+          // send password of room if user is host
+          if (user.host) {
+            socket.emit('sendPasswordRoom', roomChat.password);
+          }
         } else {
           // not exists participant
           socket.emit(
@@ -208,6 +213,36 @@ io.on('connection', (socket) => {
     socket.emit('disconnect', reason);
   });
 
+  // receive info management of host room form client
+  socket.on('changeManagement', ({ token, value, status }) => {
+    try {
+      // verify token
+      let { data } = jwt.verify(token, process.env.JWT_SECRET);
+
+      // find room
+      const roomChat = roomManagement.getRoom(data.idRoom);
+      if (roomChat) {
+        // find user
+        const user = roomChat.getUser(data.idUser);
+        if (user) {
+          // check user is host
+          if (user.host) {
+            // manage room
+            console.log({ value, status, data });
+          } else {
+            socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
+          }
+        } else {
+          socket.emit('error', 'User không tồn tại, hãy kiểm tra lại');
+        }
+      } else {
+        socket.emit('error', 'Phòng không tồn tại, hãy kiểm tra lại');
+      }
+    } catch (err) {
+      socket.emit('error', 'Access token không hợp lệ, hãy kiểm tra lại');
+    }
+  });
+
   // disconnect
   socket.on('disconnect', (reason) => {
     // find room by user socketId
@@ -232,7 +267,11 @@ io.on('connection', (socket) => {
             roomManagement.removeRoom(roomChat.id);
           } else {
             // update room info => send room info (name & users)
-            io.to(roomChat.id).emit('roomInfo', {
+            // io.to(roomChat.id).emit('roomInfo', {
+            //   nameRoom: roomChat.id,
+            //   users: roomChat.users,
+            // });
+            socket.to(roomChat.id).broadcast.emit('roomInfo', {
               nameRoom: roomChat.id,
               users: roomChat.users,
             });
@@ -240,6 +279,10 @@ io.on('connection', (socket) => {
           // send message to client after disconnect
           socket.emit('leaveComplete', 'OK');
         }
+      } else if (reason.typeLeave === 'all') {
+        roomManagement.removeRoom(roomChat.id);
+        socket.emit('leaveAllCompleteForHost', 'OK');
+        socket.to(roomChat.id).broadcast.emit('leaveAllComplete', 'OK');
       }
     }
   });

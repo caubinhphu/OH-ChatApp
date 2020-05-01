@@ -23,7 +23,7 @@ document.createRoomForm.addEventListener('submit', function (e) {
 
 // receive access token from server when create room successful
 socket.on('createRoomCompleted', (token) => {
-  location.href = `http://localhost:3000/chat?token=${token}`;
+  location.href = `http://localhost:3000/host/chat?token=${token}`;
 });
 
 // receive error message from server when has error
