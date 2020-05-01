@@ -1,6 +1,8 @@
 const Room = function (id, password) {
   this.id = id;
   this.password = password;
+  this.allowChat = true;
+  this.status = 'open';
   this.users = [];
 };
 

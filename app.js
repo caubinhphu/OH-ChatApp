@@ -150,6 +150,12 @@ io.on('connection', (socket) => {
               formatMessage(botName, `${user.name} đã tham gia vào phòng`)
             );
 
+          // emit allowed chat to socket client
+          socket.emit('changeStatusRoom', {
+            key: 'allowChat',
+            value: roomChat.allowChat,
+          });
+
           // update room info => send room info (name & users)
           io.to(roomChat.id).emit('roomInfo', {
             nameRoom: roomChat.id,
@@ -186,16 +192,26 @@ io.on('connection', (socket) => {
       // find room
       const roomChat = roomManagement.getRoom(data.idRoom);
       if (roomChat) {
-        const user = roomChat.getUser(data.idUser);
-        if (user) {
-          // send message to all user in the room
-          io.to(roomChat.id).emit('message', formatMessage(user.name, message));
+        // check allowed chat of the room
+        if (roomChat.allowChat) {
+          // allowed chat
+          const user = roomChat.getUser(data.idUser);
+          if (user) {
+            // send message to all user in the room
+            io.to(roomChat.id).emit(
+              'message',
+              formatMessage(user.name, message)
+            );
+          } else {
+            // not exists participant
+            socket.emit(
+              'error',
+              'Thành viên không tồn tại, xin hãy kiểm tra lại'
+            );
+          }
         } else {
-          // not exists participant
-          socket.emit(
-            'error',
-            'Thành viên không tồn tại, xin hãy kiểm tra lại'
-          );
+          // not allowed chat
+          socket.emit('error', 'Chat bị cấm bởi host');
         }
       } else {
         // not exist room
@@ -228,7 +244,14 @@ io.on('connection', (socket) => {
           // check user is host
           if (user.host) {
             // manage room
-            console.log({ value, status, data });
+            if (value === 'turnoff-chat') {
+              // turn off chat
+              roomChat.allowChat = !status;
+              socket.to(roomChat.id).broadcast.emit('changeStatusRoom', {
+                key: 'allowChat',
+                value: roomChat.allowChat,
+              });
+            }
           } else {
             socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
           }
@@ -267,10 +290,6 @@ io.on('connection', (socket) => {
             roomManagement.removeRoom(roomChat.id);
           } else {
             // update room info => send room info (name & users)
-            // io.to(roomChat.id).emit('roomInfo', {
-            //   nameRoom: roomChat.id,
-            //   users: roomChat.users,
-            // });
             socket.to(roomChat.id).broadcast.emit('roomInfo', {
               nameRoom: roomChat.id,
               users: roomChat.users,

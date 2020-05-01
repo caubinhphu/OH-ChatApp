@@ -151,3 +151,12 @@ input:focus, button:focus {
   font-weight: 600;
   color: #555;
 }
+
+.chat-disabled-text {
+  background-color: rgb(238, 146, 146);
+  color: black;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 4px;
+  width: 100%;
+}

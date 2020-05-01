@@ -3,6 +3,7 @@ const btnChangeStatusTime = document.querySelector('#hide-time-btn'); // Change 
 const roomName = document.getElementById('room-info-name-room'); // room name
 const participants = document.getElementById('room-users'); // participants area
 const amountParticipants = document.getElementById('amount-participants'); // amount participants
+const mgsForm = document.sendMgsForm; // form chat
 
 // socket.io
 const socket = io();
@@ -28,7 +29,7 @@ socket.on('roomInfo', (roomInfo) => {
 });
 
 // event submit form chat
-document.sendMgsForm.addEventListener('submit', (e) => {
+mgsForm.addEventListener('submit', (e) => {
   // stop submit form
   e.preventDefault();
 

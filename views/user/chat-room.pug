@@ -4,7 +4,7 @@ append styles
   link(rel="stylesheet", href="/styles/user/chat-room.css")
 
 block contentMain
-  #message-area.mb-3.mx-auto
+  #message-area.mb-2.mx-auto
   .d-flex.justify-content-center
     #room-info.d-flex.flex-column
       #room-info-title
@@ -30,9 +30,9 @@ block contentMain
       #chat-main-middle.flex-fill
       #chat-main-bottom.p-3
         form.d-flex(name="sendMgsForm")
-          input#mgs.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
-          button.btn.btn-default
-            i.fas.fa-paper-plane
+          //- input#mgs.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+          //- button.btn.btn-default
+          //-   i.fas.fa-paper-plane
 
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
@@ -52,3 +52,4 @@ append scripts
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/chat-room.js")
+  script(src="/scripts/user/allow-chat-room.js")
