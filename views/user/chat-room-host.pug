@@ -78,7 +78,7 @@ block contentMain
         .modal-body
           span Bạn có chắc muốn cho phép người này vào phòng?
           .text-right.mt-4
-            button#allow-join-btn.btn.btn-danger.ml-3(type='button') OK
+            button#allow-join-btn.btn.btn-danger.ml-3(type='button', data-dismiss='modal') OK
             button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
 
   #confirm-no-join-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='notJoinRoom', aria-hidden='true')
@@ -87,7 +87,7 @@ block contentMain
         .modal-body
           span Bạn có chắc muốn xóa người này khỏi danh sách chờ?
           .text-right.mt-4
-            button#no-allow-join-btn.btn.btn-danger(type='button') OK
+            button#no-allow-join-btn.btn.btn-danger(type='button', data-dismiss='modal') OK
             button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
   
 append scripts

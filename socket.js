@@ -222,6 +222,11 @@ const socket = function (io) {
             } else {
               socket.emit('error', 'Thành viên này đã rời phòng chờ');
             }
+
+            // send to host of this room info waiting room
+            io.to(hostUser.socketId).emit('changeWaitingRoom', {
+              waitingRoom: roomChat.waitingRoom,
+            });
           } else {
             socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
           }
@@ -258,6 +263,11 @@ const socket = function (io) {
             } else {
               socket.emit('error', 'Thành viên này đã rời phòng chờ');
             }
+
+            // send to host of this room info waiting room
+            io.to(hostUser.socketId).emit('changeWaitingRoom', {
+              waitingRoom: roomChat.waitingRoom,
+            });
           } else {
             socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
           }
@@ -373,21 +383,20 @@ const socket = function (io) {
           if (user) {
             // emit notify leave waiting room to client
             socket.emit('leaveWaitingRoomComplete', 'OK');
-
-            // find host of this room
-            const host = roomChat.getHost();
-            if (host) {
-              // send to host of this room info waiting room
-              io.to(host.socketId).emit('changeWaitingRoom', {
-                waitingRoom: roomChat.waitingRoom,
-              });
-            }
           } else {
             socket.emit(
               'error',
               'Thành viên không tồn tại, xin hãy kiểm tra lại'
             );
           }
+        }
+        // find host of this room
+        const host = roomChat.getHost();
+        if (host) {
+          // send to host of this room info waiting room
+          io.to(host.socketId).emit('changeWaitingRoom', {
+            waitingRoom: roomChat.waitingRoom,
+          });
         }
       } else {
         socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
