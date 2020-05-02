@@ -72,7 +72,6 @@ function outputWaitingRoom(waitingRoom) {
       (btn) => {
         btn.addEventListener('click', function () {
           allowJoinBtn.dataset.id = this.dataset.id;
-          console.log(this.dataset.id);
         });
       }
     );
@@ -81,7 +80,6 @@ function outputWaitingRoom(waitingRoom) {
       (btn) => {
         btn.addEventListener('click', function () {
           noAllowJoinBtn.dataset.id = this.dataset.id;
-          console.log(this.dataset.id);
         });
       }
     );
@@ -90,3 +88,17 @@ function outputWaitingRoom(waitingRoom) {
     waitingRoomArea.style.display = 'none';
   }
 }
+
+allowJoinBtn.addEventListener('click', function () {
+  socket.emit('allowJoinRoom', {
+    idUser: this.dataset.id,
+    token: qs.get('token'),
+  });
+});
+
+noAllowJoinBtn.addEventListener('click', function () {
+  socket.emit('notAllowJoinRoom', {
+    idUser: this.dataset.id,
+    token: qs.get('token'),
+  });
+});

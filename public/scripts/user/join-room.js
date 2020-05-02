@@ -25,6 +25,22 @@ socket.on('joinRoomSuccess', (token) => {
   location.href = `http://localhost:3000/chat?token=${token}`;
 });
 
+// receive info when join room is blocked
+socket.on('joinRoomBlocked', (msg) => {
+  outputJoinRoomBlocked(msg);
+
+  const leaveBtn = document.getElementById('leave-btn');
+  let time = 4;
+  leaveBtn.innerHTML = `OK(5)`;
+  setInterval(() => {
+    leaveBtn.innerHTML = `OK(${time})`;
+    time--;
+  }, 1000);
+  setTimeout(() => {
+    location.href = 'http://localhost:3000';
+  }, 5000);
+});
+
 // receive error message from server when has error
 socket.on('errorMessage', (message) => {
   outputErrorMessage(message);
@@ -73,4 +89,16 @@ function outputHtmlWaitingRoom(message, idRoom, idUser) {
     .addEventListener('click', function () {
       socket.emit('leaveWaitingRoom', { typeLeave: 'self', idRoom, idUser });
     });
+}
+
+function outputJoinRoomBlocked(msg) {
+  document.getElementById('form-x').innerHTML = `<div id="leave-room-modal">
+    <div class="d-flex justify-content-center align-items-center" id="leave-modal">
+        <div id="leave-modal-main"><span>${msg}</span>
+            <div class="text-right">
+              <a class="btn btn-primary mt-2" id="leave-btn" href="/" role="button">OK</a>
+            </div>
+        </div>
+    </div>
+  </div>`;
 }

@@ -55,4 +55,23 @@ Room.prototype.getHost = function () {
   return this.users.find((user) => user.host);
 };
 
+// allow user join the room
+Room.prototype.allowJoinRoom = function (idUser) {
+  const index = this.waitingRoom.findIndex((user) => user.id === idUser);
+  if (index !== -1) {
+    const user = this.waitingRoom[index];
+    this.users.push(user);
+    this.waitingRoom.splice(index, 1);
+    return user;
+  }
+};
+
+// not allow user join the room
+Room.prototype.notAllowJoinRoom = function (idUser) {
+  const index = this.waitingRoom.findIndex((user) => user.id === idUser);
+  if (index !== -1) {
+    return this.waitingRoom.splice(index, 1)[0];
+  }
+};
+
 module.exports = Room;
