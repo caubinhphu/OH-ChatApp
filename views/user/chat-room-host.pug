@@ -26,9 +26,6 @@ block contentMain
               span &nbsp; Phòng chờ
               span#amount-waiting.ml-1
           #waiting-room-users.flex-fill
-            .waiting-room-user.p-2
-              img.waiting-room-user-avatar(src="/images/avatar-1586267910056-769250908.png" alt="u")
-              span.waiting-room-user-name.ml-2 ${user.name}
       #room-info-participant.p-2.flex-fill.d-flex.flex-column
         .mb-2
           i.fas.fa-users
@@ -65,7 +62,7 @@ block contentMain
           input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
           label.custom-control-label(for="management-turnoff-chat") Tắt chat
         
-  #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+  #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='leaveRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
       .modal-content
         .modal-body
@@ -74,6 +71,25 @@ block contentMain
             button#disconnect-all-btn.btn.btn-danger(type='button') Rời phòng tất cả
             button#disconnect-btn.btn.btn-warning.ml-3(type='button') Rời phòng
             button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+  
+  #confirm-join-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='joinRoom', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content
+        .modal-body
+          span Bạn có chắc muốn cho phép người này vào phòng?
+          .text-right.mt-4
+            button#allow-join-btn.btn.btn-danger.ml-3(type='button') OK
+            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+
+  #confirm-no-join-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='notJoinRoom', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content
+        .modal-body
+          span Bạn có chắc muốn xóa người này khỏi danh sách chờ?
+          .text-right.mt-4
+            button#no-allow-join-btn.btn.btn-danger(type='button') OK
+            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+  
 append scripts
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/user/output-error.js")

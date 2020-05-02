@@ -321,8 +321,15 @@ io.on('connection', (socket) => {
               waitingRoom: roomChat.waitingRoom,
             });
           }
+        } else {
+          socket.emit(
+            'error',
+            'Thành viên không tồn tại, xin hãy kiểm tra lại'
+          );
         }
       }
+    } else {
+      socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
     }
   });
 
@@ -363,12 +370,19 @@ io.on('connection', (socket) => {
           }
           // send message to client after disconnect
           socket.emit('leaveComplete', 'OK');
+        } else {
+          socket.emit(
+            'error',
+            'Thành viên không tồn tại, xin hãy kiểm tra lại'
+          );
         }
       } else if (reason.typeLeave === 'all') {
         roomManagement.removeRoom(roomChat.id);
         socket.emit('leaveAllCompleteForHost', 'OK');
         socket.to(roomChat.id).broadcast.emit('leaveAllComplete', 'OK');
       }
+    } else {
+      socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
     }
   });
 });

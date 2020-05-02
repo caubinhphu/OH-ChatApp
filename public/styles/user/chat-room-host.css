@@ -22,3 +22,8 @@
 .management-title {
   font-weight: 600;
 }
+
+.waiting-room-allow-btn, .waiting-room-not-allow-btn {
+  padding: 2px;
+  margin-left: 5px;
+}
