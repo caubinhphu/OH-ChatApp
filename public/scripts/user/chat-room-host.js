@@ -2,6 +2,7 @@ const waitingRoomArea = document.getElementById('waiting-room');
 const waitingRoomUsers = document.getElementById('waiting-room-users');
 const allowJoinBtn = document.getElementById('allow-join-btn');
 const noAllowJoinBtn = document.getElementById('no-allow-join-btn');
+const kickUserBtn = document.getElementById('confirm-kick-user-btn');
 
 // receive password of room from server
 socket.on('sendPasswordRoom', (password) => {
@@ -24,6 +25,11 @@ socket.on('changeWaitingRoom', ({ waitingRoom }) => {
   outputWaitingRoom(waitingRoom);
 });
 
+// receive room info from server
+socket.on('roomInfo', (roomInfo) => {
+  outputRoomInfo(roomInfo, socket.id);
+});
+
 // event change management
 document.getElementsByName('management').forEach((checkbox) => {
   checkbox.addEventListener('change', function () {
@@ -39,7 +45,10 @@ document.getElementsByName('management').forEach((checkbox) => {
 document
   .querySelector('#disconnect-all-btn')
   .addEventListener('click', function () {
-    socket.emit('disconnectRequire', { typeLeave: 'all' });
+    socket.emit('disconnectRequest', {
+      typeLeave: 'all',
+      token: qs.get('token'),
+    });
   });
 
 // output waiting room
@@ -98,6 +107,60 @@ allowJoinBtn.addEventListener('click', function () {
 
 noAllowJoinBtn.addEventListener('click', function () {
   socket.emit('notAllowJoinRoom', {
+    idUser: this.dataset.id,
+    token: qs.get('token'),
+  });
+});
+
+// output room info
+function outputRoomInfo(roomInfo, socketId) {
+  // console.log(roomInfo, socketId);
+  // room name
+  roomName.innerHTML = roomInfo.nameRoom;
+  // amount participants
+  amountParticipants.innerHTML = `(${roomInfo.users.length})`;
+  // participants
+  participants.innerHTML = roomInfo.users
+    .sort((user1, user2) => {
+      if (user1.socketId === socketId) return -1;
+      if (user2.socketId === socketId) return 1;
+      return user1.name.localeCompare(user2.name, 'en', {
+        sensitivity: 'base',
+      });
+    })
+    .map((user) => {
+      return `<div class="room-user p-2 d-flex justify-content-between">
+        <div>
+          <img class="room-user-avatar" src="/images/avatar-1586267910056-769250908.png" alt="u" />
+          <span class="room-user-name ml-2">${user.name}${
+        user.socketId === socketId ? ' (Bạn)(Host)' : ''
+      }</span>
+        </div>
+        ${user.socketId !== socketId ? outputKickBtn(user.id) : ''}
+      </div>`;
+    })
+    .join('');
+
+  [...document.getElementsByClassName('kick-user-btn')].forEach((btn) => {
+    btn.addEventListener('click', function () {
+      kickUserBtn.dataset.id = this.dataset.id;
+    });
+  });
+}
+
+function outputKickBtn(idUser) {
+  return `<div>
+    <button class="btn btn-default text-danger kick-user-btn" title="Kick khỏi phòng" data-toggle="modal"
+      data-target="#confirm-kick-user-modal" data-id="${idUser}">
+        <i class="fas fa-times-circle"></i>
+    </button>
+  </div>`;
+}
+
+kickUserBtn.addEventListener('click', function () {
+  // emit kick user in the room
+  socket.emit('disconnectRequest', {
+    typeLeave: 'kicked',
     idUser: this.dataset.id,
     token: qs.get('token'),
   });

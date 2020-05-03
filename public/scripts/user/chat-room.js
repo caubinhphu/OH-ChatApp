@@ -1,26 +1,8 @@
-const chatMain = document.getElementById('chat-main-middle'); // chat main area
-const btnChangeStatusTime = document.querySelector('#hide-time-btn'); // Change display status button
-const roomName = document.getElementById('room-info-name-room'); // room name
-const participants = document.getElementById('room-users'); // participants area
-const amountParticipants = document.getElementById('amount-participants'); // amount participants
-const msgForm = document.sendMsgForm; // form chat
-
-// socket.io
-const socket = io();
-
-// get token from query string
-const qs = new URLSearchParams(location.search);
-
-// emit join chat
-socket.emit('joinChat', { token: qs.get('token') });
-
-// receive  message from server
-socket.on('message', (msgObj) => {
-  // output message
-  outputMessage(msgObj);
-
-  // scroll bottom
-  chatMain.scrollTop = chatMain.scrollHeight;
+// receive info change status room (management of host) from server
+socket.on('changeStatusRoom', ({ key, value }) => {
+  if (key === 'allowChat') {
+    outputChatInput(value);
+  }
 });
 
 // receive room info from server
@@ -28,76 +10,37 @@ socket.on('roomInfo', (roomInfo) => {
   outputRoomInfo(roomInfo, socket.id);
 });
 
-// event submit form chat
-msgForm.addEventListener('submit', (e) => {
-  // stop submit form
-  e.preventDefault();
-
-  // input message
-  const inputMsg = e.target.elements.message;
-
-  if (inputMsg.value !== '') {
-    // send message to server
-    socket.emit('messageChat', {
-      message: inputMsg.value,
-      token: qs.get('token'),
-    });
-
-    // set value for input message
-    inputMsg.value = '';
-
-    // focus input message
-    inputMsg.focus();
-  }
-});
-
-// output message in main chat area
-function outputMessage(msgObj) {
-  const div = document.createElement('div');
-  div.className = 'message';
-  div.innerHTML = `<img class="message-avatar" src="/images/avatar-1586267910056-769250908.png" alt="a" />
-    <small class="message-time" style="display:${
-      btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline'
-    }">${msgObj.time}</small>
-    <small class="message-name">${msgObj.username}</small>
-    <small class="message-content">${msgObj.message}</small>`;
-
-  // append message
-  chatMain.appendChild(div);
-}
-
-// receive error message from server when has error
-socket.on('errorMessage', (msg) => {
-  outputErrorMessage(msg);
-});
-
-// receive message from server when leave
-socket.on('leaveComplete', (msg) => {
-  if (msg === 'OK') {
-    location.href = 'http://localhost:3000';
-  } else {
-    location.reload();
-  }
-});
-
 // receive message from server when leave all
 socket.on('leaveAllComplete', (msg) => {
   if (msg === 'OK') {
-    document.querySelector('#leave-room-modal').style.display = 'block';
-    const leaveBtn = document.getElementById('leave-btn');
-    let time = 4;
-    leaveBtn.innerHTML = `OK (5s)`;
-    setInterval(() => {
-      leaveBtn.innerHTML = `OK (${time}s)`;
-      time--;
-    }, 1000);
-    setTimeout(() => {
-      location.href = 'http://localhost:3000';
-    }, 5000);
+    outputLeaveRoom(
+      'Host đã kết thúc chat cho tất cả mọi người, quay lại trang chủ'
+    );
+    fiveSecond();
   } else {
     location.reload();
   }
 });
+
+// receive ,essage kicked out the room
+socket.on('kickedOutRoom', (msg) => {
+  if (msg === 'OK') {
+    outputLeaveRoom('Host đã đá bạn ra khỏi phòng!');
+    fiveSecond();
+  }
+});
+
+// output chat input if allowed
+function outputChatInput(allowed) {
+  if (allowed) {
+    // allow chat
+    msgForm.innerHTML = `<input id="msg" class="form-control" type="text" name="message", placeholder="Nhập tin nhắn", autocomplete="off" />
+      <button class="btn btn-default"><i class="fas fa-paper-plane"/></button>`;
+  } else {
+    // not allow chat
+    msgForm.innerHTML = `<div class="chat-disabled-text">Chat bị cấm bởi host</div>`;
+  }
+}
 
 // output room info
 function outputRoomInfo(roomInfo, socketId) {
@@ -118,37 +61,43 @@ function outputRoomInfo(roomInfo, socketId) {
       });
     })
     .map((user) => {
-      return `<div class="room-user p-2">
-      <img class="room-user-avatar" src="/images/avatar-1586267910056-769250908.png" alt="u" />
-      <span class="room-user-name ml-2">${user.name}${
+      return `<div class="room-user p-2 d-flex justify-content-between">
+        <div>
+          <img class="room-user-avatar" src="/images/avatar-1586267910056-769250908.png" alt="u" />
+          <span class="room-user-name ml-2">${user.name}${
         user.socketId === socketId ? ' (Bạn)' : ''
-      }${user.host ? ' (Host)' : ''}</span></div>`;
+      }${user.host ? ' (Host)' : ''}</span>
+        </div>
+      </div>`;
     })
     .join('');
 }
 
-// event change status display time
-btnChangeStatusTime.addEventListener('click', function () {
-  if (this.dataset.status === 'on') {
-    // show time now -> hide time
-    this.innerHTML = 'Hiện thời gian';
-    document.querySelectorAll('.message-time').forEach((time) => {
-      time.style.display = 'none';
-    });
-    this.dataset.status = 'off';
-  } else if (this.dataset.status === 'off') {
-    // hide time now -> show time
-    this.innerHTML = 'Ẩn thời gian';
-    document.querySelectorAll('.message-time').forEach((time) => {
-      time.style.display = 'inline';
-    });
-    this.dataset.status = 'on';
-  }
-});
+// output leave room all modal
+function outputLeaveRoom(msg) {
+  document.querySelector(
+    '#chat-main-area'
+  ).innerHTML = `<div id="leave-room-modal">
+    <div class="d-flex justify-content-center align-items-center" id="leave-modal">
+        <div id="leave-modal-main"><span>${msg}</span>
+            <div class="text-right">
+              <a class="btn btn-primary mt-2" id="leave-btn" href="/" role="button">OK</a>
+            </div>
+        </div>
+    </div>
+  </div>`;
+}
 
-// disconnect for self
-document
-  .querySelector('#disconnect-btn')
-  .addEventListener('click', function () {
-    socket.emit('disconnectRequire', { typeLeave: 'self' });
-  });
+// countdown 5 seconds
+function fiveSecond() {
+  const leaveBtn = document.getElementById('leave-btn');
+  let time = 4;
+  leaveBtn.innerHTML = `OK (5s)`;
+  setInterval(() => {
+    leaveBtn.innerHTML = `OK (${time}s)`;
+    time--;
+  }, 1000);
+  setTimeout(() => {
+    location.href = 'http://localhost:3000';
+  }, 5000);
+}

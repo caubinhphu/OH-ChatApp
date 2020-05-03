@@ -404,7 +404,7 @@ const socket = function (io) {
     });
 
     // receive event require disconnect from client
-    socket.on('disconnectRequire', (reason) => {
+    socket.on('disconnectRequest', (reason) => {
       // emit disconnect
       socket.emit('disconnect', reason);
     });
@@ -447,9 +447,49 @@ const socket = function (io) {
             );
           }
         } else if (reason.typeLeave === 'all') {
-          roomManagement.removeRoom(roomChat.id);
-          socket.emit('leaveAllCompleteForHost', 'OK');
-          socket.to(roomChat.id).broadcast.emit('leaveAllComplete', 'OK');
+          // check token
+          try {
+            const { data } = jwt.verify(reason.token, process.env.JWT_SECRET);
+            const host = roomChat.getUser(data.idUser);
+            if (host.host) {
+              roomManagement.removeRoom(roomChat.id);
+              socket.emit('leaveAllCompleteForHost', 'OK');
+              socket.to(roomChat.id).broadcast.emit('leaveAllComplete', 'OK');
+            } else {
+              socket.emit(
+                'error',
+                'Bạn không phải host, bạn không có quyền này'
+              );
+            }
+          } catch (err) {
+            socket.emit('error', 'Access token không hợp lệ!');
+          }
+        } else if (reason.typeLeave === 'kicked') {
+          // check token
+          try {
+            const { data } = jwt.verify(reason.token, process.env.JWT_SECRET);
+            const host = roomChat.getUser(data.idUser);
+            if (host.host) {
+              // remove user in the room
+              const user = roomChat.removeUserById(reason.idUser);
+
+              // update room info => send room info (name & users)
+              io.to(roomChat.id).emit('roomInfo', {
+                nameRoom: roomChat.id,
+                users: roomChat.users,
+              });
+
+              // send message to user is kicked out the room
+              io.to(user.socketId).emit('kickedOutRoom', 'OK');
+            } else {
+              socket.emit(
+                'error',
+                'Bạn không phải host, bạn không có quyền này'
+              );
+            }
+          } catch (err) {
+            socket.emit('error', 'Access token không hợp lệ!');
+          }
         }
       } else {
         socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');

@@ -21,6 +21,15 @@ Room.prototype.removeUser = function (socketId) {
   }
 };
 
+// remove the user in the room by idUser and return this user
+Room.prototype.removeUserById = function (idUser) {
+  let index = this.users.findIndex((user) => user.id === idUser);
+
+  if (index !== -1) {
+    return this.users.splice(index, 1)[0];
+  }
+};
+
 // get the user in the room by idUser
 Room.prototype.getUser = function (idUser) {
   return this.users.find((user) => user.id === idUser);

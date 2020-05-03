@@ -5,7 +5,7 @@ append styles
 
 block contentMain
   #message-area.mb-2.mx-auto
-  .d-flex.justify-content-center
+  #chat-main-area.d-flex.justify-content-center
     #room-info.d-flex.flex-column
       #room-info-title
         img.mr-2(src="/images/logo.png", alt="OH", width="30px")
@@ -34,22 +34,17 @@ block contentMain
           //- button.btn.btn-default
           //-   i.fas.fa-paper-plane
 
-  #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
-    .modal-dialog.modal-dialog-centered(role='document')
-      .modal-content
-        .modal-body
-          span Bạn có chắc muốn rời phòng?
-          .text-right.mt-4
-            button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
-            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
-  #leave-room-modal(style="display: none")
-    #leave-modal.d-flex.justify-content-center.align-items-center
-      #leave-modal-main
-        span Host đã kết thúc chat cho tất cả mọi người, quay lại trang chủ
-        .text-right
-          a#leave-btn.btn.btn-primary.mt-2(href="/", role="button") OK
+    #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+      .modal-dialog.modal-dialog-centered(role='document')
+        .modal-content
+          .modal-body
+            span Bạn có chắc muốn rời phòng?
+            .text-right.mt-4
+              button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
+              button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+              
 append scripts
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/user/output-error.js")
+  script(src="/scripts/user/common-chat-room.js")
   script(src="/scripts/user/chat-room.js")
-  script(src="/scripts/user/allow-chat-room.js")
