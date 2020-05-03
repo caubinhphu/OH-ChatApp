@@ -27,3 +27,16 @@
   - Tạo phòng
   - Tham gia vào phòng với id phòng và password phòng
 </details>
+<details>
+  <summary>Version 1.2.0 (3/5/2020)</summary>
+  Chức năng thêm:
+
+  - Quản lý phòng của chủ phòng
+    - Mở phòng
+    - Khóa phòng
+    - Đặt trạng thái phòng chờ
+    - Cho phép/Không cho phép thành viên trong phòng chờ vào phòng
+    - Tắt chat
+    - Đá thành viên ra khỏi phòng
+    - Buộc rời phòng cho toàn thành viên trong phòng
+</details>
