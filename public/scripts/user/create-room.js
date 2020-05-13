@@ -5,7 +5,7 @@ document.createRoomForm.addEventListener('submit', function (e) {
   e.preventDefault();
 
   // input id room
-  let idRoomInput = e.target.elements.idRoom;
+  let roomIdInput = e.target.elements.roomId;
 
   // input password room
   let passRoomInput = e.target.elements.passRoom;
@@ -15,7 +15,7 @@ document.createRoomForm.addEventListener('submit', function (e) {
 
   // send to server
   socket.emit('createRoom', {
-    idRoom: idRoomInput.value,
+    roomId: roomIdInput.value,
     password: passRoomInput.value,
     hostname: hostnameInput.value,
   });

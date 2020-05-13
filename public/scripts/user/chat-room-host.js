@@ -100,21 +100,21 @@ function outputWaitingRoom(waitingRoom) {
 
 allowJoinBtn.addEventListener('click', function () {
   socket.emit('allowJoinRoom', {
-    idUser: this.dataset.id,
+    userId: this.dataset.id,
     token: qs.get('token'),
   });
 });
 
 noAllowJoinBtn.addEventListener('click', function () {
   socket.emit('notAllowJoinRoom', {
-    idUser: this.dataset.id,
+    userId: this.dataset.id,
     token: qs.get('token'),
   });
 });
 
 // output room info
 function outputRoomInfo(roomInfo, socketId) {
-  // console.log(roomInfo, socketId);
+  console.log(roomInfo, socketId);
   // room name
   roomName.innerHTML = roomInfo.nameRoom;
   // amount participants
@@ -148,10 +148,10 @@ function outputRoomInfo(roomInfo, socketId) {
   });
 }
 
-function outputKickBtn(idUser) {
+function outputKickBtn(userId) {
   return `<div>
     <button class="btn btn-default text-danger kick-user-btn" title="Kick khỏi phòng" data-toggle="modal"
-      data-target="#confirm-kick-user-modal" data-id="${idUser}">
+      data-target="#confirm-kick-user-modal" data-id="${userId}">
         <i class="fas fa-times-circle"></i>
     </button>
   </div>`;
@@ -161,7 +161,7 @@ kickUserBtn.addEventListener('click', function () {
   // emit kick user in the room
   socket.emit('disconnectRequest', {
     typeLeave: 'kicked',
-    idUser: this.dataset.id,
+    userId: this.dataset.id,
     token: qs.get('token'),
   });
 });

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const formatMessage = require('./utils/message');
 const RoomManagement = require('./utils/RoomManagement');
@@ -7,6 +8,40 @@ const User = require('./utils/User');
 
 // names bot
 const botName = 'OH Bot';
+
+// connect mongodb
+mongoose.connect(process.env.URI_MONGODB, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+
+// models
+const RoomX = require('./models/Room.model');
+const UserX = require('./models/User.model');
+
+// const newUser = new U({
+//   name: 'hai',
+//   socketId: '1234',
+// });
+
+// newUser.save((err) => {
+//   if (err) throw err;
+//   const newRoom = new R({
+//     roomId: '1234',
+//     password: '1234',
+//   });
+//   newRoom.users.push(newUser._id);
+//   newRoom.save((err) => {
+//     if (err) throw err;
+//   });
+// });
+
+// R.find({ _id: '5eb9e4fd473ea43a046d1ad3' })
+//   .populate('users')
+//   .exec((err, docs) => {
+//     U.remove({ _id: docs[0].users[0]._id });
+//     console.log(docs[0].users[0]._id);
+//   });
 
 // roomManagement
 const roomManagement = new RoomManagement();
@@ -20,101 +55,111 @@ const socket = function (io) {
     });
 
     // receive event create a room from client
-    socket.on('createRoom', ({ idRoom, password, hostname }) => {
-      // checked id room already not exists
-      if (!roomManagement.isRoomExists(idRoom)) {
-        // create a new room
-        const roomChat = new Room(idRoom, password);
-        roomManagement.addRoom(roomChat);
+    socket.on('createRoom', async ({ roomId, password, hostname }) => {
+      try {
+        // create and save a new room
+        const room = await RoomX.create({
+          roomId,
+          password,
+        });
 
-        // add host user to the room
-        // generate id user
-        const idUser = Math.round(Math.random() * 1e9)
-          .toString()
-          .padStart(9, '0');
-        // create host user
-        const user = new User(idUser, hostname, true);
-        roomChat.addUser(user);
+        // create and save a new user is host
+        const host = await UserX.create({
+          name: hostname,
+          host: true,
+        });
 
-        // join socket (user) to the room
-        // socket.join(roomChat.id);
+        // add host in the room
+        room.users.push(host._id);
+        await room.save();
 
         // generate jwt token
         const token = jwt.sign(
-          { data: { idUser: user.id, idRoom: idRoom } },
+          { data: { userId: host.id, roomId } },
           process.env.JWT_SECRET
         );
+
         // send token to client
         socket.emit('createRoomCompleted', token);
-      } else {
-        // room already exists
-        // emit error -> handle error
+      } catch (err) {
         socket.emit('error', 'Phòng đã tồn tại, xin hãy tải lại trang!');
       }
     });
 
     // receive event join to the room from client
-    socket.on('joinRoom', ({ idRoom, passRoom, username }) => {
-      // find room
-      const roomChat = roomManagement.getRoom(idRoom);
+    socket.on('joinRoom', async ({ roomId, passRoom, username }) => {
+      // find the room
+      const room = await RoomX.findOne({ roomId });
 
       // check room exists?
-      if (roomChat) {
+      if (room) {
         // room exists
         // check password of room
-        if (roomChat.password === passRoom) {
-          if (roomChat.status === 'open') {
-            // join successful
-            // create new user
-            // generate id user
-            const idUser = Math.round(Math.random() * 1e9)
-              .toString()
-              .padStart(9, '0');
-            const user = new User(idUser, username, false);
-            roomChat.addUser(user);
+        if (room.password === passRoom) {
+          if (room.status.state === 'open') {
+            try {
+              // join successful
+              // create and save a new user
+              const user = await UserX.create({
+                name: username,
+              });
 
-            // join socket (user) to the room
-            // socket.join(roomChat.id);
+              // add the new user to the room
+              room.users.push(user._id);
+              await room.save();
 
-            // generate jwt token
-            const token = jwt.sign(
-              { data: { idUser: user.id, idRoom: idRoom } },
-              process.env.JWT_SECRET
-            );
+              // generate jwt token
+              const token = jwt.sign(
+                { data: { userId: user.id, roomId } },
+                process.env.JWT_SECRET
+              );
 
-            // send token to client
-            socket.emit('joinRoomSuccess', token);
-          } else if (roomChat.status === 'locked') {
+              // send token to client
+              socket.emit('joinRoomSuccess', token);
+            } catch (err) {
+              socket.emit('error', err.message);
+            }
+          } else if (room.status.state === 'locked') {
             // room is locked
             socket.emit('error', 'Phòng đã bị host khóa, không thể tham gia');
-          } else if (roomChat.status === 'waiting') {
+          } else if (room.status.state === 'waiting') {
             // room is waiting
-            // create new user
-            // generate id user
-            const idUser = Math.round(Math.random() * 1e9)
-              .toString()
-              .padStart(9, '0');
-            const user = new User(idUser, username, false);
-            // set socket id to send to client request when process allow join room
-            user.socketId = socket.id;
+            // create and save a new user
+            const user = await UserX.create({
+              name: username,
+              socketId: socket.id, // set socket id to send to client request when process allow join room
+            });
 
             // add user to the waiting room
-            roomChat.addUserToWaitingRoom(user);
+            room.waitingRoom.push(user._id);
+            await room.save();
 
+            // notify the host room of a change of waiting room
             // find host of this room
-            const host = roomChat.getHost();
+            const roomData = await RoomX.findOne({ roomId }).populate({
+              path: 'users',
+              match: { host: true },
+            });
+
+            const host = roomData.users[0];
             if (host) {
+              console.log(host);
               // send to host of this room info waiting room
               io.to(host.socketId).emit('changeWaitingRoom', {
-                waitingRoom: roomChat.waitingRoom,
+                waitingRoom: room.waitingRoom.map((user) => {
+                  return {
+                    id: user.id,
+                    name: user.name,
+                  };
+                }),
               });
             }
 
             // emit notify to client
             socket.emit('toWaitingRoom', {
               msg: 'Phòng đang ở chế độ phòng chờ, cần chờ host phê duyệt',
-              idRoom: roomChat.id,
-              idUser,
+              roomId: room.roomId,
+              userId,
             });
           }
         } else {
@@ -127,20 +172,19 @@ const socket = function (io) {
         }
       } else {
         // room not exists
-        // emit error -> handle error
         socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
       }
     });
 
     // receive event joinChat from client
-    socket.on('joinChat', ({ token }) => {
+    socket.on('joinChat', async ({ token }) => {
       // verify token
       try {
         // verify token
-        const { data } = jwt.verify(token, process.env.JWT_SECRET);
+        const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // join socket (user) to the room
-        socket.join(data.idRoom);
+        socket.join(dataToken.roomId);
 
         // emit welcome room
         socket.emit(
@@ -148,16 +192,24 @@ const socket = function (io) {
           formatMessage(botName, 'Chào mừng đến với OH chat')
         );
 
-        // find room
-        const roomChat = roomManagement.getRoom(data.idRoom);
-        if (roomChat) {
-          // find user
-          const user = roomChat.getUser(data.idUser);
+        // find the room join with users in the this room
+        const room = await RoomX.findOne({
+          roomId: dataToken.roomId,
+        }).populate({
+          path: 'users',
+        });
+        if (room) {
+          // find user of this socket to set socket
+          const user = room.users.find((u) => u.id === dataToken.userId);
+
           if (user) {
+            // set socket chat for the user
             user.socketId = socket.id;
+            await user.save();
+
             // broadcast emit join room
             socket
-              .to(roomChat.id)
+              .to(room.roomId)
               .broadcast.emit(
                 'message',
                 formatMessage(botName, `${user.name} đã tham gia vào phòng`)
@@ -166,17 +218,24 @@ const socket = function (io) {
             // emit allowed chat to socket client
             socket.emit('changeStatusRoom', {
               key: 'allowChat',
-              value: roomChat.allowChat,
+              value: room.status.allowChat,
             });
 
             // update room info => send room info (name & users)
-            io.to(roomChat.id).emit('roomInfo', {
-              nameRoom: roomChat.id,
-              users: roomChat.users,
+            io.to(room.roomId).emit('roomInfo', {
+              nameRoom: room.roomId,
+              users: room.users.map((user) => {
+                return {
+                  id: user.id,
+                  name: user.name,
+                  socketId: user.socketId,
+                  host: user.host,
+                };
+              }),
             });
             // send password of room if user is host
             if (user.host) {
-              socket.emit('sendPasswordRoom', roomChat.password);
+              socket.emit('sendPasswordRoom', room.password);
             }
           } else {
             // not exists participant
@@ -202,7 +261,7 @@ const socket = function (io) {
         const { data } = jwt.verify(token, process.env.JWT_SECRET);
 
         // get room
-        const roomChat = roomManagement.getRoom(data.idRoom);
+        const roomChat = roomManagement.getRoom(data.roomId);
         if (roomChat) {
           // get user
           const hostUser = roomChat.getUser(data.idUser);
@@ -213,7 +272,7 @@ const socket = function (io) {
             if (user) {
               // generate jwt token
               const token = jwt.sign(
-                { data: { idUser: user.id, idRoom: roomChat.id } },
+                { data: { idUser: user.id, roomId: roomChat.id } },
                 process.env.JWT_SECRET
               );
 
@@ -246,7 +305,7 @@ const socket = function (io) {
         const { data } = jwt.verify(token, process.env.JWT_SECRET);
 
         // get room
-        const roomChat = roomManagement.getRoom(data.idRoom);
+        const roomChat = roomManagement.getRoom(data.roomId);
         if (roomChat) {
           // get user
           const hostUser = roomChat.getUser(data.idUser);
@@ -287,7 +346,7 @@ const socket = function (io) {
         const { data } = jwt.verify(token, process.env.JWT_SECRET);
 
         // find room
-        const roomChat = roomManagement.getRoom(data.idRoom);
+        const roomChat = roomManagement.getRoom(data.roomId);
         if (roomChat) {
           const user = roomChat.getUser(data.idUser);
           if (user) {
@@ -325,7 +384,7 @@ const socket = function (io) {
         const { data } = jwt.verify(token, process.env.JWT_SECRET);
 
         // find room
-        const roomChat = roomManagement.getRoom(data.idRoom);
+        const roomChat = roomManagement.getRoom(data.roomId);
         if (roomChat) {
           // find user
           const user = roomChat.getUser(data.idUser);
@@ -374,9 +433,9 @@ const socket = function (io) {
     });
 
     // receive info leave waiting room form client
-    socket.on('leaveWaitingRoom', ({ typeLeave, idRoom, idUser }) => {
+    socket.on('leaveWaitingRoom', ({ typeLeave, roomId, idUser }) => {
       // find the room
-      const roomChat = roomManagement.getRoom(idRoom);
+      const roomChat = roomManagement.getRoom(roomId);
       if (roomChat) {
         if (typeLeave === 'self') {
           const user = roomChat.removeUserInWaitingRoom(idUser);

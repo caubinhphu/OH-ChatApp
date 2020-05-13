@@ -6,14 +6,14 @@ const socket = io();
 joinRoomForm.addEventListener('submit', function (e) {
   e.preventDefault();
   let nameInput = e.target.elements.name;
-  let idRoomInput = e.target.elements.idRoom;
+  let roomIdInput = e.target.elements.roomId;
   let passRoomInput = e.target.elements.passRoom;
 
   if (nameInput.value.length <= 0 || nameInput.value.length > 30) {
     document.querySelector('#err-join-name').innerHTML = 'Tên chưa hợp lệ';
   } else {
     socket.emit('joinRoom', {
-      idRoom: idRoomInput.value,
+      roomId: roomIdInput.value,
       passRoom: passRoomInput.value,
       username: nameInput.value,
     });
@@ -47,8 +47,8 @@ socket.on('errorMessage', (message) => {
 });
 
 // receive info waiting room from server
-socket.on('toWaitingRoom', ({ msg, idRoom, idUser }) => {
-  outputHtmlWaitingRoom(msg, idRoom, idUser);
+socket.on('toWaitingRoom', ({ msg, roomId, userId }) => {
+  outputHtmlWaitingRoom(msg, roomId, userId);
 });
 
 // receive message leaveWaitingRoomComplete after leave waiting room complete
@@ -59,12 +59,12 @@ socket.on('leaveWaitingRoomComplete', (message) => {
 });
 
 // output waiting room html
-function outputHtmlWaitingRoom(message, idRoom, idUser) {
+function outputHtmlWaitingRoom(message, roomId, userId) {
   document.getElementById('form-x').innerHTML = `<div id="waiting-room-modal">
     <div class="d-flex justify-content-center align-items-center" id="waiting-modal">
       <div id="waiting-modal-main">
         <div class="d-flex justify-content-between">
-          <span class="waiting-room-id">Phòng: ${idRoom}</span>
+          <span class="waiting-room-id">Phòng: ${roomId}</span>
           <button type="button" data-toggle="modal" data-target="#confirm-leave-waiting-room-modal" class="btn btn-link">Rời phòng</span>
         </div>
         <span>${message}</span>
@@ -87,7 +87,7 @@ function outputHtmlWaitingRoom(message, idRoom, idUser) {
   document
     .getElementById('leave-waiting-room-btn')
     .addEventListener('click', function () {
-      socket.emit('leaveWaitingRoom', { typeLeave: 'self', idRoom, idUser });
+      socket.emit('leaveWaitingRoom', { typeLeave: 'self', roomId, userId });
     });
 }
 
