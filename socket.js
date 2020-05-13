@@ -340,19 +340,25 @@ const socket = function (io) {
     });
 
     // receive message from client
-    socket.on('messageChat', ({ token, message }) => {
+    socket.on('messageChat', async ({ token, message }) => {
       try {
         // verify token
-        const { data } = jwt.verify(token, process.env.JWT_SECRET);
+        const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
-        // find room
-        const roomChat = roomManagement.getRoom(data.roomId);
-        if (roomChat) {
-          const user = roomChat.getUser(data.idUser);
+        // find room join with users in this room
+        const room = await RoomX.findOne({
+          roomId: dataToken.roomId,
+        }).populate({
+          path: 'users',
+        });
+
+        if (room) {
+          // find user send message
+          const user = room.users.find((u) => (u.id = dataToken.userId));
           if (user) {
-            if (roomChat.allowChat || user.host) {
+            if (room.status.allowChat || user.host) {
               // send message to all user in the room
-              io.to(roomChat.id).emit(
+              io.to(room.roomId).emit(
                 'message',
                 formatMessage(user.name, message)
               );
