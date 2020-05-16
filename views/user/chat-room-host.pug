@@ -49,7 +49,7 @@ block contentMain
       #management-area.p-2
         .management-title Phòng
         .custom-control.custom-radio.my-1.ml-3
-          input#management-open-room.custom-control-input(type="radio", name="management", value="open-room", checked=true)
+          input#management-open-room.custom-control-input(type="radio", name="management", value="open-room")
           label.custom-control-label(for="management-open-room") Mở phòng
         .custom-control.custom-radio.my-1.ml-3
           input#management-lock-room.custom-control-input(type="radio", name="management", value="lock-room")
@@ -101,6 +101,7 @@ block contentMain
   
 append scripts
   script(src="/socket.io/socket.io.js")
+  script(src="/scripts/moment.min.js")
   script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/common-chat-room.js")
   script(src="/scripts/user/chat-room-host.js")

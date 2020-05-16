@@ -334,11 +334,10 @@ const socket = function (io) {
           const user = room.users.find((u) => u.id === dataToken.userId);
           if (user) {
             if (room.status.allowChat || user.host) {
-              // send message to all user in the room
-              io.to(room.roomId).emit(
-                'message',
-                formatMessage(user.name, message)
-              );
+              // broadcast message to all user in the room
+              socket
+                .to(room.roomId)
+                .broadcast.emit('message', formatMessage(user.name, message));
             } else {
               // not allowed chat
               socket.emit('error', 'Chat bị cấm bởi host');

@@ -8,6 +8,20 @@ const msgForm = document.sendMsgForm; // form chat
 // socket.io
 const socket = io();
 
+const charReplaces = {
+  '<': '&lt;',
+  '>': '&gt;',
+  '&': '&amp;',
+};
+
+const replaceChar = function (char) {
+  return charReplaces[char] || char;
+};
+
+const escapeHtml = function (html) {
+  return html.replace(/[<>&]/g, replaceChar);
+};
+
 // get token from query string
 const qs = new URLSearchParams(location.search);
 
@@ -37,6 +51,17 @@ msgForm.addEventListener('submit', (e) => {
       message: inputMsg.value,
       token: qs.get('token'),
     });
+
+    // create message obj to show in client
+    const msgObj = {
+      time: moment().format('h:mm A'),
+      username: 'Me',
+      message: escapeHtml(inputMsg.value),
+    };
+    outputMessage(msgObj);
+
+    // scroll bottom
+    chatMain.scrollTop = chatMain.scrollHeight;
 
     // set value for input message
     inputMsg.value = '';
