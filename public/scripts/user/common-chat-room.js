@@ -58,7 +58,7 @@ msgForm.addEventListener('submit', (e) => {
       username: 'Me',
       message: escapeHtml(inputMsg.value),
     };
-    outputMessage(msgObj);
+    outputMessage(msgObj, true);
 
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
@@ -72,15 +72,31 @@ msgForm.addEventListener('submit', (e) => {
 });
 
 // output message in main chat area
-function outputMessage(msgObj) {
+function outputMessage(msgObj, me = false) {
   const div = document.createElement('div');
-  div.className = 'message';
-  div.innerHTML = `<img class="message-avatar" src="/images/avatar-1586267910056-769250908.png" alt="a" />
-    <small class="message-time" style="display:${
+  if (me) {
+    div.className = 'message text-right';
+    div.innerHTML = `<small class="message-time" style="display:${
       btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline'
     }">${msgObj.time}</small>
-    <small class="message-name">${msgObj.username}</small>
-    <small class="message-content">${msgObj.message}</small>`;
+    <div>
+      <div class="msg-me">
+        <small class="message-content mx-0">${msgObj.message}</small>
+      </div>
+    <div>`;
+  } else {
+    div.className = 'message';
+    div.innerHTML = `<small class="message-time" style="display:${
+      btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline'
+    }">${msgObj.time}</small>
+      <div>
+        <div class="msg">
+          <img class="message-avatar" src="/images/avatar-1586267910056-769250908.png" alt="a" />
+          <small class="message-name">${msgObj.username}</small>
+          <small class="message-content">${msgObj.message}</small>
+        </div>
+      </div>`;
+  }
 
   // append message
   chatMain.appendChild(div);

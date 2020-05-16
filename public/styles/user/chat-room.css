@@ -88,6 +88,23 @@ input:focus, button:focus {
   padding: 5px;
 }
 
+.msg {
+  width: max-content;
+  max-width: 100%;
+  background-color: #f1f0f0;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.msg-me {
+  width: max-content;
+  max-width: 100%;
+  background-color: #0099ff;
+  padding: 4px;
+  border-radius: 5px;
+  margin-left: auto;
+}
+
 .message-avatar, .room-user-avatar, .waiting-room-user-avatar {
   width: 25px;
   height: 25px;
@@ -97,6 +114,7 @@ input:focus, button:focus {
 .message-time {
   color: #a7a7a7;
   margin: 0 10px;
+  font-size: x-small;
 }
 
 .message-name {
