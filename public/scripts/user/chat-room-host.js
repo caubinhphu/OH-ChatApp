@@ -11,6 +11,11 @@ socket.on('sendPasswordRoom', (password) => {
   ).innerHTML = `(${password})`;
 });
 
+// receive room manager info from server
+socket.on('roomManager', (manager) => {
+  outputRoomManager(manager);
+});
+
 // receive message from server when leave all for host
 socket.on('leaveAllCompleteForHost', (msg) => {
   if (msg === 'OK') {
@@ -114,7 +119,6 @@ noAllowJoinBtn.addEventListener('click', function () {
 
 // output room info
 function outputRoomInfo(roomInfo, socketId) {
-  console.log(roomInfo, socketId);
   // room name
   roomName.innerHTML = roomInfo.nameRoom;
   // amount participants
@@ -165,3 +169,15 @@ kickUserBtn.addEventListener('click', function () {
     token: qs.get('token'),
   });
 });
+
+function outputRoomManager(manager) {
+  if (!manager.allowChat) {
+    document.getElementById('management-turnoff-chat').checked = true;
+  }
+  const ids = {
+    open: 'management-open-room',
+    locked: 'management-lock-room',
+    waiting: 'management-waiting-room',
+  };
+  document.getElementById(ids[manager.state]).checked = true;
+}

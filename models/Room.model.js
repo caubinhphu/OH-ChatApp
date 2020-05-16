@@ -117,6 +117,11 @@ roomSchema.methods.removeUserById = function (userId) {
   }
 };
 
+// get manager of the room
+roomSchema.methods.getManager = function () {
+  return this.status;
+};
+
 const Room = mongoose.model('Room', roomSchema);
 
 module.exports = Room;

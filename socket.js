@@ -196,6 +196,7 @@ const socket = function (io) {
             // send password of room if user is host
             if (user.host) {
               socket.emit('sendPasswordRoom', room.password);
+              socket.emit('roomManager', room.getManager());
             }
           } else {
             // not exists participant
