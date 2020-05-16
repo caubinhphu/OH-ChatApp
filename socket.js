@@ -287,6 +287,9 @@ const socket = function (io) {
               // save room data
               await room.save();
 
+              // remove user
+              await UserX.deleteOne({ _id: user._id });
+
               // send token to client request join room
               io.to(user.socketId).emit(
                 'joinRoomBlocked',
@@ -368,7 +371,7 @@ const socket = function (io) {
         }).populate('users');
         if (room) {
           // find user of this socket and check this user is host the room
-          const host = room.getUser(dataToken.userId);
+          const host = room.getUser('id', dataToken.userId);
           if (host && host.host) {
             // user is host
             // manager room
@@ -461,89 +464,138 @@ const socket = function (io) {
     });
 
     // disconnect
-    socket.on('disconnect', (reason) => {
-      // find room by user socketId
-      const roomChat = roomManagement.findRoomIncludeUser(socket.id);
-      if (roomChat) {
-        if (reason.typeLeave === 'self') {
-          // self leave
-          // remove user from this room
-          const user = roomChat.removeUser(socket.id);
+    socket.on('disconnect', async (reason) => {
+      // find user by socketId to find the room
+      const user = await UserX.findOne({ socketId: socket.id });
+      if (user) {
+        const room = await RoomX.findOne({ users: user._id })
+          .populate('users')
+          .populate('waitingRoom');
 
-          if (user) {
+        if (room) {
+          if (reason.typeLeave === 'self') {
+            // self leave
+            // remove user from this room
+            room.removeUserById(user.id);
+            await room.save();
+            await UserX.deleteOne({ _id: user._id });
+
             // send message notify for remaining users in the room
             socket
-              .to(roomChat.id)
+              .to(room.id)
               .broadcast.emit(
                 'message',
                 formatMessage(botName, `${user.name} đã rời phòng`)
               );
 
             // if not exists user in the room => delete this room
-            if (roomChat.users.length <= 0) {
-              roomManagement.removeRoom(roomChat.id);
+            if (room.users.length <= 0) {
+              // get socketId of users in waiting room to notify for them
+              const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+
+              // delete users in waiting room
+              await UserX.deleteMany({ _id: { $in: room.waitingRoom } });
+              // delete the room
+              await RoomX.deleteOne({ roomId: room.roomId });
+
+              // notify end room for user in waiting room
+              socketIdsWaitingRoom.forEach((socketId) => {
+                io.to(socketId).emit(
+                  'joinRoomBlocked',
+                  'Phòng bạn yêu cầu đã kết thúc chat!'
+                );
+              });
             } else {
               // update room info => send room info (name & users)
-              socket.to(roomChat.id).broadcast.emit('roomInfo', {
-                nameRoom: roomChat.id,
-                users: roomChat.users,
+              socket.to(room.roomId).broadcast.emit('roomInfo', {
+                nameRoom: room.roomId,
+                users: room.getRoomUsersInfo(),
               });
             }
             // send message to client after disconnect
             socket.emit('leaveComplete', 'OK');
-          } else {
-            socket.emit(
-              'error',
-              'Thành viên không tồn tại, xin hãy kiểm tra lại'
-            );
-          }
-        } else if (reason.typeLeave === 'all') {
-          // check token
-          try {
-            const { data } = jwt.verify(reason.token, process.env.JWT_SECRET);
-            const host = roomChat.getUser(data.idUser);
-            if (host.host) {
-              roomManagement.removeRoom(roomChat.id);
-              socket.emit('leaveAllCompleteForHost', 'OK');
-              socket.to(roomChat.id).broadcast.emit('leaveAllComplete', 'OK');
-            } else {
-              socket.emit(
-                'error',
-                'Bạn không phải host, bạn không có quyền này'
+          } else if (reason.typeLeave === 'all') {
+            // check token
+            try {
+              const { data: dataToken } = jwt.verify(
+                reason.token,
+                process.env.JWT_SECRET
               );
+              const host = room.getUser('id', dataToken.userId);
+              if (host && host.host) {
+                // get socketId of users in waiting room to notify for them
+                const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+
+                // delete users in waiting room
+                await UserX.deleteMany({ _id: { $in: room.waitingRoom } });
+
+                // delete users in the room
+                await UserX.deleteMany({ _id: { $in: room.users } });
+
+                // delete the room
+                await RoomX.deleteOne({ roomId: room.roomId });
+
+                // notify end room for user in waiting room
+                socketIdsWaitingRoom.forEach((socketId) => {
+                  io.to(socketId).emit(
+                    'joinRoomBlocked',
+                    'Phòng bạn yêu cầu đã kết thúc chat!'
+                  );
+                });
+                socket.emit('leaveAllCompleteForHost', 'OK');
+                socket.to(room.roomId).broadcast.emit('leaveAllComplete', 'OK');
+              } else {
+                socket.emit(
+                  'error',
+                  'Bạn không phải host, bạn không có quyền này'
+                );
+              }
+            } catch (err) {
+              socket.emit('error', 'Access token không hợp lệ!');
             }
-          } catch (err) {
-            socket.emit('error', 'Access token không hợp lệ!');
-          }
-        } else if (reason.typeLeave === 'kicked') {
-          // check token
-          try {
-            const { data } = jwt.verify(reason.token, process.env.JWT_SECRET);
-            const host = roomChat.getUser(data.idUser);
-            if (host.host) {
-              // remove user in the room
-              const user = roomChat.removeUserById(reason.idUser);
-
-              // update room info => send room info (name & users)
-              io.to(roomChat.id).emit('roomInfo', {
-                nameRoom: roomChat.id,
-                users: roomChat.users,
-              });
-
-              // send message to user is kicked out the room
-              io.to(user.socketId).emit('kickedOutRoom', 'OK');
-            } else {
-              socket.emit(
-                'error',
-                'Bạn không phải host, bạn không có quyền này'
+          } else if (reason.typeLeave === 'kicked') {
+            // check token
+            try {
+              const { data: dataToken } = jwt.verify(
+                reason.token,
+                process.env.JWT_SECRET
               );
+              const host = room.getUser('id', dataToken.userId);
+              if (host && host.host) {
+                // remove user in the room
+                const user = room.removeUserById(reason.userId);
+
+                if (user) {
+                  // save the room
+                  await room.save();
+
+                  // remove the user
+                  await UserX.deleteOne({ _id: user._id });
+
+                  // send message to user is kicked out the room
+                  io.to(user.socketId).emit('kickedOutRoom', 'OK');
+                }
+
+                // update room info => send room info (name & users)
+                io.to(room.roomId).emit('roomInfo', {
+                  nameRoom: room.roomId,
+                  users: room.getRoomUsersInfo(),
+                });
+              } else {
+                socket.emit(
+                  'error',
+                  'Bạn không phải host, bạn không có quyền này'
+                );
+              }
+            } catch (err) {
+              socket.emit('error', 'Access token không hợp lệ!');
             }
-          } catch (err) {
-            socket.emit('error', 'Access token không hợp lệ!');
           }
+        } else {
+          socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
         }
       } else {
-        socket.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
+        socket.emit('error', 'Thành viên không tồn tại, xin hãy kiểm tra lại');
       }
     });
   });

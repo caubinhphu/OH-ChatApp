@@ -61,6 +61,13 @@ roomSchema.methods.getWaitingRoom = function () {
   });
 };
 
+// get socketId of users in waiting room
+roomSchema.methods.getSocketIdWaitingRoom = function () {
+  return this.waitingRoom.map((user) => {
+    return user.socketId;
+  });
+};
+
 // get users of the room info to send to client
 roomSchema.methods.getRoomUsersInfo = function () {
   return this.users.map((user) => {
@@ -98,6 +105,15 @@ roomSchema.methods.removeUserInWaitingRoom = function (userId) {
 
   if (index !== -1) {
     return this.waitingRoom.splice(index, 1)[0];
+  }
+};
+
+// remove the user in the room by userId and return this user
+roomSchema.methods.removeUserById = function (userId) {
+  let index = this.users.findIndex((user) => user.id === userId);
+
+  if (index !== -1) {
+    return this.users.splice(index, 1)[0];
   }
 };
 
