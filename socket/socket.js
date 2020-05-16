@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-const formatMessage = require('./utils/message');
-const RoomManagement = require('./utils/RoomManagement');
-const Room = require('./utils/Room');
-const User = require('./utils/User');
+const formatMessage = require('../utils/message');
 
 // names bot
 const botName = 'OH Bot';
+
+const controller = require('./controller');
 
 // connect mongodb
 mongoose.connect(process.env.URI_MONGODB, {
@@ -16,11 +15,8 @@ mongoose.connect(process.env.URI_MONGODB, {
 });
 
 // models
-const RoomX = require('./models/Room.model');
-const UserX = require('./models/User.model');
-
-// roomManagement
-const roomManagement = new RoomManagement();
+const Room = require('../models/Room.model');
+const User = require('../models/User.model');
 
 const socket = function (io) {
   io.on('connection', (socket) => {
@@ -34,13 +30,13 @@ const socket = function (io) {
     socket.on('createRoom', async ({ roomId, password, hostname }) => {
       try {
         // create and save a new room
-        const room = await RoomX.create({
+        const room = await Room.create({
           roomId,
           password,
         });
 
         // create and save a new user is host
-        const host = await UserX.create({
+        const host = await User.create({
           name: hostname,
           host: true,
         });
@@ -65,7 +61,7 @@ const socket = function (io) {
     // receive event join to the room from client
     socket.on('joinRoom', async ({ roomId, passRoom, username }) => {
       // find the room
-      const room = await RoomX.findOne({ roomId });
+      const room = await Room.findOne({ roomId });
 
       // check room exists?
       if (room) {
@@ -76,7 +72,7 @@ const socket = function (io) {
             try {
               // join successful
               // create and save a new user
-              const user = await UserX.create({
+              const user = await User.create({
                 name: username,
               });
 
@@ -101,7 +97,7 @@ const socket = function (io) {
           } else if (room.status.state === 'waiting') {
             // room is waiting
             // create and save a new user
-            const user = await UserX.create({
+            const user = await User.create({
               name: username,
               socketId: socket.id, // set socket id to send to client request when process allow join room
             });
@@ -112,7 +108,7 @@ const socket = function (io) {
 
             // notify the host room of a change of waiting room
             // find host of this room
-            const roomUpdate = await RoomX.findOne({ roomId })
+            const roomUpdate = await Room.findOne({ roomId })
               .populate('users')
               .populate('waitingRoom');
 
@@ -162,7 +158,7 @@ const socket = function (io) {
         );
 
         // find the room join with users in the this room
-        const room = await RoomX.findOne({
+        const room = await Room.findOne({
           roomId: dataToken.roomId,
         }).populate('users');
         if (room) {
@@ -177,7 +173,7 @@ const socket = function (io) {
             // broadcast emit join room
             socket
               .to(room.roomId)
-              .broadcast.emit(
+              .emit(
                 'message',
                 formatMessage(botName, `${user.name} đã tham gia vào phòng`)
               );
@@ -193,7 +189,7 @@ const socket = function (io) {
               nameRoom: room.roomId,
               users: room.getRoomUsersInfo(),
             });
-            // send password of room if user is host
+            // send password and manager item of room if user is host
             if (user.host) {
               socket.emit('sendPasswordRoom', room.password);
               socket.emit('roomManager', room.getManager());
@@ -222,7 +218,7 @@ const socket = function (io) {
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // get room with host
-        const room = await RoomX.findOne({
+        const room = await Room.findOne({
           roomId: dataToken.roomId,
         })
           .populate('users')
@@ -273,7 +269,7 @@ const socket = function (io) {
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // get room join with host
-        const room = await RoomX.findOne({
+        const room = await Room.findOne({
           roomId: dataToken.roomId,
         })
           .populate('users')
@@ -289,7 +285,7 @@ const socket = function (io) {
               await room.save();
 
               // remove user
-              await UserX.deleteOne({ _id: user._id });
+              await User.deleteOne({ _id: user._id });
 
               // send token to client request join room
               io.to(user.socketId).emit(
@@ -323,7 +319,7 @@ const socket = function (io) {
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // find room join with users in this room
-        const room = await RoomX.findOne({
+        const room = await Room.findOne({
           roomId: dataToken.roomId,
         }).populate({
           path: 'users',
@@ -337,7 +333,7 @@ const socket = function (io) {
               // broadcast message to all user in the room
               socket
                 .to(room.roomId)
-                .broadcast.emit('message', formatMessage(user.name, message));
+                .emit('message', formatMessage(user.name, message));
             } else {
               // not allowed chat
               socket.emit('error', 'Chat bị cấm bởi host');
@@ -366,7 +362,7 @@ const socket = function (io) {
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // find the room join with host of this room
-        const room = await RoomX.findOne({
+        const room = await Room.findOne({
           roomId: dataToken.roomId,
         }).populate('users');
         if (room) {
@@ -381,7 +377,7 @@ const socket = function (io) {
               await room.save();
 
               // send info change manage from host
-              socket.to(room.roomId).broadcast.emit('changeStatusRoom', {
+              socket.to(room.roomId).emit('changeStatusRoom', {
                 key: 'allowChat',
                 value: room.status.allowChat,
               });
@@ -421,7 +417,7 @@ const socket = function (io) {
     // receive info leave waiting room form client
     socket.on('leaveWaitingRoom', async ({ typeLeave, roomId, userId }) => {
       // get the room
-      const room = await RoomX.findOne({ roomId })
+      const room = await Room.findOne({ roomId })
         .populate('users')
         .populate('waitingRoom');
 
@@ -433,7 +429,7 @@ const socket = function (io) {
             await room.save();
 
             // delete user
-            await UserX.deleteOne({ _id: userId });
+            await User.deleteOne({ _id: userId });
 
             // emit notify leave waiting room to client
             socket.emit('leaveWaitingRoomComplete', 'OK');
@@ -463,12 +459,14 @@ const socket = function (io) {
       socket.emit('disconnect', reason);
     });
 
+    socket.on('test', controller.test);
+
     // disconnect
     socket.on('disconnect', async (reason) => {
       // find user by socketId to find the room
-      const user = await UserX.findOne({ socketId: socket.id });
+      const user = await User.findOne({ socketId: socket.id });
       if (user) {
-        const room = await RoomX.findOne({ users: user._id })
+        const room = await Room.findOne({ users: user._id })
           .populate('users')
           .populate('waitingRoom');
 
@@ -478,12 +476,12 @@ const socket = function (io) {
             // remove user from this room
             room.removeUserById(user.id);
             await room.save();
-            await UserX.deleteOne({ _id: user._id });
+            await User.deleteOne({ _id: user._id });
 
             // send message notify for remaining users in the room
             socket
-              .to(room.id)
-              .broadcast.emit(
+              .to(room.roomId)
+              .emit(
                 'message',
                 formatMessage(botName, `${user.name} đã rời phòng`)
               );
@@ -494,9 +492,9 @@ const socket = function (io) {
               const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
 
               // delete users in waiting room
-              await UserX.deleteMany({ _id: { $in: room.waitingRoom } });
+              await User.deleteMany({ _id: { $in: room.waitingRoom } });
               // delete the room
-              await RoomX.deleteOne({ roomId: room.roomId });
+              await Room.deleteOne({ roomId: room.roomId });
 
               // notify end room for user in waiting room
               socketIdsWaitingRoom.forEach((socketId) => {
@@ -507,7 +505,7 @@ const socket = function (io) {
               });
             } else {
               // update room info => send room info (name & users)
-              socket.to(room.roomId).broadcast.emit('roomInfo', {
+              socket.to(room.roomId).emit('roomInfo', {
                 nameRoom: room.roomId,
                 users: room.getRoomUsersInfo(),
               });
@@ -527,13 +525,13 @@ const socket = function (io) {
                 const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
 
                 // delete users in waiting room
-                await UserX.deleteMany({ _id: { $in: room.waitingRoom } });
+                await User.deleteMany({ _id: { $in: room.waitingRoom } });
 
                 // delete users in the room
-                await UserX.deleteMany({ _id: { $in: room.users } });
+                await User.deleteMany({ _id: { $in: room.users } });
 
                 // delete the room
-                await RoomX.deleteOne({ roomId: room.roomId });
+                await Room.deleteOne({ roomId: room.roomId });
 
                 // notify end room for user in waiting room
                 socketIdsWaitingRoom.forEach((socketId) => {
@@ -543,7 +541,7 @@ const socket = function (io) {
                   );
                 });
                 socket.emit('leaveAllCompleteForHost', 'OK');
-                socket.to(room.roomId).broadcast.emit('leaveAllComplete', 'OK');
+                socket.to(room.roomId).emit('leaveAllComplete', 'OK');
               } else {
                 socket.emit(
                   'error',
@@ -570,7 +568,7 @@ const socket = function (io) {
                   await room.save();
 
                   // remove the user
-                  await UserX.deleteOne({ _id: user._id });
+                  await User.deleteOne({ _id: user._id });
 
                   // send message to user is kicked out the room
                   io.to(user.socketId).emit('kickedOutRoom', 'OK');

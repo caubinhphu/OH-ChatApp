@@ -2,9 +2,11 @@
 ## Sử dụng
   - [Socket.io](https://socket.io)
   - [ExpressJs](https://expressjs.com)
+  - [MongoDB](https://www.mongodb.com/)
   - [PugJs](https://pugjs.org/api/getting-started.html)
   - [MomentJs](https://momentjs.com/)
   - [JWT](https://jwt.io/)
+  - [MongooseJs](https://mongoosejs.com/)
 ### Tác giả: NAH - Nguyễn Anh Hải
 
 ### Quá trình phát triển
@@ -39,4 +41,10 @@
     - Tắt chat
     - Đá thành viên ra khỏi phòng
     - Buộc rời phòng cho toàn thành viên trong phòng
+</details>
+<details>
+  <summary>Version 1.2.1 (16/5/2020)</summary>
+  Chức năng thêm:
+
+  - Sử dụng MongoDB
 </details>

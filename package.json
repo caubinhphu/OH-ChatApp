@@ -1,6 +1,6 @@
 {
   "name": "oh-chat",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Chat realtime application",
   "main": "app.js",
   "scripts": {

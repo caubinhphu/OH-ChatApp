@@ -24,7 +24,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // handle socket
-require('./socket')(io);
+require('./socket/socket')(io);
 
 // use router
 app.use('/', chatRoute);
