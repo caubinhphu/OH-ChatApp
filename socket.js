@@ -19,30 +19,6 @@ mongoose.connect(process.env.URI_MONGODB, {
 const RoomX = require('./models/Room.model');
 const UserX = require('./models/User.model');
 
-// const newUser = new U({
-//   name: 'hai',
-//   socketId: '1234',
-// });
-
-// newUser.save((err) => {
-//   if (err) throw err;
-//   const newRoom = new R({
-//     roomId: '1234',
-//     password: '1234',
-//   });
-//   newRoom.users.push(newUser._id);
-//   newRoom.save((err) => {
-//     if (err) throw err;
-//   });
-// });
-
-// R.find({ _id: '5eb9e4fd473ea43a046d1ad3' })
-//   .populate('users')
-//   .exec((err, docs) => {
-//     U.remove({ _id: docs[0].users[0]._id });
-//     console.log(docs[0].users[0]._id);
-//   });
-
 // roomManagement
 const roomManagement = new RoomManagement();
 
@@ -136,24 +112,15 @@ const socket = function (io) {
 
             // notify the host room of a change of waiting room
             // find host of this room
-            const roomDataWithHost = await RoomX.findOne({ roomId }).populate({
-              path: 'users',
-              match: { host: true },
-            });
+            const roomUpdate = await RoomX.findOne({ roomId })
+              .populate('users')
+              .populate('waitingRoom');
 
-            const host = roomDataWithHost.users[0];
+            const host = roomUpdate.getHost();
             if (host) {
               // send to host of this room info waiting room
-              const roomDataWithWaiting = await RoomX.findOne({
-                roomId,
-              }).populate({ path: 'waitingRoom' });
               io.to(host.socketId).emit('changeWaitingRoom', {
-                waitingRoom: roomDataWithWaiting.waitingRoom.map((user) => {
-                  return {
-                    id: user.id,
-                    name: user.name,
-                  };
-                }),
+                waitingRoom: roomUpdate.getWaitingRoom(),
               });
             }
 
@@ -197,12 +164,10 @@ const socket = function (io) {
         // find the room join with users in the this room
         const room = await RoomX.findOne({
           roomId: dataToken.roomId,
-        }).populate({
-          path: 'users',
-        });
+        }).populate('users');
         if (room) {
           // find user of this socket to set socket
-          const user = room.users.find((u) => u.id === dataToken.userId);
+          const user = room.getUser('id', dataToken.userId);
 
           if (user) {
             // set socket chat for the user
@@ -226,14 +191,7 @@ const socket = function (io) {
             // update room info => send room info (name & users)
             io.to(room.roomId).emit('roomInfo', {
               nameRoom: room.roomId,
-              users: room.users.map((user) => {
-                return {
-                  id: user.id,
-                  name: user.name,
-                  socketId: user.socketId,
-                  host: user.host,
-                };
-              }),
+              users: room.getRoomUsersInfo(),
             });
             // send password of room if user is host
             if (user.host) {
@@ -263,37 +221,24 @@ const socket = function (io) {
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // get room with host
-        const roomDataWithHost = await RoomX.findOne({
+        const room = await RoomX.findOne({
           roomId: dataToken.roomId,
-        }).populate({ path: 'users', match: { host: true } });
-        if (roomDataWithHost) {
-          // get host of the room
-          const host = roomDataWithHost.users[0];
-          if (host) {
-            // get room join with waiting room
-            const roomDataWithWaiting = await RoomX.findOne({
-              roomId: dataToken.roomId,
-            }).populate('waitingRoom');
-
-            // find index of user allow join in the waiting room
-            const index = roomDataWithWaiting.waitingRoom.findIndex(
-              (user) => user.id === userId
-            );
-            if (index !== -1) {
-              // add user._id to the room
-              roomDataWithWaiting.users.push(
-                roomDataWithWaiting.waitingRoom[index]
-              );
-              // remove and get user allow join of waiting room
-              const user = roomDataWithWaiting.waitingRoom.splice(index, 1)[0];
-
+        })
+          .populate('users')
+          .populate('waitingRoom');
+        if (room) {
+          // get user of this socket and check user is host the room
+          const host = room.getUser('id', dataToken.userId);
+          if (host && host.host) {
+            const user = room.allowJoinRoom(userId);
+            if (user) {
               // save room data
-              await roomDataWithWaiting.save();
+              await room.save();
 
               // generate token
               const token = jwt.sign(
                 {
-                  data: { userId: user.id, roomId: roomDataWithWaiting.roomId },
+                  data: { userId: user.id, roomId: room.roomId },
                 },
                 process.env.JWT_SECRET
               );
@@ -306,12 +251,7 @@ const socket = function (io) {
 
             // send to host of this room info waiting room
             io.to(host.socketId).emit('changeWaitingRoom', {
-              waitingRoom: roomDataWithWaiting.waitingRoom.map((user) => {
-                return {
-                  id: user.id,
-                  name: user.name,
-                };
-              }),
+              waitingRoom: room.getWaitingRoom(),
             });
           } else {
             socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
@@ -332,47 +272,34 @@ const socket = function (io) {
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
         // get room join with host
-        const roomDataWithHost = await RoomX.findOne({
+        const room = await RoomX.findOne({
           roomId: dataToken.roomId,
-        }).populate({ path: 'users', match: { host: true } });
+        })
+          .populate('users')
+          .populate('waitingRoom');
 
-        if (roomDataWithHost) {
-          // get host
-          const host = roomDataWithHost.users[0];
-          if (host) {
-            // get room join with waiting room
-            const roomDataWithWaiting = await RoomX.findOne({
-              roomId: dataToken.roomId,
-            }).populate('waitingRoom');
-
-            // find index of user allow join in the waiting room
-            const index = roomDataWithWaiting.waitingRoom.findIndex(
-              (user) => user.id === userId
-            );
-            if (index !== -1) {
-              // remove and get user allow join of waiting room
-              const user = roomDataWithWaiting.waitingRoom.splice(index, 1)[0];
-
+        if (room) {
+          // get user of this socket and check user is host the room
+          const host = room.getUser('id', dataToken.userId);
+          if (host && host.host) {
+            const user = room.notAllowJoinRoom(userId);
+            if (user) {
               // save room data
-              await roomDataWithWaiting.save();
+              await room.save();
 
-              if (user) {
-                // send token to client request join room
-                io.to(user.socketId).emit(
-                  'joinRoomBlocked',
-                  'Yêu cầu tham gia phòng của bạn không được host chấp nhận!'
-                );
-              } else {
-                socket.emit('error', 'Thành viên này đã rời phòng chờ');
-              }
-
-              // send to host of this room info waiting room
-              io.to(host.socketId).emit('changeWaitingRoom', {
-                waitingRoom: roomDataWithWaiting.waitingRoom.map((user) => {
-                  return { id: user.id, name: user.name };
-                }),
-              });
+              // send token to client request join room
+              io.to(user.socketId).emit(
+                'joinRoomBlocked',
+                'Yêu cầu tham gia phòng của bạn không được host chấp nhận!'
+              );
+            } else {
+              socket.emit('error', 'Thành viên này đã rời phòng chờ');
             }
+
+            // send to host of this room info waiting room
+            io.to(host.socketId).emit('changeWaitingRoom', {
+              waitingRoom: room.getWaitingRoom(),
+            });
           } else {
             socket.emit('error', 'Bạn không phải host, bạn không có quyền này');
           }
@@ -438,18 +365,13 @@ const socket = function (io) {
         // find the room join with host of this room
         const room = await RoomX.findOne({
           roomId: dataToken.roomId,
-        }).populate({
-          path: 'users',
-          match: { _id: dataToken.userId, host: true },
-        });
+        }).populate('users');
         if (room) {
-          // find user
-          // const user = roomChat.getUser(dataToken.idUser);
-          const host = room.users[0];
-          if (host) {
-            // check user is host
-            // if (user.host) {
-            // manage room
+          // find user of this socket and check this user is host the room
+          const host = room.getUser(dataToken.userId);
+          if (host && host.host) {
+            // user is host
+            // manager room
             if (value === 'turnoff-chat') {
               // turn off chat and save room
               room.status.allowChat = !status;

@@ -37,28 +37,59 @@ const roomSchema = new mongoose.Schema({
   ],
 });
 
-roomSchema.methods.getHost = async function () {
-  const hostId = this.users.find(async (userId) => {
-    const user = await mongoose.model('User').findById(userId);
-    if (user && user.host) {
-      return true;
-    }
-    return false;
-  });
-
-  return await mongoose.model('User').findById(hostId);
+// get host of the room
+roomSchema.methods.getHost = function () {
+  return this.users.find((user) => user.host);
 };
 
-roomSchema.methods.getUser = async function () {
-  const userId = this.users.find(async (userId) => {
-    const user = await mongoose.model('User').findById(userId);
-    if (user && user.host) {
-      return true;
-    }
-    return false;
-  });
+// gte user of the room by _id or socketID
+roomSchema.methods.getUser = function (key, value) {
+  if (key === 'id') {
+    return this.users.find((user) => user.id === value);
+  } else if (key === 'socketId') {
+    return this.users.find((user) => user.socketId === value);
+  }
+};
 
-  return await mongoose.model('User').findById(hostId);
+// get waiting room data to send to client
+roomSchema.methods.getWaitingRoom = function () {
+  return this.waitingRoom.map((user) => {
+    return {
+      id: user.id,
+      name: user.name,
+    };
+  });
+};
+
+// get users of the room info to send to client
+roomSchema.methods.getRoomUsersInfo = function () {
+  return this.users.map((user) => {
+    return {
+      id: user.id,
+      name: user.name,
+      socketId: user.socketId,
+      host: user.host,
+    };
+  });
+};
+
+// allow user join the room
+roomSchema.methods.allowJoinRoom = function (userId) {
+  const index = this.waitingRoom.findIndex((user) => user.id === userId);
+  if (index !== -1) {
+    const user = this.waitingRoom[index];
+    this.users.push(user);
+    this.waitingRoom.splice(index, 1);
+    return user;
+  }
+};
+
+// not allow user join the room
+roomSchema.methods.notAllowJoinRoom = function (userId) {
+  const index = this.waitingRoom.findIndex((user) => user.id === userId);
+  if (index !== -1) {
+    return this.waitingRoom.splice(index, 1)[0];
+  }
 };
 
 const Room = mongoose.model('Room', roomSchema);
