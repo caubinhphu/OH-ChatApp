@@ -92,6 +92,15 @@ roomSchema.methods.notAllowJoinRoom = function (userId) {
   }
 };
 
+// remove the user in the waiting room by idUser
+roomSchema.methods.removeUserInWaitingRoom = function (userId) {
+  let index = this.waitingRoom.findIndex((user) => user.id === userId);
+
+  if (index !== -1) {
+    return this.waitingRoom.splice(index, 1)[0];
+  }
+};
+
 const Room = mongoose.model('Room', roomSchema);
 
 module.exports = Room;

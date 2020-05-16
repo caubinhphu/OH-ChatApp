@@ -416,13 +416,22 @@ const socket = function (io) {
     });
 
     // receive info leave waiting room form client
-    socket.on('leaveWaitingRoom', ({ typeLeave, roomId, idUser }) => {
-      // find the room
-      const roomChat = roomManagement.getRoom(roomId);
-      if (roomChat) {
+    socket.on('leaveWaitingRoom', async ({ typeLeave, roomId, userId }) => {
+      // get the room
+      const room = await RoomX.findOne({ roomId })
+        .populate('users')
+        .populate('waitingRoom');
+
+      if (room) {
         if (typeLeave === 'self') {
-          const user = roomChat.removeUserInWaitingRoom(idUser);
+          const user = room.removeUserInWaitingRoom(userId);
           if (user) {
+            // save the room
+            await room.save();
+
+            // delete user
+            await UserX.deleteOne({ _id: userId });
+
             // emit notify leave waiting room to client
             socket.emit('leaveWaitingRoomComplete', 'OK');
           } else {
@@ -433,11 +442,11 @@ const socket = function (io) {
           }
         }
         // find host of this room
-        const host = roomChat.getHost();
+        const host = room.getHost();
         if (host) {
           // send to host of this room info waiting room
           io.to(host.socketId).emit('changeWaitingRoom', {
-            waitingRoom: roomChat.waitingRoom,
+            waitingRoom: room.getWaitingRoom(),
           });
         }
       } else {
