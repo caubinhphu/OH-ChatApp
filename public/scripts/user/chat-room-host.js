@@ -19,7 +19,7 @@ socket.on('roomManager', (manager) => {
 // receive message from server when leave all for host
 socket.on('leaveAllCompleteForHost', (msg) => {
   if (msg === 'OK') {
-    location.href = 'http://localhost:3000';
+    location.href = '/';
   } else {
     location.reload();
   }

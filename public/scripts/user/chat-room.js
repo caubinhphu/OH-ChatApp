@@ -98,6 +98,6 @@ function fiveSecond() {
     time--;
   }, 1000);
   setTimeout(() => {
-    location.href = 'http://localhost:3000';
+    location.href = '/';
   }, 5000);
 }

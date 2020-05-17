@@ -110,7 +110,7 @@ socket.on('errorMessage', (msg) => {
 // receive message from server when leave
 socket.on('leaveComplete', (msg) => {
   if (msg === 'OK') {
-    location.href = 'http://localhost:3000';
+    location.href = '/';
   } else {
     location.reload();
   }

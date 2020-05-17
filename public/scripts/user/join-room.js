@@ -22,7 +22,7 @@ joinRoomForm.addEventListener('submit', function (e) {
 
 // receive access token from server when join room successful
 socket.on('joinRoomSuccess', (token) => {
-  location.href = `http://localhost:3000/chat?token=${token}`;
+  location.href = `/chat?token=${token}`;
 });
 
 // receive info when join room is blocked
@@ -37,7 +37,7 @@ socket.on('joinRoomBlocked', (msg) => {
     time--;
   }, 1000);
   setTimeout(() => {
-    location.href = 'http://localhost:3000';
+    location.href = '/';
   }, 5000);
 });
 
