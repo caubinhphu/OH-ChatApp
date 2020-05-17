@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
+
 const formatMessage = require('../utils/message');
+
 // models
 const Room = require('../models/Room.model');
 const User = require('../models/User.model');
@@ -44,6 +46,7 @@ module.exports.onCreateRoom = async function ({ roomId, password, hostname }) {
   }
 };
 
+// receive event join to the room from client
 module.exports.onJoinRoom = async function (
   io,
   { roomId, passRoom, username }
@@ -126,6 +129,7 @@ module.exports.onJoinRoom = async function (
   }
 };
 
+// receive event joinChat from client
 module.exports.onJoinChat = async function (io, { token }) {
   // verify token
   try {
@@ -192,6 +196,7 @@ module.exports.onJoinChat = async function (io, { token }) {
   }
 };
 
+// receive message from client
 module.exports.onMessageChat = async function ({ token, message }) {
   try {
     // verify token
@@ -232,6 +237,7 @@ module.exports.onMessageChat = async function ({ token, message }) {
   }
 };
 
+// receive event allow join room from server
 module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
   try {
     // verify token
@@ -284,6 +290,7 @@ module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
   }
 };
 
+// receive event not allow join room from host client
 module.exports.onNotAllowJoinRoom = async function (io, { userId, token }) {
   try {
     // verify token
@@ -333,6 +340,7 @@ module.exports.onNotAllowJoinRoom = async function (io, { userId, token }) {
   }
 };
 
+// receive info management of host room form client
 module.exports.onChangeManagement = async function ({ token, value, status }) {
   try {
     // verify token
@@ -391,6 +399,7 @@ module.exports.onChangeManagement = async function ({ token, value, status }) {
   }
 };
 
+// receive info leave waiting room form client
 module.exports.onLeaveWaitingRoom = async function (
   io,
   { typeLeave, roomId, userId }
@@ -429,11 +438,13 @@ module.exports.onLeaveWaitingRoom = async function (
   }
 };
 
+// receive event require disconnect from client
 module.exports.onDisconnectRequest = function (reason) {
   // emit disconnect
   this.emit('disconnect', reason);
 };
 
+// disconnect
 module.exports.onDisconnect = async function (io, reason) {
   // find user by socketId to find the room
   const user = await User.findOne({ socketId: this.id });
