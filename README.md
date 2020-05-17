@@ -11,6 +11,7 @@
 
 ### Quá trình phát triển
 #### Nền tảng web
+[Deploy to Heroku](https://oh-chatapp.herokuapp.com/)
 <details>
   <summary>Version 1.0.0 (30/4/2020)</summary>
   Chức năng thêm:
