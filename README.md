@@ -43,7 +43,7 @@
     - Buộc rời phòng cho toàn thành viên trong phòng
 </details>
 <details>
-  <summary>Version 1.2.1 (16/5/2020)</summary>
+  <summary>Version 1.2.1 (17/5/2020)</summary>
   Chức năng thêm:
 
   - Sử dụng MongoDB
