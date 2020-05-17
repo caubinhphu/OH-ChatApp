@@ -148,24 +148,25 @@ const socket = function (io) {
         // verify token
         const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
-        // join socket (user) to the room
-        socket.join(dataToken.roomId);
-
-        // emit welcome room
-        socket.emit(
-          'message',
-          formatMessage(botName, 'Chào mừng đến với OH chat')
-        );
-
         // find the room join with users in the this room
         const room = await Room.findOne({
           roomId: dataToken.roomId,
         }).populate('users');
+
         if (room) {
           // find user of this socket to set socket
           const user = room.getUser('id', dataToken.userId);
 
           if (user) {
+            // join socket (user) to the room
+            socket.join(dataToken.roomId);
+
+            // emit welcome room
+            socket.emit(
+              'message',
+              formatMessage(botName, 'Chào mừng đến với OH chat')
+            );
+
             // set socket chat for the user
             user.socketId = socket.id;
             await user.save();
@@ -587,6 +588,45 @@ const socket = function (io) {
               }
             } catch (err) {
               socket.emit('error', 'Access token không hợp lệ!');
+            }
+          } else {
+            // close page
+            // remove user from this room
+            room.removeUserById(user.id);
+            await room.save();
+            await User.deleteOne({ _id: user._id });
+
+            // send message notify for remaining users in the room
+            socket
+              .to(room.roomId)
+              .emit(
+                'message',
+                formatMessage(botName, `${user.name} đã rời phòng`)
+              );
+
+            // if not exists user in the room => delete this room
+            if (room.users.length <= 0) {
+              // get socketId of users in waiting room to notify for them
+              const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+
+              // delete users in waiting room
+              await User.deleteMany({ _id: { $in: room.waitingRoom } });
+              // delete the room
+              await Room.deleteOne({ roomId: room.roomId });
+
+              // notify end room for user in waiting room
+              socketIdsWaitingRoom.forEach((socketId) => {
+                io.to(socketId).emit(
+                  'joinRoomBlocked',
+                  'Phòng bạn yêu cầu đã kết thúc chat!'
+                );
+              });
+            } else {
+              // update room info => send room info (name & users)
+              socket.to(room.roomId).emit('roomInfo', {
+                nameRoom: room.roomId,
+                users: room.getRoomUsersInfo(),
+              });
             }
           }
         } else {
