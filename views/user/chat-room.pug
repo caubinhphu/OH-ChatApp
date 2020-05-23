@@ -42,10 +42,17 @@ block contentMain
             .text-right.mt-4
               button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
               button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+
+  #video-chat
+    button#btn-video-connect(data-state="off") Bật webcam
+    button#btn-audio-connect(data-state="off") Bật microphone
+    #video-area
               
 append scripts
   script(src="/socket.io/socket.io.js")
+  script(src="/scripts/simple-peer.min.js")
   script(src="/scripts/moment.min.js")
   script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/common-chat-room.js")
   script(src="/scripts/user/chat-room.js")
+  script(src="/scripts/user/chat-room-video.js")

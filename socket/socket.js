@@ -47,6 +47,22 @@ const socket = function (io) {
       controller.onLeaveWaitingRoom.bind(this, io, data)();
     });
 
+    // receive offer signal of stream
+    socket.on('offerStream', (data) => {
+      io.to(data.receiveId).emit('offerSignal', {
+        callerId: data.callerId,
+        signal: data.signal,
+      });
+    });
+
+    // receive offer signal of stream
+    socket.on('answerStream', (data) => {
+      io.to(data.callerId).emit('answerSignal', {
+        signal: data.signal,
+        answerId: socket.id,
+      });
+    });
+
     // receive event require disconnect from client
     socket.on('disconnectRequest', controller.onDisconnectRequest);
 

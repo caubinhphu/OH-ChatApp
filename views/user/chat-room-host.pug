@@ -61,7 +61,12 @@ block contentMain
         .custom-control.custom-checkbox.my-1.ml-3
           input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
           label.custom-control-label(for="management-turnoff-chat") Tắt chat
-        
+  
+  #video-chat
+    button#btn-video-connect(data-state="off") Bật webcam
+    button#btn-audio-connect(data-state="off") Bật microphone
+    #video-area
+
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='leaveRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
       .modal-content
@@ -101,7 +106,9 @@ block contentMain
   
 append scripts
   script(src="/socket.io/socket.io.js")
+  script(src="/scripts/simple-peer.min.js")
   script(src="/scripts/moment.min.js")
   script(src="/scripts/user/output-error.js")
   script(src="/scripts/user/common-chat-room.js")
   script(src="/scripts/user/chat-room-host.js")
+  script(src="/scripts/user/chat-room-host-video.js")

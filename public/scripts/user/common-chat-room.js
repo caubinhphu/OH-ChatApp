@@ -25,9 +25,6 @@ const escapeHtml = function (html) {
 // get token from query string
 const qs = new URLSearchParams(location.search);
 
-// emit join chat
-socket.emit('joinChat', { token: qs.get('token') });
-
 // receive  message from server
 socket.on('message', (msgObj) => {
   // output message
@@ -141,3 +138,118 @@ document
   .addEventListener('click', function () {
     socket.emit('disconnectRequest', { typeLeave: 'self' });
   });
+
+window.onload = function () {
+  // emit join chat
+  socket.emit('joinChat', { token: qs.get('token') });
+};
+
+// video / voice chat
+const peers = [];
+const btnVideo = document.getElementById('btn-video-connect');
+const cbAudio = document.getElementById('btn-audio-connect');
+
+navigator.mediaDevices.getUserMedia =
+  navigator.mediaDevices.getUserMedia ||
+  navigator.mediaDevices.webkitGetUserMedia ||
+  navigator.mediaDevices.mozGetUserMedia ||
+  navigator.mediaDevices.msGetUserMedia;
+
+// if (navigator.mediaDevices.getUserMedia) {
+//   navigator.mediaDevices
+//     .getUserMedia({ video: false, audio: true })
+//     .then((stream) => {
+//       stream.getVideoTracks()[0].enabled = false;
+//       window.localAudioStream = stream;
+//     })
+//     .catch((err) => console.error(err));
+// }
+
+btnVideo.addEventListener('click', async function () {
+  if (this.dataset.state === 'off') {
+    this.dataset.state = 'on';
+    this.innerHTML = 'Tat webcam';
+
+    if (navigator.mediaDevices.getUserMedia) {
+      window.localVideoStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+    }
+
+    outputMyVideo();
+  } else if (this.dataset.state === 'on') {
+    this.dataset.state = 'off';
+    this.innerHTML = 'Bat webcam';
+    window.localVideoStream.getVideoTracks()[0].stop();
+    window.localVideoStream = null;
+
+    outputStopVideo();
+  }
+});
+
+// each socketId is a answer peer
+socket.on('roomInfoForStream', (roomInfo) => {
+  roomInfo.users.forEach((socketId) => {
+    const peer = createPeer(socketId, socket.id);
+    peers.push({ offerId: socket.id, answerId: socketId, peer });
+  });
+});
+
+socket.on('offerSignal', ({ signal, callerId }) => {
+  const peer = addPeer(signal, callerId);
+  peers.push({ offerId: callerId, answerId: socket.id, peer });
+});
+
+function createPeer(socketId, callerId) {
+  const peer = new SimplePeer({
+    initiator: true,
+    trickle: false,
+  });
+  peer.on('connect', () => console.log('connection'));
+  peer.on('data', (data) => console.log(data.toString()));
+  peer.on('signal', (signal) => {
+    socket.emit('offerStream', { receiveId: socketId, callerId, signal });
+  });
+
+  return peer;
+}
+
+function addPeer(signal, callerId) {
+  const peer = new SimplePeer({
+    initiator: false,
+    trickle: false,
+  });
+  peer.on('connect', () => console.log('connect other'));
+  peer.on('signal', (signal) => {
+    socket.emit('answerStream', { signal, callerId });
+  });
+  peer.on('data', (data) => console.log(data.toString()));
+  peer.signal(signal);
+
+  return peer;
+}
+
+socket.on('answerSignal', ({ answerId, signal }) => {
+  const itemPeer = peers.find((p) => p.answerId === answerId);
+  if (itemPeer) {
+    itemPeer.peer.signal(signal);
+  }
+});
+
+function outputMyVideo() {
+  const video = document.createElement('video');
+  video.setAttribute('width', '400px');
+  video.setAttribute('height', '400px');
+  if ('srcObject' in video) {
+    video.srcObject = window.localVideoStream;
+  } else {
+    video.src = window.URL.createObjectURL(window.localVideoStream);
+  }
+  video.play();
+  document.getElementById('video-area').appendChild(video);
+}
+
+function outputStopVideo() {
+  document.getElementById('video-area').innerHTML = '';
+}
