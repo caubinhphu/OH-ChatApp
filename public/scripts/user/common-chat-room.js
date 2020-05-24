@@ -139,15 +139,12 @@ document
     socket.emit('disconnectRequest', { typeLeave: 'self' });
   });
 
-window.onload = function () {
-  // emit join chat
-  socket.emit('joinChat', { token: qs.get('token') });
-};
+socket.emit('joinChat', { token: qs.get('token') });
 
 // video / voice chat
 const peers = [];
 const btnVideo = document.getElementById('btn-video-connect');
-const cbAudio = document.getElementById('btn-audio-connect');
+const btnAudio = document.getElementById('btn-audio-connect');
 
 navigator.mediaDevices.getUserMedia =
   navigator.mediaDevices.getUserMedia ||
@@ -177,10 +174,18 @@ btnVideo.addEventListener('click', async function () {
       });
     }
 
-    outputMyVideo();
+    peers.forEach((peer) => {
+      peer.peer.addStream(window.localVideoStream);
+    });
+
+    // output your video
+    outputVideo();
   } else if (this.dataset.state === 'on') {
     this.dataset.state = 'off';
     this.innerHTML = 'Bat webcam';
+    peers.forEach((peer) => {
+      peer.peer.removeStream(window.localVideoStream);
+    });
     window.localVideoStream.getVideoTracks()[0].stop();
     window.localVideoStream = null;
 
@@ -196,11 +201,6 @@ socket.on('roomInfoForStream', (roomInfo) => {
   });
 });
 
-socket.on('offerSignal', ({ signal, callerId }) => {
-  const peer = addPeer(signal, callerId);
-  peers.push({ offerId: callerId, answerId: socket.id, peer });
-});
-
 function createPeer(socketId, callerId) {
   const peer = new SimplePeer({
     initiator: true,
@@ -208,7 +208,12 @@ function createPeer(socketId, callerId) {
   });
   peer.on('connect', () => console.log('connection'));
   peer.on('data', (data) => console.log(data.toString()));
+  peer.on('stream', (stream) => {
+    console.log(stream);
+    outputVideo(stream);
+  });
   peer.on('signal', (signal) => {
+    console.log('signal');
     socket.emit('offerStream', { receiveId: socketId, callerId, signal });
   });
 
@@ -220,15 +225,30 @@ function addPeer(signal, callerId) {
     initiator: false,
     trickle: false,
   });
+  peer.signal(signal);
   peer.on('connect', () => console.log('connect other'));
   peer.on('signal', (signal) => {
+    console.log('other signal');
     socket.emit('answerStream', { signal, callerId });
   });
   peer.on('data', (data) => console.log(data.toString()));
-  peer.signal(signal);
+  peer.on('stream', (stream) => {
+    console.log(stream);
+    outputVideo(stream);
+  });
 
   return peer;
 }
+
+socket.on('offerSignal', ({ signal, callerId }) => {
+  const itemPeer = peers.find((peer) => peer.offerId === callerId);
+  if (itemPeer) {
+    itemPeer.peer.signal(signal);
+  } else {
+    const peer = addPeer(signal, callerId);
+    peers.push({ offerId: callerId, answerId: socket.id, peer });
+  }
+});
 
 socket.on('answerSignal', ({ answerId, signal }) => {
   const itemPeer = peers.find((p) => p.answerId === answerId);
@@ -237,14 +257,15 @@ socket.on('answerSignal', ({ answerId, signal }) => {
   }
 });
 
-function outputMyVideo() {
+function outputVideo(stream) {
   const video = document.createElement('video');
   video.setAttribute('width', '400px');
   video.setAttribute('height', '400px');
+  // video.dataset.id = stream ? stream : "my";
   if ('srcObject' in video) {
-    video.srcObject = window.localVideoStream;
+    video.srcObject = stream || window.localVideoStream;
   } else {
-    video.src = window.URL.createObjectURL(window.localVideoStream);
+    video.src = window.URL.createObjectURL(stream || window.localVideoStream);
   }
   video.play();
   document.getElementById('video-area').appendChild(video);

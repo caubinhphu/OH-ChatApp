@@ -49,6 +49,8 @@ const socket = function (io) {
 
     // receive offer signal of stream
     socket.on('offerStream', (data) => {
+      console.log(data.receiveId || 'null');
+      console.log(data.callerId || 'null');
       io.to(data.receiveId).emit('offerSignal', {
         callerId: data.callerId,
         signal: data.signal,
