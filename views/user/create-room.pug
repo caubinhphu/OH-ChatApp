@@ -4,29 +4,30 @@ append styles
   link(rel="stylesheet", href="/styles/user/x-room.css")
 
 block contentMain
-  #message-area.mb-2.mx-auto
-  #form-x.mx-auto
-    #chat-company
-      img.mr-2(src="/images/logo.png", alt="OH", width="30px")
-      span.text-secondary OH Chat
-    form.mt-2(name="createRoomForm")
-      input(type="hidden", name="roomId", value=idRandom)
-      input(type="hidden", name="passRoom", value=passwordRandom)
+  #message-area.mx-auto
+  .content-area.d-flex.justify-content-center.align-items-center
+    #form-x
+      #chat-company
+        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+        span.text-secondary OH Chat
+      form.mt-2(name="createRoomForm")
+        input(type="hidden", name="roomId", value=idRandom)
+        input(type="hidden", name="passRoom", value=passwordRandom)
 
-      label ID phòng 
-      input#name.form-control(type="text", disabled=true, value=idRandom)
-      label.mt-2 Mật khẩu phòng
-      input#name.form-control(type="text", disabled=true, value=passwordRandom)
-      label(for="hostname")
-        span Tên hiển thị
-        span.text-danger &nbsp;*
-      input#hostname.form-control(type="text", name="hostname", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự")
-      div
-        em#err-join-name.text-danger
+        label ID phòng 
+        input#name.form-control(type="text", disabled=true, value=idRandom)
+        label.mt-2 Mật khẩu phòng
+        input#name.form-control(type="text", disabled=true, value=passwordRandom)
+        label(for="hostname")
+          span Tên hiển thị
+          span.text-danger &nbsp;*
+        input#hostname.form-control(type="text", name="hostname", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự")
+        div
+          em#err-join-name.text-danger
 
-      .text-center.mt-2
-        button.btn.btn-info.mr-4 Tạo phòng
-        a.btn.btn-light(role="button", href="/") Quay lại
+        .text-center.mt-2
+          button.btn.btn-info.mr-4 Tạo phòng
+          a.btn.btn-light(role="button", href="/") Quay lại
 
 append scripts
   script(src="/socket.io/socket.io.js")
