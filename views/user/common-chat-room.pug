@@ -1,0 +1,78 @@
+extends ./layout
+
+append styles
+  link(rel="stylesheet", href="/styles/user/common-chat-room.css")
+  block chatStyle
+
+block contentMain
+  #meeting-area
+    #main-meeting-area.bg-secondary.p-1.d-flex
+      #main-meeting.p-2
+
+      #meeting-control
+        .d-flex.justify-content-around.h-100
+          .meeting-control-item
+            #btn-audio-connect(data-state="off")
+              i.fas.fa-microphone
+          .meeting-control-item
+            #btn-video-connect(data-state="off")
+              i.fas.fa-video
+          #users-control.meeting-control-item
+            i.fas.fa-users
+            sup#amount-participants (2)
+          #chat-control.meeting-control-item
+            i.fas.fa-comment-alt
+          block subMeetingControl
+          #info-control.meeting-control-item
+            div.text-info
+              i.fas.fa-info
+          .meeting-control-item
+            div.text-danger(data-toggle="modal", data-target="#confirm-leave-room-modal")
+              i.fas.fa-sign-out-alt
+      #chat-area.control-area
+        .control-area-main.d-flex.flex-column
+          .control-area-top.p-1.d-flex.justify-content-between
+            button#arrow-smaller-chat.btn.btn-default
+              i.fas.fa-arrow-right
+            .align-self-center.control-title Chat
+            button#hide-time-btn.btn.btn-light(data-status="on")
+              i.far.fa-clock
+          #chat-middle.control-area-middle.flex-fill
+          .control-area-bottom.p-1
+            form.d-flex(name="sendMsgForm")
+              block subFormChat
+            
+      #users-area.control-area(style="display: block")
+        .control-area-main.d-flex.flex-column
+          .control-area-top.p-1.d-flex.justify-content-between
+            button#arrow-smaller-users.btn.btn-default
+              i.fas.fa-arrow-right
+            .align-self-center.control-title Thành viên
+            div
+          block waitingRoomInfo
+          #room-users.control-area-middle.flex-fill
+
+      #info-area.control-area
+        .control-area-main.d-flex.flex-column
+          .control-area-top.p-1.d-flex.justify-content-between
+            button#arrow-smaller-info.btn.btn-default
+              i.fas.fa-arrow-right
+            .align-self-center.control-title Thông tin phòng
+            div
+          .control-area-middle.flex-fill
+            div
+              span.text-secondary Id phòng: 
+              span#room-info-name-room
+            block passwordRoom
+
+      block subControlArea
+  
+  block subArea
+  
+append scripts
+  script(src="/socket.io/socket.io.js")
+  script(src="/scripts/simple-peer.min.js")
+  script(src="/scripts/moment.min.js")
+  script(src="/scripts/user/output-error.js")
+  script(src="/scripts/user/common-chat-room.js")
+  block chatScript

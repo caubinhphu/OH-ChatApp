@@ -6,9 +6,7 @@ const kickUserBtn = document.getElementById('confirm-kick-user-btn');
 
 // receive password of room from server
 socket.on('sendPasswordRoom', (password) => {
-  document.querySelector(
-    '#room-info-password-room'
-  ).innerHTML = `(${password})`;
+  document.querySelector('#room-info-password-room').innerHTML = `${password}`;
 });
 
 // receive room manager info from server
@@ -181,3 +179,41 @@ function outputRoomManager(manager) {
   };
   document.getElementById(ids[manager.state]).checked = true;
 }
+
+// show/hide control areas continue
+const managerControl = document.getElementById('manager-control');
+const managerArea = document.getElementById('manager-area');
+
+infoControl.addEventListener('click', function () {
+  usersArea.style.display = 'none';
+  managerArea.style.display = 'none';
+  chatArea.style.display = 'none';
+  infoArea.style.display = 'block';
+});
+
+chatControl.addEventListener('click', function () {
+  usersArea.style.display = 'none';
+  managerArea.style.display = 'none';
+  infoArea.style.display = 'none';
+  chatArea.style.display = 'block';
+});
+
+usersControl.addEventListener('click', function () {
+  managerArea.style.display = 'none';
+  chatArea.style.display = 'none';
+  infoArea.style.display = 'none';
+  usersArea.style.display = 'block';
+});
+
+managerControl.addEventListener('click', function () {
+  usersArea.style.display = 'none';
+  chatArea.style.display = 'none';
+  infoArea.style.display = 'none';
+  managerArea.style.display = 'block';
+});
+
+document
+  .querySelector('#arrow-smaller-manager')
+  .addEventListener('click', () => {
+    managerArea.style.display = 'none';
+  });

@@ -35,7 +35,7 @@ function outputChatInput(allowed) {
   if (allowed) {
     // allow chat
     msgForm.innerHTML = `<input id="msg" class="form-control" type="text" name="message", placeholder="Nhập tin nhắn", autocomplete="off" />
-      <button class="btn btn-default"><i class="fas fa-paper-plane"/></button>`;
+      <button class="btn btn-default text-secondary"><i class="fas fa-paper-plane"/></button>`;
   } else {
     // not allow chat
     msgForm.innerHTML = `<div class="chat-disabled-text">Chat bị cấm bởi host</div>`;
@@ -76,7 +76,7 @@ function outputRoomInfo(roomInfo, socketId) {
 // output leave room all modal
 function outputLeaveRoom(msg) {
   document.querySelector(
-    '#chat-main-area'
+    '#meeting-area'
   ).innerHTML = `<div id="leave-room-modal">
     <div class="d-flex justify-content-center align-items-center" id="leave-modal">
         <div id="leave-modal-main"><span>${msg}</span>
@@ -101,3 +101,22 @@ function fiveSecond() {
     location.href = '/';
   }, 5000);
 }
+
+// show/hide control areas continue
+chatControl.addEventListener('click', function () {
+  usersArea.style.display = 'none';
+  infoArea.style.display = 'none';
+  chatArea.style.display = 'block';
+});
+
+usersControl.addEventListener('click', function () {
+  infoArea.style.display = 'none';
+  chatArea.style.display = 'none';
+  usersArea.style.display = 'block';
+});
+
+infoControl.addEventListener('click', function () {
+  usersArea.style.display = 'none';
+  chatArea.style.display = 'none';
+  infoArea.style.display = 'block';
+});

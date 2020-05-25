@@ -1,52 +1,32 @@
-extends ./layout
+extends ./common-chat-room
 
-append styles
-  link(rel="stylesheet", href="/styles/user/chat-room.css")
+block chatStyle
   link(rel="stylesheet", href="/styles/user/chat-room-host.css")
 
-block contentMain
-  #message-area.mb-2.mx-auto
-  .d-flex.justify-content-center
-    #room-info.d-flex.flex-column
-      #room-info-title
-        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
-        span.text-secondary OH Chat
-      #room-info-room.p-2
+block subMeetingControl
+  #manager-control.meeting-control-item
+    div
+      i.fas.fa-user-shield
+
+block waitingRoomInfo
+  #waiting-room(style="display: none")
+    #waiting-room-info.p-2.flex-fill.d-flex.flex-column
+      .mb-2.text-secondary
+        i.fas.fa-user-clock
+        div.d-inline-block
+          span &nbsp; Phòng chờ
+          span#amount-waiting.ml-1
+      #waiting-room-users.flex-fill
+
+block subControlArea
+  #manager-area.control-area
+    .control-area-main.d-flex.flex-column
+      .control-area-top.p-1.d-flex.justify-content-between
+        button#arrow-smaller-manager.btn.btn-default
+          i.fas.fa-arrow-right
+        .align-self-center.control-title Tùy chỉnh
         div
-          i.fas.fa-comments
-          span &nbsp; Phòng
-        #room-name.p-2
-          span#room-info-name-room
-          span#room-info-password-room.ml-2
-      #waiting-room(style="display: none")
-        #waiting-room-info.p-2.flex-fill.d-flex.flex-column
-          .mb-2
-            i.fas.fa-user-clock
-            div.d-inline-block
-              span &nbsp; Phòng chờ
-              span#amount-waiting.ml-1
-          #waiting-room-users.flex-fill
-      #room-info-participant.p-2.flex-fill.d-flex.flex-column
-        .mb-2
-          i.fas.fa-users
-          div.d-inline-block
-            span &nbsp; Thành viên
-            span#amount-participants.ml-1
-        #room-users.flex-fill
-    #chat-main.d-flex.flex-column
-      #chat-main-top.p-3.d-flex.justify-content-between
-        button#hide-time-btn.btn.btn-light(data-status="on") Ẩn thời gian
-        button.btn.btn-link.text-link(type="button", data-toggle="modal", data-target="#confirm-leave-room-modal") Rời phòng
-      #chat-main-middle.flex-fill
-      #chat-main-bottom.p-3
-        form.d-flex(name="sendMsgForm")
-          input#mgs.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
-          button.btn.btn-default
-            i.fas.fa-paper-plane
-    #room-management.d-flex.flex-column
-      #room-management-title
-        span.text-secondary Quản lý phòng
-      #management-area.p-2
+      .control-area-middle.flex-fill
         .management-title Phòng
         .custom-control.custom-radio.my-1.ml-3
           input#management-open-room.custom-control-input(type="radio", name="management", value="open-room")
@@ -61,12 +41,8 @@ block contentMain
         .custom-control.custom-checkbox.my-1.ml-3
           input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
           label.custom-control-label(for="management-turnoff-chat") Tắt chat
-  
-  #video-chat
-    button#btn-video-connect(data-state="off") Bật webcam
-    button#btn-audio-connect(data-state="off") Bật microphone
-    #video-area
 
+block subArea
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='leaveRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
       .modal-content
@@ -103,12 +79,61 @@ block contentMain
           .text-right.mt-4
             button#confirm-kick-user-btn.btn.btn-danger(type='button', data-dismiss='modal') OK
             button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+
+block subFormChat
+  input#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+  button.btn.btn-default.text-secondary
+    i.fas.fa-paper-plane
+
+block passwordRoom
+  span.text-secondary Mật khẩu: 
+  span#room-info-password-room
+
+  //- #message-area.mb-2.mx-auto
+  //- .d-flex.justify-content-center
+  //-   #room-info.d-flex.flex-column
+  //-     #room-info-title
+  //-       img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+  //-       span.text-secondary OH Chat
+  //-     #room-info-room.p-2
+  //-       div
+  //-         i.fas.fa-comments
+  //-         span &nbsp; Phòng
+  //-       #room-name.p-2
+  //-         span#room-info-name-room
+  //-         span#room-info-password-room.ml-2
+  //-     #waiting-room(style="display: none")
+  //-       #waiting-room-info.p-2.flex-fill.d-flex.flex-column
+  //-         .mb-2
+  //-           i.fas.fa-user-clock
+  //-           div.d-inline-block
+  //-             span &nbsp; Phòng chờ
+  //-             span#amount-waiting.ml-1
+  //-         #waiting-room-users.flex-fill
+  //-     #room-info-participant.p-2.flex-fill.d-flex.flex-column
+  //-       .mb-2
+  //-         i.fas.fa-users
+  //-         div.d-inline-block
+  //-           span &nbsp; Thành viên
+  //-           span#amount-participants.ml-1
+  //-       #room-users.flex-fill
+  //-   #chat-main.d-flex.flex-column
+  //-     #chat-main-top.p-3.d-flex.justify-content-between
+  //-       button#hide-time-btn.btn.btn-light(data-status="on") Ẩn thời gian
+  //-       button.btn.btn-link.text-link(type="button", data-toggle="modal", data-target="#confirm-leave-room-modal") Rời phòng
+  //-     #chat-main-middle.flex-fill
+  //-     #chat-main-bottom.p-3
+  //-       form.d-flex(name="sendMsgForm")
+  //-         input#mgs.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+  //-         button.btn.btn-default
+  //-           i.fas.fa-paper-plane
+
   
-append scripts
-  script(src="/socket.io/socket.io.js")
-  script(src="/scripts/simple-peer.min.js")
-  script(src="/scripts/moment.min.js")
-  script(src="/scripts/user/output-error.js")
-  script(src="/scripts/user/common-chat-room.js")
+  //- #video-chat
+  //-   button#btn-video-connect(data-state="off") Bật webcam
+  //-   button#btn-audio-connect(data-state="off") Bật microphone
+  //-   #video-area
+  
+block chatScript
   script(src="/scripts/user/chat-room-host.js")
   script(src="/scripts/user/chat-room-host-video.js")
