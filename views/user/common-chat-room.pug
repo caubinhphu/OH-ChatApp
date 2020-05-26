@@ -7,28 +7,24 @@ append styles
 block contentMain
   #meeting-area
     #main-meeting-area.bg-secondary.p-1.d-flex
-      #main-meeting.p-2
-
+      #main-meeting.p-1
+        #meeting-show.d-flex.flex-wrap.justify-content-center.align-items-center
       #meeting-control
         .d-flex.justify-content-around.h-100
-          .meeting-control-item
-            #btn-audio-connect(data-state="off")
-              i.fas.fa-microphone
-          .meeting-control-item
-            #btn-video-connect(data-state="off")
-              i.fas.fa-video
+          #btn-audio-connect.meeting-control-item(data-state="off")
+            i.fas.fa-microphone-slash.text-danger
+          #btn-video-connect.meeting-control-item(data-state="off")
+            i.fas.fa-video-slash.text-danger
           #users-control.meeting-control-item
             i.fas.fa-users
-            sup#amount-participants (2)
+            sup#amount-participants
           #chat-control.meeting-control-item
             i.fas.fa-comment-alt
           block subMeetingControl
-          #info-control.meeting-control-item
-            div.text-info
-              i.fas.fa-info
-          .meeting-control-item
-            div.text-danger(data-toggle="modal", data-target="#confirm-leave-room-modal")
-              i.fas.fa-sign-out-alt
+          #info-control.meeting-control-item.text-info
+            i.fas.fa-info
+          .meeting-control-item.text-danger(data-toggle="modal", data-target="#confirm-leave-room-modal")
+            i.fas.fa-sign-out-alt
       #chat-area.control-area
         .control-area-main.d-flex.flex-column
           .control-area-top.p-1.d-flex.justify-content-between
@@ -75,4 +71,5 @@ append scripts
   script(src="/scripts/moment.min.js")
   script(src="/scripts/user/output-message.js")
   script(src="/scripts/user/common-chat-room.js")
+  script(src="/scripts/user/common-chat-room-video.js")
   block chatScript

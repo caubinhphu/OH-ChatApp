@@ -7,6 +7,8 @@
   - [MomentJs](https://momentjs.com/)
   - [JWT](https://jwt.io/)
   - [MongooseJs](https://mongoosejs.com/)
+  - [NotifyJs](https://notifyjs.jpillora.com/)
+  - [SimplePeer](https://github.com/feross/simple-peer)
 ### Tác giả: NAH - Nguyễn Anh Hải
 
 ### Quá trình phát triển
