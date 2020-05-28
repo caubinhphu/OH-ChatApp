@@ -12,6 +12,66 @@ navigator.mediaDevices.getUserMedia =
   navigator.mediaDevices.mozGetUserMedia ||
   navigator.mediaDevices.msGetUserMedia;
 
+// when user join the room -> create a list peer to connect to the rest user in the room
+// receive room info (exclude self) to set
+// each socketId is a answer peer (each rest user)
+socket.on('roomInfoForStream', (roomInfo) => {
+  outputShowMeeting();
+  roomInfo.users.forEach((socketId) => {
+    outputShowMeeting(socketId);
+
+    // create a new peer
+    const peer = createPeer(socketId, socket.id);
+
+    // push to the peers
+    peers.push({ offerId: socket.id, answerId: socketId, peer });
+  });
+});
+
+// receive offer signal of caller (new user join the room)
+socket.on('offerSignal', ({ signal, callerId }) => {
+  // parse signal
+  signal = JSON.parse(signal);
+
+  // find peer is exists
+  // because when addStream to the peer already exist -> signal event of this peer is still called
+  const itemPeer = peers.find((peer) => peer.offerId === callerId);
+
+  if (itemPeer) {
+    // peer already exists
+    // set new offer signal in this peer
+    itemPeer.peer.signal(signal);
+  } else {
+    // peer not exists (new user join the room)
+    const peer = addPeer(signal, callerId);
+
+    // if this user (rest user) is turning on video -> set stream for peer
+    if (window.localVideoStream) {
+      peer.addStream(window.localVideoStream);
+    }
+
+    // push to the peers
+    peers.push({ offerId: callerId, answerId: socket.id, peer });
+  }
+});
+
+// receive answer signal from rest user
+socket.on('answerSignal', ({ answerId, signal }) => {
+  // parse signal
+  signal = JSON.parse(signal);
+
+  // find peer respectively
+  const itemPeer = peers.find((p) => p.answerId === answerId);
+
+  if (itemPeer) {
+    // set answer signal for the peer
+    itemPeer.peer.signal(signal);
+  }
+});
+
+// receive signal stop video from a client in the room
+socket.on('stopVideo', outputStopVideo);
+
 // if (navigator.mediaDevices.getUserMedia) {
 //   navigator.mediaDevices
 //     .getUserMedia({ video: false, audio: true })
@@ -68,22 +128,6 @@ btnVideo.addEventListener('click', async function () {
   }
 });
 
-// when user join the room -> create a list peer to connect to the rest user in the room
-// receive room info (exclude self) to set
-// each socketId is a answer peer (each rest user)
-socket.on('roomInfoForStream', (roomInfo) => {
-  outputShowMeeting();
-  roomInfo.users.forEach((socketId) => {
-    outputShowMeeting(socketId);
-
-    // create a new peer
-    const peer = createPeer(socketId, socket.id);
-
-    // push to the peers
-    peers.push({ offerId: socket.id, answerId: socketId, peer });
-  });
-});
-
 // create area meeting item
 function outputShowMeeting(id) {
   const div = document.createElement('div');
@@ -112,7 +156,11 @@ function createPeer(socketId, callerId) {
   });
 
   peer.on('signal', (signal) => {
-    socket.emit('offerStream', { receiveId: socketId, callerId, signal });
+    socket.emit('offerStream', {
+      receiveId: socketId,
+      callerId,
+      signal: JSON.stringify(signal),
+    });
   });
 
   return peer;
@@ -134,7 +182,7 @@ function addPeer(signal, callerId) {
   peer.on('connect', () => console.log('connect other'));
 
   peer.on('signal', (signal) => {
-    socket.emit('answerStream', { signal, callerId });
+    socket.emit('answerStream', { signal: JSON.stringify(signal), callerId });
   });
 
   // peer.on('data', (data) => console.log(data.toString()));
@@ -146,60 +194,8 @@ function addPeer(signal, callerId) {
   return peer;
 }
 
-// receive offer signal of caller (new user join the room)
-socket.on('offerSignal', ({ signal, callerId }) => {
-  // find peer is exists
-  // because when addStream to the peer already exist -> signal event of this peer is still called
-  const itemPeer = peers.find((peer) => peer.offerId === callerId);
-
-  if (itemPeer) {
-    // peer already exists
-    // set new offer signal in this peer
-    itemPeer.peer.signal(signal);
-  } else {
-    // peer not exists (new user join the room)
-    const peer = addPeer(signal, callerId);
-
-    // if this user (rest user) is turning on video -> set stream for peer
-    if (window.localVideoStream) {
-      peer.addStream(window.localVideoStream);
-    }
-
-    // push to the peers
-    peers.push({ offerId: callerId, answerId: socket.id, peer });
-  }
-});
-
-// receive answer signal from rest user
-socket.on('answerSignal', ({ answerId, signal }) => {
-  // find peer respectively
-  const itemPeer = peers.find((p) => p.answerId === answerId);
-
-  if (itemPeer) {
-    // set answer signal for the peer
-    itemPeer.peer.signal(signal);
-  }
-});
-
 // output video
 function outputVideo(stream = window.localVideoStream, id = 'my_video') {
-  // stream == null <=> my video
-  //   const div = document.createElement('div');
-  //   div.className = 'meeting-part';
-
-  //   const video = document.createElement('video');
-
-  //   video.dataset.id = id || 'my_video';
-
-  //   if ('srcObject' in video) {
-  //     video.srcObject = stream || window.localVideoStream;
-  //   } else {
-  //     video.src = window.URL.createObjectURL(stream || window.localVideoStream);
-  //   }
-  //   video.play();
-
-  //   div.appendChild(video);
-  //   document.getElementById('meeting-show').appendChild(div);
   const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
   if (meetingItem) {
     meetingItem.querySelector('img').style.display = 'none';
@@ -215,7 +211,6 @@ function outputVideo(stream = window.localVideoStream, id = 'my_video') {
 
 // output stop video
 function outputStopVideo(id = 'my_video') {
-  console.log(id);
   const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
   if (meetingItem) {
     meetingItem.querySelector('img').style.display = 'block';
@@ -228,5 +223,3 @@ function outputStopVideo(id = 'my_video') {
     }
   }
 }
-
-socket.on('stopVideo', outputStopVideo);

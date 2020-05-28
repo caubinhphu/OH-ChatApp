@@ -165,5 +165,3 @@ document.querySelector('#arrow-smaller-users').addEventListener('click', () => {
 document.querySelector('#arrow-smaller-info').addEventListener('click', () => {
   infoArea.style.display = 'none';
 });
-
-function outputMeetingPart() {}
