@@ -51,3 +51,9 @@
 
   - Sử dụng MongoDB
 </details>
+<details>
+  <summary>Version 2.0.0 (29/5/2020)</summary>
+  Chức năng thêm:
+
+  - Video chat
+</details>
