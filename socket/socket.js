@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-
+const User = require('../models/User.model');
+const Room = require('../models/Room.model');
 const controller = require('./controller');
 
 // connect mongodb
@@ -61,6 +62,17 @@ const socket = function (io) {
         signal: data.signal,
         answerId: socket.id,
       });
+    });
+
+    // receive signal stop video stream from a client
+    socket.on('stopVideoStream', async () => {
+      const user = await User.findOne({ socketId: socket.id });
+      if (user) {
+        const room = await Room.findOne({ users: user._id });
+        if (room) {
+          socket.to(room.roomId).broadcast.emit('stopVideo', socket.id);
+        }
+      }
     });
 
     // receive event require disconnect from client
