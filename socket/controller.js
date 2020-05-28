@@ -448,6 +448,33 @@ module.exports.onLeaveWaitingRoom = async function (
   }
 };
 
+// receive offer signal of stream
+module.exports.onOfferStream = function (io, data) {
+  io.to(data.receiveId).emit('offerSignal', {
+    callerId: data.callerId,
+    signal: data.signal,
+  });
+};
+
+// receive offer signal of stream
+module.exports.onAnswerStream = function (io, data) {
+  io.to(data.callerId).emit('answerSignal', {
+    signal: data.signal,
+    answerId: this.id,
+  });
+};
+
+// receive signal stop video stream from a client
+module.exports.onStopVideoStream = async function () {
+  const user = await User.findOne({ socketId: this.id });
+  if (user) {
+    const room = await Room.findOne({ users: user._id });
+    if (room) {
+      this.to(room.roomId).broadcast.emit('stopVideo', this.id);
+    }
+  }
+};
+
 // receive event require disconnect from client
 module.exports.onDisconnectRequest = function (reason) {
   // emit disconnect
@@ -573,46 +600,45 @@ module.exports.onDisconnect = async function (io, reason) {
         } catch (err) {
           this.emit('error', 'Access token không hợp lệ!');
         }
+      } else {
+        // close page
+        if (!user.allowJoin) {
+          // remove user from this room
+          room.removeUserById(user.id);
+          await room.save();
+          await User.deleteOne({ _id: user._id });
+
+          // send message notify for remaining users in the room
+          this.to(room.roomId).emit(
+            'message',
+            formatMessage(botName, `${user.name} đã rời phòng`)
+          );
+          // if not exists user in the room => delete this room
+          if (room.users.length <= 0) {
+            // get socketId of users in waiting room to notify for them
+            const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+
+            // delete users in waiting room
+            await User.deleteMany({ _id: { $in: room.waitingRoom } });
+            // delete the room
+            await Room.deleteOne({ roomId: room.roomId });
+
+            // notify end room for user in waiting room
+            socketIdsWaitingRoom.forEach((socketId) => {
+              io.to(socketId).emit(
+                'joinRoomBlocked',
+                'Phòng bạn yêu cầu đã kết thúc chat!'
+              );
+            });
+          } else {
+            // update room info => send room info (name & users)
+            this.to(room.roomId).emit('roomInfo', {
+              nameRoom: room.roomId,
+              users: room.getRoomUsersInfo(),
+            });
+          }
+        }
       }
-      // else {
-      //   // close page
-      //   if (!user.allowJoin) {
-      //     // remove user from this room
-      //     room.removeUserById(user.id);
-      //     await room.save();
-      //     await User.deleteOne({ _id: user._id });
-
-      //     // send message notify for remaining users in the room
-      //     this.to(room.roomId).emit(
-      //       'message',
-      //       formatMessage(botName, `${user.name} đã rời phòng`)
-      //     );
-      //     // if not exists user in the room => delete this room
-      //     if (room.users.length <= 0) {
-      //       // get socketId of users in waiting room to notify for them
-      //       const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
-
-      //       // delete users in waiting room
-      //       await User.deleteMany({ _id: { $in: room.waitingRoom } });
-      //       // delete the room
-      //       await Room.deleteOne({ roomId: room.roomId });
-
-      //       // notify end room for user in waiting room
-      //       socketIdsWaitingRoom.forEach((socketId) => {
-      //         io.to(socketId).emit(
-      //           'joinRoomBlocked',
-      //           'Phòng bạn yêu cầu đã kết thúc chat!'
-      //         );
-      //       });
-      //     } else {
-      //       // update room info => send room info (name & users)
-      //       this.to(room.roomId).emit('roomInfo', {
-      //         nameRoom: room.roomId,
-      //         users: room.getRoomUsersInfo(),
-      //       });
-      //     }
-      //   }
-      // }
     } else {
       this.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
     }

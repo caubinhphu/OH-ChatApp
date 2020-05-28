@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../models/User.model');
-const Room = require('../models/Room.model');
+
 const controller = require('./controller');
 
 // connect mongodb
@@ -49,31 +48,17 @@ const socket = function (io) {
     });
 
     // receive offer signal of stream
-    socket.on('offerStream', (data) => {
-      io.to(data.receiveId).emit('offerSignal', {
-        callerId: data.callerId,
-        signal: data.signal,
-      });
+    socket.on('offerStream', function (data) {
+      controller.onOfferStream.bind(this, io, data)();
     });
 
     // receive offer signal of stream
-    socket.on('answerStream', (data) => {
-      io.to(data.callerId).emit('answerSignal', {
-        signal: data.signal,
-        answerId: socket.id,
-      });
+    socket.on('answerStream', function (data) {
+      controller.onAnswerStream.bind(this, io, data)();
     });
 
     // receive signal stop video stream from a client
-    socket.on('stopVideoStream', async () => {
-      const user = await User.findOne({ socketId: socket.id });
-      if (user) {
-        const room = await Room.findOne({ users: user._id });
-        if (room) {
-          socket.to(room.roomId).broadcast.emit('stopVideo', socket.id);
-        }
-      }
-    });
+    socket.on('stopVideoStream', controller.onStopVideoStream);
 
     // receive event require disconnect from client
     socket.on('disconnectRequest', controller.onDisconnectRequest);
