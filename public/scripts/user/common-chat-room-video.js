@@ -46,8 +46,8 @@ socket.on('offerSignal', ({ signal, callerId }) => {
     const peer = addPeer(signal, callerId);
 
     // if this user (rest user) is turning on video -> set stream for peer
-    if (window.localVideoStream) {
-      peer.addStream(window.localVideoStream);
+    if (window.localStream) {
+      peer.addStream(window.localStream);
     }
 
     // push to the peers
@@ -82,6 +82,61 @@ socket.on('stopVideo', outputStopVideo);
 //     .catch((err) => console.error(err));
 // }
 
+// audio btn click
+btnAudio.addEventListener('click', async function () {
+  if (this.dataset.state === 'off') {
+    // turn on video
+    // set UI
+    this.dataset.state = 'on';
+    this.innerHTML = '<i class="fas fa-microphone text-white"></i>';
+
+    // get stream video from camera of user and set in the window
+    if (navigator.mediaDevices.getUserMedia) {
+      const audioStream = await navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: true,
+      });
+
+      if (window.localStream) {
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            audioStream.getAudioTracks()[0],
+            window.localStream
+          );
+        });
+      } else {
+        window.localStream = audioStream;
+        // add stream to the all peer
+        peers.forEach((peer) => {
+          peer.peer.addStream(window.localStream);
+        });
+      }
+    }
+    // output my video
+    // outputVideo();
+  } else if (this.dataset.state === 'on') {
+    // stop video
+    // set UI
+    this.dataset.state = 'off';
+    this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
+
+    // remove all stream in the peers
+    peers.forEach((peer) => {
+      peer.peer.removeStream(window.localVideoStream);
+    });
+
+    // stop camera fo user
+    window.localVideoStream.getVideoTracks()[0].stop();
+
+    // remove stream in the window
+    window.localVideoStream = null;
+
+    // output stop my video
+    socket.emit('stopVideoStream');
+    outputStopVideo();
+  }
+});
+
 // video btn click
 btnVideo.addEventListener('click', async function () {
   if (this.dataset.state === 'off') {
@@ -92,19 +147,29 @@ btnVideo.addEventListener('click', async function () {
 
     // get stream video from camera of user and set in the window
     if (navigator.mediaDevices.getUserMedia) {
-      window.localVideoStream = await navigator.mediaDevices.getUserMedia({
+      const videoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: false,
       });
+
+      if (window.localStream) {
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            videoStream.getVideoTracks()[0],
+            window.localStream
+          );
+        });
+      } else {
+        window.localStream = videoStream;
+        // add stream to the all peer
+        peers.forEach((peer) => {
+          peer.peer.addStream(window.localStream);
+        });
+      }
+
+      // output my video
+      outputVideo();
     }
-
-    // add stream to the all peer
-    peers.forEach((peer) => {
-      peer.peer.addStream(window.localVideoStream);
-    });
-
-    // output my video
-    outputVideo();
   } else if (this.dataset.state === 'on') {
     // stop video
     // set UI
@@ -113,7 +178,7 @@ btnVideo.addEventListener('click', async function () {
 
     // remove all stream in the peers
     peers.forEach((peer) => {
-      peer.peer.removeStream(window.localVideoStream);
+      peer.peer.removeStream(window.localStream);
     });
 
     // stop camera fo user
@@ -134,7 +199,13 @@ function outputShowMeeting(id) {
   div.className = 'meeting-part';
   div.dataset.id = id || 'my_video';
 
-  div.innerHTML = `<img src="/images/917385.jpg"><video autoplay style="display='none'"></video>`;
+  div.innerHTML = `<img src="/images/917385.jpg">
+    <video name="video" autoplay style="display='none'" ${
+      id ? '' : 'muted'
+    }></video>
+    <video name="audio" autoplay style="display='none'" ${
+      id ? '' : 'muted'
+    }></video>`;
 
   meetingShow.appendChild(div);
 }
@@ -147,15 +218,28 @@ function createPeer(socketId, callerId) {
   });
 
   // add events
-  peer.on('connect', () => console.log('connection'));
+  peer.on('connect', () => console.log('call connection'));
+
+  peer.on('close', () => {
+    console.log('call close');
+  });
 
   // peer.on('data', (data) => console.log(data.toString()));
 
   peer.on('stream', (stream) => {
+    window.testStream = stream;
+    console.log('call stream');
     outputVideo(stream, socketId);
   });
 
+  peer.on('track', (track, stream) => {
+    console.log('call track');
+    console.log(track);
+    console.log(stream);
+  });
+
   peer.on('signal', (signal) => {
+    console.log('call signal');
     socket.emit('offerStream', {
       receiveId: socketId,
       callerId,
@@ -179,28 +263,54 @@ function addPeer(signal, callerId) {
   peer.signal(signal);
 
   // add events
-  peer.on('connect', () => console.log('connect other'));
+  peer.on('connect', () => console.log('answer connect'));
+
+  peer.on('close', () => {
+    console.log('answer close');
+  });
 
   peer.on('signal', (signal) => {
+    console.log('answer signal');
     socket.emit('answerStream', { signal: JSON.stringify(signal), callerId });
   });
 
   // peer.on('data', (data) => console.log(data.toString()));
 
   peer.on('stream', (stream) => {
+    window.testStream = stream;
+    console.log('answer stream');
     outputVideo(stream, callerId);
+  });
+
+  peer.on('track', (track, stream) => {
+    console.log('answer track');
+    console.log(track);
+    console.log(stream);
   });
 
   return peer;
 }
 
 // output video
-function outputVideo(stream = window.localVideoStream, id = 'my_video') {
+function outputVideo(stream = window.localStream, id = 'my_video') {
   const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
   if (meetingItem) {
     meetingItem.querySelector('img').style.display = 'none';
-    const video = meetingItem.querySelector('video');
+    const video = meetingItem.querySelector('video[name="video"]');
     video.style.display = 'block';
+    if ('srcObject' in video) {
+      video.srcObject = stream;
+    } else {
+      video.src = window.URL.createObjectURL(stream);
+    }
+  }
+}
+
+// output audio
+function outputAudio(stream = window.localStream, id = 'my_video') {
+  const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
+  if (meetingItem) {
+    const video = meetingItem.querySelector('video[name="audio"]');
     if ('srcObject' in video) {
       video.srcObject = stream;
     } else {
