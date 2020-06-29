@@ -57,3 +57,9 @@
 
   - Video chat
 </details>
+<details>
+  <summary>Version 2.1.0 (29/6/2020)</summary>
+  Chức năng thêm:
+
+  - Audio chat
+</details>
