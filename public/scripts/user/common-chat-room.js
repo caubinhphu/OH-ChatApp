@@ -146,22 +146,58 @@ document
 socket.emit('joinChat', { token: qs.get('token') });
 
 // show/hide control areas
-const chatControl = document.getElementById('chat-control');
-const usersControl = document.getElementById('users-control');
-const infoControl = document.getElementById('info-control');
+const WIDTH_CONTROL_AREA = '340px';
+const showControl = document.getElementById('show-control');
 
-const chatArea = document.getElementById('chat-area');
-const usersArea = document.getElementById('users-area');
-const infoArea = document.getElementById('info-area');
+const controlArea = {
+  chat: document.getElementById('chat-area'),
+  users: document.getElementById('users-area'),
+  info: document.getElementById('info-area'),
+  manager: document.getElementById('manager-area'),
+};
 
-document.querySelector('#arrow-smaller-chat').addEventListener('click', () => {
-  chatArea.style.display = 'none';
+// arrow smaller button click
+[...document.querySelectorAll('.arrow-smaller')].forEach((btn) => {
+  btn.addEventListener('click', function () {
+    showControl.style.width = '0';
+    setTimeout(() => {
+      controlArea[this.dataset.area].style.display = 'none';
+    }, 400);
+  });
 });
 
-document.querySelector('#arrow-smaller-users').addEventListener('click', () => {
-  usersArea.style.display = 'none';
+document.querySelector('#info-control').addEventListener('click', function () {
+  showHideAreaControl('info');
 });
 
-document.querySelector('#arrow-smaller-info').addEventListener('click', () => {
-  infoArea.style.display = 'none';
+document.querySelector('#chat-control').addEventListener('click', function () {
+  showHideAreaControl('chat');
+});
+
+document.querySelector('#users-control').addEventListener('click', function () {
+  showHideAreaControl('users');
+});
+
+function showHideAreaControl(areaId) {
+  for (let area in controlArea) {
+    if (area !== areaId) {
+      if (controlArea[area]) {
+        controlArea[area].style.display = 'none';
+      }
+    }
+  }
+
+  if (controlArea[areaId].style.display === 'none') {
+    controlArea[areaId].style.display = 'block';
+    showControl.style.width = WIDTH_CONTROL_AREA;
+  } else {
+    showControl.style.width = '0';
+    setTimeout(() => {
+      controlArea[areaId].style.display = 'none';
+    }, 400);
+  }
+}
+
+$(function () {
+  $('[data-tooltip="tooltip"]').tooltip();
 });

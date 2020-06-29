@@ -11,57 +11,59 @@ block contentMain
         #meeting-show.d-flex.flex-wrap.justify-content-center.align-items-center
       #meeting-control
         .d-flex.justify-content-around.h-100
-          #btn-audio-connect.meeting-control-item(data-state="off")
+          #btn-audio-connect.meeting-control-item(data-state="off", data-tooltip="tooltip", data-placement="top", title="Bật audio")
             i.fas.fa-microphone-slash.text-danger
-          #btn-video-connect.meeting-control-item(data-state="off")
+          #btn-video-connect.meeting-control-item(data-state="off", data-tooltip="tooltip", data-placement="top", title="Bật camera")
             i.fas.fa-video-slash.text-danger
-          #users-control.meeting-control-item
+          #users-control.meeting-control-item(data-tooltip="tooltip", data-placement="top", title="Thành viên")
             i.fas.fa-users
             sup#amount-participants
-          #chat-control.meeting-control-item
+          #chat-control.meeting-control-item(data-tooltip="tooltip", data-placement="top", title="Chat")
             i.fas.fa-comment-alt
           block subMeetingControl
-          #info-control.meeting-control-item.text-info
+          #info-control.meeting-control-item.text-info(data-tooltip="tooltip", data-placement="top", title="Thông tin phòng")
             i.fas.fa-info
-          .meeting-control-item.text-danger(data-toggle="modal", data-target="#confirm-leave-room-modal")
+          .meeting-control-item.text-danger(data-toggle="modal", data-target="#confirm-leave-room-modal", data-tooltip="tooltip", data-placement="top", title="Rời phòng")
             i.fas.fa-sign-out-alt
-      #chat-area.control-area
-        .control-area-main.d-flex.flex-column
-          .control-area-top.p-1.d-flex.justify-content-between
-            button#arrow-smaller-chat.btn.btn-default
-              i.fas.fa-arrow-right
-            .align-self-center.control-title Chat
-            button#hide-time-btn.btn.btn-light(data-status="on")
-              i.far.fa-clock
-          #chat-middle.control-area-middle.flex-fill
-          .control-area-bottom.p-1
-            form.d-flex(name="sendMsgForm")
-              block subFormChat
-            
-      #users-area.control-area(style="display: block")
-        .control-area-main.d-flex.flex-column
-          .control-area-top.p-1.d-flex.justify-content-between
-            button#arrow-smaller-users.btn.btn-default
-              i.fas.fa-arrow-right
-            .align-self-center.control-title Thành viên
-            div
-          block waitingRoomInfo
-          #room-users.control-area-middle.flex-fill
+      
+      #show-control
+        #chat-area.control-area(style="display: none")
+          .control-area-main.d-flex.flex-column
+            .control-area-top.p-1.d-flex.justify-content-between
+              button.arrow-smaller.btn.btn-default(data-area="chat")
+                i.fas.fa-arrow-right
+              .align-self-center.control-title Chat
+              button#hide-time-btn.btn.btn-light(data-status="on")
+                i.far.fa-clock
+            #chat-middle.control-area-middle.flex-fill
+            .control-area-bottom.p-1
+              form.d-flex(name="sendMsgForm")
+                block subFormChat
+              
+        #users-area.control-area(style="display: none")
+          .control-area-main.d-flex.flex-column
+            .control-area-top.p-1.d-flex.justify-content-between
+              button.arrow-smaller.btn.btn-default(data-area="users")
+                i.fas.fa-arrow-right
+              .align-self-center.control-title Thành viên
+              div
+            block waitingRoomInfo
+            #room-users.control-area-middle.flex-fill
 
-      #info-area.control-area
-        .control-area-main.d-flex.flex-column
-          .control-area-top.p-1.d-flex.justify-content-between
-            button#arrow-smaller-info.btn.btn-default
-              i.fas.fa-arrow-right
-            .align-self-center.control-title Thông tin phòng
-            div
-          .control-area-middle.flex-fill
-            div
-              span.text-secondary Id phòng: 
-              span#room-info-name-room
-            block passwordRoom
+        #info-area.control-area(style="display: none")
+          .control-area-main.d-flex.flex-column
+            .control-area-top.p-1.d-flex.justify-content-between
+              button.arrow-smaller.btn.btn-default(data-area="info")
+                i.fas.fa-arrow-right
+              .align-self-center.control-title Thông tin phòng
+              div
+            .control-area-middle.flex-fill
+              div
+                span.text-secondary Id phòng: 
+                span#room-info-name-room
+              block passwordRoom
 
-      block subControlArea
+        block subControlArea
   
   block subArea
   

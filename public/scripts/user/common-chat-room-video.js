@@ -121,19 +121,27 @@ btnAudio.addEventListener('click', async function () {
     this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
 
     // remove all stream in the peers
-    peers.forEach((peer) => {
-      peer.peer.removeStream(window.localVideoStream);
-    });
+    if (window.localStream.getVideoTracks()[0]) {
+      peers.forEach((peer) => {
+        peer.peer.removeTrack(window.localStream.getAudioTracks()[0]);
+      });
+      window.localStream.getAudioTracks()[0] = undefined;
+    } else {
+      peers.forEach((peer) => {
+        peer.peer.removeStream(window.localStream);
+      });
+      window.localStream = undefined;
+    }
 
     // stop camera fo user
-    window.localVideoStream.getVideoTracks()[0].stop();
+    // window.localVideoStream.getVideoTracks()[0].stop();
 
     // remove stream in the window
-    window.localVideoStream = null;
+    // window.localVideoStream = null;
 
     // output stop my video
-    socket.emit('stopVideoStream');
-    outputStopVideo();
+    socket.emit('stopAudioStream');
+    outputStopAudio();
   }
 });
 
@@ -176,16 +184,24 @@ btnVideo.addEventListener('click', async function () {
     this.dataset.state = 'off';
     this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
 
-    // remove all stream in the peers
-    peers.forEach((peer) => {
-      peer.peer.removeStream(window.localStream);
-    });
+    if (window.localStream.getAudioTracks()[0]) {
+      peers.forEach((peer) => {
+        peer.peer.removeTrack(window.localStream.getVideoTracks()[0]);
+      });
+      window.localStream.getVideoTracks()[0].stop();
+    } else {
+      // remove all stream in the peers
+      peers.forEach((peer) => {
+        peer.peer.removeStream(window.localStream);
+      });
+      window.localStream = undefined;
+    }
 
     // stop camera fo user
-    window.localVideoStream.getVideoTracks()[0].stop();
+    // window.localVideoStream.getVideoTracks()[0].stop();
 
     // remove stream in the window
-    window.localVideoStream = null;
+    // window.localVideoStream = null;
 
     // output stop my video
     socket.emit('stopVideoStream');
@@ -200,12 +216,10 @@ function outputShowMeeting(id) {
   div.dataset.id = id || 'my_video';
 
   div.innerHTML = `<img src="/images/917385.jpg">
-    <video name="video" autoplay style="display='none'" ${
+    <video name="video" autoplay style="display:none" ${
       id ? '' : 'muted'
     }></video>
-    <video name="audio" autoplay style="display='none'" ${
-      id ? '' : 'muted'
-    }></video>`;
+    <video name="audio" autoplay ${id ? '' : 'muted'}></video>`;
 
   meetingShow.appendChild(div);
 }
@@ -226,20 +240,22 @@ function createPeer(socketId, callerId) {
 
   // peer.on('data', (data) => console.log(data.toString()));
 
-  peer.on('stream', (stream) => {
-    window.testStream = stream;
-    console.log('call stream');
-    outputVideo(stream, socketId);
-  });
+  // peer.on('stream', (stream) => {
+  //   window.testStream = stream;
+  //   console.log('call stream');
+  //   outputVideo(stream, socketId);
+  // });
 
   peer.on('track', (track, stream) => {
     console.log('call track');
-    console.log(track);
-    console.log(stream);
+    if (track.kind === 'video') {
+      outputVideo(stream, socketId);
+    } else if (track.kind === 'audio') {
+      outputAudio(stream, socketId);
+    }
   });
 
   peer.on('signal', (signal) => {
-    console.log('call signal');
     socket.emit('offerStream', {
       receiveId: socketId,
       callerId,
@@ -270,22 +286,24 @@ function addPeer(signal, callerId) {
   });
 
   peer.on('signal', (signal) => {
-    console.log('answer signal');
     socket.emit('answerStream', { signal: JSON.stringify(signal), callerId });
   });
 
   // peer.on('data', (data) => console.log(data.toString()));
 
-  peer.on('stream', (stream) => {
-    window.testStream = stream;
-    console.log('answer stream');
-    outputVideo(stream, callerId);
-  });
+  // peer.on('stream', (stream) => {
+  //   window.testStream = stream;
+  //   console.log('answer stream');
+  //   outputVideo(stream, callerId);
+  // });
 
   peer.on('track', (track, stream) => {
-    console.log('answer track');
-    console.log(track);
-    console.log(stream);
+    console.log('call track');
+    if (track.kind === 'video') {
+      outputVideo(stream, callerId);
+    } else if (track.kind === 'audio') {
+      outputAudio(stream, callerId);
+    }
   });
 
   return peer;
@@ -324,8 +342,21 @@ function outputStopVideo(id = 'my_video') {
   const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
   if (meetingItem) {
     meetingItem.querySelector('img').style.display = 'block';
-    const video = meetingItem.querySelector('video');
+    const video = meetingItem.querySelector('video[name="video"]');
     video.style.display = 'none';
+    if ('srcObject' in video) {
+      video.srcObject = null;
+    } else {
+      video.src = null;
+    }
+  }
+}
+
+// output stop audio
+function outputStopAudio(id = 'my_video') {
+  const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
+  if (meetingItem) {
+    const video = meetingItem.querySelector('video[name="audio"]');
     if ('srcObject' in video) {
       video.srcObject = null;
     } else {

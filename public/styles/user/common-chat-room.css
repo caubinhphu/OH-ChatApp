@@ -14,7 +14,7 @@
   height: calc(100% - 47px);
   position: relative;
   margin: 0 auto;
-  background-color: #0099ff;
+  background-color: #8c9ba4;
 }
 
 #meeting-show {
@@ -54,12 +54,18 @@
   object-fit: scale-down;
 }
 
-@media only screen and (max-width: 900px) {
+.meeting-part > video:last-child {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@media only screen and (max-width: 1000px) {
   #main-meeting {
     width: 100%;
   }
 
-  .control-area {
+  #show-control {
     position: absolute !important;
     top: 0;
     right: 0;
@@ -78,7 +84,7 @@
 
 .meeting-control-item {
   cursor: pointer;
-  padding: 0 25px;
+  padding: 0 25px;  
   font-size: 25px;
   border-radius: 5px;
   color: white;
@@ -90,11 +96,10 @@
 }
 
 .control-area {
-  width: 320px;
-  height: calc(100% - 47px);
-  position: relative;
+  width: 100%;
+  height: 100%;
   background-color: white;
-  display: none;
+  /* display: none; */
 }
 
 .control-area-main {
@@ -223,4 +228,13 @@
 .control-title {
   font-size: larger;
   font-weight: 600;
+}
+
+#show-control {
+  width: 0;
+  height: calc(100% - 47px);
+  background-color: #0099ff;
+  transition: width .4s ease;
+  overflow: hidden;
+  position: relative;
 }

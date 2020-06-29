@@ -4,7 +4,7 @@ block chatStyle
   link(rel="stylesheet", href="/styles/user/chat-room-host.css")
 
 block subMeetingControl
-  #manager-control.meeting-control-item
+  #mana-control.meeting-control-item(data-tooltip="tooltip", data-placement="top", title="Quản lý phòng")
     i.fas.fa-user-shield
 
 block waitingRoomInfo
@@ -18,10 +18,10 @@ block waitingRoomInfo
       #waiting-room-users.flex-fill
 
 block subControlArea
-  #manager-area.control-area
+  #manager-area.control-area(style="display: none")
     .control-area-main.d-flex.flex-column
       .control-area-top.p-1.d-flex.justify-content-between
-        button#arrow-smaller-manager.btn.btn-default
+        button.arrow-smaller.btn.btn-default(data-area="manager")
           i.fas.fa-arrow-right
         .align-self-center.control-title Tùy chỉnh
         div

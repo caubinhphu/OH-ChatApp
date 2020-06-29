@@ -181,39 +181,6 @@ function outputRoomManager(manager) {
 }
 
 // show/hide control areas continue
-const managerControl = document.getElementById('manager-control');
-const managerArea = document.getElementById('manager-area');
-
-infoControl.addEventListener('click', function () {
-  usersArea.style.display = 'none';
-  managerArea.style.display = 'none';
-  chatArea.style.display = 'none';
-  infoArea.style.display = 'block';
+document.querySelector('#mana-control').addEventListener('click', function () {
+  showHideAreaControl('manager');
 });
-
-chatControl.addEventListener('click', function () {
-  usersArea.style.display = 'none';
-  managerArea.style.display = 'none';
-  infoArea.style.display = 'none';
-  chatArea.style.display = 'block';
-});
-
-usersControl.addEventListener('click', function () {
-  managerArea.style.display = 'none';
-  chatArea.style.display = 'none';
-  infoArea.style.display = 'none';
-  usersArea.style.display = 'block';
-});
-
-managerControl.addEventListener('click', function () {
-  usersArea.style.display = 'none';
-  chatArea.style.display = 'none';
-  infoArea.style.display = 'none';
-  managerArea.style.display = 'block';
-});
-
-document
-  .querySelector('#arrow-smaller-manager')
-  .addEventListener('click', () => {
-    managerArea.style.display = 'none';
-  });

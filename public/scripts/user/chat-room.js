@@ -101,22 +101,3 @@ function fiveSecond() {
     location.href = '/';
   }, 5000);
 }
-
-// show/hide control areas continue
-chatControl.addEventListener('click', function () {
-  usersArea.style.display = 'none';
-  infoArea.style.display = 'none';
-  chatArea.style.display = 'block';
-});
-
-usersControl.addEventListener('click', function () {
-  infoArea.style.display = 'none';
-  chatArea.style.display = 'none';
-  usersArea.style.display = 'block';
-});
-
-infoControl.addEventListener('click', function () {
-  usersArea.style.display = 'none';
-  chatArea.style.display = 'none';
-  infoArea.style.display = 'block';
-});
