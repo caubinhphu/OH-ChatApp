@@ -172,6 +172,7 @@ document.querySelector('#info-control').addEventListener('click', function () {
 
 document.querySelector('#chat-control').addEventListener('click', function () {
   showHideAreaControl('chat');
+  document.getElementById('msg').focus();
 });
 
 document.querySelector('#users-control').addEventListener('click', function () {
