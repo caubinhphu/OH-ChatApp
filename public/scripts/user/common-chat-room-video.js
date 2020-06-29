@@ -362,6 +362,9 @@ const btnVideo = document.getElementById('btn-video-connect');
 const btnAudio = document.getElementById('btn-audio-connect');
 const meetingShow = document.getElementById('meeting-show');
 
+let canClickAudioBtn = true;
+let canClickVideoBtn = true;
+
 // get media device of user
 navigator.mediaDevices.getUserMedia =
   navigator.mediaDevices.getUserMedia ||
@@ -433,110 +436,112 @@ socket.on('stopVideo', outputStopVideo);
 
 // audio btn click
 btnAudio.addEventListener('click', async function () {
-  if (this.dataset.state === 'off') {
-    // turn on video
-    // set UI
-    this.dataset.state = 'on';
-    this.innerHTML = '<i class="fas fa-microphone text-white"></i>';
+  if (canClickAudioBtn) {
+    canClickAudioBtn = false;
+    this.style.cursor = 'no-drop';
+    if (this.dataset.state === 'off') {
+      // turn on video
+      // set UI
+      this.dataset.state = 'on';
+      this.innerHTML = '<i class="fas fa-microphone text-white"></i>';
+      $(this).attr('data-original-title', 'Tắt audio').tooltip('show');
 
-    // get stream video from camera of user and set in the window
-    if (navigator.mediaDevices.getUserMedia) {
-      const audioStream = await navigator.mediaDevices.getUserMedia({
-        video: false,
-        audio: true,
-      });
+      // get stream video from camera of user and set in the window
+      if (navigator.mediaDevices.getUserMedia) {
+        const audioStream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true,
+        });
 
-      if (window.localStream) {
         peers.forEach((peer) => {
           peer.peer.addTrack(
             audioStream.getAudioTracks()[0],
             window.localStream
           );
         });
-      } else {
-        window.localStream = audioStream;
-        // add stream to the all peer
-        peers.forEach((peer) => {
-          peer.peer.addStream(window.localStream);
-        });
+
+        window.localStream.addTrack(audioStream.getAudioTracks()[0]);
       }
-    }
-    // output my video
-    // outputVideo();
-  } else if (this.dataset.state === 'on') {
-    // stop video
-    // set UI
-    this.dataset.state = 'off';
-    this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
+    } else if (this.dataset.state === 'on') {
+      // stop video
+      // set UI
+      this.dataset.state = 'off';
+      this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
+      $(this).attr('data-original-title', 'Bật audio').tooltip('show');
 
-    // remove all stream in the peers
-    if (window.localStream.getVideoTracks()[0]) {
       peers.forEach((peer) => {
-        peer.peer.removeTrack(window.localStream.getAudioTracks()[0]);
+        peer.peer.removeTrack(
+          window.localStream.getAudioTracks()[0],
+          window.localStream
+        );
       });
-      window.localStream.getAudioTracks()[0] = undefined;
-    } else {
-      peers.forEach((peer) => {
-        peer.peer.removeStream(window.localStream);
-      });
-      window.localStream = undefined;
+
+      window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
+
+      // output stop my video
+      socket.emit('stopAudioStream');
+      outputStopAudio();
     }
-
-    // stop camera fo user
-    // window.localVideoStream.getVideoTracks()[0].stop();
-
-    // remove stream in the window
-    // window.localVideoStream = null;
-
-    // output stop my video
-    socket.emit('stopAudioStream');
-    outputStopAudio();
+    canClickAudioBtn = true;
+    this.style.cursor = 'pointer';
   }
 });
 
 // video btn click
 btnVideo.addEventListener('click', async function () {
-  if (this.dataset.state === 'off') {
-    // turn on video
-    // set UI
-    this.dataset.state = 'on';
-    this.innerHTML = '<i class="fas fa-video text-white"></i>';
+  if (canClickVideoBtn) {
+    canClickVideoBtn = false;
+    this.style.cursor = 'no-drop';
 
-    // get stream video from camera of user and set in the window
-    if (navigator.mediaDevices.getUserMedia) {
-      const videoStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
+    if (this.dataset.state === 'off') {
+      // turn on video
+      // set UI
+      this.dataset.state = 'on';
+      this.innerHTML = '<i class="fas fa-video text-white"></i>';
+      $(this).attr('data-original-title', 'Tắt camera').tooltip('show');
+
+      // get stream video from camera of user and set in the window
+      if (navigator.mediaDevices.getUserMedia) {
+        const videoStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            videoStream.getVideoTracks()[0],
+            window.localStream
+          );
+        });
+
+        window.localStream.addTrack(videoStream.getVideoTracks()[0]);
+
+        // output my video
+        outputVideo();
+      }
+    } else if (this.dataset.state === 'on') {
+      // stop video
+      // set UI
+      this.dataset.state = 'off';
+      this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
+      $(this).attr('data-original-title', 'Bật camera').tooltip('show');
 
       peers.forEach((peer) => {
-        peer.peer.addTrack(videoStream.getVideoTracks()[0], window.localStream);
+        peer.peer.removeTrack(
+          window.localStream.getVideoTracks()[0],
+          window.localStream
+        );
       });
 
-      window.localStream.addTrack(videoStream.getVideoTracks()[0]);
+      window.localStream.getVideoTracks()[0].stop();
+      window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
 
-      // output my video
-      outputVideo();
+      // output stop my video
+      socket.emit('stopVideoStream');
+      outputStopVideo();
     }
-  } else if (this.dataset.state === 'on') {
-    // stop video
-    // set UI
-    this.dataset.state = 'off';
-    this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
-
-    peers.forEach((peer) => {
-      peer.peer.removeTrack(
-        window.localStream.getVideoTracks()[0],
-        window.localStream
-      );
-    });
-
-    window.localStream.getVideoTracks()[0].stop();
-    window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
-
-    // output stop my video
-    socket.emit('stopVideoStream');
-    outputStopVideo();
+    canClickVideoBtn = true;
+    this.style.cursor = 'pointer';
   }
 });
 
