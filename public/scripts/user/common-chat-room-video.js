@@ -392,6 +392,21 @@ socket.on('roomInfoForStream', (roomInfo) => {
   });
 });
 
+// receive userId who leave room
+socket.on('infoLeaveRoomForStream', ({ userId }) => {
+  // remove peer of this user
+  console.log(userId);
+  const peerIndex = peers.findIndex(
+    (p) => p.offerId === userId || p.answerId === userId
+  );
+  if (peerIndex !== -1) {
+    peers.splice(peerIndex, 1);
+  }
+
+  // output leave room for stream
+  outputLeaveRoomForStream(userId);
+});
+
 // receive offer signal of caller (new user join the room)
 socket.on('offerSignal', ({ signal, callerId }) => {
   // parse signal
@@ -409,8 +424,13 @@ socket.on('offerSignal', ({ signal, callerId }) => {
     // peer not exists (new user join the room)
     const peer = addPeer(signal, callerId);
 
-    // add stream
-    // peer.addStream(window.localStream);
+    // if this user (rest user) is turning on video -> set stream track for peer
+    if (window.localStream.getAudioTracks()[0]) {
+      peer.addTrack(window.localStream.getAudioTracks()[0], window.localStream);
+    }
+    if (window.localStream.getVideoTracks()[0]) {
+      peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+    }
 
     // push to the peers
     peers.push({ offerId: callerId, answerId: socket.id, peer });
@@ -453,6 +473,7 @@ btnAudio.addEventListener('click', async function () {
           audio: true,
         });
 
+        // add audio track for stream of each peer
         peers.forEach((peer) => {
           peer.peer.addTrack(
             audioStream.getAudioTracks()[0],
@@ -460,6 +481,7 @@ btnAudio.addEventListener('click', async function () {
           );
         });
 
+        // add audio track for stream of local stream
         window.localStream.addTrack(audioStream.getAudioTracks()[0]);
       }
     } else if (this.dataset.state === 'on') {
@@ -469,6 +491,7 @@ btnAudio.addEventListener('click', async function () {
       this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
       $(this).attr('data-original-title', 'Bật audio').tooltip('show');
 
+      // remove audio track of stream each peer
       peers.forEach((peer) => {
         peer.peer.removeTrack(
           window.localStream.getAudioTracks()[0],
@@ -476,6 +499,7 @@ btnAudio.addEventListener('click', async function () {
         );
       });
 
+      // remove audio track of stream in local stream
       window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
 
       // output stop my video
@@ -507,6 +531,7 @@ btnVideo.addEventListener('click', async function () {
           audio: false,
         });
 
+        // add video track for stream each peer
         peers.forEach((peer) => {
           peer.peer.addTrack(
             videoStream.getVideoTracks()[0],
@@ -514,6 +539,7 @@ btnVideo.addEventListener('click', async function () {
           );
         });
 
+        // add video track for stream in local
         window.localStream.addTrack(videoStream.getVideoTracks()[0]);
 
         // output my video
@@ -526,6 +552,7 @@ btnVideo.addEventListener('click', async function () {
       this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
       $(this).attr('data-original-title', 'Bật camera').tooltip('show');
 
+      // remove video track of stream each peer
       peers.forEach((peer) => {
         peer.peer.removeTrack(
           window.localStream.getVideoTracks()[0],
@@ -533,6 +560,7 @@ btnVideo.addEventListener('click', async function () {
         );
       });
 
+      // stop and remove video track of stream in local
       window.localStream.getVideoTracks()[0].stop();
       window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
 
@@ -699,4 +727,9 @@ function outputStopAudio(id = 'my_video') {
       video.src = null;
     }
   }
+}
+
+// output leave room for stream
+function outputLeaveRoomForStream(id) {
+  meetingShow.querySelector(`div[data-id="${id}"]`).remove();
 }
