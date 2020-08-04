@@ -9,6 +9,19 @@ block contentMain
         #chat-company.p-3
           img.mr-2(src="/images/logo.png", alt="OH", width="30px")
           span.text-secondary OH Chat
+        #login-area.p-3
+          if(loginError) 
+            em.text-danger.mb-2= loginError
+          form(action="/login", method="POST")
+            .form-group.d-flex.justify-content-center
+              label.text-secondary(for="email", style="width: 100px") Email
+              input#email.form-control.form-control-sm(type="email", name="email", required, value=email?email:"")
+            .form-group.d-flex.justify-content-center
+              label.text-secondary(for="password", style="width: 100px") Mật khẩu
+              input#password.form-control.form-control-sm(type="password", name="password", required)
+            .form-group.text-right
+              a.btn.btn-sm.btn-link.mr-2(href="#", role="button") Đăng ký
+              button.btn.btn-primary.btn-sm(type="submit") Đăng nhập
         #choose-area.d-flex
           .choose-item.mr-4.text-center
             a(href="/create", role="button")

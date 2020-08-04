@@ -1,0 +1,183 @@
+extend ./layout
+
+append styles
+  link(rel="stylesheet", href="/styles/messenger/index.css")
+
+block contentMain
+  #main-messenger.d-flex
+    #main-left.p-3.d-flex.flex-column
+      #main-left-top.d-flex.justify-content-between
+        h4 Chat
+        #room
+          button.btn.btn-light
+            i.fas.fa-plus-square
+          button.btn.btn-light.ml-2
+            i.fas.fa-sign-in-alt
+      #main-left-search.mt-2
+        input.form-control(type="text", placeholder="Tìm bạn bè để chat")
+      #main-left-friends.mt-2.flex-fill
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item.friend-item-active
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+        .friend-item
+          .friend-item-main.d-flex
+            .friend-item-img
+              img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+            .friend-item-info.ml-2
+              span Name
+              br
+              span Text
+    #main-right.flex-fill.d-flex.flex-column
+      #main-right-top.d-flex.justify-content-between.p-2.align-items-center
+        #main-right-top-left.d-flex
+          .friend-img
+            img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
+          .friend-info.ml-2
+            span Name
+            br
+            span Text
+        #main-right-top-right
+          button.mr-2
+            i.fas.fa-phone
+          button
+            i.fas.fa-video
+      #main-right-chat-content.flex-fill
+      #main-right-top-chat-input.mb-1.px-2
+        .d-flex.text-secondary
+          input.form-control(type="text")
+          button.btn.btn-info
+            i.fas.fa-plane
+  

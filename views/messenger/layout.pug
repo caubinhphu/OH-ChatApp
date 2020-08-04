@@ -1,0 +1,26 @@
+extend ../layout
+
+append styles
+  link(rel="stylesheet", href="/styles/messenger/layout.css")
+
+block header
+  #header.p-2.d-flex.justify-content-between
+    #header-left.d-flex.align-items-center
+      #logo
+        img(src="/images/logo_rounded.png", alt="oh-chat", width="40px")
+      #search.ml-1
+        input.form-control(type="text", placeholder="Tìm kiếm bạn bè")
+    #header-right.d-flex.align-items-center
+      #user
+        a(href="#")
+          img.mr-1(src="/images/logo_rounded.png", alt="user", width="30px")
+          span Name
+      #notification.mx-2
+        button.btn.btn-light
+          i.fas.fa-bell
+      #info
+        button.btn.btn-light
+          i.fas.fa-caret-down
+block main
+  #main
+    block contentMain

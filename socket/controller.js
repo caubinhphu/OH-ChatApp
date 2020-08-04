@@ -5,6 +5,7 @@ const formatMessage = require('../utils/message');
 // models
 const Room = require('../models/Room.model');
 const User = require('../models/User.model');
+const Member = require('../models/Member.model');
 
 // names bot
 const botName = 'OH Bot';

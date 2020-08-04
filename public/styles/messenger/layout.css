@@ -1,0 +1,27 @@
+body {
+  height: 100vh;
+}
+
+#header {
+  box-shadow: 1px 1px 5px #555;
+  height: 60px;
+}
+
+#user {
+  padding: 5px;
+  border-radius: 5px;
+}
+
+#user > a {
+  color: #333333;
+  font-weight: 700;
+  display: block;
+}
+
+#user > a:hover {
+  text-decoration: none;
+}
+
+#user:hover {
+  background-color: #f0f2f5;
+}
