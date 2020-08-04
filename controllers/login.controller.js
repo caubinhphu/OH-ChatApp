@@ -36,3 +36,10 @@ module.exports.postLogin = async (req, res, next) => {
   res.cookie('uid', member.id, { signed: true });
   res.redirect('/messenger');
 };
+
+// get register
+module.exports.getRegister = (req, res) => {
+  res.render('login/register', {
+    titleSite: 'OH Chat: Đăng ký',
+  });
+};
