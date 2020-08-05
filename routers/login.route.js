@@ -11,4 +11,6 @@ router.post('/register', controller.postRegister);
 
 router.get('/logout', controller.getLogout);
 
+router.get('/verify/:token', controller.getVerifyEmail);
+
 module.exports = router;

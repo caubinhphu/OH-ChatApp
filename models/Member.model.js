@@ -37,6 +37,10 @@ const memberSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  verifyToken: {
+    type: String,
+    default: '',
+  },
 });
 
 const Member = mongoose.model('Member', memberSchema);

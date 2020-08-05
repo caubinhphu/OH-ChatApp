@@ -1,4 +1,7 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
+const sendMail = require('../utils/send-mail');
 
 const { validateRegister } = require('../validation/login.validation');
 
@@ -25,6 +28,12 @@ module.exports.postLogin = async (req, res, next) => {
       const checkPassword = await bcrypt.compare(password, member.password);
       if (!checkPassword) {
         errorText.push('Thông tin đăng nhập không hợp lệ');
+      } else {
+        if (!member.active) {
+          errorText.push(
+            'Tài khoản chưa được xác nhận, xin hãy vào email đã đăng ký để xác nhận'
+          );
+        }
       }
     }
   } catch (error) {
@@ -90,19 +99,36 @@ module.exports.postRegister = async (req, res) => {
   } else {
     // pass register
     try {
+      // create hash password
       const salt = await bcrypt.genSalt(10);
       const passHash = await bcrypt.hash(password, salt);
 
+      // generate verify token
+      const verifyToken = await crypto.randomBytes(16);
+
+      // create new member
       await Member.create({
         email,
         name,
         password: passHash,
+        verifyToken: verifyToken.toString('hex'),
       });
+
+      // send email verify account
+      const html = `<h2>OH chat</h2>
+        <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi</p>
+        <p>Hãy chọn <a href='http://localhost:3000/login/verify/${verifyToken.toString(
+          'hex'
+        )}'>vào đây</a> để xác nhận tài khoản của bạn</p>`;
+      const info = await sendMail(email, 'Xác nhận tài khoản', html);
     } catch (error) {
       next(error);
     }
 
-    req.flash('success_msg', 'Đăng ký tài khoản thành công, có thể đăng nhập');
+    req.flash(
+      'success_msg',
+      'Đăng ký tài khoản thành công, xin hãy vào email đã đăng ký để xác nhận'
+    );
     res.redirect('/');
   }
 };
@@ -110,4 +136,25 @@ module.exports.postRegister = async (req, res) => {
 module.exports.getLogout = (req, res) => {
   res.clearCookie('uid');
   res.redirect('/');
+};
+
+module.exports.getVerifyEmail = async (req, res, next) => {
+  const { token } = req.params;
+
+  try {
+    const member = await Member.findOne({ verifyToken: token });
+    if (!member) {
+      req.flash('error_msg', 'Thành viên không tồn tại');
+      return res.redirect('/');
+    }
+
+    member.active = true;
+    member.verifyToken = '';
+
+    await member.save();
+    req.flash('success_msg', 'Xác nhận email thành công, có thể đăng nhập');
+    res.redirect('/');
+  } catch (error) {
+    next(error);
+  }
 };
