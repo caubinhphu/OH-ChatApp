@@ -31,7 +31,7 @@ const memberSchema = mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: '/images/avatar-default.jpg',
+    default: '/images/default-avatar.jpg',
   },
   active: {
     type: Boolean,

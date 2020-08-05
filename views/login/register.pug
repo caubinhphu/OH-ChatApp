@@ -13,7 +13,7 @@ block contentMain
         form(action="/login/register", method="POST")
           .form-group.d-flex.justify-content-center
             label.text-secondary(for="name", style="width: 230px") Họ tên
-            input#name.form-control.form-control-sm(type="text", name="name", required, placeholder="Nhập họ tên", value=name?name:"")
+            input#name.form-control.form-control-sm(type="text", name="name", required, placeholder="Nhập họ tên", value=name?name:"", title="Họ tên dài không quá 40 ký tự")
           .form-group.d-flex.justify-content-center
             label.text-secondary(for="email", style="width: 230px") Email
             input#email.form-control.form-control-sm(type="email", name="email", required, placeholder="Nhập email", value=email?email:"")

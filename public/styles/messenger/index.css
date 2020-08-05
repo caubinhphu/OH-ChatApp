@@ -57,3 +57,15 @@
   background-color: transparent;
   border: none;
 }
+
+.friend-item-info > small {
+  color: #6c757d;
+}
+
+#main-left-friends > a {
+  color: black;
+}
+
+#main-left-friends > a:hover {
+  text-decoration: none;
+}

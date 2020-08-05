@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 const { validateRegister } = require('../validation/login.validation');
 
 const Member = require('../models/Member.model');
@@ -10,18 +12,23 @@ module.exports.postLogin = async (req, res, next) => {
   // login error
   const errorText = [];
 
-  // find user
-  const member = await Member.findOne({ email });
-  if (!member) {
-    // not user exists
-    errorText.push('Thông tin đăng nhập không hợp lệ');
-  } else {
-    // user exists
-    // check password
-    if (member.password !== password) {
-      // password incorrect
+  let member = null;
+  try {
+    // find user
+    member = await Member.findOne({ email });
+    if (!member) {
+      // not user exists
       errorText.push('Thông tin đăng nhập không hợp lệ');
+    } else {
+      // user exists
+      // check password
+      const checkPassword = await bcrypt.compare(password, member.password);
+      if (!checkPassword) {
+        errorText.push('Thông tin đăng nhập không hợp lệ');
+      }
     }
+  } catch (error) {
+    next(error);
   }
 
   // check login error
@@ -57,22 +64,19 @@ module.exports.postRegister = async (req, res) => {
 
   const errorText = [];
   if (error) {
-    // have error validate
-    if (error.details[0].path[0] === 'name') {
-      errorText.push('Chưa nhập họ tên');
-    } else if (error.details[0].path[0] === 'email') {
-      errorText.push('Chưa nhập email');
-    } else if (error.details[0].path[0] === 'password') {
-      errorText.push('Mật khẩu dài ít nhất 6 ký tự');
-    } else if (error.details[0].path[0] === 'password2') {
-      errorText.push('Xác nhận mật khẩu không đúng');
-    }
+    errorText.push(error.details[0].message);
   }
 
-  // check email exists
-  const member = await Member.findOne({ email });
-  if (member) {
-    errorText.push('Email đã được sử dụng');
+  if (errorText.length === 0) {
+    // check email exists
+    try {
+      const member = await Member.findOne({ email });
+      if (member) {
+        errorText.push('Email đã được sử dụng');
+      }
+    } catch (error) {
+      next(error);
+    }
   }
 
   // have error
@@ -85,12 +89,25 @@ module.exports.postRegister = async (req, res) => {
     });
   } else {
     // pass register
-    const member = await Member.create({
-      email,
-      name,
-      password,
-    });
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const passHash = await bcrypt.hash(password, salt);
+
+      await Member.create({
+        email,
+        name,
+        password: passHash,
+      });
+    } catch (error) {
+      next(error);
+    }
+
     req.flash('success_msg', 'Đăng ký tài khoản thành công, có thể đăng nhập');
     res.redirect('/');
   }
+};
+
+module.exports.getLogout = (req, res) => {
+  res.clearCookie('uid');
+  res.redirect('/');
 };

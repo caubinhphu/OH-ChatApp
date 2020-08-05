@@ -16,11 +16,37 @@ block header
           img.rounded-circle.mr-1(src=memberAvatar, alt="member", width="30px")
           span= memberName
       #notification.mx-2
-        button.btn.btn-light
+        button#member-notify-btn.btn.btn-light(data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
           i.fas.fa-bell
       #info
-        button.btn.btn-light
+        button#member-info-btn.btn.btn-light(data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")
           i.fas.fa-caret-down
+      #notify-drop.collapse(data-parent="#header-right")
+
+      #info-drop.collapse(data-parent="#header-right")
+        .p-3
+          a.p-2.d-flex(href="#")
+            div
+              img.rounded-circle(src=memberAvatar, alt="oh-chat", width="55px")
+            .ml-3
+              span= memberName
+              br
+              small Xem thông tin của bạn
+          hr
+          .w-100
+            a.p-2(href="#")
+              i.fas.fa-cog
+              span.ml-2 Cài đặt
+          .w-100
+            a.p-2(href="/login/logout")
+              i.fas.fa-sign-out-alt
+              span.ml-2 Đăng xuất
+
+    
+
 block main
   #main
     block contentMain
+
+append scripts
+  script(src="/scripts/member/layout.js")

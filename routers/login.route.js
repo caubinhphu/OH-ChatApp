@@ -9,4 +9,6 @@ router.get('/register', controller.getRegister);
 
 router.post('/register', controller.postRegister);
 
+router.get('/logout', controller.getLogout);
+
 module.exports = router;
