@@ -4,27 +4,25 @@ append styles
   link(rel="stylesheet", href="/styles/user/index.css")
 
 block contentMain
-    .content-area.d-flex.justify-content-center.align-items-center
-      #main-area
-        #chat-company.p-3
-          img.mr-2(src="/images/logo.png", alt="OH", width="30px")
-          span.text-secondary OH Chat
-        #login-area.p-3
-          if(loginError) 
-            em.text-danger.mb-2= loginError
-          form(action="/login/register", method="POST")
-            .form-group.d-flex.justify-content-center
-              label.text-secondary(for="text", style="width: 230px") Họ tên
-              input#password.form-control.form-control-sm(type="text", name="name", required, placeholder="Nhập họ tên")
-            .form-group.d-flex.justify-content-center
-              label.text-secondary(for="email", style="width: 230px") Email
-              input#email.form-control.form-control-sm(type="email", name="email", required, placeholder="Nhập email", value=email?email:"")
-            .form-group.d-flex.justify-content-center
-              label.text-secondary(for="password", style="width: 230px") Mật khẩu
-              input#password.form-control.form-control-sm(type="password", name="password", required, placeholder="Nhập mật khẩu")
-            .form-group.d-flex.justify-content-center
-              label.text-secondary(for="password", style="width: 230px") Xác nhận mật khẩu
-              input#password.form-control.form-control-sm(type="password", name="password2", required, placeholder="Nhập lại mật khẩu")
-            .form-group.text-right
-              a.btn.btn-sm.btn-link.mr-2(href="/", role="button") Đăng nhập
-              button.btn.btn-primary.btn-sm(type="submit") Đăng ký
+  .content-area.d-flex.justify-content-center.align-items-center
+    #main-area
+      #chat-company.p-3
+        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+        span.text-secondary OH Chat
+      #login-area.p-3
+        form(action="/login/register", method="POST")
+          .form-group.d-flex.justify-content-center
+            label.text-secondary(for="name", style="width: 230px") Họ tên
+            input#name.form-control.form-control-sm(type="text", name="name", required, placeholder="Nhập họ tên", value=name?name:"")
+          .form-group.d-flex.justify-content-center
+            label.text-secondary(for="email", style="width: 230px") Email
+            input#email.form-control.form-control-sm(type="email", name="email", required, placeholder="Nhập email", value=email?email:"")
+          .form-group.d-flex.justify-content-center
+            label.text-secondary(for="password", style="width: 230px") Mật khẩu
+            input#password.form-control.form-control-sm(type="password", name="password", required, placeholder="Nhập mật khẩu", title="Mật khẩu dài ít nhất 6 ký tự")
+          .form-group.d-flex.justify-content-center
+            label.text-secondary(for="password2", style="width: 230px") Xác nhận mật khẩu
+            input#password2.form-control.form-control-sm(type="password", name="password2", required, placeholder="Nhập lại mật khẩu")
+          .form-group.text-right
+            a.btn.btn-sm.btn-link.mr-2(href="/", role="button") Đăng nhập
+            button.btn.btn-primary.btn-sm(type="submit") Đăng ký

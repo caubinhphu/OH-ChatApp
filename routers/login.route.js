@@ -7,4 +7,6 @@ router.post('/', controller.postLogin);
 
 router.get('/register', controller.getRegister);
 
+router.post('/register', controller.postRegister);
+
 module.exports = router;

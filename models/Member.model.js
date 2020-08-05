@@ -15,19 +15,27 @@ const memberSchema = mongoose.Schema({
   },
   birthOfDate: {
     type: Date,
+    default: new Date('1/1/1970'),
   },
   gender: {
     type: Boolean,
+    default: true,
   },
   phone: {
     type: String,
+    default: '',
   },
   address: {
     type: String,
+    default: '',
   },
   avatar: {
     type: String,
     default: '/images/avatar-default.jpg',
+  },
+  active: {
+    type: Boolean,
+    default: false,
   },
 });
 

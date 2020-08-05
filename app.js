@@ -4,6 +4,8 @@ const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 // init server
 const app = express();
@@ -27,6 +29,9 @@ const chatRoute = require('./routers/chat.route');
 const loginRoute = require('./routers/login.route');
 const messengerRoute = require('./routers/messenger.route');
 
+// middleware
+const loginMiddleware = require('./middlewares/login.middleware');
+
 // set public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -34,12 +39,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+// flash
+app.use(flash());
+
 // handle socket
 require('./socket/socket')(io);
 
 // use router
 app.use('/', chatRoute);
 app.use('/login', loginRoute);
-app.use('/messenger', messengerRoute);
+app.use('/messenger', loginMiddleware, messengerRoute);
 
 server.listen(PORT, () => console.log(`Server is running at port ${PORT}`));

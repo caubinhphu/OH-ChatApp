@@ -1,28 +1,29 @@
-module.exports.getIndex = (req, res, next) => {
+module.exports.getIndex = (req, res) => {
   res.render('user/index', {
     titleSite: 'Chat App',
+    successText: req.flash('success_msg'),
   });
 };
 
-module.exports.getJoin = (req, res, next) => {
+module.exports.getJoin = (req, res) => {
   res.render('user/join-room', {
     titleSite: 'Join room',
   });
 };
 
-module.exports.getChat = (req, res, next) => {
+module.exports.getChat = (req, res) => {
   res.render('user/chat-room', {
     titleSite: 'Chat',
   });
 };
 
-module.exports.getHostChat = (req, res, next) => {
+module.exports.getHostChat = (req, res) => {
   res.render('user/chat-room-host', {
     titleSite: 'Chat',
   });
 };
 
-module.exports.getCreate = (req, res, next) => {
+module.exports.getCreate = (req, res) => {
   // create id room random
   let idRandom = Math.round(Math.random() * 1e9)
     .toString()
