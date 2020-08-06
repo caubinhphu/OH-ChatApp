@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const passport = require('passport');
 
 const sendMail = require('../utils/send-mail');
 
@@ -9,51 +10,12 @@ const Member = require('../models/Member.model');
 
 // post login
 module.exports.postLogin = async (req, res, next) => {
-  // get email and password
-  const { email, password } = req.body;
-
-  // login error
-  const errorText = [];
-
-  let member = null;
-  try {
-    // find user
-    member = await Member.findOne({ email });
-    if (!member) {
-      // not user exists
-      errorText.push('Thông tin đăng nhập không hợp lệ');
-    } else {
-      // user exists
-      // check password
-      const checkPassword = await bcrypt.compare(password, member.password);
-      if (!checkPassword) {
-        errorText.push('Thông tin đăng nhập không hợp lệ');
-      } else {
-        if (!member.active) {
-          errorText.push(
-            'Tài khoản chưa được xác nhận, xin hãy vào email đã đăng ký để xác nhận'
-          );
-        }
-      }
-    }
-  } catch (error) {
-    next(error);
-  }
-
-  // check login error
-  if (errorText.length > 0) {
-    // have error
-    return res.render('user/index', {
-      titleSite: 'OH chat',
-      errorText,
-      email,
-    });
-  }
-
-  // pass login
-  res.cookie('uid', member.id, { signed: true });
-  req.flash('success_msg', 'Đăng nhập thành công');
-  res.redirect('/messenger');
+  passport.authenticate('local', {
+    successRedirect: '/messenger',
+    failureRedirect: '/',
+    successFlash: true,
+    failureFlash: true,
+  })(req, res, next);
 };
 
 // get register
@@ -126,7 +88,7 @@ module.exports.postRegister = async (req, res) => {
     }
 
     req.flash(
-      'success_msg',
+      'success',
       'Đăng ký tài khoản thành công, xin hãy vào email đã đăng ký để xác nhận'
     );
     res.redirect('/');
@@ -134,7 +96,7 @@ module.exports.postRegister = async (req, res) => {
 };
 
 module.exports.getLogout = (req, res) => {
-  res.clearCookie('uid');
+  req.logOut();
   res.redirect('/');
 };
 
@@ -144,7 +106,7 @@ module.exports.getVerifyEmail = async (req, res, next) => {
   try {
     const member = await Member.findOne({ verifyToken: token });
     if (!member) {
-      req.flash('error_msg', 'Thành viên không tồn tại');
+      req.flash('error', 'Thành viên không tồn tại');
       return res.redirect('/');
     }
 
@@ -152,7 +114,7 @@ module.exports.getVerifyEmail = async (req, res, next) => {
     member.verifyToken = '';
 
     await member.save();
-    req.flash('success_msg', 'Xác nhận email thành công, có thể đăng nhập');
+    req.flash('success', 'Xác nhận email thành công, có thể đăng nhập');
     res.redirect('/');
   } catch (error) {
     next(error);
