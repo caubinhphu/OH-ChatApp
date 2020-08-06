@@ -44,7 +44,7 @@ module.exports.postLogin = async (req, res, next) => {
   if (errorText.length > 0) {
     // have error
     return res.render('user/index', {
-      titleSite: 'Chat App',
+      titleSite: 'OH chat',
       errorText,
       email,
     });
@@ -59,7 +59,7 @@ module.exports.postLogin = async (req, res, next) => {
 // get register
 module.exports.getRegister = (req, res) => {
   res.render('login/register', {
-    titleSite: 'OH Chat: Đăng ký',
+    titleSite: 'OH Chat',
   });
 };
 
@@ -91,7 +91,7 @@ module.exports.postRegister = async (req, res) => {
   // have error
   if (errorText.length > 0) {
     res.render('login/register', {
-      titleSide: 'OH Chat: Đăng ký',
+      titleSide: 'OH Chat',
       errorText,
       name,
       email,

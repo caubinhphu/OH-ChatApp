@@ -1,25 +1,24 @@
 module.exports.getIndex = (req, res) => {
   res.render('user/index', {
-    titleSite: 'Chat App',
-    successText: req.flash('success_msg'),
+    titleSite: 'OH Chat',
   });
 };
 
 module.exports.getJoin = (req, res) => {
   res.render('user/join-room', {
-    titleSite: 'Join room',
+    titleSite: 'OH Chat - Room',
   });
 };
 
 module.exports.getChat = (req, res) => {
   res.render('user/chat-room', {
-    titleSite: 'Chat',
+    titleSite: 'OH Chat - Room',
   });
 };
 
 module.exports.getHostChat = (req, res) => {
   res.render('user/chat-room-host', {
-    titleSite: 'Chat',
+    titleSite: 'OH Chat - Room',
   });
 };
 
@@ -34,7 +33,7 @@ module.exports.getCreate = (req, res) => {
     .padStart(4, '0');
 
   res.render('user/create-room', {
-    titleSite: 'Create room',
+    titleSite: 'OH Chat - Room',
     idRandom,
     passwordRandom,
   });

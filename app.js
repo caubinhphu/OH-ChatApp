@@ -31,6 +31,7 @@ const messengerRoute = require('./routers/messenger.route');
 
 // middleware
 const loginMiddleware = require('./middlewares/login.middleware');
+const { use } = require('./routers/chat.route');
 
 // set public folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -53,9 +54,24 @@ app.use(flash());
 // handle socket
 require('./socket/socket')(io);
 
+// message middleware
+app.use((req, res, next) => {
+  res.locals.successText = req.flash('success_msg');
+  res.locals.errorText = req.flash('error_msg');
+  next();
+});
+
 // use router
 app.use('/', chatRoute);
 app.use('/login', loginRoute);
 app.use('/messenger', loginMiddleware, messengerRoute);
+
+// handle error middleware
+app.use((err, req, res, next) => {
+  if (err) {
+    console.log(err);
+  }
+  res.send(err.message);
+});
 
 server.listen(PORT, () => console.log(`Server is running at port ${PORT}`));
