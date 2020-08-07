@@ -8,6 +8,7 @@ joinRoomForm.addEventListener('submit', function (e) {
   let nameInput = e.target.elements.name;
   let roomIdInput = e.target.elements.roomId;
   let passRoomInput = e.target.elements.passRoom;
+  let memberIdInput = e.target.elements.memberId;
 
   if (nameInput.value.length <= 0 || nameInput.value.length > 30) {
     document.querySelector('#err-join-name').innerHTML = 'Tên chưa hợp lệ';
@@ -16,6 +17,7 @@ joinRoomForm.addEventListener('submit', function (e) {
       roomId: roomIdInput.value,
       passRoom: passRoomInput.value,
       username: nameInput.value,
+      memberId: memberIdInput.value,
     });
   }
 });

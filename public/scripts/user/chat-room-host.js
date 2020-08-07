@@ -61,7 +61,7 @@ function outputWaitingRoom(waitingRoom) {
       .map((user) => {
         return `<div class="waiting-room-user p-2 d-flex justify-content-between">
           <div>
-            <img class="waiting-room-user-avatar" src="/images/avatar-1586267910056-769250908.png" alt="u" />
+            <img class="waiting-room-user-avatar" src="${user.avatar}" alt="u" />
             <span class="waiting-room-user-name ml-2">${user.name}</span>
           </div>
           <div>
@@ -133,7 +133,7 @@ function outputRoomInfo(roomInfo, socketId) {
     .map((user) => {
       return `<div class="room-user p-2 d-flex justify-content-between">
         <div>
-          <img class="room-user-avatar" src="/images/avatar-1586267910056-769250908.png" alt="u" />
+          <img class="room-user-avatar" src="${user.avatar}" alt="u" />
           <span class="room-user-name ml-2">${user.name}${
         user.socketId === socketId ? ' (Bạn)(Host)' : ''
       }</span>

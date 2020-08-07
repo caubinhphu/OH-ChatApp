@@ -8,6 +8,7 @@ const meetingShow = document.getElementById('meeting-show');
 let canClickAudioBtn = true;
 let canClickVideoBtn = true;
 
+let myAvatar = '';
 // get media device of user
 navigator.mediaDevices.getUserMedia =
   navigator.mediaDevices.getUserMedia ||
@@ -21,17 +22,21 @@ window.localStream = new MediaStream();
 // receive room info (exclude self) to set
 // each socketId is a answer peer (each rest user)
 socket.on('roomInfoForStream', (roomInfo) => {
-  outputShowMeeting();
-  roomInfo.users.forEach((socketId) => {
-    outputShowMeeting(socketId);
+  // outputShowMeeting();
+  roomInfo.users.forEach(({ id: socketId, avatar }) => {
+    if (socketId !== socket.id) {
+      outputShowMeeting(socketId, avatar);
+      // create a new peer
+      const peer = createPeer(socketId, socket.id);
 
-    // create a new peer
-    const peer = createPeer(socketId, socket.id);
+      // peer.addStream(window.localStream);
 
-    // peer.addStream(window.localStream);
-
-    // push to the peers
-    peers.push({ offerId: socket.id, answerId: socketId, peer });
+      // push to the peers
+      peers.push({ offerId: socket.id, answerId: socketId, peer });
+    } else {
+      myAvatar = avatar;
+      outputShowMeeting('my_video', avatar);
+    }
   });
 });
 
@@ -51,7 +56,7 @@ socket.on('infoLeaveRoomForStream', ({ userId }) => {
 });
 
 // receive offer signal of caller (new user join the room)
-socket.on('offerSignal', ({ signal, callerId }) => {
+socket.on('offerSignal', ({ signal, callerId, avatarCaller }) => {
   // parse signal
   signal = JSON.parse(signal);
 
@@ -65,7 +70,7 @@ socket.on('offerSignal', ({ signal, callerId }) => {
     itemPeer.peer.signal(signal);
   } else {
     // peer not exists (new user join the room)
-    const peer = addPeer(signal, callerId);
+    const peer = addPeer(signal, callerId, avatarCaller);
 
     // if this user (rest user) is turning on video -> set stream track for peer
     if (window.localStream.getAudioTracks()[0]) {
@@ -217,12 +222,12 @@ btnVideo.addEventListener('click', async function () {
 });
 
 // create area meeting item
-function outputShowMeeting(id) {
+function outputShowMeeting(id = 'my_video', avatar = '/images/917385.jpg') {
   const div = document.createElement('div');
   div.className = 'meeting-part';
-  div.dataset.id = id || 'my_video';
+  div.dataset.id = id;
 
-  div.innerHTML = `<img src="/images/917385.jpg">
+  div.innerHTML = `<img src="${avatar}">
     <video name="video" autoplay style="display:none" ${
       id ? '' : 'muted'
     }></video>
@@ -266,6 +271,7 @@ function createPeer(socketId, callerId) {
     socket.emit('offerStream', {
       receiveId: socketId,
       callerId,
+      avatar: myAvatar,
       signal: JSON.stringify(signal),
     });
   });
@@ -274,8 +280,8 @@ function createPeer(socketId, callerId) {
 }
 
 // create a new peer (answer peer) to add peers
-function addPeer(signal, callerId) {
-  outputShowMeeting(callerId);
+function addPeer(signal, callerId, avatar) {
+  outputShowMeeting(callerId, avatar);
 
   const peer = new SimplePeer({
     initiator: false, // no init -> answer peer

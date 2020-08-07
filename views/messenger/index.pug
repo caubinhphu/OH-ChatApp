@@ -9,9 +9,9 @@ block contentMain
       #main-left-top.d-flex.justify-content-between
         h4 Chat
         #room
-          button(type="button").btn.btn-light
+          a.btn.btn-light(href="/create", role="button", title="Tạo phòng")
             i.fas.fa-plus-square
-          button(type="button").btn.btn-light.ml-2
+          a.btn.btn-light.ml-2(href="/join", role="button", title="Tham gia vào phòng")
             i.fas.fa-sign-in-alt
       #main-left-search.mt-2
         input.form-control(type="text", placeholder="Tìm bạn bè để chat")

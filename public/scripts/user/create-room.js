@@ -13,11 +13,15 @@ document.createRoomForm.addEventListener('submit', function (e) {
   // input host name
   let hostnameInput = e.target.elements.hostname;
 
+  // input member id
+  let memberIdInput = e.target.elements.memberId;
+
   // send to server
   socket.emit('createRoom', {
     roomId: roomIdInput.value,
     password: passRoomInput.value,
     hostname: hostnameInput.value,
+    memberId: memberIdInput.value,
   });
 });
 

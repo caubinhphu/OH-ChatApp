@@ -9,6 +9,7 @@ const Member = require('../models/Member.model');
 
 // names bot
 const botName = 'OH Bot';
+const botAvatar = '/images/oh-bot.jpg';
 
 // handle error
 module.exports.onError = function (errorMsg) {
@@ -16,7 +17,12 @@ module.exports.onError = function (errorMsg) {
 };
 
 // receive event create a room from client
-module.exports.onCreateRoom = async function ({ roomId, password, hostname }) {
+module.exports.onCreateRoom = async function ({
+  roomId,
+  password,
+  hostname,
+  memberId,
+}) {
   try {
     // create and save a new room
     const room = await Room.create({
@@ -24,11 +30,25 @@ module.exports.onCreateRoom = async function ({ roomId, password, hostname }) {
       password,
     });
 
+    // get member logged in
+    const member = await Member.findById(memberId);
+
     // create and save a new user is host
-    const host = await User.create({
-      name: hostname,
-      host: true,
-    });
+    let host = null;
+    // check member exists or not logged in
+    if (member) {
+      host = await User.create({
+        name: hostname,
+        host: true,
+        avatar: member.avatar,
+        userType: 'member',
+      });
+    } else {
+      host = await User.create({
+        name: hostname,
+        host: true,
+      });
+    }
 
     // add host in the room
     room.users.push(host._id);
@@ -50,7 +70,7 @@ module.exports.onCreateRoom = async function ({ roomId, password, hostname }) {
 // receive event join to the room from client
 module.exports.onJoinRoom = async function (
   io,
-  { roomId, passRoom, username }
+  { roomId, passRoom, username, memberId }
 ) {
   // find the room
   const room = await Room.findOne({ roomId });
@@ -64,9 +84,19 @@ module.exports.onJoinRoom = async function (
         try {
           // join successful
           // create and save a new user
-          const user = await User.create({
-            name: username,
-          });
+          let user = null;
+          const member = await Member.findById(memberId);
+          if (member) {
+            user = await User.create({
+              name: username,
+              userType: 'member',
+              avatar: member.avatar,
+            });
+          } else {
+            user = await User.create({
+              name: username,
+            });
+          }
 
           // add the new user to the room
           room.users.push(user._id);
@@ -89,10 +119,20 @@ module.exports.onJoinRoom = async function (
       } else if (room.status.state === 'waiting') {
         // room is waiting
         // create and save a new user
-        const user = await User.create({
-          name: username,
-          socketId: this.id, // set socket id to send to client request when process allow join room
-        });
+        let user = null;
+        const member = await Member.findById(memberId);
+        if (member) {
+          user = await User.create({
+            name: username,
+            socketId: this.id, // set socket id to send to client request when process allow join room
+            avatar: member.avatar,
+          });
+        } else {
+          user = await User.create({
+            name: username,
+            socketId: this.id, // set socket id to send to client request when process allow join room
+          });
+        }
 
         // add user to the waiting room
         room.waitingRoom.push(user._id);
@@ -153,7 +193,7 @@ module.exports.onJoinChat = async function (io, { token }) {
         // emit welcome room
         this.emit(
           'message',
-          formatMessage(botName, 'Chào mừng đến với OH chat')
+          formatMessage(botName, 'Chào mừng đến với OH chat', botAvatar)
         );
 
         // set socket chat for the user
@@ -164,7 +204,11 @@ module.exports.onJoinChat = async function (io, { token }) {
         // broadcast emit join room
         this.to(room.roomId).emit(
           'message',
-          formatMessage(botName, `${user.name} đã tham gia vào phòng`)
+          formatMessage(
+            botName,
+            `${user.name} đã tham gia vào phòng`,
+            botAvatar
+          )
         );
 
         // emit allowed chat to socket client
@@ -184,8 +228,10 @@ module.exports.onJoinChat = async function (io, { token }) {
           nameRoom: room.roomId,
           users: room
             .getRoomUsersInfo()
-            .filter((user) => user.socketId !== this.id)
-            .map((user) => user.socketId),
+            // .filter((user) => user.socketId !== this.id)
+            .map((user) => {
+              return { id: user.socketId, avatar: user.avatar };
+            }),
         });
 
         // send password and manager item of room if user is host
@@ -228,7 +274,7 @@ module.exports.onMessageChat = async function ({ token, message }) {
           // broadcast message to all user in the room
           this.to(room.roomId).emit(
             'message',
-            formatMessage(user.name, message)
+            formatMessage(user.name, message, user.avatar)
           );
         } else {
           // not allowed chat
@@ -453,6 +499,7 @@ module.exports.onLeaveWaitingRoom = async function (
 module.exports.onOfferStream = function (io, data) {
   io.to(data.receiveId).emit('offerSignal', {
     callerId: data.callerId,
+    avatarCaller: data.avatar,
     signal: data.signal,
   });
 };
@@ -502,7 +549,7 @@ module.exports.onDisconnect = async function (io, reason) {
         // send message notify for remaining users in the room
         this.to(room.roomId).emit(
           'message',
-          formatMessage(botName, `${user.name} đã rời phòng`)
+          formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
         );
 
         // if not exists user in the room => delete this room
@@ -599,6 +646,10 @@ module.exports.onDisconnect = async function (io, reason) {
               nameRoom: room.roomId,
               users: room.getRoomUsersInfo(),
             });
+
+            io.to(room.roomId).emit('infoLeaveRoomForStream', {
+              userId: user.socketId,
+            });
           } else {
             this.emit('error', 'Bạn không phải host, bạn không có quyền này');
           }
@@ -616,7 +667,7 @@ module.exports.onDisconnect = async function (io, reason) {
           // send message notify for remaining users in the room
           this.to(room.roomId).emit(
             'message',
-            formatMessage(botName, `${user.name} đã rời phòng`)
+            formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
           );
           // if not exists user in the room => delete this room
           if (room.users.length <= 0) {
@@ -640,6 +691,9 @@ module.exports.onDisconnect = async function (io, reason) {
             this.to(room.roomId).emit('roomInfo', {
               nameRoom: room.roomId,
               users: room.getRoomUsersInfo(),
+            });
+            this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
+              userId: user.socketId,
             });
           }
         }

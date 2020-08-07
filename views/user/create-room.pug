@@ -12,7 +12,7 @@ block contentMain
       form.mt-2(name="createRoomForm")
         input(type="hidden", name="roomId", value=idRandom)
         input(type="hidden", name="passRoom", value=passwordRandom)
-
+        input(type="hidden", name="memberId", value=memberId)
         label ID phòng 
         input#name.form-control(type="text", disabled=true, value=idRandom)
         label.mt-2 Mật khẩu phòng
@@ -20,13 +20,13 @@ block contentMain
         label(for="hostname")
           span Tên hiển thị
           span.text-danger &nbsp;*
-        input#hostname.form-control(type="text", name="hostname", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự")
+        input#hostname.form-control(type="text", name="hostname", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự", value=name)
         div
           em#err-join-name.text-danger
 
         .text-center.mt-2
           button.btn.btn-info.mr-4 Tạo phòng
-          a.btn.btn-light(role="button", href="/") Quay lại
+          a.btn.btn-light(role="button", href="javascript:history.back()") Quay lại
 
 append scripts
   script(src="/socket.io/socket.io.js")

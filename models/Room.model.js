@@ -57,6 +57,7 @@ roomSchema.methods.getWaitingRoom = function () {
     return {
       id: user.id,
       name: user.name,
+      avatar: user.avatar,
     };
   });
 };
@@ -76,6 +77,7 @@ roomSchema.methods.getRoomUsersInfo = function () {
       name: user.name,
       socketId: user.socketId,
       host: user.host,
+      avatar: user.avatar,
     };
   });
 };

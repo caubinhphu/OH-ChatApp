@@ -15,9 +15,10 @@ const escapeHtml = function (html) {
 };
 
 // format message => return {username, message, time}
-const formatMessage = function (username, message) {
+const formatMessage = function (username, message, avatar) {
   return {
     username,
+    avatar,
     message: escapeHtml(message),
     time: moment().format('h:mm A'),
   };

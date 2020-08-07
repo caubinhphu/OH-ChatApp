@@ -10,10 +10,11 @@ block contentMain
         img.mr-2(src="/images/logo.png", alt="OH", width="30px")
         span.text-secondary OH Chat
       form.mt-2(name="joinRoomForm", action="/chat")
+        input(type="hidden", name="memberId", value=memberId)
         label(for="name")
           span Tên hiển thị
           span.text-danger &nbsp;*
-        input#name.form-control(type="text", name="name", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự")
+        input#name.form-control(type="text", name="name", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự", value=name)
         div
           em#err-join-name.text-danger
         label.mt-2(for="room")
@@ -26,7 +27,7 @@ block contentMain
         input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng")
         .text-center.mt-2
           button.btn.btn-info.mr-4 Tham gia
-          a.btn.btn-light(role="button", href="/") Quay lại
+          a.btn.btn-light(role="button", href="javascript:history.back()") Quay lại
 
 append scripts
   script(src="/socket.io/socket.io.js")

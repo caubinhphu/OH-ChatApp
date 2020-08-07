@@ -92,7 +92,7 @@ function outputMessage(msgObj, me = false) {
     }">${msgObj.time}</small>
       <div>
         <div class="msg">
-          <img class="message-avatar" src="/images/avatar-1586267910056-769250908.png" alt="a" />
+          <img class="message-avatar" src="${msgObj.avatar}" alt="a" />
           <small class="message-name">${msgObj.username}</small>
           <small class="message-content">${msgObj.message}</small>
         </div>

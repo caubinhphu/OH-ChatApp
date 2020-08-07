@@ -5,8 +5,18 @@ module.exports.getIndex = (req, res) => {
 };
 
 module.exports.getJoin = (req, res) => {
+  let name = '';
+  let memberId = '';
+  // check user logged in
+  if (req.isAuthenticated()) {
+    name = req.user.name;
+    memberId = req.user._id;
+  }
+
   res.render('user/join-room', {
     titleSite: 'OH Chat - Room',
+    name,
+    memberId,
   });
 };
 
@@ -23,6 +33,14 @@ module.exports.getHostChat = (req, res) => {
 };
 
 module.exports.getCreate = (req, res) => {
+  let name = '';
+  let memberId = '';
+  // check user logged in
+  if (req.isAuthenticated()) {
+    name = req.user.name;
+    memberId = req.user._id;
+  }
+
   // create id room random
   let idRandom = Math.round(Math.random() * 1e9)
     .toString()
@@ -34,6 +52,8 @@ module.exports.getCreate = (req, res) => {
 
   res.render('user/create-room', {
     titleSite: 'OH Chat - Room',
+    memberId,
+    name,
     idRandom,
     passwordRandom,
   });
