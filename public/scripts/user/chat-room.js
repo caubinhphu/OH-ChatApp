@@ -34,7 +34,8 @@ socket.on('kickedOutRoom', (msg) => {
 function outputChatInput(allowed) {
   if (allowed) {
     // allow chat
-    msgForm.innerHTML = `<input id="msg" class="form-control" type="text" name="message", placeholder="Nhập tin nhắn", autocomplete="off" />
+    msgForm.innerHTML = `<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#emoji">&#128512;</button>
+      <input id="msg" class="form-control" type="text" name="message", placeholder="Nhập tin nhắn", autocomplete="off" />
       <button class="btn btn-default text-secondary"><i class="fas fa-paper-plane"/></button>`;
   } else {
     // not allow chat

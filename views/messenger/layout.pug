@@ -16,10 +16,10 @@ block header
           img.rounded-circle.mr-1(src=memberAvatar, alt="member", width="30px")
           span= memberName
       #notification.mx-2
-        button#member-notify-btn.btn.btn-light(data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
+        button#member-notify-btn.btn.btn-light(type="button", data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
           i.fas.fa-bell
       #info
-        button#member-info-btn.btn.btn-light(data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")
+        button#member-info-btn.btn.btn-light(type="button", data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")
           i.fas.fa-caret-down
       #notify-drop.collapse(data-parent="#header-right")
 
