@@ -8,7 +8,9 @@ const meetingShow = document.getElementById('meeting-show');
 let canClickAudioBtn = true;
 let canClickVideoBtn = true;
 
-let myAvatar = '';
+// my avatar
+let myAvatar = '/images/default-avatar.jpg';
+
 // get media device of user
 navigator.mediaDevices.getUserMedia =
   navigator.mediaDevices.getUserMedia ||
@@ -106,121 +108,20 @@ socket.on('answerSignal', ({ answerId, signal }) => {
 socket.on('stopVideo', outputStopVideo);
 
 // audio btn click
-btnAudio.addEventListener('click', async function () {
-  if (canClickAudioBtn) {
-    canClickAudioBtn = false;
-    this.style.cursor = 'no-drop';
-    if (this.dataset.state === 'off') {
-      // turn on video
-      // set UI
-      this.dataset.state = 'on';
-      this.innerHTML = '<i class="fas fa-microphone text-white"></i>';
-      $(this).attr('data-original-title', 'Tắt audio').tooltip('show');
-
-      // get stream video from camera of user and set in the window
-      if (navigator.mediaDevices.getUserMedia) {
-        const audioStream = await navigator.mediaDevices.getUserMedia({
-          video: false,
-          audio: true,
-        });
-
-        // add audio track for stream of each peer
-        peers.forEach((peer) => {
-          peer.peer.addTrack(
-            audioStream.getAudioTracks()[0],
-            window.localStream
-          );
-        });
-
-        // add audio track for stream of local stream
-        window.localStream.addTrack(audioStream.getAudioTracks()[0]);
-      }
-    } else if (this.dataset.state === 'on') {
-      // stop video
-      // set UI
-      this.dataset.state = 'off';
-      this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
-      $(this).attr('data-original-title', 'Bật audio').tooltip('show');
-
-      // remove audio track of stream each peer
-      peers.forEach((peer) => {
-        peer.peer.removeTrack(
-          window.localStream.getAudioTracks()[0],
-          window.localStream
-        );
-      });
-
-      // remove audio track of stream in local stream
-      window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
-
-      // output stop my video
-      socket.emit('stopAudioStream');
-      outputStopAudio();
-    }
-    canClickAudioBtn = true;
-    this.style.cursor = 'pointer';
+btnAudio.addEventListener('click', handleAudio);
+// shortcut key
+document.addEventListener('keydown', function (e) {
+  if ((e.key === 'a' || e.key === 'A') && e.altKey === true) {
+    handleAudio.bind(btnAudio)();
   }
 });
 
 // video btn click
-btnVideo.addEventListener('click', async function () {
-  if (canClickVideoBtn) {
-    canClickVideoBtn = false;
-    this.style.cursor = 'no-drop';
-
-    if (this.dataset.state === 'off') {
-      // turn on video
-      // set UI
-      this.dataset.state = 'on';
-      this.innerHTML = '<i class="fas fa-video text-white"></i>';
-      $(this).attr('data-original-title', 'Tắt camera').tooltip('show');
-
-      // get stream video from camera of user and set in the window
-      if (navigator.mediaDevices.getUserMedia) {
-        const videoStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: false,
-        });
-
-        // add video track for stream each peer
-        peers.forEach((peer) => {
-          peer.peer.addTrack(
-            videoStream.getVideoTracks()[0],
-            window.localStream
-          );
-        });
-
-        // add video track for stream in local
-        window.localStream.addTrack(videoStream.getVideoTracks()[0]);
-
-        // output my video
-        outputVideo();
-      }
-    } else if (this.dataset.state === 'on') {
-      // stop video
-      // set UI
-      this.dataset.state = 'off';
-      this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
-      $(this).attr('data-original-title', 'Bật camera').tooltip('show');
-
-      // remove video track of stream each peer
-      peers.forEach((peer) => {
-        peer.peer.removeTrack(
-          window.localStream.getVideoTracks()[0],
-          window.localStream
-        );
-      });
-
-      // stop and remove video track of stream in local
-      window.localStream.getVideoTracks()[0].stop();
-      window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
-
-      // output stop my video
-      socket.emit('stopVideoStream');
-      outputStopVideo();
-    }
-    canClickVideoBtn = true;
-    this.style.cursor = 'pointer';
+btnVideo.addEventListener('click', handleVideo);
+// shortcut key
+document.addEventListener('keydown', function (e) {
+  if ((e.key === 'v' || e.key === 'V') && e.altKey === true) {
+    handleVideo.bind(btnVideo)();
   }
 });
 
@@ -384,4 +285,131 @@ function outputStopAudio(id = 'my_video') {
 // output leave room for stream
 function outputLeaveRoomForStream(id) {
   meetingShow.querySelector(`div[data-id="${id}"]`).remove();
+}
+
+// handle turn on / turn off audio
+async function handleAudio() {
+  if (canClickAudioBtn) {
+    canClickAudioBtn = false;
+    this.style.cursor = 'no-drop';
+    if (this.dataset.state === 'off') {
+      // turn on video
+      // set UI
+      this.dataset.state = 'on';
+      this.innerHTML = '<i class="fas fa-microphone text-white"></i>';
+      $(this)
+        .attr('data-original-title', 'Tắt audio (Alt + A)')
+        .tooltip('show');
+
+      // get stream video from camera of user and set in the window
+      if (navigator.mediaDevices.getUserMedia) {
+        const audioStream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true,
+        });
+
+        // add audio track for stream of each peer
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            audioStream.getAudioTracks()[0],
+            window.localStream
+          );
+        });
+
+        // add audio track for stream of local stream
+        window.localStream.addTrack(audioStream.getAudioTracks()[0]);
+      }
+    } else if (this.dataset.state === 'on') {
+      // stop video
+      // set UI
+      this.dataset.state = 'off';
+      this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
+      $(this)
+        .attr('data-original-title', 'Bật audio (Alt + A)')
+        .tooltip('show');
+
+      // remove audio track of stream each peer
+      peers.forEach((peer) => {
+        peer.peer.removeTrack(
+          window.localStream.getAudioTracks()[0],
+          window.localStream
+        );
+      });
+
+      // remove audio track of stream in local stream
+      window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
+
+      // output stop my video
+      socket.emit('stopAudioStream');
+      outputStopAudio();
+    }
+    canClickAudioBtn = true;
+    this.style.cursor = 'pointer';
+  }
+}
+
+// handle turn on / turn off video
+async function handleVideo() {
+  if (canClickVideoBtn) {
+    canClickVideoBtn = false;
+    this.style.cursor = 'no-drop';
+
+    if (this.dataset.state === 'off') {
+      // turn on video
+      // set UI
+      this.dataset.state = 'on';
+      this.innerHTML = '<i class="fas fa-video text-white"></i>';
+      $(this)
+        .attr('data-original-title', 'Tắt camera (Alt + V)')
+        .tooltip('show');
+
+      // get stream video from camera of user and set in the window
+      if (navigator.mediaDevices.getUserMedia) {
+        const videoStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+
+        // add video track for stream each peer
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            videoStream.getVideoTracks()[0],
+            window.localStream
+          );
+        });
+
+        // add video track for stream in local
+        window.localStream.addTrack(videoStream.getVideoTracks()[0]);
+
+        // output my video
+        outputVideo();
+      }
+    } else if (this.dataset.state === 'on') {
+      // stop video
+      // set UI
+      this.dataset.state = 'off';
+      this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
+      $(this)
+        .attr('data-original-title', 'Bật camera (Alt + V)')
+        .tooltip('show');
+
+      // remove video track of stream each peer
+      peers.forEach((peer) => {
+        peer.peer.removeTrack(
+          window.localStream.getVideoTracks()[0],
+          window.localStream
+        );
+      });
+
+      // stop and remove video track of stream in local
+      window.localStream.getVideoTracks()[0].stop();
+      window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+
+      // output stop my video
+      socket.emit('stopVideoStream');
+      outputStopVideo();
+    }
+    canClickVideoBtn = true;
+    this.style.cursor = 'pointer';
+  }
 }
