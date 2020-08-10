@@ -23,6 +23,10 @@ window.localStream = new MediaStream();
 // each socketId is a answer peer (each rest user)
 socket.on('roomInfoForStream', (roomInfo) => {
   // outputShowMeeting();
+  const me = roomInfo.users.find((user) => user.id === socket.id);
+  if (me) {
+    myAvatar = me.avatar;
+  }
   roomInfo.users.forEach(({ id: socketId, avatar }) => {
     if (socketId !== socket.id) {
       outputShowMeeting(socketId, avatar);
@@ -34,7 +38,6 @@ socket.on('roomInfoForStream', (roomInfo) => {
       // push to the peers
       peers.push({ offerId: socket.id, answerId: socketId, peer });
     } else {
-      myAvatar = avatar;
       outputShowMeeting('my_video', avatar);
     }
   });

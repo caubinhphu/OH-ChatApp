@@ -30,6 +30,9 @@ module.exports.onCreateRoom = async function ({
       password,
     });
 
+    if (memberId === '') {
+      memberId = null;
+    }
     // get member logged in
     const member = await Member.findById(memberId);
 
