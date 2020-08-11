@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const memberSchema = mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    default: '',
   },
   password: {
     type: String,
-    required: true,
+    default: '',
   },
   name: {
     type: String,
@@ -38,6 +38,14 @@ const memberSchema = mongoose.Schema({
     default: false,
   },
   verifyToken: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: 'local',
+  },
+  OAuthId: {
     type: String,
     default: '',
   },

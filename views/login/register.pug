@@ -23,6 +23,14 @@ block contentMain
           .form-group.d-flex.justify-content-center
             label.text-secondary(for="password2", style="width: 230px") Xác nhận mật khẩu
             input#password2.form-control.form-control-sm(type="password", name="password2", required, placeholder="Nhập lại mật khẩu")
-          .form-group.text-right
-            a.btn.btn-sm.btn-link.mr-2(href="/", role="button") Đăng nhập
-            button.btn.btn-primary.btn-sm(type="submit") Đăng ký
+          .form-group.d-flex.justify-content-between
+            .d-flex.flex-column
+              a.btn.btn-sm.btn-info(href="/login/facebook", role="button")
+                i.fab.fa-facebook
+                span.ml-1 Đăng ký với Facebook
+              a.btn.btn-sm.btn-danger.mt-1(href="/login/google", role="button")
+                i.fab.fa-google
+                span.ml-1 Đăng ký với Google
+            .d-flex.flex-column
+              button.btn.btn-primary.btn-sm(type="submit") Đăng ký
+              a.btn.btn-sm.btn-link.mr-2(href="/", role="button") Đăng nhập

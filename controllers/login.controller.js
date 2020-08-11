@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const passport = require('passport');
 
+const key = require('../config/key');
+
 const sendMail = require('../utils/send-mail');
 
 const { validateRegister } = require('../validation/login.validation');
@@ -79,9 +81,9 @@ module.exports.postRegister = async (req, res) => {
       // send email verify account
       const html = `<h2>OH chat</h2>
         <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi</p>
-        <p>Hãy chọn <a href='http://localhost:3000/login/verify/${verifyToken.toString(
-          'hex'
-        )}'>vào đây</a> để xác nhận tài khoản của bạn</p>`;
+        <p>Hãy chọn <a href='${key.host}/login/verify/${verifyToken.toString(
+        'hex'
+      )}'>vào đây</a> để xác nhận tài khoản của bạn</p>`;
       const info = await sendMail(email, 'Xác nhận tài khoản', html);
     } catch (error) {
       next(error);
@@ -119,4 +121,17 @@ module.exports.getVerifyEmail = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports.getLoginFacebook = (req, res, next) => {
+  passport.authenticate('facebook')(req, res, next);
+};
+
+module.exports.getLoginFacebookCallback = (req, res, next) => {
+  passport.authenticate('facebook', {
+    successRedirect: '/messenger',
+    failureRedirect: '/',
+    failureFlash: true,
+    successFlash: true,
+  })(req, res, next);
 };
