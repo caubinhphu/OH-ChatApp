@@ -67,14 +67,38 @@ module.exports.facebook = (passport) => {
         clientID: process.env.FACEBOOK_APP_ID,
         clientSecret: process.env.FACEBOOK_APP_SECRET,
         callbackURL: `${key.host}/login/facebook/callback`,
+        profileFields: [
+          'id',
+          'displayName',
+          'name',
+          'gender',
+          'picture.type(large)',
+        ],
       },
 
       async (accessToken, refreshToken, profile, done) => {
+        console.log(profile);
         try {
           let member = await Member.findOne({ OAuthId: profile.id });
           if (!member) {
+            let avatar = '/images/default-avatar.jpg';
+
+            if (profile.photos) {
+              download(
+                profile.photos[0].value,
+                path.join(
+                  __dirname,
+                  '..',
+                  'public/images/user/avatar',
+                  profile.id + '.jpg'
+                ),
+                () => {}
+              );
+              avatar = `/images/user/avatar/${profile.id}.jpg`;
+            }
             member = await Member.create({
               name: profile.displayName,
+              avatar,
               type: 'facebook',
               OAuthId: profile.id,
             });
@@ -101,17 +125,21 @@ module.exports.google = (passport) => {
         try {
           let member = await Member.findOne({ email: profile.emails[0].value });
           if (!member) {
-            download(
-              profile.photos[0].value,
-              path.join(
-                __dirname,
-                '..',
-                'public/images/user/avatar',
-                profile.id + '.jpg'
-              ),
-              () => {}
-            );
-            const avatar = `/images/user/avatar/${profile.id}.jpg`;
+            let avatar = '/images/default-avatar.jpg';
+
+            if (profile.photos) {
+              download(
+                profile.photos[0].value,
+                path.join(
+                  __dirname,
+                  '..',
+                  'public/images/user/avatar',
+                  profile.id + '.jpg'
+                ),
+                () => {}
+              );
+              avatar = `/images/user/avatar/${profile.id}.jpg`;
+            }
 
             member = await Member.create({
               email: profile.emails[0].value,
@@ -122,7 +150,11 @@ module.exports.google = (passport) => {
             });
             done(null, member, { message: 'Đăng nhập thành công' });
           } else {
-            done(null, false, { message: 'Email đã được sử dụng' });
+            if (member.OAuthId !== profile.id) {
+              done(null, false, { message: 'Email đã được sử dụng' });
+            } else {
+              done(null, member, { message: 'Đăng nhập thành công' });
+            }
           }
         } catch (error) {
           done(error);
