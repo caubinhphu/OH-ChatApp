@@ -1,6 +1,9 @@
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const fs = require('fs');
+const request = require('request');
+const path = require('path');
 
 const bcrypt = require('bcrypt');
 
@@ -98,9 +101,22 @@ module.exports.google = (passport) => {
         try {
           let member = await Member.findOne({ email: profile.emails[0].value });
           if (!member) {
+            download(
+              profile.photos[0].value,
+              path.join(
+                __dirname,
+                '..',
+                'public/images/user/avatar',
+                profile.id + '.jpg'
+              ),
+              () => {}
+            );
+            const avatar = `/images/user/avatar/${profile.id}.jpg`;
+
             member = await Member.create({
               email: profile.emails[0].value,
               name: profile.displayName,
+              avatar,
               type: 'google',
               OAuthId: profile.id,
             });
@@ -115,3 +131,11 @@ module.exports.google = (passport) => {
     )
   );
 };
+
+function download(uri, filename, callback) {
+  request.head(uri, function (err, res, body) {
+    // console.log('content-type:', res.headers['content-type']);
+    // console.log('content-length:', res.headers['content-length']);
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+}

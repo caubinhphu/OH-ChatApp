@@ -13,9 +13,13 @@ router.get(
   controller.getLoginFacebookCallback
 );
 
-router.get('/google', controller.getLoginGoogle);
+router.get('/google', checkNotAuthenticated, controller.getLoginGoogle);
 
-router.get('/google/callback', controller.getLoginGoogleCallback);
+router.get(
+  '/google/callback',
+  checkNotAuthenticated,
+  controller.getLoginGoogleCallback
+);
 
 router.post('/', checkNotAuthenticated, controller.postLogin);
 
