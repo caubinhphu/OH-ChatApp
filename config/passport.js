@@ -1,12 +1,14 @@
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
 const bcrypt = require('bcrypt');
 
 const key = require('../config/key');
 
 const Member = require('../models/Member.model');
 
-module.exports.local = function (passport) {
+module.exports.local = (passport) => {
   passport.use(
     new LocalStrategy(
       {
@@ -55,7 +57,7 @@ module.exports.local = function (passport) {
   });
 };
 
-module.exports.facebook = function (passport) {
+module.exports.facebook = (passport) => {
   passport.use(
     new FacebookStrategy(
       {
@@ -75,6 +77,37 @@ module.exports.facebook = function (passport) {
             });
           }
           done(null, member, { message: 'Đăng nhập thành công' });
+        } catch (error) {
+          done(error);
+        }
+      }
+    )
+  );
+};
+
+module.exports.google = (passport) => {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_APP_ID,
+        clientSecret: process.env.GOOGLE_APP_SECRET,
+        callbackURL: `${key.host}/login/google/callback`,
+      },
+
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          let member = await Member.findOne({ email: profile.emails[0].value });
+          if (!member) {
+            member = await Member.create({
+              email: profile.emails[0].value,
+              name: profile.displayName,
+              type: 'google',
+              OAuthId: profile.id,
+            });
+            done(null, member, { message: 'Đăng nhập thành công' });
+          } else {
+            done(null, false, { message: 'Email đã được sử dụng' });
+          }
         } catch (error) {
           done(error);
         }

@@ -15,6 +15,7 @@ const server = http.createServer(app);
 // config passport
 require('./config/passport').local(passport);
 require('./config/passport').facebook(passport);
+require('./config/passport').google(passport);
 
 // io
 const io = require('socket.io')(server);

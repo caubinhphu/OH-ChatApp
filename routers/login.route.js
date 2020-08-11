@@ -13,6 +13,10 @@ router.get(
   controller.getLoginFacebookCallback
 );
 
+router.get('/google', controller.getLoginGoogle);
+
+router.get('/google/callback', controller.getLoginGoogleCallback);
+
 router.post('/', checkNotAuthenticated, controller.postLogin);
 
 router.get('/register', checkNotAuthenticated, controller.getRegister);

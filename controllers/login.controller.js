@@ -97,11 +97,13 @@ module.exports.postRegister = async (req, res) => {
   }
 };
 
+// logout
 module.exports.getLogout = (req, res) => {
   req.logOut();
   res.redirect('/');
 };
 
+// get verify email
 module.exports.getVerifyEmail = async (req, res, next) => {
   const { token } = req.params;
 
@@ -123,12 +125,31 @@ module.exports.getVerifyEmail = async (req, res, next) => {
   }
 };
 
+// get login with facebook
 module.exports.getLoginFacebook = (req, res, next) => {
   passport.authenticate('facebook')(req, res, next);
 };
 
+// get login callback with facebook
 module.exports.getLoginFacebookCallback = (req, res, next) => {
   passport.authenticate('facebook', {
+    successRedirect: '/messenger',
+    failureRedirect: '/',
+    failureFlash: true,
+    successFlash: true,
+  })(req, res, next);
+};
+
+// get login with google
+module.exports.getLoginGoogle = (req, res, next) => {
+  passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/plus.login', 'email'],
+  })(req, res, next);
+};
+
+// get login callback with google
+module.exports.getLoginGoogleCallback = (req, res, next) => {
+  passport.authenticate('google', {
     successRedirect: '/messenger',
     failureRedirect: '/',
     failureFlash: true,
