@@ -9,6 +9,7 @@
   - [MongooseJs](https://mongoosejs.com/)
   - [NotifyJs](https://notifyjs.jpillora.com/)
   - [SimplePeer](https://github.com/feross/simple-peer)
+  - [Passport](http://www.passportjs.org/)
 ### Tác giả: NAH - Nguyễn Anh Hải
 
 ### Quá trình phát triển
