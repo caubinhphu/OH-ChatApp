@@ -63,3 +63,11 @@
 
   - Audio chat
 </details>
+<details>
+  <summary>Version 2.2.0 (12/8/2020)</summary>
+  Chức năng thêm:
+
+  - Đăng ký tài khoản, đăng nhập
+  - Đăng nhập bằng facebook, google
+  - Chat với biểu tượng cảm xúc
+</details>
