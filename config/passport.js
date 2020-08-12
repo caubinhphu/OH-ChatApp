@@ -77,7 +77,6 @@ module.exports.facebook = (passport) => {
       },
 
       async (accessToken, refreshToken, profile, done) => {
-        console.log(profile);
         try {
           let member = await Member.findOne({ OAuthId: profile.id });
           if (!member) {
