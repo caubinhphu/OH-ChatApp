@@ -4,13 +4,14 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const fs = require('fs');
 const request = require('request');
 const path = require('path');
-
 const bcrypt = require('bcrypt');
 
 const key = require('../config/key');
+const cloudinary = require('../utils/cloudinary');
 
 const Member = require('../models/Member.model');
 
+// login with email and password
 module.exports.local = (passport) => {
   passport.use(
     new LocalStrategy(
@@ -20,6 +21,7 @@ module.exports.local = (passport) => {
       },
       async (email, password, done) => {
         try {
+          // find member by email
           const member = await Member.findOne({ email });
           if (!member) {
             return done(null, false, {
@@ -27,6 +29,7 @@ module.exports.local = (passport) => {
             });
           }
 
+          // chekc password
           const checkPassword = await bcrypt.compare(password, member.password);
           if (!checkPassword) {
             return done(null, false, {
@@ -34,6 +37,7 @@ module.exports.local = (passport) => {
             });
           }
 
+          // check member active
           if (!member.active) {
             return done(null, false, {
               message:
@@ -41,6 +45,7 @@ module.exports.local = (passport) => {
             });
           }
 
+          // pass login
           return done(null, member, { message: 'Đăng nhập thành công' });
         } catch (error) {
           done(err, false);
@@ -60,7 +65,9 @@ module.exports.local = (passport) => {
   });
 };
 
+// login with facebook
 module.exports.facebook = (passport) => {
+  // config
   passport.use(
     new FacebookStrategy(
       {
@@ -78,23 +85,36 @@ module.exports.facebook = (passport) => {
 
       async (accessToken, refreshToken, profile, done) => {
         try {
+          // find member by OAuthId
           let member = await Member.findOne({ OAuthId: profile.id });
           if (!member) {
+            // member not exists
+            // download avatar member in facebook and upload to cloudinary
             let avatar = '/images/default-avatar.jpg';
-
+            const pathFile = path.join(
+              __dirname,
+              '..',
+              'public/images/user/avatar',
+              profile.id + '.jpg'
+            );
             if (profile.photos) {
-              download(
-                profile.photos[0].value,
-                path.join(
-                  __dirname,
-                  '..',
-                  'public/images/user/avatar',
-                  profile.id + '.jpg'
-                ),
-                () => {}
-              );
-              avatar = `/images/user/avatar/${profile.id}.jpg`;
+              // download
+              download(profile.photos[0].value, pathFile, async () => {
+                try {
+                  // upload
+                  const result = await cloudinary.upload(
+                    pathFile,
+                    profile.id,
+                    'ohchat/avatar'
+                  );
+                  avatar = result.url;
+                } catch (error) {
+                  return done(error);
+                }
+              });
             }
+
+            // create new member
             member = await Member.create({
               name: profile.displayName,
               avatar,
@@ -102,6 +122,8 @@ module.exports.facebook = (passport) => {
               OAuthId: profile.id,
             });
           }
+
+          // pass login
           done(null, member, { message: 'Đăng nhập thành công' });
         } catch (error) {
           done(error);
@@ -111,8 +133,10 @@ module.exports.facebook = (passport) => {
   );
 };
 
+// login with google
 module.exports.google = (passport) => {
   passport.use(
+    // config
     new GoogleStrategy(
       {
         clientID: process.env.GOOGLE_APP_ID,
@@ -122,24 +146,36 @@ module.exports.google = (passport) => {
 
       async (accessToken, refreshToken, profile, done) => {
         try {
+          // find member with email
           let member = await Member.findOne({ email: profile.emails[0].value });
           if (!member) {
+            // member not exists
+            // download avatar of member from google account and the upload to cloundinary
             let avatar = '/images/default-avatar.jpg';
-
+            const pathFile = path.join(
+              __dirname,
+              '..',
+              'public/images/user/avatar',
+              profile.id + '.jpg'
+            );
             if (profile.photos) {
-              download(
-                profile.photos[0].value,
-                path.join(
-                  __dirname,
-                  '..',
-                  'public/images/user/avatar',
-                  profile.id + '.jpg'
-                ),
-                () => {}
-              );
-              avatar = `/images/user/avatar/${profile.id}.jpg`;
+              // download
+              download(profile.photos[0].value, pathFile, async () => {
+                try {
+                  // upload
+                  const result = await cloudinary.upload(
+                    pathFile,
+                    profile.id,
+                    'ohchat/avatar'
+                  );
+                  avatar = result.url;
+                } catch (error) {
+                  return done(error);
+                }
+              });
             }
 
+            // create new member
             member = await Member.create({
               email: profile.emails[0].value,
               name: profile.displayName,
@@ -149,6 +185,7 @@ module.exports.google = (passport) => {
             });
             done(null, member, { message: 'Đăng nhập thành công' });
           } else {
+            // email exists
             if (member.OAuthId !== profile.id) {
               done(null, false, { message: 'Email đã được sử dụng' });
             } else {
@@ -163,6 +200,7 @@ module.exports.google = (passport) => {
   );
 };
 
+// down load file from an uri
 function download(uri, filename, callback) {
   request.head(uri, function (err, res, body) {
     // console.log('content-type:', res.headers['content-type']);

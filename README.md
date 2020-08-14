@@ -10,6 +10,8 @@
   - [NotifyJs](https://notifyjs.jpillora.com/)
   - [SimplePeer](https://github.com/feross/simple-peer)
   - [Passport](http://www.passportjs.org/)
+  - [NodeMailer](https://nodemailer.com/)
+  - [Cloudinary](https://cloudinary.com/)
 ### Tác giả: NAH - Nguyễn Anh Hải
 
 ### Quá trình phát triển
