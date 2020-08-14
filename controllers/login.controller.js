@@ -28,7 +28,7 @@ module.exports.getRegister = (req, res) => {
 };
 
 // post register
-module.exports.postRegister = async (req, res) => {
+module.exports.postRegister = async (req, res, next) => {
   // get info register
   const { name, email, password, password2 } = req.body;
 
