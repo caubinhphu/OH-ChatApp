@@ -99,19 +99,15 @@ module.exports.facebook = (passport) => {
             );
             if (profile.photos) {
               // download
-              download(profile.photos[0].value, pathFile, async () => {
-                try {
-                  // upload
-                  const result = await cloudinary.upload(
-                    pathFile,
-                    profile.id,
-                    'ohchat/avatar'
-                  );
-                  avatar = result.url;
-                } catch (error) {
-                  return done(error);
-                }
-              });
+              download(profile.photos[0].value, pathFile, () => {});
+
+              // upload
+              const result = await cloudinary.upload(
+                pathFile,
+                profile.id,
+                'ohchat/avatar'
+              );
+              avatar = result.url;
             }
 
             // create new member
@@ -124,9 +120,9 @@ module.exports.facebook = (passport) => {
           }
 
           // pass login
-          done(null, member, { message: 'Đăng nhập thành công' });
+          return done(null, member, { message: 'Đăng nhập thành công' });
         } catch (error) {
-          done(error);
+          return done(error);
         }
       }
     )
@@ -160,19 +156,15 @@ module.exports.google = (passport) => {
             );
             if (profile.photos) {
               // download
-              download(profile.photos[0].value, pathFile, async () => {
-                try {
-                  // upload
-                  const result = await cloudinary.upload(
-                    pathFile,
-                    profile.id,
-                    'ohchat/avatar'
-                  );
-                  avatar = result.url;
-                } catch (error) {
-                  return done(error);
-                }
-              });
+              download(profile.photos[0].value, pathFile, () => {});
+
+              // upload
+              const result = await cloudinary.upload(
+                pathFile,
+                profile.id,
+                'ohchat/avatar'
+              );
+              avatar = result.url;
             }
 
             // create new member
@@ -183,17 +175,17 @@ module.exports.google = (passport) => {
               type: 'google',
               OAuthId: profile.id,
             });
-            done(null, member, { message: 'Đăng nhập thành công' });
+            return done(null, member, { message: 'Đăng nhập thành công' });
           } else {
             // email exists
             if (member.OAuthId !== profile.id) {
               done(null, false, { message: 'Email đã được sử dụng' });
             } else {
-              done(null, member, { message: 'Đăng nhập thành công' });
+              return done(null, member, { message: 'Đăng nhập thành công' });
             }
           }
         } catch (error) {
-          done(error);
+          return done(error);
         }
       }
     )
