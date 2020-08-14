@@ -1,12 +1,4 @@
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.MAIL_USER, // generated ethereal user
-    pass: process.env.MAIL_PASSWORD, // generated ethereal password
-  },
-});
+const transporter = require('../config/nodemailer');
 
 module.exports = (to, subject, html) => {
   return new Promise((resolve, reject) => {
