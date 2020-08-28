@@ -1,0 +1,39 @@
+extend ./layout
+
+append styles
+  link(rel="stylesheet", href="/styles/messenger/profile.css")
+
+block contentMain
+  #info-area.mt-2
+    .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center
+      .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
+        img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
+        .form-group.mt-md-2.ml-2.ml-md-0.mb-0
+          label.btn.btn-secondary.btn-sm(for="avatar") Đổi ảnh đại diện
+          input#avatar.d-none(type="file", name="avatar")
+      .mt-2.mt-md-0.pl-md-5
+        form
+          .form-group.d-flex
+            label.text-secondary(for="name", style="width: 130px") Họ tên
+            input#name.form-control.form-control-sm(type="text", name="name", value=member.name)
+          .form-group.d-flex
+            label.text-secondary(for="email", style="width: 130px") Email
+            input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
+          .form-group.d-flex
+            label.text-secondary(for="birthday", style="width: 130px") Ngày sinh
+            input#birthday.form-control.form-control-sm(type="date", name="birthday", value=birthOfDate)
+          .form-group.d-flex
+            label.text-secondary(style="width: 130px") Giới tính
+            .form-check.form-check-inline
+              input#male.form-check-input(type="radio", name="gender", checked=member.gender)
+              label.form-check-label(for="male") Nam
+              input#female.form-check-input.ml-2(type="radio", name="gender", checked=!member.gender)
+              label.form-check-label(for="female") Nữ
+          .form-group.d-flex
+            label.text-secondary(for="phone", style="width: 130px") Điện thoại
+            input#phone.form-control.form-control-sm(type="text", name="phone", value=member.phone)
+          .form-group.d-flex
+            label.text-secondary(for="address", style="width: 130px") Địa chỉ
+            input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
+          .text-right
+            button.btn.btn-sm.btn-success Lưu

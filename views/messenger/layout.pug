@@ -12,8 +12,8 @@ block header
         input.form-control(type="text", placeholder="Tìm kiếm bạn bè")
     #header-right.d-flex.align-items-center
       #user
-        a(href="#")
-          img.rounded-circle.mr-1(src=memberAvatar, alt="member", width="30px")
+        a(href="/messenger/profile")
+          img.rounded-circle.mr-1(src=memberAvatar, alt=`${memberName}`, width="30px")
           span= memberName
       #notification.mx-2
         button#member-notify-btn.btn.btn-light(type="button", data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
@@ -21,11 +21,11 @@ block header
       #info
         button#member-info-btn.btn.btn-light(type="button", data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")
           i.fas.fa-caret-down
-      #notify-drop.collapse(data-parent="#header-right")
+      #notify-drop.collapse(data-parent="#header-right", style="z-index: 1000")
 
-      #info-drop.collapse(data-parent="#header-right")
+      #info-drop.collapse(data-parent="#header-right", style="z-index: 1000")
         .p-3
-          a.p-2.d-flex(href="#")
+          a.p-2.d-flex(href="/messenger/profile")
             div
               img.rounded-circle(src=memberAvatar, alt="oh-chat", width="55px")
             .ml-3

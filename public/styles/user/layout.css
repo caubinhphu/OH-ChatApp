@@ -3,7 +3,8 @@
   position: relative;
 }
 
-input:focus, button:focus {
+input:not([type="radio"] and [type="checkbox"]):focus,
+button:focus {
   outline:0px !important;
   -webkit-appearance:none;
   box-shadow: none !important;

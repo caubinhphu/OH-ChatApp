@@ -19,17 +19,21 @@ block contentMain
             .form-group.d-flex.justify-content-center
               label.text-secondary(for="password", style="width: 100px") Mật khẩu
               input#password.form-control.form-control-sm(type="password", name="password", required)
-            .form-group.d-flex.justify-content-between
-              .d-flex.flex-column
-                a.btn.btn-sm.btn-info(href="/login/facebook", role="button")
-                  i.fab.fa-facebook
-                  span.ml-1 Đăng nhập với Facebook
-                a.btn.btn-sm.btn-danger.mt-1(href="/login/google", role="button")
-                  i.fab.fa-google
-                  span.ml-1 Đăng nhập với Google
-              .d-flex.flex-column
-                button.btn.btn-primary.btn-sm(type="submit") Đăng nhập
+            .form-group.d-flex.justify-content-end
                 a.btn.btn-sm.btn-link.mr-2(href="/login/register", role="button") Đăng ký
+                button.btn.btn-primary.btn-sm(type="submit") Đăng nhập
+          .text-secondary.text-center.border-top
+            span Hoặc đăng nhập với
+          .d-flex.justify-content-center.mt-2
+            a.btn.btn-sm.btn-info(href="/login/facebook", role="button")
+              i.fab.fa-facebook
+              span.ml-1 Facebook
+            a.btn.btn-sm.btn-danger.ml-1(href="/login/google", role="button")
+              i.fab.fa-google
+              span.ml-1  Google
+
+        .text-secondary.text-center.border-top
+          span Tạo phòng chat mà không cần đăng nhập
         #choose-area.d-flex
           .choose-item.mr-4.text-center
             a(href="/create", role="button")
