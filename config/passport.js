@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const key = require('../config/key');
 const cloudinary = require('../utils/cloudinary');
 
-const Member = require('../models/Member.model');
+const Member = require('../models/Member');
 
 // login with email and password
 module.exports.local = (passport) => {

@@ -37,3 +37,28 @@ block contentMain
             input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
           .text-right
             button.btn.btn-sm.btn-success Lưu
+  #friend-area
+    .container
+      ul.nav.nav-tabs.justify-content-center(role='tablist')
+        li.nav-item(role='presentation')
+          a#friend-tab.nav-link(data-toggle='tab', href='#friend', role='tab', aria-controls='friend') Bạn bè
+        li.nav-item(role='presentation')
+          a#friend-request-tab.nav-link(data-toggle='tab', href='#friend-request', role='tab', aria-controls='friend-request', aria-selected='false') Yêu cầu kết bạn
+        li.nav-item(role='presentation')
+          a#friend-invitation-tab.nav-link(data-toggle='tab', href='#friend-invitation', role='tab', aria-controls='friend-invitation', aria-selected='false') Lời mời kết bạn
+      .tab-content
+        #friend.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-tab')
+          #friend-content.row
+            .col-12.col-md-6
+              .d-flex.align-items-center.border.p-2.rounded.my-2
+                img.rounded-circle(alt="a", width="80px", data-src="/images/logo.png" class="lazyload")
+                a.flex-fill.mx-2(href="#")
+                  strong Name
+                button.btn.btn-sm.btn-danger Hủy kết bạn
+        #friend-request.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-request-tab')
+          #friend-request-content.row
+        #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
+          #friend-request-content.row
+
+append scripts
+  script(src="/scripts/member/profile.js")

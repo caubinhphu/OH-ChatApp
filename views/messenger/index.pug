@@ -17,34 +17,37 @@ block contentMain
       #main-left-search.mt-2
         input.form-control(type="text", placeholder="Tìm bạn bè để chat")
       #main-left-friends.mt-2.flex-fill
-        a(href="#")
-          .friend-item.friend-item-active
-            .friend-item-main.d-flex
-              .friend-item-img
-                img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
-              .friend-item-info.ml-2
-                span Name
-                br
-                small Text
-                small.ml-2 T2
-    #main-right.flex-fill.d-flex.flex-column
-      #main-right-top.d-flex.justify-content-between.p-2.align-items-center
-        #main-right-top-left.d-flex
-          .friend-img
-            img(src="/images/logo_rounded.png", alt="oh-chat", width="45px")
-          .friend-info.ml-2
-            span Name
-            br
-            span Text
-        #main-right-top-right
-          button(type="button").mr-2
-            i.fas.fa-phone
-          button(type="button")
-            i.fas.fa-video
-      #main-right-chat-content.flex-fill
-      #main-right-top-chat-input.mb-1.px-2
-        .d-flex.text-secondary
-          input.form-control(type="text")
-          button(type="button").ml-2.btn.btn-light
-            i.fas.fa-paper-plane
+        each friend in friends
+          a(href=`/messenger/chat/${friend.id}`)
+            .friend-item.mt-1(class=`${friend.id === friendActiveId ? "friend-item-active": ""}`)
+              .friend-item-main.d-flex
+                .friend-item-img
+                  img.lazyload.rounded-circle(data-src=friend.avatar, alt=friend.name, width="45px")
+                .friend-item-info.ml-2
+                  span= friend.name
+                  br
+                  small Text
+                  small.ml-2 T2
+
+    if (friendActiveId)
+      #main-right.flex-fill.d-flex.flex-column
+        #main-right-top.d-flex.justify-content-between.p-2.align-items-center
+          #main-right-top-left.d-flex
+            .friend-img
+              img.lazyload.rounded-circle(data-src=friends[0].avatar, alt=friends[0].name, width="45px")
+            .friend-info.ml-2
+              span= friends[0].name
+              br
+              span Text
+          #main-right-top-right
+            button(type="button").mr-2
+              i.fas.fa-phone
+            button(type="button")
+              i.fas.fa-video
+        #main-right-chat-content.flex-fill
+        #main-right-top-chat-input.mb-1.px-2
+          .d-flex.text-secondary
+            input.form-control(type="text")
+            button(type="button").ml-2.btn.btn-light
+              i.fas.fa-paper-plane
   

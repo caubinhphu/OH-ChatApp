@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 const formatMessage = require('../utils/message');
 
 // models
-const Room = require('../models/Room.model');
-const User = require('../models/User.model');
-const Member = require('../models/Member.model');
+const Room = require('../models/Room');
+const User = require('../models/User');
+const Member = require('../models/Member');
 
 // names bot
 const botName = 'OH Bot';

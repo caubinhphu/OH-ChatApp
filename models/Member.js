@@ -49,7 +49,36 @@ const memberSchema = mongoose.Schema({
     type: String,
     default: '',
   },
+  friends: [
+    {
+      _id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Member',
+      },
+      groupMessenger: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Member',
+      },
+    },
+  ],
+  // friends: [
+  //   {
+  //     type: mongoose.Types.ObjectId,
+  //     ref: 'Member',
+  //   },
+  // ],
 });
+
+// get all friends
+memberSchema.methods.getFriends = function () {
+  return this.friends.map((friend) => {
+    return {
+      id: friend._id.id,
+      name: friend._id.name,
+      avatar: friend._id.avatar,
+    }
+  });
+};
 
 const Member = mongoose.model('Member', memberSchema);
 

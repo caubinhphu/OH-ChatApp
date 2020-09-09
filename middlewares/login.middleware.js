@@ -1,4 +1,4 @@
-const Member = require('../models/Member.model');
+const Member = require('../models/Member');
 
 // check that the user is logged in
 module.exports.checkAuthenticated = async (req, res, next) => {

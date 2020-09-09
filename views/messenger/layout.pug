@@ -7,7 +7,8 @@ block header
   #header.p-2.d-flex.justify-content-between
     #header-left.d-flex.align-items-center
       #logo
-        img(src="/images/logo_rounded.png", alt="oh-chat", width="40px")
+        a(href="/messenger", title="OH chat - Messenger")
+          img(src="/images/logo_rounded.png", alt="oh-chat", width="40px")
       #search.ml-1
         input.form-control(type="text", placeholder="Tìm kiếm bạn bè")
     #header-right.d-flex.align-items-center
@@ -49,4 +50,5 @@ block main
     block contentMain
 
 append scripts
-  script(src="/scripts/member/layout.js")
+  script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js", crossorigin="anonymous")
+  script(src="/scripts/lazysizes.js")

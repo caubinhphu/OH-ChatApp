@@ -8,14 +8,14 @@ const sendMail = require('../utils/send-mail');
 
 const { validateRegister } = require('../validation/login.validation');
 
-const Member = require('../models/Member.model');
+const Member = require('../models/Member');
 
 // post login
 module.exports.postLogin = async (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/messenger',
     failureRedirect: '/',
-    successFlash: true,
+    // successFlash: true,
     failureFlash: true,
   })(req, res, next);
 };
