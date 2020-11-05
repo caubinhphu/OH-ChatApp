@@ -19,35 +19,45 @@ block contentMain
       #main-left-friends.mt-2.flex-fill
         each friend in friends
           a(href=`/messenger/chat/${friend.id}`)
-            .friend-item.mt-1(class=`${friend.id === friendActiveId ? "friend-item-active": ""}`)
+            .friend-item.mt-1(class=`${friendChat ? friend.id === friendChat.id ? "friend-item-active": "" : ""}`)
               .friend-item-main.d-flex
                 .friend-item-img
                   img.lazyload.rounded-circle(data-src=friend.avatar, alt=friend.name, width="45px")
                 .friend-item-info.ml-2
-                  span= friend.name
+                  strong= friend.name
                   br
-                  small Text
+                  small Message
                   small.ml-2 T2
 
-    if (friendActiveId)
+    if (friendChat)
       #main-right.flex-fill.d-flex.flex-column
         #main-right-top.d-flex.justify-content-between.p-2.align-items-center
           #main-right-top-left.d-flex
             .friend-img
-              img.lazyload.rounded-circle(data-src=friends[0].avatar, alt=friends[0].name, width="45px")
+              img.lazyload.rounded-circle(data-src=friendChat.avatar, alt=friendChat.name, width="45px")
             .friend-info.ml-2
-              span= friends[0].name
+              strong= friendChat.name
               br
-              span Text
+              small Status
           #main-right-top-right
             button(type="button").mr-2
               i.fas.fa-phone
             button(type="button")
               i.fas.fa-video
-        #main-right-chat-content.flex-fill
+        #main-right-chat-content.flex-fill.p-2
         #main-right-top-chat-input.mb-1.px-2
-          .d-flex.text-secondary
-            input.form-control(type="text")
-            button(type="button").ml-2.btn.btn-light
+          form.d-flex(name="sendMsgForm")
+            input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+            button.btn.btn-default.text-secondary
               i.fas.fa-paper-plane
+  div
+    each member in m
+      a.btn.btn-success(href=`/messenger/addfriend/${member.id}`)= member.name
+
+append scripts
+  script(src="/socket.io/socket.io.js")
+  script(src="/scripts/moment.min.js")
+  script(src="/scripts/emoji.js")
+  script(src="/scripts/common-chat.js")
+  script(src="/scripts/member/messenger.js")
   

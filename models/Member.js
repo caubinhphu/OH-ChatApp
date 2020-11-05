@@ -49,24 +49,20 @@ const memberSchema = mongoose.Schema({
     type: String,
     default: '',
   },
-  friends: [
-    {
-      _id: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Member',
-      },
-      groupMessenger: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Member',
-      },
+  friends: [{
+    _id: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Member',
     },
-  ],
-  // friends: [
-  //   {
-  //     type: mongoose.Types.ObjectId,
-  //     ref: 'Member',
-  //   },
-  // ],
+    groupMessageId: {
+      type: mongoose.Types.ObjectId,
+      ref: 'GroupMessage',
+    },
+  }, ],
+  socketId: {
+    type: String,
+    default: ''
+  }
 });
 
 // get all friends

@@ -36,7 +36,8 @@
     width: fit-content;
   }
 
-  #main-left-top, #main-left-search {
+  #main-left-top,
+  #main-left-search {
     display: none !important;
   }
 
@@ -49,6 +50,10 @@
   }
 }
 
+#main-right {
+  width: 0;
+}
+
 #main-right-top {
   border-bottom: 1px solid #0000001a;
 }
@@ -56,6 +61,10 @@
 #main-right-top-right > button {
   background-color: transparent;
   border: none;
+}
+
+#main-right-chat-content {
+  overflow-y: auto;
 }
 
 .friend-item-info > small {
@@ -68,4 +77,43 @@
 
 #main-left-friends > a:hover {
   text-decoration: none;
+}
+
+.message {
+  width: 100%;
+  height: max-content;
+  padding: 2px;
+}
+
+.msg {
+  width: max-content;
+  max-width: 100%;
+  background-color: #f1f0f0;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.msg-me {
+  width: max-content;
+  max-width: 100%;
+  background-color: #0099ff;
+  padding: 4px;
+  border-radius: 5px;
+  margin-left: auto;
+}
+
+.message-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+}
+
+.message-time {
+  color: #a7a7a7;
+  margin: 0 10px;
+  font-size: x-small;
+}
+
+.message-content {
+  margin-left: 10px;
 }

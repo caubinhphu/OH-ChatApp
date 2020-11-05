@@ -17,6 +17,8 @@ router.get('/profile/friend-invitation', controller.getFriendInvitations);
 
 router.get('/chat/:friendId', controller.getChatFriend);
 
+router.get('/addfriend/:friendId', controller.getAddFriend);
+
 // router.get('/profile/add', async (req, res) => {
 //   try {
 //     const member = await Member.findById(req.user.id);

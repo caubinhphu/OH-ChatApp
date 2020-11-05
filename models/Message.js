@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const messengerSchema = mongoose.Schema({
+const messageSchema = mongoose.Schema({
   time: {
     type: Date,
     default: new Date(),
@@ -13,8 +13,12 @@ const messengerSchema = mongoose.Schema({
     type: String,
     default: 'text', // file, image
   },
+  memberSendId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Member',
+  }
 });
 
-const Messenger = mongoose.model('Messenger', messengerSchema);
+const Message = mongoose.model('Message', messageSchema);
 
-module.exports = Messenger;
+module.exports = Message;

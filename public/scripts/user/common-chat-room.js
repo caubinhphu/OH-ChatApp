@@ -9,23 +9,6 @@ const meetingMain = document.getElementById('#meeting-show'); // meeting show ar
 // socket.io
 const socket = io();
 
-// option format message client side
-const charReplaces = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '&': '&amp;',
-};
-
-// replace char to format message client side
-const replaceChar = function (char) {
-  return charReplaces[char] || char;
-};
-
-// format message client side
-const escapeHtml = function (html) {
-  return html.replace(/[<>&]/g, replaceChar);
-};
-
 // get token from query string
 const qs = new URLSearchParams(location.search);
 
@@ -140,10 +123,14 @@ btnChangeStatusTime.addEventListener('click', function () {
 document
   .querySelector('#disconnect-btn')
   .addEventListener('click', function () {
-    socket.emit('disconnectRequest', { typeLeave: 'self' });
+    socket.emit('disconnectRequest', {
+      typeLeave: 'self',
+    });
   });
 
-socket.emit('joinChat', { token: qs.get('token') });
+socket.emit('joinChat', {
+  token: qs.get('token'),
+});
 
 // show/hide control areas
 const WIDTH_CONTROL_AREA = '340px';

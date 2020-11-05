@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-const controller = require('./controller');
+const roomController = require('./meeting-controller');
+
+const formatMessage = require('../utils/message');
 
 // connect mongodb
 mongoose.connect(process.env.URI_MONGODB, {
@@ -11,61 +13,70 @@ mongoose.connect(process.env.URI_MONGODB, {
 const socket = function (io) {
   io.on('connection', (socket) => {
     // handle error
-    socket.on('error', controller.onError);
+    socket.on('error', roomController.onError);
 
     // receive event create a room from client
-    socket.on('createRoom', controller.onCreateRoom);
+    socket.on('createRoom', roomController.onCreateRoom);
 
     // receive event join to the room from client
     socket.on('joinRoom', function (data) {
-      controller.onJoinRoom.bind(this, io, data)();
+      roomController.onJoinRoom.bind(this, io, data)();
     });
 
     // receive event joinChat from client
     socket.on('joinChat', function (data) {
-      controller.onJoinChat.bind(this, io, data)();
+      roomController.onJoinChat.bind(this, io, data)();
     });
 
     // receive event allow join room from server
     socket.on('allowJoinRoom', function (data) {
-      controller.onAllowJoinRoom.bind(this, io, data)();
+      roomController.onAllowJoinRoom.bind(this, io, data)();
     });
 
     // receive event not allow join room from host client
     socket.on('notAllowJoinRoom', function (data) {
-      controller.onNotAllowJoinRoom.bind(this, io, data)();
+      roomController.onNotAllowJoinRoom.bind(this, io, data)();
     });
 
     // receive message from client
-    socket.on('messageChat', controller.onMessageChat);
+    socket.on('messageChat', roomController.onMessageChat);
 
     // receive info management of host room form client
-    socket.on('changeManagement', controller.onChangeManagement);
+    socket.on('changeManagement', roomController.onChangeManagement);
 
     // receive info leave waiting room form client
     socket.on('leaveWaitingRoom', function (data) {
-      controller.onLeaveWaitingRoom.bind(this, io, data)();
+      roomController.onLeaveWaitingRoom.bind(this, io, data)();
     });
 
     // receive offer signal of stream
     socket.on('offerStream', function (data) {
-      controller.onOfferStream.bind(this, io, data)();
+      roomController.onOfferStream.bind(this, io, data)();
     });
 
     // receive offer signal of stream
     socket.on('answerStream', function (data) {
-      controller.onAnswerStream.bind(this, io, data)();
+      roomController.onAnswerStream.bind(this, io, data)();
     });
 
     // receive signal stop video stream from a client
-    socket.on('stopVideoStream', controller.onStopVideoStream);
+    socket.on('stopVideoStream', roomController.onStopVideoStream);
 
     // receive event require disconnect from client
-    socket.on('disconnectRequest', controller.onDisconnectRequest);
+    socket.on('disconnectRequest', roomController.onDisconnectRequest);
 
     // disconnect
     socket.on('disconnect', function (data) {
-      controller.onDisconnect.bind(this, io, data)();
+      roomController.onDisconnect.bind(this, io, data)();
+    });
+
+    // messenger
+    // receive message from client
+    socket.on('messengerChat', (data) => {
+      socket.broadcast.emit(
+        'messenger',
+        formatMessage("Hải", data.message, "/images/oh-bot.jpg")
+      );
     });
   });
 };
