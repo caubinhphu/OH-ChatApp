@@ -663,46 +663,46 @@ module.exports.onDisconnect = async function (io, reason) {
           this.emit('error', 'Access token không hợp lệ!');
         }
       } else {
-        // close page
-        if (!user.allowJoin) {
-          // remove user from this room
-          room.removeUserById(user.id);
-          await room.save();
-          await User.deleteOne({ _id: user._id });
+        // // close page
+        // if (!user.allowJoin) {
+        //   // remove user from this room
+        //   room.removeUserById(user.id);
+        //   await room.save();
+        //   await User.deleteOne({ _id: user._id });
 
-          // send message notify for remaining users in the room
-          this.to(room.roomId).emit(
-            'message',
-            formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
-          );
-          // if not exists user in the room => delete this room
-          if (room.users.length <= 0) {
-            // get socketId of users in waiting room to notify for them
-            const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+        //   // send message notify for remaining users in the room
+        //   this.to(room.roomId).emit(
+        //     'message',
+        //     formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
+        //   );
+        //   // if not exists user in the room => delete this room
+        //   if (room.users.length <= 0) {
+        //     // get socketId of users in waiting room to notify for them
+        //     const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
 
-            // delete users in waiting room
-            await User.deleteMany({ _id: { $in: room.waitingRoom } });
-            // delete the room
-            await Room.deleteOne({ roomId: room.roomId });
+        //     // delete users in waiting room
+        //     await User.deleteMany({ _id: { $in: room.waitingRoom } });
+        //     // delete the room
+        //     await Room.deleteOne({ roomId: room.roomId });
 
-            // notify end room for user in waiting room
-            socketIdsWaitingRoom.forEach((socketId) => {
-              io.to(socketId).emit(
-                'joinRoomBlocked',
-                'Phòng bạn yêu cầu đã kết thúc chat!'
-              );
-            });
-          } else {
-            // update room info => send room info (name & users)
-            this.to(room.roomId).emit('roomInfo', {
-              nameRoom: room.roomId,
-              users: room.getRoomUsersInfo(),
-            });
-            this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
-              userId: user.socketId,
-            });
-          }
-        }
+        //     // notify end room for user in waiting room
+        //     socketIdsWaitingRoom.forEach((socketId) => {
+        //       io.to(socketId).emit(
+        //         'joinRoomBlocked',
+        //         'Phòng bạn yêu cầu đã kết thúc chat!'
+        //       );
+        //     });
+        //   } else {
+        //     // update room info => send room info (name & users)
+        //     this.to(room.roomId).emit('roomInfo', {
+        //       nameRoom: room.roomId,
+        //       users: room.getRoomUsersInfo(),
+        //     });
+        //     this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
+        //       userId: user.socketId,
+        //     });
+        //   }
+        // }
       }
     } else {
       this.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');

@@ -1,14 +1,17 @@
 #main-area {
   margin: 0 auto;
   background-color: white;
-  width: max-content;
+  width: 380px;
   border: 1px solid #555;
   border-radius: 10px;
   box-shadow: 5px 5px 10px #555;
+  max-width: 90%;
+  padding: 0 15px;
 }
 
 #choose-area {
-  padding: 20px 100px 50px 100px;
+  padding: 20px 0;
+  justify-content: center;
 }
 
 #create-room, #join-room {

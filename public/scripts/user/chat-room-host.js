@@ -179,8 +179,3 @@ function outputRoomManager(manager) {
   };
   document.getElementById(ids[manager.state]).checked = true;
 }
-
-// show/hide control areas continue
-document.querySelector('#mana-control').addEventListener('click', function () {
-  showHideAreaControl('manager');
-});

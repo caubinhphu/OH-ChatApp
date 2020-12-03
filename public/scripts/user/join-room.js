@@ -5,10 +5,10 @@ const socket = io();
 
 joinRoomForm.addEventListener('submit', function (e) {
   e.preventDefault();
-  let nameInput = e.target.elements.name;
-  let roomIdInput = e.target.elements.roomId;
-  let passRoomInput = e.target.elements.passRoom;
-  let memberIdInput = e.target.elements.memberId;
+  const nameInput = e.target.elements.name;
+  const roomIdInput = e.target.elements.roomId;
+  const passRoomInput = e.target.elements.passRoom;
+  const memberIdInput = e.target.elements.memberId;
 
   if (nameInput.value.length <= 0 || nameInput.value.length > 30) {
     document.querySelector('#err-join-name').innerHTML = 'Tên chưa hợp lệ';

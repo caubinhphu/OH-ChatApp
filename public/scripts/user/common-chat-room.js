@@ -132,60 +132,48 @@ socket.emit('joinChat', {
   token: qs.get('token'),
 });
 
-// show/hide control areas
-const WIDTH_CONTROL_AREA = '340px';
-const showControl = document.getElementById('show-control');
 
-const controlArea = {
-  chat: document.getElementById('chat-area'),
-  users: document.getElementById('users-area'),
-  info: document.getElementById('info-area'),
-  manager: document.getElementById('manager-area'),
-};
-
-// arrow smaller button click
-[...document.querySelectorAll('.arrow-smaller')].forEach((btn) => {
-  btn.addEventListener('click', function () {
-    showControl.style.width = '0';
-    setTimeout(() => {
-      controlArea[this.dataset.area].style.display = 'none';
-    }, 400);
-  });
+// show hide control meeting
+$('.arrow-smaller').on('click', () => {
+  hideControls();
 });
-
-document.querySelector('#info-control').addEventListener('click', function () {
-  showHideAreaControl('info');
-});
-
-document.querySelector('#chat-control').addEventListener('click', function () {
-  showHideAreaControl('chat');
-  document.getElementById('msg').focus();
-});
-
-document.querySelector('#users-control').addEventListener('click', function () {
-  showHideAreaControl('users');
-});
-
-function showHideAreaControl(areaId) {
-  for (let area in controlArea) {
-    if (area !== areaId) {
-      if (controlArea[area]) {
-        controlArea[area].style.display = 'none';
-      }
-    }
-  }
-
-  if (controlArea[areaId].style.display === 'none') {
-    controlArea[areaId].style.display = 'block';
-    showControl.style.width = WIDTH_CONTROL_AREA;
-  } else {
-    showControl.style.width = '0';
-    setTimeout(() => {
-      controlArea[areaId].style.display = 'none';
-    }, 400);
-  }
-}
 
 $(function () {
   $('[data-tooltip="tooltip"]').tooltip();
+});
+
+$('.control-show-pop').on('click', function(e) {
+  const $wrapControls = $('#show-control');
+  if ($(this).hasClass('is-active')) {
+    hideControls();
+  } else {
+    $('.control-show-pop').removeClass('is-active');
+    $('.control-area').removeClass('is-active');
+    $(this).addClass('is-active');
+    $(`.control-area[data-control="${this.dataset.control}"]`).addClass('is-active');
+    if ($wrapControls.hasClass('no-show')) {
+      showControls();
+      $wrapControls.removeClass('no-show')
+    }
+  }
+});
+
+function hideControls() {
+  $('#show-control').animate({
+    width: '0',
+    'white-space': 'nowrap'
+  }, 350, () => {
+    $('#show-control').addClass('no-show');
+    $('.control-show-pop').removeClass('is-active');
+    $('.control-area').removeClass('is-active');
+  });
+}
+
+function showControls() {
+  $('#show-control').animate({
+    width: '340px'
+  }, 350);
+}
+$('.open-popup-icon').on('click', (e) =>{
+  $('.wrap-control-meet').fadeToggle();
 });

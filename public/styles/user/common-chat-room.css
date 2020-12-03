@@ -74,7 +74,7 @@
 }
 
 #meeting-control {
-  position: absolute;
+  position: fixed;
   height: 47px;
   width: 100%;
   background-color: #0e1e29;
@@ -90,12 +90,16 @@
   border-radius: 5px;
   color: white;
   user-select: none;
+  transition: all .2s;
 }
 
 .meeting-control-item:hover {
   background-color: rgb(21, 37, 59);
+  transform: scale(1.1);
 }
-
+.wrap-conts {
+  transform: none;
+}
 .control-area {
   width: 100%;
   height: 100%;
@@ -114,7 +118,7 @@
   overflow-y: auto;
 }
 
-.control-area-middle::-webkit-scrollbar {
+/* .control-area-middle::-webkit-scrollbar {
   width: 5px;
 }
 
@@ -124,7 +128,7 @@
 
 .control-area-middle::-webkit-scrollbar-thumb {
   background-color: #6649b8;
-}
+} */
 
 .message {
   width: 100%;
@@ -235,7 +239,43 @@
   width: 0;
   height: calc(100% - 47px);
   background-color: #0099ff;
-  transition: width .4s ease;
+  /* transition: width .4s ease; */
   overflow: hidden;
   position: relative;
+}
+.control-area {
+  display: none;
+  transition: all .35s;
+}
+.control-area.is-active {
+  display: block;
+}
+.wrap-control-meet:not(.is-active) {
+  display: none;
+}
+.wrap-control-meet {
+  position: absolute;
+  top: -75px;
+  z-index: 9999999;
+  left: 0;
+  transform: translate(-50%);
+  background-color: white;
+  border-radius: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.wrap-control-meet::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: white;
+  position: absolute;
+  transform: rotate(45deg);
+  left: 168px;
+}
+.wrap-control-meet .meeting-control-item {
+  color: blue;
+}
+.wrap-control-meet .meeting-control-item:hover {
+  background-color: transparent;
 }

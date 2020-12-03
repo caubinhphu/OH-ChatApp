@@ -16,19 +16,32 @@ block contentMain
             i.fas.fa-microphone-slash.text-danger
           #btn-video-connect.meeting-control-item(data-state="off", data-tooltip="tooltip", data-placement="top", title="Bật camera (Alt + V)")
             i.fas.fa-video-slash.text-danger
-          #users-control.meeting-control-item(data-tooltip="tooltip", data-placement="top", title="Thành viên")
-            i.fas.fa-users
-            sup#amount-participants
-          #chat-control.meeting-control-item(data-tooltip="tooltip", data-placement="top", title="Chat")
-            i.fas.fa-comment-alt
           block subMeetingControl
-          #info-control.meeting-control-item.text-info(data-tooltip="tooltip", data-placement="top", title="Thông tin phòng")
+          .meeting-control-item.control-show-pop.d-none.d-md-block(data-tooltip="tooltip", data-placement="top", title="Thành viên", data-control="user")
+              i.fas.fa-users
+              sup#amount-participants
+          .meeting-control-item.control-show-pop.d-none.d-md-block(data-tooltip="tooltip", data-placement="top", title="Chat", data-control="chat")
+            i.fas.fa-comment-alt
+          .meeting-control-item.control-show-pop.text-info.d-none.d-md-block(data-tooltip="tooltip", data-placement="top", title="Thông tin phòng", data-control="info")
             i.fas.fa-info
+          .meeting-control-item.ps-rv.d-md-none.wrap-conts
+            .open-popup-icon
+              i.fas.fa-ellipsis-v
+            .wrap-control-meet
+              .d-flex.justify-content-center.align-items-center
+                block subMeetingControl2
+                .meeting-control-item.control-show-pop(data-tooltip="tooltip", data-placement="top", title="Thành viên", data-control="user")
+                  i.fas.fa-users
+                  sup#amount-participants
+                .meeting-control-item.control-show-pop(data-tooltip="tooltip", data-placement="top", title="Chat", data-control="chat")
+                  i.fas.fa-comment-alt
+                .meeting-control-item.control-show-pop.text-info(data-tooltip="tooltip", data-placement="top", title="Thông tin phòng", data-control="info")
+                  i.fas.fa-info
           .meeting-control-item.text-danger(data-toggle="modal", data-target="#confirm-leave-room-modal", data-tooltip="tooltip", data-placement="top", title="Rời phòng")
             i.fas.fa-sign-out-alt
       
-      #show-control
-        #chat-area.control-area(style="display: none")
+      #show-control.show-control.no-show
+        #chat-area.control-area(data-control="chat")
           .control-area-main.d-flex.flex-column
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="chat")
@@ -41,7 +54,7 @@ block contentMain
               form.d-flex(name="sendMsgForm")
                 block subFormChat
               
-        #users-area.control-area(style="display: none")
+        #users-area.control-area(data-control="user")
           .control-area-main.d-flex.flex-column
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="users")
@@ -51,7 +64,7 @@ block contentMain
             block waitingRoomInfo
             #room-users.control-area-middle.flex-fill
 
-        #info-area.control-area(style="display: none")
+        #info-area.control-area(data-control="info")
           .control-area-main.d-flex.flex-column
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="info")
