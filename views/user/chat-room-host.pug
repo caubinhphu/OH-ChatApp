@@ -85,8 +85,9 @@ block subArea
             button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
 
 block subFormChat
-  button.btn.btn-default(type="button", data-toggle="collapse", data-target="#emoji") &#128512;
-  input#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+  button.btn.btn-default.open-emojis(type="button") &#128512;
+  //- input#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+  textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
   button.btn.btn-default.text-secondary
     i.fas.fa-paper-plane
 

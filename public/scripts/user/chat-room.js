@@ -34,7 +34,7 @@ socket.on('kickedOutRoom', (msg) => {
 function outputChatInput(allowed) {
   if (allowed) {
     // allow chat
-    msgForm.innerHTML = `<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#emoji">&#128512;</button>
+    msgForm.innerHTML = `<button type="button" class="btn btn-default open-emojis">&#128512;</button>
       <input id="msg" class="form-control" type="text" name="message", placeholder="Nhập tin nhắn", autocomplete="off" />
       <button class="btn btn-default text-secondary"><i class="fas fa-paper-plane"/></button>`;
   } else {
@@ -102,3 +102,4 @@ function fiveSecond() {
     location.href = '/';
   }, 5000);
 }
+

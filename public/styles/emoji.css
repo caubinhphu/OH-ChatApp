@@ -1,4 +1,4 @@
-#emoji {
+.wrap-emojis {
   position: absolute;
   bottom: 50px;
   right: 50px;
@@ -14,4 +14,7 @@
   border: none;
   width: 30px;
   height: 30px;
+}
+.wrap-emojis:not(.is-active) {
+  display: none;
 }

@@ -169,6 +169,7 @@ $(conShowPopClass).on('click', function() {
 });
 
 function hideControls() {
+  $('.wrap-emojis').removeClass('is-active');
   $(showConId).animate({
     width: '0',
   }, 350, () => {
@@ -198,4 +199,14 @@ $(document).click((e) => {
 
     $(wrapConClass).fadeOut();
   }
+});
+$(document).on('keydown', '#msg', function(e) {
+  if (e.which === 13 && ! e.shiftKey) {
+    e.preventDefault();
+    $(msgForm).find('button.text-secondary').trigger('click');
+    $(this).css('height', '35px');
+  }
+}).on('input', '#msg', function(e) {
+  $(this).css('height', '5px');
+  $(this).css('height', `${this.scrollHeight}px`);
 });

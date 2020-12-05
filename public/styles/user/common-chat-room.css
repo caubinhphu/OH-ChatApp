@@ -173,14 +173,19 @@
 }
 
 #msg {
-  border: none;
+  border: 1px solid rgb(177, 177, 177);
   padding: 5px;
   font-size: 15px;
+  resize: none;
+  overflow: auto;
+  max-height: 100px;
+  height: 35px;
+  min-height: 35px;
 }
 
-#msg:focus {
+/* #msg:focus {
   border-bottom: 1px solid #0099ff;
-}
+} */
 
 .room-user-name {
   font-size: smaller;
@@ -234,7 +239,7 @@
   height: calc(100% - 47px);
   background-color: #0099ff;
   /* transition: width .4s ease; */
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 }
 .control-area {
@@ -305,7 +310,6 @@
   left: 0;
   right: 0;
   top: 0;
-  z-index: 99;
   display: none;
 }
 .meeting-part:hover .meeting-part-pin-ctrl{
