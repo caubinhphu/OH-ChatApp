@@ -138,16 +138,26 @@ $('.arrow-smaller').on('click', () => {
   hideControls();
 });
 
-$(function () {
-  $('[data-tooltip="tooltip"]').tooltip();
-});
+function winResize() {
+  if ($(window).width() <= 768) {
+    $('[data-tooltip="tooltip"]').tooltip('disable');
+  } else {
+    $('[data-tooltip="tooltip"]').tooltip('enable');
+  }
+}
+winResize();
+$(window).resize(winResize);
 
-$('.control-show-pop').on('click', function(e) {
-  const $wrapControls = $('#show-control');
+const conShowPopClass = '.control-show-pop';
+const showConId = '#show-control';
+const wrapConClass ='.wrap-control-meet';
+
+$(conShowPopClass).on('click', function() {
+  const $wrapControls = $(showConId);
   if ($(this).hasClass('is-active')) {
     hideControls();
   } else {
-    $('.control-show-pop').removeClass('is-active');
+    $(conShowPopClass).removeClass('is-active');
     $('.control-area').removeClass('is-active');
     $(this).addClass('is-active');
     $(`.control-area[data-control="${this.dataset.control}"]`).addClass('is-active');
@@ -159,21 +169,33 @@ $('.control-show-pop').on('click', function(e) {
 });
 
 function hideControls() {
-  $('#show-control').animate({
+  $(showConId).animate({
     width: '0',
-    'white-space': 'nowrap'
   }, 350, () => {
-    $('#show-control').addClass('no-show');
-    $('.control-show-pop').removeClass('is-active');
+    $(showConId).addClass('no-show');
+    $(conShowPopClass).removeClass('is-active');
     $('.control-area').removeClass('is-active');
   });
 }
 
 function showControls() {
-  $('#show-control').animate({
-    width: '340px'
+  $(showConId).animate({
+    width: '315px'
   }, 350);
+  $(wrapConClass).fadeOut();
 }
-$('.open-popup-icon').on('click', (e) =>{
-  $('.wrap-control-meet').fadeToggle();
+
+$('.open-popup-icon').on('click', () =>{
+  hideControls();
+  $(wrapConClass).fadeToggle();
+});
+
+$(document).click((e) => {
+  const $target = $(e.target);
+  if(!$target.closest('.open-popup-icon').length &&
+    !$target.closest('.wrap-control-meet .control-show-pop').length &&
+    $(wrapConClass).is(':visible')) {
+
+    $(wrapConClass).fadeOut();
+  }
 });

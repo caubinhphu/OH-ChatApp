@@ -19,3 +19,9 @@ button:focus {
   bottom: 0;
   right: 0;
 }
+.text-nowrap {
+  white-space: nowrap;
+}
+.over-hidden {
+  overflow: hidden;
+}

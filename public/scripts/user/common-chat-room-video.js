@@ -128,14 +128,16 @@ document.addEventListener('keydown', function (e) {
 // create area meeting item
 function outputShowMeeting(id = 'my_video', avatar = '/images/917385.jpg') {
   const div = document.createElement('div');
-  div.className = 'meeting-part';
+  div.className = 'meeting-part ps-rv';
   div.dataset.id = id;
 
-  div.innerHTML = `<img src="${avatar}">
+  div.innerHTML = `<div class="ps-as over-hidden">
+    <img src="${avatar}">
     <video name="video" autoplay style="display:none" ${
       id ? '' : 'muted'
     }></video>
-    <video name="audio" autoplay ${id ? '' : 'muted'}></video>`;
+    <video name="audio" autoplay ${id ? '' : 'muted'} class="d-none"></video>
+  </div>`;
 
   meetingShow.appendChild(div);
 }
@@ -258,7 +260,7 @@ function outputAudio(stream = window.localStream, id = 'my_video') {
 function outputStopVideo(id = 'my_video') {
   const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
   if (meetingItem) {
-    meetingItem.querySelector('img').style.display = 'block';
+    meetingItem.querySelector('img').style.display = 'inline';
     const video = meetingItem.querySelector('video[name="video"]');
     video.style.display = 'none';
     if ('srcObject' in video) {
@@ -296,7 +298,7 @@ async function handleAudio() {
       // turn on video
       // set UI
       this.dataset.state = 'on';
-      this.innerHTML = '<i class="fas fa-microphone text-white"></i>';
+      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-microphone text-white"></i></div>';
       $(this)
         .attr('data-original-title', 'Tắt audio (Alt + A)')
         .tooltip('show');
@@ -323,7 +325,7 @@ async function handleAudio() {
       // stop video
       // set UI
       this.dataset.state = 'off';
-      this.innerHTML = '<i class="fas fa-microphone-slash text-danger"></i>';
+      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-microphone-slash text-danger"></i></div>';
       $(this)
         .attr('data-original-title', 'Bật audio (Alt + A)')
         .tooltip('show');
@@ -358,7 +360,7 @@ async function handleVideo() {
       // turn on video
       // set UI
       this.dataset.state = 'on';
-      this.innerHTML = '<i class="fas fa-video text-white"></i>';
+      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-video text-white"></i></div>';
       $(this)
         .attr('data-original-title', 'Tắt camera (Alt + V)')
         .tooltip('show');
@@ -388,7 +390,7 @@ async function handleVideo() {
       // stop video
       // set UI
       this.dataset.state = 'off';
-      this.innerHTML = '<i class="fas fa-video-slash text-danger"></i>';
+      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-video-slash text-danger"></i><div>';
       $(this)
         .attr('data-original-title', 'Bật camera (Alt + V)')
         .tooltip('show');

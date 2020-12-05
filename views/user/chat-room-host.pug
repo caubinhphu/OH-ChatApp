@@ -4,8 +4,9 @@ block chatStyle
   link(rel="stylesheet", href="/styles/user/chat-room-host.css")
 
 block subMeetingControl
-  .meeting-control-item.control-show-pop.d-none.d-md-block(data-tooltip="tooltip", data-placement="top", title="Quản lý phòng", data-control="manager")
-    i.fas.fa-user-shield
+  .meeting-control-item.d-none.d-md-block(data-tooltip="tooltip", data-placement="top", title="Quản lý phòng")
+    .control-show-pop(data-control="manager")
+      i.fas.fa-user-shield
     
 block subMeetingControl2
   .meeting-control-item.control-show-pop(data-tooltip="tooltip", data-placement="top", title="Quản lý phòng", data-control="manager")
