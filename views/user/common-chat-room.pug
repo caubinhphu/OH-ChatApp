@@ -9,7 +9,9 @@ block contentMain
   #meeting-area
     #main-meeting-area.bg-secondary.p-1.d-flex
       #main-meeting.p-1.flex-fill
-        #meeting-show.d-flex.flex-wrap.justify-content-center.align-items-center.align-content-center
+        .wrap-meeting-show.d-flex
+          #meeting-show.flex-wrap.justify-content-center.align-items-center.align-content-center
+          .wrap-meet-pin.order-first.flex-fill.mr-2
       #meeting-control
         .d-flex.justify-content-around.h-100.mx-auto(style="max-width: 1000px")
           #btn-audio-connect.meeting-control-item(data-state="off", data-tooltip="tooltip", title="Bật audio (Alt + A)")

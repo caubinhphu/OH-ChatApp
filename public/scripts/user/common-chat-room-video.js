@@ -131,12 +131,18 @@ function outputShowMeeting(id = 'my_video', avatar = '/images/917385.jpg') {
   div.className = 'meeting-part ps-rv';
   div.dataset.id = id;
 
-  div.innerHTML = `<div class="ps-as over-hidden">
+  div.innerHTML = `<div class="ps-as over-hidden d-flex align-items-center justify-content-center">
     <img src="${avatar}">
     <video name="video" autoplay style="display:none" ${
       id ? '' : 'muted'
     }></video>
     <video name="audio" autoplay ${id ? '' : 'muted'} class="d-none"></video>
+    <div class="meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3">
+      <strong>Name</strong>
+      <div class="wrap-pin text-primary m-2 pin-btn">
+        <i class="fas fa-expand-arrows-alt"></i>
+      </div>
+    </div>
   </div>`;
 
   meetingShow.appendChild(div);
@@ -230,57 +236,105 @@ function addPeer(signal, callerId, avatar) {
 
 // output video
 function outputVideo(stream = window.localStream, id = 'my_video') {
-  const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
-  if (meetingItem) {
-    meetingItem.querySelector('img').style.display = 'none';
-    const video = meetingItem.querySelector('video[name="video"]');
-    video.style.display = 'block';
-    if ('srcObject' in video) {
-      video.srcObject = stream;
-    } else {
-      video.src = window.URL.createObjectURL(stream);
-    }
+  // const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
+  // if (meetingItem) {
+  //   meetingItem.querySelector('img').style.display = 'none';
+  //   const video = meetingItem.querySelector('video[name="video"]');
+  //   video.style.display = 'block';
+  //   if ('srcObject' in video) {
+  //     video.srcObject = stream;
+  //   } else {
+  //     video.src = window.URL.createObjectURL(stream);
+  //   }
+  // }
+  const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
+  if ($meetingItem.length) {
+    $meetingItem.find('img').css('display', 'none');
+    const $video = $meetingItem.find('video[name="video"]');
+    $video.css('display', 'block');
+    $video.each((i, vd) => {
+      if ('srcObject' in vd) {
+        vd.srcObject = stream;
+      } else {
+        vd.src = window.URL.createObjectURL(stream);
+      }
+    })
   }
 }
 
 // output audio
 function outputAudio(stream = window.localStream, id = 'my_video') {
-  const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
-  if (meetingItem) {
-    const video = meetingItem.querySelector('video[name="audio"]');
-    if ('srcObject' in video) {
-      video.srcObject = stream;
-    } else {
-      video.src = window.URL.createObjectURL(stream);
-    }
+  // const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
+  // if (meetingItem) {
+  //   const video = meetingItem.querySelector('video[name="audio"]');
+  //   if ('srcObject' in video) {
+  //     video.srcObject = stream;
+  //   } else {
+  //     video.src = window.URL.createObjectURL(stream);
+  //   }
+  // }
+  const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
+  if ($meetingItem.length) {
+    const $video = $meetingItem.find('video[name="audio"]');
+    $video.each((i, vd) => {
+      if ('srcObject' in vd) {
+        vd.srcObject = stream;
+      } else {
+        vd.src = window.URL.createObjectURL(stream);
+      }
+    })
   }
 }
 
 // output stop video
 function outputStopVideo(id = 'my_video') {
-  const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
-  if (meetingItem) {
-    meetingItem.querySelector('img').style.display = 'inline';
-    const video = meetingItem.querySelector('video[name="video"]');
-    video.style.display = 'none';
-    if ('srcObject' in video) {
-      video.srcObject = null;
-    } else {
-      video.src = null;
-    }
+  // const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
+  // if (meetingItem) {
+  //   meetingItem.querySelector('img').style.display = 'inline';
+  //   const video = meetingItem.querySelector('video[name="video"]');
+  //   video.style.display = 'none';
+  //   if ('srcObject' in video) {
+  //     video.srcObject = null;
+  //   } else {
+  //     video.src = null;
+  //   }
+  // }
+  const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
+  if ($meetingItem.length) {
+    $meetingItem.find('img').css('display', 'inline');
+    const $video = $meetingItem.find('video[name="video"]');
+    $video.css('display', 'none');
+    $video.each((i, vd) => {
+      if ('srcObject' in vd) {
+        vd.srcObject = null;
+      } else {
+        vd.src = null;
+      }
+    })
   }
 }
 
 // output stop audio
 function outputStopAudio(id = 'my_video') {
-  const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
-  if (meetingItem) {
-    const video = meetingItem.querySelector('video[name="audio"]');
-    if ('srcObject' in video) {
-      video.srcObject = null;
-    } else {
-      video.src = null;
-    }
+  // const meetingItem = meetingShow.querySelector(`div[data-id="${id}"]`);
+  // if (meetingItem) {
+  //   const video = meetingItem.querySelector('video[name="audio"]');
+  //   if ('srcObject' in video) {
+  //     video.srcObject = null;
+  //   } else {
+  //     video.src = null;
+  //   }
+  // }
+  const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
+  if ($meetingItem.length) {
+    const $video = $meetingItem.find('video[name="audio"]');
+    $video.each((i, vd) => {
+      if ('srcObject' in vd) {
+        vd.srcObject = null;
+      } else {
+        vd.src = null;
+      }
+    })
   }
 }
 
@@ -415,3 +469,29 @@ async function handleVideo() {
     this.style.cursor = 'pointer';
   }
 }
+
+// pin meeting
+$(document).on('click', '.pin-btn', function(e) {
+  $('.meeting-part').removeClass('is-pin'); // remove all pin
+  const $parent = $(this).parents('.meeting-part');
+  if($(this).hasClass('pin')) { // is pin ->  unpin
+    $parent.removeClass('is-pin');
+    $('.meeting-part .pin-btn').removeClass('pin');
+    $('.wrap-meeting-show').removeClass('has-pin');
+    $('.wrap-meet-pin').html('');
+  } else { // pin
+    $(`.meeting-part:not('meeting-part-cloned') .pin-btn`).removeClass('pin');
+    $(this).addClass('pin');
+    $parent.addClass('is-pin');
+    $('.wrap-meeting-show').addClass('has-pin');
+    $('.wrap-meet-pin').html($parent.get(0).outerHTML);
+    $('.wrap-meet-pin').find('.meeting-part').addClass('meeting-part-cloned');
+    const video = $parent.find('video[name="video"]').get(0);
+    const videoCloned = $('.wrap-meet-pin').find('video[name="video"]').get(0);
+    if ('srcObject' in video) {
+      videoCloned.srcObject = video.srcObject;
+    } else {
+      videoCloned.src = video.src;
+    }
+  }
+})
