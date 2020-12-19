@@ -236,7 +236,7 @@ module.exports.onJoinChat = async function (io, { token }) {
             .getRoomUsersInfo()
             // .filter((user) => user.socketId !== this.id)
             .map((user) => {
-              return { id: user.socketId, avatar: user.avatar };
+              return { id: user.socketId, avatar: user.avatar, name: user.name };
             }),
         });
 
@@ -506,6 +506,7 @@ module.exports.onOfferStream = function (io, data) {
   io.to(data.receiveId).emit('offerSignal', {
     callerId: data.callerId,
     avatarCaller: data.avatar,
+    callerName: data.callerName,
     signal: data.signal,
   });
 };
