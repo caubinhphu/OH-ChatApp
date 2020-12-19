@@ -120,7 +120,7 @@ function outputRoomInfo(roomInfo, socketId) {
   // room name
   roomName.innerHTML = roomInfo.nameRoom;
   // amount participants
-  amountParticipants.innerHTML = `(${roomInfo.users.length})`;
+  $('.amount-participants').html(`(${roomInfo.users.length})`);
   // participants
   participants.innerHTML = roomInfo.users
     .sort((user1, user2) => {

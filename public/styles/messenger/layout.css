@@ -2,12 +2,13 @@ body {
   height: 100vh;
 }
 
-/* input:not([type="radio"] and [type="checkbox"]):focus,
-button:focus {
+input:not([type="radio"]):focus,
+button:focus,
+button:active {
   outline:0px !important;
   -webkit-appearance:none;
   box-shadow: none !important;
-} */
+}
 
 #header {
   box-shadow: 1px 1px 5px #555;

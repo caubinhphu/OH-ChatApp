@@ -352,10 +352,12 @@ async function handleAudio() {
       // turn on video
       // set UI
       this.dataset.state = 'on';
-      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-microphone text-white"></i></div>';
-      $(this)
-        .attr('data-original-title', 'Tắt audio (Alt + A)')
-        .tooltip('show');
+      $(this).addClass('is-turn-on');
+      $(this).find('.popup').html('Tắt audio (Alt + A)');
+      // this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-microphone text-white"></i></div>';
+      // $(this)
+      //   .attr('data-original-title', 'Tắt audio (Alt + A)')
+      //   .tooltip('show');
 
       // get stream video from camera of user and set in the window
       if (navigator.mediaDevices.getUserMedia) {
@@ -379,10 +381,12 @@ async function handleAudio() {
       // stop video
       // set UI
       this.dataset.state = 'off';
-      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-microphone-slash text-danger"></i></div>';
-      $(this)
-        .attr('data-original-title', 'Bật audio (Alt + A)')
-        .tooltip('show');
+      $(this).removeClass('is-turn-on');
+      $(this).find('.popup').html('Bật audio (Alt + A)');
+      // this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-microphone-slash text-danger"></i></div>';
+      // $(this)
+      //   .attr('data-original-title', 'Bật audio (Alt + A)')
+      //   .tooltip('show');
 
       // remove audio track of stream each peer
       peers.forEach((peer) => {
@@ -414,10 +418,8 @@ async function handleVideo() {
       // turn on video
       // set UI
       this.dataset.state = 'on';
-      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-video text-white"></i></div>';
-      $(this)
-        .attr('data-original-title', 'Tắt camera (Alt + V)')
-        .tooltip('show');
+      $(this).addClass('is-turn-on');
+      $(this).find('.popup').html('Tắt camera (Alt + V)');
 
       // get stream video from camera of user and set in the window
       if (navigator.mediaDevices.getUserMedia) {
@@ -444,10 +446,8 @@ async function handleVideo() {
       // stop video
       // set UI
       this.dataset.state = 'off';
-      this.innerHTML = '<div class="control-no-show-pop"><i class="fas fa-video-slash text-danger"></i><div>';
-      $(this)
-        .attr('data-original-title', 'Bật camera (Alt + V)')
-        .tooltip('show');
+      $(this).removeClass('is-turn-on');
+      $(this).find('.popup').html('Bật camera (Alt + V)');
 
       // remove video track of stream each peer
       peers.forEach((peer) => {

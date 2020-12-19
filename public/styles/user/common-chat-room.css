@@ -65,6 +65,7 @@
   bottom: 0;
   left: 0;
   padding: 5px 0;
+  z-index: 99;
 }
 .control-show-pop,
 .control-no-show-pop,
@@ -173,7 +174,7 @@
 }
 
 #msg {
-  border: 1px solid rgb(177, 177, 177);
+  border: none;
   padding: 5px;
   font-size: 15px;
   resize: none;
@@ -256,12 +257,12 @@
   position: absolute;
   top: -75px;
   z-index: 9999999;
-  left: 0;
-  transform: translate(-50%);
+  right: -89px;
   background-color: white;
   border-radius: 12px;
   padding-top: 12px;
   padding-bottom: 12px;
+  width: max-content;
 }
 .wrap-control-meet::after {
   content: "";
@@ -270,10 +271,18 @@
   background: white;
   position: absolute;
   transform: rotate(45deg);
-  left: 168px;
+  right: 108px;
 }
 .wrap-control-meet .control-show-pop {
-  color: blue;
+  color: #0099ff;
+}
+.arrow-smaller {
+  color: #0099ff;
+  transition: all .35s;
+}
+.arrow-smaller:hover {
+  color: #0099ff;
+  transform: scale(1.1);
 }
 .wrap-control-meet .control-show-pop:hover {
   background-color: transparent;
@@ -320,4 +329,94 @@
 }
 .meeting-part.is-pin:not(.meeting-part-cloned) {
   display: none;
+}
+.wrap-msg-box::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 100%;
+  height: 2px;
+  background-color: #0099ff;
+  transition: all .35s;
+}
+.wrap-msg-box.is-focus::after {
+  right: 0;
+}
+.scroll-bottom {
+  position: absolute;
+  bottom: 65px;
+  left: 50%;
+  display: none;
+  font-size: 27px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  transition: all .2s;
+  z-index: 9;
+  line-height: 27px;
+  color: #0099ff;
+}
+.scroll-bottom:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+.scroll-bottom.is-show {
+  display: block;
+}
+.popup {
+  position: absolute;
+  top: -39px;
+  background-color: #000000;
+  padding: 7px;
+  line-height: 1;
+  border-radius: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: white;
+  display: none;
+}
+.popup::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: inherit;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: 99;
+}
+
+#btn-audio-connect.is-turn-on i::before {
+  content: "\f130";
+  color: white;
+}
+#btn-video-connect.is-turn-on i::before {
+  content: "\f03d";
+  color: white;
+}
+#hide-time-btn[data-status="off"] i {
+  font-weight: 900;
+}
+.amount-participants,
+.amount-msg-unread {
+  font-size: 15px;
+  top: -.8em;
+}
+.has-unread {
+  animation: bounce 2s 4;
+  color: #ff7600 !important;
+}
+.has-unread i{
+  position: relative;
+}
+.has-unread i::after {
+  content: "\f111";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 10px;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  color: #0099ff;
 }

@@ -14,21 +14,27 @@ block contentMain
           .wrap-meet-pin.order-first.flex-fill.mr-2
       #meeting-control
         .d-flex.justify-content-around.h-100.mx-auto(style="max-width: 1000px")
-          #btn-audio-connect.meeting-control-item(data-state="off", data-tooltip="tooltip", title="Bật audio (Alt + A)")
+          #btn-audio-connect.meeting-control-item.ps-rv(data-state="off")
+            .popup Bật audio (Alt + A)
             .control-no-show-pop
               i.fas.fa-microphone-slash.text-danger
-          #btn-video-connect.meeting-control-item(data-state="off", data-tooltip="tooltip", title="Bật camera (Alt + V)")
+          #btn-video-connect.meeting-control-item.ps-rv(data-state="off")
+            .popup Bật camera (Alt + V)
             .control-no-show-pop
               i.fas.fa-video-slash.text-danger
           block subMeetingControl
-          .meeting-control-item.d-none.d-md-block(data-tooltip="tooltip", title="Thành viên", data-control="user")
-              .control-show-pop(data-control="user")
-                i.fas.fa-users
-                sup#amount-participants
-          .meeting-control-item.d-none.d-md-block(data-tooltip="tooltip", title="Chat")
+          .meeting-control-item.d-none.d-md-block.ps-rv(data-control="user")
+            .popup Thành viên
+            .control-show-pop(data-control="user")
+              sup.amount-participants
+              i.fas.fa-users
+          .meeting-control-item.d-none.d-md-block.ps-rv
+            .popup Chat
             .control-show-pop(data-control="chat")
               i.fas.fa-comment-alt
-          .meeting-control-item.d-none.d-md-block(data-tooltip="tooltip", title="Thông tin phòng")
+              sup.amount-msg-unread
+          .meeting-control-item.d-none.d-md-block.ps-rv
+            .popup Thông tin phòng
             .control-show-pop.text-info(data-control="info")
               i.fas.fa-info
           .meeting-control-item.ps-rv.d-md-none.wrap-conts
@@ -37,23 +43,27 @@ block contentMain
             .wrap-control-meet
               .d-flex.justify-content-center.align-items-center
                 block subMeetingControl2
-                .meeting-control-item(data-tooltip="tooltip", title="Thành viên")
+                .meeting-control-item.ps-rv
                   .control-show-pop(data-control="user")
+                    sup.amount-participants
                     i.fas.fa-users
-                    sup#amount-participants
-                .meeting-control-item(data-tooltip="tooltip", title="Chat")
+                .meeting-control-item.ps-rv
                   .control-show-pop(data-control="chat")
                     i.fas.fa-comment-alt
-                .meeting-control-item(data-tooltip="tooltip", title="Thông tin phòng")
+                    sup.amount-msg-unread
+                .meeting-control-item.ps-rv
                   .control-show-pop.text-info(data-control="info")
                     i.fas.fa-info
-          .meeting-control-item(data-toggle="modal", data-target="#confirm-leave-room-modal", data-tooltip="tooltip", data-placement="top", title="Rời phòng")
+          .meeting-control-item.ps-rv(data-toggle="modal", data-target="#confirm-leave-room-modal")
+            .popup Rời phòng
             .control-no-show-pop.text-danger
               i.fas.fa-sign-out-alt
       
       #show-control.show-control.no-show
         #chat-area.control-area(data-control="chat")
-          .control-area-main.d-flex.flex-column
+          .control-area-main.d-flex.flex-column.ps-rv
+            .scroll-bottom
+              i.far.fa-arrow-alt-circle-down
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="chat")
                 i.fas.fa-arrow-right

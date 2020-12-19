@@ -4,13 +4,15 @@ block chatStyle
   link(rel="stylesheet", href="/styles/user/chat-room-host.css")
 
 block subMeetingControl
-  .meeting-control-item.d-none.d-md-block(data-tooltip="tooltip", data-placement="top", title="Quản lý phòng")
+  .meeting-control-item.d-none.d-md-block.ps-rv
+    .popup Quản lý phòng
     .control-show-pop(data-control="manager")
       i.fas.fa-user-shield
     
 block subMeetingControl2
-  .meeting-control-item.control-show-pop(data-tooltip="tooltip", data-placement="top", title="Quản lý phòng", data-control="manager")
-    i.fas.fa-user-shield
+  .meeting-control-item.ps-rv
+    .control-show-pop(data-control="manager")
+      i.fas.fa-user-shield
 
 block waitingRoomInfo
   #waiting-room(style="display: none")
@@ -87,7 +89,8 @@ block subArea
 block subFormChat
   button.btn.btn-default.open-emojis(type="button") &#128512;
   //- input#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
-  textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+  .flex-fill.wrap-msg-box.ps-rv
+    textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
   button.btn.btn-default.text-secondary
     i.fas.fa-paper-plane
 

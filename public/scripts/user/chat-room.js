@@ -35,7 +35,9 @@ function outputChatInput(allowed) {
   if (allowed) {
     // allow chat
     msgForm.innerHTML = `<button type="button" class="btn btn-default open-emojis">&#128512;</button>
-      <input id="msg" class="form-control" type="text" name="message", placeholder="Nhập tin nhắn", autocomplete="off" />
+      <div class="flex-fill wrap-msg-box ps-rv">
+        <textarea class="form-control" id="msg" type="text" name="message" placeholder="Nhập tin nhắn" autocomplete="off"></textarea>
+      </div>
       <button class="btn btn-default text-secondary"><i class="fas fa-paper-plane"/></button>`;
   } else {
     // not allow chat
@@ -49,7 +51,7 @@ function outputRoomInfo(roomInfo, socketId) {
   // room name
   roomName.innerHTML = roomInfo.nameRoom;
   // amount participants
-  amountParticipants.innerHTML = `(${roomInfo.users.length})`;
+  $('.amount-participants').html(`(${roomInfo.users.length})`);
   // participants
   participants.innerHTML = roomInfo.users
     .sort((user1, user2) => {
