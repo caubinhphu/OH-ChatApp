@@ -126,7 +126,7 @@ module.exports.onJoinRoom = async function (
         // room is waiting
         // create and save a new user
         let user = null;
-        const member = await Member.findById(memberId);
+        const member = await Member.findById(memberId || null);
         if (member) {
           user = await User.create({
             name: username,

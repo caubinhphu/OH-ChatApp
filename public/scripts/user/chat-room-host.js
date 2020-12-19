@@ -95,6 +95,12 @@ function outputWaitingRoom(waitingRoom) {
         });
       }
     );
+
+    // set un-read
+    if (!$('#users-area').hasClass('is-active')) {
+      $('.control-show-pop[data-control="user"]').addClass('has-unread');
+      $('.open-popup-icon').addClass('has-unread');
+    }
   } else {
     waitingRoomUsers.innerHTML = '';
     waitingRoomArea.style.display = 'none';
