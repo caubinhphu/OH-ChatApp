@@ -48,8 +48,11 @@ function outputChatInput(allowed) {
 // output room info
 function outputRoomInfo(roomInfo, socketId) {
   // console.log(roomInfo, socketId);
-  // room name
+  // room name, password and input copy
   roomName.innerHTML = roomInfo.nameRoom;
+  $('#room-info-password-room').html(roomInfo.password);
+  $('#link-info').val(`${location.origin}/meeting/?room=${roomInfo.nameRoom}&pass=${roomInfo.password}`);
+
   // amount participants
   $('.amount-participants').html(`(${roomInfo.users.length})`);
   // participants

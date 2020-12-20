@@ -241,3 +241,17 @@ function scrollBottomChatBox() {
   const $ele = $('#chat-middle');
   $ele.animate({scrollTop: $ele[0].scrollHeight - $ele.innerHeight()}, 350, 'swing');
 }
+
+function copyText(selector) {
+  /* Select the text field */
+  const ele = document.querySelector(selector);
+  ele.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand('copy');
+}
+
+$('#copy-info').on('click', function() {
+  copyText('#link-info');
+  this.innerHTML = 'Copied';
+});

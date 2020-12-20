@@ -5,9 +5,9 @@ const noAllowJoinBtn = document.getElementById('no-allow-join-btn');
 const kickUserBtn = document.getElementById('confirm-kick-user-btn');
 
 // receive password of room from server
-socket.on('sendPasswordRoom', (password) => {
-  document.querySelector('#room-info-password-room').innerHTML = `${password}`;
-});
+// socket.on('sendPasswordRoom', (password) => {
+//   document.querySelector('#room-info-password-room').innerHTML = `${password}`;
+// });
 
 // receive room manager info from server
 socket.on('roomManager', (manager) => {
@@ -123,8 +123,11 @@ noAllowJoinBtn.addEventListener('click', function () {
 
 // output room info
 function outputRoomInfo(roomInfo, socketId) {
-  // room name
+  // room name, password and input copy
   roomName.innerHTML = roomInfo.nameRoom;
+  $('#room-info-password-room').html(roomInfo.password);
+  $('#link-info').val(`${location.origin}/meeting/?room=${roomInfo.nameRoom}&pass=${roomInfo.password}`);
+
   // amount participants
   $('.amount-participants').html(`(${roomInfo.users.length})`);
   // participants

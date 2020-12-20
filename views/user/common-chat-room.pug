@@ -93,10 +93,16 @@ block contentMain
               .align-self-center.control-title Thông tin phòng
               div
             .control-area-middle.flex-fill
-              div
-                span.text-secondary Id phòng: 
-                span#room-info-name-room
-              block passwordRoom
+              .pl-3
+                div
+                  span.text-secondary Id phòng: 
+                  strong#room-info-name-room
+                .mt-2
+                  span.text-secondary Mật khẩu: 
+                  strong#room-info-password-room
+                .text-center
+                  input#link-info(type="text")
+                  button#copy-info.btn.btn-link.btn-sm Copy link
 
         block subControlArea
   

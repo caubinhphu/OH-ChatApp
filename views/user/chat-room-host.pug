@@ -33,20 +33,21 @@ block subControlArea
         .align-self-center.control-title Tùy chỉnh
         div
       .control-area-middle.flex-fill
-        .management-title Phòng
-        .custom-control.custom-radio.my-1.ml-3
-          input#management-open-room.custom-control-input(type="radio", name="management", value="open-room")
-          label.custom-control-label(for="management-open-room") Mở phòng
-        .custom-control.custom-radio.my-1.ml-3
-          input#management-lock-room.custom-control-input(type="radio", name="management", value="lock-room")
-          label.custom-control-label(for="management-lock-room") Khóa phòng
-        .custom-control.custom-radio.my-1.ml-3
-          input#management-waiting-room.custom-control-input(type="radio", name="management", value="waiting-room")
-          label.custom-control-label(for="management-waiting-room") Đặt trạng thái phòng chờ
-        .management-title Chat
-        .custom-control.custom-checkbox.my-1.ml-3
-          input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
-          label.custom-control-label(for="management-turnoff-chat") Tắt chat
+        .pl-3
+          .management-title Phòng
+          .custom-control.custom-radio.my-1.ml-3
+            input#management-open-room.custom-control-input(type="radio", name="management", value="open-room")
+            label.custom-control-label(for="management-open-room") Mở phòng
+          .custom-control.custom-radio.my-1.ml-3
+            input#management-lock-room.custom-control-input(type="radio", name="management", value="lock-room")
+            label.custom-control-label(for="management-lock-room") Khóa phòng
+          .custom-control.custom-radio.my-1.ml-3
+            input#management-waiting-room.custom-control-input(type="radio", name="management", value="waiting-room")
+            label.custom-control-label(for="management-waiting-room") Đặt trạng thái phòng chờ
+          .management-title Chat
+          .custom-control.custom-checkbox.my-1.ml-3
+            input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
+            label.custom-control-label(for="management-turnoff-chat") Tắt chat
 
 block subArea
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='leaveRoom', aria-hidden='true')
@@ -93,10 +94,6 @@ block subFormChat
     textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
   button.btn.btn-default.text-secondary
     i.fas.fa-paper-plane
-
-block passwordRoom
-  span.text-secondary Mật khẩu: 
-  span#room-info-password-room
   
 block chatScript
   script(src="/scripts/user/chat-room-host.js")

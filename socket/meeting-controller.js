@@ -223,9 +223,10 @@ module.exports.onJoinChat = async function (io, { token }) {
           value: room.status.allowChat,
         });
 
-        // update room info => send room info (name & users)
+        // update room info => send room info (name & password & users)
         io.to(room.roomId).emit('roomInfo', {
           nameRoom: room.roomId,
+          password: room.password,
           users: room.getRoomUsersInfo(),
         });
 
@@ -242,7 +243,7 @@ module.exports.onJoinChat = async function (io, { token }) {
 
         // send password and manager item of room if user is host
         if (user.host) {
-          this.emit('sendPasswordRoom', room.password);
+          // this.emit('sendPasswordRoom', room.password);
           this.emit('roomManager', room.getManager());
         }
       } else {
@@ -577,9 +578,10 @@ module.exports.onDisconnect = async function (io, reason) {
             );
           });
         } else {
-          // update room info => send room info (name & users)
+          // update room info => send room info (name & password & users)
           this.to(room.roomId).emit('roomInfo', {
             nameRoom: room.roomId,
+            password: room.password,
             users: room.getRoomUsersInfo(),
           });
 
@@ -648,9 +650,10 @@ module.exports.onDisconnect = async function (io, reason) {
               io.to(user.socketId).emit('kickedOutRoom', 'OK');
             }
 
-            // update room info => send room info (name & users)
+            // update room info => send room info (name & password & users)
             io.to(room.roomId).emit('roomInfo', {
               nameRoom: room.roomId,
+              password: room.password,
               users: room.getRoomUsersInfo(),
             });
 
@@ -694,9 +697,10 @@ module.exports.onDisconnect = async function (io, reason) {
         //       );
         //     });
         //   } else {
-        //     // update room info => send room info (name & users)
+        //     // update room info => send room info (name & password & users)
         //     this.to(room.roomId).emit('roomInfo', {
         //       nameRoom: room.roomId,
+        //       password: room.password,
         //       users: room.getRoomUsersInfo(),
         //     });
         //     this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {

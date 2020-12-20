@@ -104,3 +104,34 @@ function outputJoinRoomBlocked(msg) {
     </div>
   </div>`;
 }
+
+// get parameter by name in string query
+function getParameterByName(name, url) {
+  name = name.replace(/[\[\]]/g, '\\$&');
+  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+  if (!results) {
+    return null
+  };
+  if (!results[2]) {
+    return ''
+  };
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+// check string is url
+function checkIsUrl(string) {
+  try {
+    new URL(string);
+  } catch (_) {
+    return false;
+  }
+  return true;
+}
+
+$('#room').on('input', function() {
+  if (checkIsUrl(this.value)) {
+    $('#passRoom').val(getParameterByName('pass', this.value));
+    $(this).val(getParameterByName('room', this.value));
+  }
+})
