@@ -134,7 +134,7 @@
   width: max-content;
   max-width: 100%;
   background-color: #f1f0f0;
-  padding: 4px;
+  padding: 4px 8px;
   border-radius: 5px;
 }
 
@@ -142,9 +142,10 @@
   width: max-content;
   max-width: 100%;
   background-color: #0099ff;
-  padding: 4px;
+  padding: 4px 8px;
   border-radius: 5px;
   margin-left: auto;
+  text-align: left;
 }
 
 .message-avatar, .room-user-avatar,

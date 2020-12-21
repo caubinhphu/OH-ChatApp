@@ -158,9 +158,22 @@ $(conShowPopClass).on('click', function() {
     $('.control-area').removeClass('is-active');
     $(this).addClass('is-active');
     $(`.control-area[data-control="${this.dataset.control}"]`).addClass('is-active');
+
+    // remove un-read
+    const $chatArea = $('.control-show-pop[data-control="chat"]');
+    const $userArea = $('.control-show-pop[data-control="user"]');
+    if ($('#chat-area').hasClass('is-active')) {
+      $chatArea.removeClass('has-unread');
+    }
+    if ($('#users-area').hasClass('is-active')) {
+      $userArea.removeClass('has-unread');
+    }
+    if (!$chatArea.hasClass('has-unread') && !$userArea.hasClass('has-unread')) {
+      $('.open-popup-icon').removeClass('has-unread');
+    }
+
     if ($wrapControls.hasClass('no-show')) {
       showControls();
-      $(this).removeClass('has-unread');
       if (this.dataset.control === 'chat') {
         $('#msg').focus();
         scrollBottomChatBox();
