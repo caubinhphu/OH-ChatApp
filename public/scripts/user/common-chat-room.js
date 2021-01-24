@@ -135,6 +135,7 @@ document
     socket.emit('disconnectRequest', {
       typeLeave: 'self',
     });
+    showLoader()
   });
 
 socket.emit('joinChat', {

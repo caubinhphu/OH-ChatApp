@@ -23,6 +23,8 @@ document.createRoomForm.addEventListener('submit', function (e) {
     hostname: hostnameInput.value,
     memberId: memberIdInput.value,
   });
+
+  showLoader()
 });
 
 // receive access token from server when create room successful

@@ -52,6 +52,7 @@ document
       typeLeave: 'all',
       token: qs.get('token'),
     });
+    showLoader()
   });
 
 // output waiting room

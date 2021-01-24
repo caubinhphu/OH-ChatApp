@@ -36,7 +36,7 @@
   text-align: center;
   width: 325px;
   height: 202px;
-  margin: 2px auto;
+  margin: 2px;
   background-color: #0e1e29;
   transition: all .3s;
   max-width: calc(100vw - 15px);

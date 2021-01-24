@@ -9,10 +9,18 @@ html(lang="en")
     link(rel="shortcut icon", href="/images/logo.png", type="image/x-icon")
     block styles
       //- link(rel="stylesheet", href="/styles/bootstrap.min.css")
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T", crossorigin="anonymous")
+      link(rel="stylesheet", href="/styles/layout.css")
       //- link(rel="stylesheet", href="/styles/fontawesome-free/css/all.min.css")
     script(src="https://kit.fontawesome.com/7312f418af.js", crossorigin="anonymous")
-  body
+  body.ps-rv
+    #loadding-page.loadding-page
+      .loader.d-flex.justify-content-center.align-items-center
+        .lds-ellipsis
+          div
+          div
+          div
+          div
     block header
     block main
     block footer
@@ -22,6 +30,7 @@ html(lang="en")
       script(src="/scripts/bootstrap.min.js")
       script(src="/scripts/notify.min.js")
       script(src="/scripts/output-message.js")
+      script(src="/scripts/layout.js")
       if (errorText)
         each error in errorText
           script(type='text/javascript')= `outputErrorMessage('${error}')`

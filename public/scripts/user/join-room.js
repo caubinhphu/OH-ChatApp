@@ -19,6 +19,7 @@ joinRoomForm.addEventListener('submit', function (e) {
       username: nameInput.value,
       memberId: memberIdInput.value,
     });
+    showLoader()
   }
 });
 
