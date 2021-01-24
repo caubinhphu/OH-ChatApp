@@ -36,10 +36,10 @@
   text-align: center;
   width: 325px;
   height: 202px;
-  margin: 2px;
+  margin: 2px auto;
   background-color: #0e1e29;
-  max-width: calc(100vw - 30px);
   transition: all .3s;
+  max-width: calc(100vw - 15px);
 }
 
 .meeting-part img {
@@ -51,25 +51,6 @@
   width: 100%;
 }
 
-@media only screen and (max-width: 1000px) {
-  #show-control {
-    position: absolute !important;
-    top: 0;
-    right: 0;
-  }
-}
-
-@media only screen and (max-width: 320px) {
-  .wrap-control-meet .control-show-pop {
-    padding: 0 17px;
-  }
-  .wrap-control-meet {
-    right: -64px;
-  }
-  .wrap-control-meet::after {
-    right: 76px;
-  }
-}
 #meeting-control {
   position: fixed;
   height: 47px;
@@ -272,7 +253,7 @@
   position: absolute;
   top: -75px;
   z-index: 9999999;
-  right: -89px;
+  right: -69px;
   background-color: white;
   border-radius: 12px;
   padding-top: 12px;
@@ -286,7 +267,7 @@
   background: white;
   position: absolute;
   transform: rotate(45deg);
-  right: 108px;
+  right: 88px;
 }
 .wrap-control-meet .control-show-pop {
   color: #0099ff;
@@ -410,6 +391,12 @@
   content: "\f03d";
   color: white;
 }
+#btn-share-screen.is-turn-on i {
+  font-weight: 900;
+}
+#btn-share-screen.is-turn-on i::before {
+  color: white;
+}
 #hide-time-btn[data-status="off"] i {
   font-weight: 900;
 }
@@ -447,4 +434,58 @@
 #link-info::selection {
   background: transparent;
   color: transparent;
+}
+.wrap-my-video {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: auto;
+  bottom: auto;
+  width: 100px;
+  height: 65px;
+  background-color: #0e1e29;
+  border-radius: 5px;
+}
+.wrap-my-video.meeting-part img {
+  max-width: 40px;
+}
+.wrap-my-video.meeting-part.meeting-part-cloned img {
+  max-width: 100px;
+}
+.meeting-part.meeting-part-cloned .meeting-part-pin-ctrl {
+  padding: 1rem !important;
+}
+.close-popup {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  border-radius: 50%;
+}
+
+@media only screen and (max-width: 1000px) {
+  #show-control {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+  }
+}
+@media only screen and (max-width: 575px) {
+  .modal-dialog {
+    max-width: 315px;
+    margin: 0 auto;
+  }
+}
+@media only screen and (max-width: 374px) {
+  .wrap-control-meet .control-show-pop {
+    padding: 0 17px;
+  }
+  .wrap-control-meet {
+    right: -31px;
+  }
+  .wrap-control-meet::after {
+    right: 51px;
+  }
+  .control-no-show-pop {
+    padding: 0 20px;
+  }
 }

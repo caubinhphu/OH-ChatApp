@@ -58,7 +58,8 @@ block subArea
           .text-right.mt-4
             button#disconnect-all-btn.btn.btn-danger(type='button') Rời phòng tất cả
             button#disconnect-btn.btn.btn-warning.ml-3(type='button') Rời phòng
-            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+        button.btn.btn-light.close-popup(type='button', data-dismiss='modal')
+          i.fas.fa-times
   
   #confirm-join-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='joinRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')

@@ -9,9 +9,17 @@ block contentMain
   #meeting-area
     #main-meeting-area.bg-secondary.p-1.d-flex
       #main-meeting.p-1.flex-fill
-        .wrap-meeting-show.d-flex
+        .wrap-meeting-show.d-flex.ps-rv
+          .wrap-my-video.meeting-part
+            .ps-as.over-hidden.d-flex.align-items-center.justify-content-center
+              img(src="/images/logo.png")
+              video(name="video", autoplay, muted, style="display:none")
+              .meeting-part-pin-ctrl.justify-content-between.align-items-center.text-primary.px-1
+                strong Bạn
+                .wrap-pin.text-primary.pin-btn(title="Pin")
+                  i.fas.fa-expand-arrows-alt
           #meeting-show.flex-wrap.justify-content-center.align-items-center.align-content-center
-          .wrap-meet-pin.order-first.flex-fill.mr-2
+          .wrap-meet-pin.order-first.flex-fill
       #meeting-control
         .d-flex.justify-content-around.h-100.mx-auto(style="max-width: 1000px")
           #btn-audio-connect.meeting-control-item.ps-rv(data-state="off")
@@ -22,6 +30,10 @@ block contentMain
             .popup Bật camera (Alt + V)
             .control-no-show-pop
               i.fas.fa-video-slash.text-danger
+          #btn-share-screen.meeting-control-item.ps-rv(data-state="off")
+            .popup Share Screen (Alt + S)
+            .control-no-show-pop
+              i.far.fa-share-square.text-danger
           block subMeetingControl
           .meeting-control-item.d-none.d-md-block.ps-rv(data-control="user")
             .popup Thành viên

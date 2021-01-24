@@ -11,7 +11,8 @@ block subArea
           span Bạn có chắc muốn rời phòng?
           .text-right.mt-4
             button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
-            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+        button.btn.btn-light.close-popup(type='button', data-dismiss='modal')
+          i.fas.fa-times
               
 block chatScript
   script(src="/scripts/user/chat-room.js")

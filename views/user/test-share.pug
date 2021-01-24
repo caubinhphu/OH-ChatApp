@@ -1,0 +1,17 @@
+extends ./layout
+
+block contentMain
+  p This example shows you the contents of the selected part of your display. Click the Start Capture button to begin.
+
+  button#start Start Capture
+  button#stop Stop Capture
+
+  video#video(autoplay=true)
+  br
+
+  strong Log:
+  br
+  pre#log
+
+append scripts
+  script(src="/scripts/user/test-share.js")

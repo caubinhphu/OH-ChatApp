@@ -268,5 +268,5 @@ function copyText(selector) {
 
 $('#copy-info').on('click', function() {
   copyText('#link-info');
-  this.innerHTML = 'Copied';
+  outputSuccessMessage('Copied the room information')
 });
