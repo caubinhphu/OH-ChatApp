@@ -20,11 +20,11 @@ block contentMain
         label.mt-2(for="room")
           span Phòng
           span.text-danger &nbsp;*
-        input#room.form-control(type="text", name="roomId", required=true, placeholder="Nhập id phòng")
+        input#room.form-control(type="text", name="roomId", required=true, placeholder="Nhập id phòng", value=roomId)
         label.mt-2(for="passRoom")
           span Mật khẩu phòng
           span.text-danger &nbsp;*
-        input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng")
+        input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng", value=password)
         .text-center.mt-2
           button.btn.btn-info.mr-4 Tham gia
           a.btn.btn-light(role="button", href="javascript:history.back()") Quay lại

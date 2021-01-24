@@ -445,6 +445,7 @@
   height: 65px;
   background-color: #0e1e29;
   border-radius: 5px;
+  z-index: 99;
 }
 .wrap-my-video.meeting-part img {
   max-width: 40px;
@@ -461,12 +462,25 @@
   right: -15px;
   border-radius: 50%;
 }
+.wrap-my-share {
+  background-color: #202124;
+  border-radius: 10px;
+}
+.wrap-my-share .my-share-text {
+  font-size: 20px;
+  color: white;
+}
+.wrap-my-share i {
+  color: #007bff;
+  font-size: 45px;
+}
 
 @media only screen and (max-width: 1000px) {
   #show-control {
     position: absolute !important;
     top: 0;
     right: 0;
+    z-index: 9999;
   }
 }
 @media only screen and (max-width: 575px) {

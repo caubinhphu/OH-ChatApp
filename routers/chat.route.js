@@ -16,10 +16,6 @@ router.get('/chat', controller.getChat);
 
 router.get('/host/chat', controller.getHostChat);
 
-router.get('/test-share', (req, res) => {
-  res.render('user/test-share', {
-    titleSite: 'OH Chat - Room'
-  });
-});
+router.get('/meeting', controller.redirectJoin);
 
 module.exports = router;

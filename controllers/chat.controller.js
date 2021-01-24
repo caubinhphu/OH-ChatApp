@@ -7,6 +7,16 @@ module.exports.getIndex = (req, res) => {
 module.exports.getJoin = (req, res) => {
   let name = '';
   let memberId = '';
+  let roomId = '';
+  let password = '';
+  const { room, pass } = req.query;
+  if (room) {
+    roomId = room
+  }
+  if (pass) {
+    password = pass
+  }
+
   // check user logged in
   if (req.isAuthenticated()) {
     name = req.user.name;
@@ -17,6 +27,8 @@ module.exports.getJoin = (req, res) => {
     titleSite: 'OH Chat - Room',
     name,
     memberId,
+    roomId,
+    password
   });
 };
 
@@ -58,3 +70,8 @@ module.exports.getCreate = (req, res) => {
     passwordRandom,
   });
 };
+
+module.exports.redirectJoin = (req, res) => {
+  const { room, pass } = req.query;
+  res.redirect(`/join/?room=${room}&pass=${pass}`)
+}
