@@ -139,7 +139,7 @@ function outputShowMeeting(id = 'my_video', avatar = '/images/917385.jpg', name 
     <video name="audio" autoplay ${id ? '' : 'muted'} class="d-none"></video>
     <div class="meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3">
       <strong>${name}</strong>
-      <div class="wrap-pin text-primary m-2 pin-btn">
+      <div class="wrap-pin text-primary m-2 pin-btn" title="Pin">
         <i class="fas fa-expand-arrows-alt"></i>
       </div>
     </div>
@@ -478,11 +478,14 @@ $(document).on('click', '.pin-btn', function(e) {
   if($(this).hasClass('pin')) { // is pin ->  unpin
     $parent.removeClass('is-pin');
     $('.meeting-part .pin-btn').removeClass('pin');
+    $('.meeting-part .pin-btn').attr('title', 'Pin')
     $('.wrap-meeting-show').removeClass('has-pin');
     $('.wrap-meet-pin').html('');
   } else { // pin
     $(`.meeting-part:not('meeting-part-cloned') .pin-btn`).removeClass('pin');
     $(this).addClass('pin');
+    $('.meeting-part .pin-btn').attr('title', 'Pin')
+    this.title = 'Unpin'
     $parent.addClass('is-pin');
     $('.wrap-meeting-show').addClass('has-pin');
     $('.wrap-meet-pin').html($parent.get(0).outerHTML);

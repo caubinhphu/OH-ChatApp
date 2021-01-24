@@ -117,12 +117,14 @@ btnChangeStatusTime.addEventListener('click', function () {
       time.style.display = 'none';
     });
     this.dataset.status = 'off';
+    this.title = 'Bật thời gian';
   } else if (this.dataset.status === 'off') {
     // hide time now -> show time
     document.querySelectorAll('.message-time').forEach((time) => {
       time.style.display = 'inline';
     });
     this.dataset.status = 'on';
+    this.title = 'Ẩn thời gian';
   }
 });
 

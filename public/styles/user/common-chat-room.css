@@ -38,6 +38,8 @@
   height: 202px;
   margin: 2px;
   background-color: #0e1e29;
+  max-width: calc(100vw - 30px);
+  transition: all .3s;
 }
 
 .meeting-part img {
@@ -57,6 +59,17 @@
   }
 }
 
+@media only screen and (max-width: 320px) {
+  .wrap-control-meet .control-show-pop {
+    padding: 0 17px;
+  }
+  .wrap-control-meet {
+    right: -64px;
+  }
+  .wrap-control-meet::after {
+    right: 76px;
+  }
+}
 #meeting-control {
   position: fixed;
   height: 47px;
