@@ -303,6 +303,7 @@
   width: unset;
   margin-top: 67px;
   display: block;
+  min-width: max-content;
 }
 #main-meeting.has-share #meeting-show .meeting-part,
 .wrap-meeting-show.has-pin #meeting-show .meeting-part {
@@ -480,7 +481,9 @@
 #main-meeting.has-share #meeting-show{
   width:unset;
 }
-
+.them-share {
+  display: flex;
+}
 @media only screen and (max-width: 1000px) {
   #show-control {
     position: absolute !important;

@@ -531,6 +531,17 @@ module.exports.onStopVideoStream = async function () {
   }
 };
 
+// receive signal stop share screen stream from a client
+module.exports.onStopShareScreenStream = async function () {
+  const user = await User.findOne({ socketId: this.id });
+  if (user) {
+    const room = await Room.findOne({ users: user._id });
+    if (room) {
+      this.to(room.roomId).broadcast.emit('stopShareScreen', this.id);
+    }
+  }
+};
+
 // receive event require disconnect from client
 module.exports.onDisconnectRequest = function (reason) {
   // emit disconnect

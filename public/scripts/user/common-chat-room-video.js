@@ -110,6 +110,9 @@ socket.on('answerSignal', ({ answerId, signal }) => {
 // receive signal stop video from a client in the room
 socket.on('stopVideo', outputStopVideo);
 
+// receive signal stop share screen from a client in the room
+socket.on('stopShareScreen', outputStopShareScreen);
+
 // audio btn click
 btnAudio.addEventListener('click', handleAudio);
 // shortcut key
@@ -185,20 +188,16 @@ function createPeer(socketId, callerId, callerName) {
   // peer.on('data', (data) => console.log(data.toString()));
 
   peer.on('stream', (stream) => {
-    // window.testStream = stream;
     console.log('call stream');
-    // outputVideo(stream, socketId);
+    if (stream.getVideoTracks().length >= 2) {
+      outputShare(stream, callerId)
+    }
   });
 
   peer.on('track', (track, stream) => {
     console.log('call track');
-    console.dir(track, callerId);
     if (track.kind === 'video') {
-      if (/(screen)|(window)/.test(track.label)) {
-        // output video share screen
-        outputShare(stream, callerId)
-      } else {
-        // output video
+      if (stream.getVideoTracks().length < 2) {
         outputVideo(stream, callerId);
       }
     } else if (track.kind === 'audio') {
@@ -245,21 +244,16 @@ function addPeer(signal, callerId, avatar, callerName) {
   // peer.on('data', (data) => console.log(data.toString()));
 
   peer.on('stream', (stream) => {
-    // window.testStream = stream;
     console.log('answer stream');
-    window.xxx = stream
-    // outputVideo(stream, callerId);
+    if (stream.getVideoTracks().length >= 2) {
+      outputShare(stream, callerId)
+    }
   });
 
   peer.on('track', (track, stream) => {
-    console.log('call track');
-    console.log(track);
+    console.log('answer track');
     if (track.kind === 'video') {
-      if (/(screen)|(window)/.test(track.label)) {
-        // output video share screen
-        outputShare(stream, callerId)
-      } else {
-        // output video
+      if (stream.getVideoTracks().length < 2) {
         outputVideo(stream, callerId);
       }
     } else if (track.kind === 'audio') {
@@ -513,13 +507,13 @@ async function handleVideo() {
       // remove video track of stream each peer
       peers.forEach((peer) => {
         peer.peer.removeTrack(
-          window.localStream.getVideoTracks().find(track => !/screen/.test(track.label)),
+          window.localStream.getVideoTracks()[0],
           window.localStream
         );
       });
 
       // stop and remove video track of stream in local
-      window.localStream.getVideoTracks().find(track => !/screen/.test(track.label)).stop();
+      window.localStream.getVideoTracks()[0].stop();
       window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
 
       // output stop my video
@@ -548,7 +542,7 @@ async function handleShareScreen() {
       if (navigator.mediaDevices.getDisplayMedia) {
         const shareStream = await navigator.mediaDevices.getDisplayMedia({
           video: {
-            cursor: "always"
+            cursor: 'always'
           },
           audio: {
             echoCancellation: true,
@@ -557,59 +551,52 @@ async function handleShareScreen() {
           }
         });
 
-        if (navigator.mediaDevices.getUserMedia) {
-          const audioStream = await navigator.mediaDevices.getUserMedia({
-            video: false,
-            audio: true,
-          });
-  
-          // add audio track for stream of local stream
-          shareStream.addTrack(audioStream.getAudioTracks()[0]);
-        }
+        // add event stop share
+        shareStream.getVideoTracks()[0].onended = stopMyShareScreen;
 
+        // duplicate video track share to detach share with camera
+        shareStream.addTrack(shareStream.getVideoTracks()[0].clone())
         peers.forEach((peer) => {
           peer.peer.addStream(
             shareStream
           );
         });
 
+        // add video track for stream in local
         window.localShare = shareStream
 
-        // add video track for stream in local
-        // window.localShare = shareStream;
-
-        // output my video
+        // output my share
         outputShare();
       }
     } else if (this.dataset.state === 'on') {
-      // stop share screen
-      // set UI
-      this.dataset.state = 'off';
-      $(this).removeClass('is-turn-on');
-      $(this).find('.popup').html('Share Screen (Alt + S)');
-
-      // remove video share screen track of stream each peer
-      peers.forEach((peer) => {
-        peer.peer.removeTrack(
-          // window.localShare.getVideoTracks().find(track => /screen/.test(track.label)),
-          window.localShare.getVideoTracks()[0],
-          window.localShare
-        );
-      });
-
-      // // stop and remove video  share screen track of stream in local
-      // window.localStream.getVideoTracks().find(track => /screen/.test(track.label)).stop();
-      // window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
-      window.localShare.getVideoTracks()[0].stop();
-      window.localShare.removeTrack(window.localShare.getVideoTracks()[0]);
-
       // output stop my video share screen
-      socket.emit('stopShareScreenStream');
-      outputStopShareScreen();
+      stopMyShareScreen()
     }
     canClickShareBtn = true;
     $(this).find('.control-no-show-pop').css('cursor', 'pointer');
   }
+}
+
+$('.btn-stop-share').on('click', stopMyShareScreen)
+
+function stopMyShareScreen() {
+  // stop share screen
+  // set UI
+  btnShare.dataset.state = 'off';
+  $(btnShare).removeClass('is-turn-on');
+  $(btnShare).find('.popup').html('Share Screen (Alt + S)');
+
+  // remove video share screen track of stream each peer
+  peers.forEach((peer) => {
+    peer.peer.removeStream(window.localShare);
+  });
+
+  // // stop and remove video share screen track of stream in local
+  window.localShare.getVideoTracks().forEach(track => track.stop());
+  window.localShare = new MediaStream();
+
+  socket.emit('stopShareScreenStream');
+  outputStopShareScreen();
 }
 
 // pin meeting

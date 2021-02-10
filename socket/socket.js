@@ -62,6 +62,9 @@ const socket = function (io) {
     // receive signal stop video stream from a client
     socket.on('stopVideoStream', roomController.onStopVideoStream);
 
+    // receive signal stop share screen stream from a client
+    socket.on('stopShareScreenStream', roomController.onStopShareScreenStream);
+
     // receive event require disconnect from client
     socket.on('disconnectRequest', roomController.onDisconnectRequest);
 
@@ -78,16 +81,6 @@ const socket = function (io) {
         formatMessage("Hải", data.message, "/images/oh-bot.jpg")
       );
     });
-
-    // share screen
-    // receive track stream share screen
-    socket.on('shareScreenStream', (data) => {
-      console.log(data);
-      socket.broadcast.emit(
-        'shareScreen',
-        data
-      );
-    })
   });
 };
 
