@@ -538,6 +538,31 @@ module.exports.onStopShareScreenStream = async function () {
     const room = await Room.findOne({ users: user._id });
     if (room) {
       this.to(room.roomId).broadcast.emit('stopShareScreen', this.id);
+      room.status.isShareScreen = false;
+      await room.save();
+    }
+  }
+};
+
+// receive signal check can share screen from a client
+module.exports.onCheckCanShareScreen = async function () {
+  const user = await User.findOne({ socketId: this.id });
+  if (user) {
+    const room = await Room.findOne({ users: user._id });
+    if (room) {
+      this.emit('isCanShareScreen', {isShareScreen: room.status.isShareScreen});
+    }
+  }
+};
+
+// receive signal begin share screen from a client
+module.exports.onBeginShareScreen = async function () {
+  const user = await User.findOne({ socketId: this.id });
+  if (user) {
+    const room = await Room.findOne({ users: user._id });
+    if (room) {
+      room.status.isShareScreen = true;
+      await room.save();
     }
   }
 };

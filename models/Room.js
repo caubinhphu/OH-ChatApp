@@ -22,6 +22,10 @@ const roomSchema = new mongoose.Schema({
       type: String,
       default: 'open',
     },
+    isShareScreen: {
+      type: Boolean,
+      default: false,
+    }
   },
   users: [
     {

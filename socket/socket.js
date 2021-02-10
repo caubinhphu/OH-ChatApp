@@ -65,6 +65,12 @@ const socket = function (io) {
     // receive signal stop share screen stream from a client
     socket.on('stopShareScreenStream', roomController.onStopShareScreenStream);
 
+    // receive signal check can share screen from a client
+    socket.on('checkCanShareScreen', roomController.onCheckCanShareScreen);
+
+    // receive signal begin share screen from a client
+    socket.on('beginShareScreen', roomController.onBeginShareScreen);
+
     // receive event require disconnect from client
     socket.on('disconnectRequest', roomController.onDisconnectRequest);
 

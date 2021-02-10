@@ -1,4 +1,5 @@
-// video / voice chat
+// video / voice / share screen chat
+
 // client join the room -> call all client diff (in the room) and add in the peers
 const peers = []; // peers connect, each peer is peer-to-peer
 const btnVideo = document.getElementById('btn-video-connect');
@@ -86,6 +87,9 @@ socket.on('offerSignal', ({ signal, callerId, avatarCaller, callerName }) => {
     }
     if (window.localStream.getVideoTracks()[0]) {
       peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+    }
+    if (window.localShare.getVideoTracks()[0]) {
+      peer.addStream(window.localShare);
     }
 
     // push to the peers
@@ -190,7 +194,7 @@ function createPeer(socketId, callerId, callerName) {
   peer.on('stream', (stream) => {
     console.log('call stream');
     if (stream.getVideoTracks().length >= 2) {
-      outputShare(stream, callerId)
+      outputShare(stream, socketId)
     }
   });
 
@@ -198,10 +202,11 @@ function createPeer(socketId, callerId, callerName) {
     console.log('call track');
     if (track.kind === 'video') {
       if (stream.getVideoTracks().length < 2) {
-        outputVideo(stream, callerId);
+        console.log(stream, socketId);
+        outputVideo(stream, socketId);
       }
     } else if (track.kind === 'audio') {
-      outputAudio(stream, callerId);
+      outputAudio(stream, socketId);
     }
   });
 
@@ -412,31 +417,35 @@ async function handleAudio() {
     canClickAudioBtn = false;
     $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
     if (this.dataset.state === 'off') {
-      // turn on video
-      // set UI
-      this.dataset.state = 'on';
-      $(this).addClass('is-turn-on');
-      $(this).find('.popup').html('Tắt audio (Alt + A)');
-
       // get stream video from camera of user and set in the window
       if (navigator.mediaDevices.getUserMedia) {
-        const audioStream = await navigator.mediaDevices.getUserMedia({
-          video: false,
-          audio: true,
-        });
+        try {
+          const audioStream = await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: true,
+          });
+  
+          // turn on video
+          // set UI
+          this.dataset.state = 'on';
+          $(this).addClass('is-turn-on');
+          $(this).find('.popup').html('Tắt audio (Alt + A)');
 
-        // add audio track for stream of each peer
-        peers.forEach((peer) => {
-          peer.peer.addTrack(
-            audioStream.getAudioTracks()[0],
-            window.localStream
-          );
-        });
-
-        // add audio track for stream of local stream
-        window.localStream.addTrack(audioStream.getAudioTracks()[0]);
+          // add audio track for stream of each peer
+          peers.forEach((peer) => {
+            peer.peer.addTrack(
+              audioStream.getAudioTracks()[0],
+              window.localStream
+            );
+          });
+  
+          // add audio track for stream of local stream
+          window.localStream.addTrack(audioStream.getAudioTracks()[0]);
+        } catch (error) {
+          outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
+        }
       }
-    } else if (this.dataset.state === 'on') {
+    } else {
       // stop video
       // set UI
       this.dataset.state = 'off';
@@ -470,34 +479,38 @@ async function handleVideo() {
     $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
 
     if (this.dataset.state === 'off') {
-      // turn on video
-      // set UI
-      this.dataset.state = 'on';
-      $(this).addClass('is-turn-on');
-      $(this).find('.popup').html('Tắt camera (Alt + V)');
-
       // get stream video from camera of user and set in the window
       if (navigator.mediaDevices.getUserMedia) {
-        const videoStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: false,
-        });
-
-        // add video track for stream each peer
-        peers.forEach((peer) => {
-          peer.peer.addTrack(
-            videoStream.getVideoTracks()[0],
-            window.localStream
-          );
-        });
-
-        // add video track for stream in local
-        window.localStream.addTrack(videoStream.getVideoTracks()[0]);
-
-        // output my video
-        outputVideo();
+        try {
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+  
+          // turn on video
+          // set UI
+          this.dataset.state = 'on';
+          $(this).addClass('is-turn-on');
+          $(this).find('.popup').html('Tắt camera (Alt + V)');
+  
+          // add video track for stream each peer
+          peers.forEach((peer) => {
+            peer.peer.addTrack(
+              videoStream.getVideoTracks()[0],
+              window.localStream
+            );
+          });
+  
+          // add video track for stream in local
+          window.localStream.addTrack(videoStream.getVideoTracks()[0]);
+  
+          // output my video
+          outputVideo(); 
+        } catch (error) {
+          outputWarnMessage('Bạn đã chặn quyền sử dụng camera')
+        }
       }
-    } else if (this.dataset.state === 'on') {
+    } else {
       // stop video
       // set UI
       this.dataset.state = 'off';
@@ -532,43 +545,11 @@ async function handleShareScreen() {
     $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
 
     if (this.dataset.state === 'off') {
-      // share screen
-      // set UI
-      this.dataset.state = 'on';
-      $(this).addClass('is-turn-on');
-      $(this).find('.popup').html('Tắt Share (Alt + S)');
-
       // get stream video from camera of user and set in the window
       if (navigator.mediaDevices.getDisplayMedia) {
-        const shareStream = await navigator.mediaDevices.getDisplayMedia({
-          video: {
-            cursor: 'always'
-          },
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            sampleRate: 44100
-          }
-        });
-
-        // add event stop share
-        shareStream.getVideoTracks()[0].onended = stopMyShareScreen;
-
-        // duplicate video track share to detach share with camera
-        shareStream.addTrack(shareStream.getVideoTracks()[0].clone())
-        peers.forEach((peer) => {
-          peer.peer.addStream(
-            shareStream
-          );
-        });
-
-        // add video track for stream in local
-        window.localShare = shareStream
-
-        // output my share
-        outputShare();
+        socket.emit('checkCanShareScreen')
       }
-    } else if (this.dataset.state === 'on') {
+    } else {
       // output stop my video share screen
       stopMyShareScreen()
     }
@@ -576,6 +557,51 @@ async function handleShareScreen() {
     $(this).find('.control-no-show-pop').css('cursor', 'pointer');
   }
 }
+
+socket.on('isCanShareScreen', async ({ isShareScreen }) => {
+  if (!isShareScreen) {
+    try {
+      // share screen
+      const shareStream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          cursor: 'always'
+        },
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100
+        }
+      });
+
+      socket.emit('beginShareScreen')
+      // add event stop share
+      shareStream.getVideoTracks()[0].onended = stopMyShareScreen;
+
+      // set UI
+      btnShare.dataset.state = 'on';
+      $(btnShare).addClass('is-turn-on');
+      $(btnShare).find('.popup').html('Tắt Share (Alt + S)');
+
+      // duplicate video track share to detach share with camera
+      shareStream.addTrack(shareStream.getVideoTracks()[0].clone())
+      peers.forEach((peer) => {
+        peer.peer.addStream(
+          shareStream
+        );
+      });
+
+      // add video track for stream in local
+      window.localShare = shareStream
+
+      // output my share
+      outputShare(); 
+    } catch (error) {
+      
+    }
+  } else {
+    outputWarnMessage('Bạn không thể chia sẻ do có người đang chia sẻ')
+  }
+})
 
 $('.btn-stop-share').on('click', stopMyShareScreen)
 
