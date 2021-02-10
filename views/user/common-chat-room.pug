@@ -19,7 +19,20 @@ block contentMain
                 .wrap-pin.text-primary.pin-btn(title="Pin")
                   i.fas.fa-expand-arrows-alt
           #meeting-show.flex-wrap.justify-content-center.align-items-center.align-content-center
-          .wrap-meet-pin.order-first.flex-fill
+          .order-first.flex-fill.d-flex
+            .wrap-share-screen.flex-fill.ps-rv
+              .my-share.d-none
+                .d-flex.justify-content-center.align-items-center.ps-as
+                  .wrap-my-share.p-4.text-center
+                    i.fas.fa-share-square
+                    .my-3.my-share-text Bạn đang chia sẻ màn hình cho tất cả mọi người
+                    div
+                      button.btn.btn-primary Dừng chia sẻ
+              .them-share.w-100.h-100.d-none
+                .d-flex.align-items-center
+                  video.video-share.w-100.h-auto
+
+            .wrap-meet-pin
       #meeting-control
         .d-flex.justify-content-around.h-100.mx-auto(style="max-width: 1000px")
           #btn-audio-connect.meeting-control-item.ps-rv(data-state="off")

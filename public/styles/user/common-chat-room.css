@@ -298,15 +298,18 @@
   width: 100%;
   height: 100%;
 }
+#main-meeting.has-share #meeting-show,
 .wrap-meeting-show.has-pin #meeting-show {
-  flex-direction: column;
-  width: auto;
+  width: unset;
+  margin-top: 67px;
   display: block;
 }
+#main-meeting.has-share #meeting-show .meeting-part,
 .wrap-meeting-show.has-pin #meeting-show .meeting-part {
   width: 240px;
   height: 130px;
 }
+#main-meeting.has-share #meeting-show img,
 .wrap-meeting-show.has-pin #meeting-show .meeting-part img {
   max-width: 70px;
 }
@@ -474,6 +477,9 @@
   color: #007bff;
   font-size: 45px;
 }
+#main-meeting.has-share #meeting-show{
+  width:unset;
+}
 
 @media only screen and (max-width: 1000px) {
   #show-control {
@@ -481,6 +487,17 @@
     top: 0;
     right: 0;
     z-index: 9999;
+  }
+}
+@media only screen and (max-width: 767px) {
+  #main-meeting.has-share #meeting-show .meeting-part,
+  .wrap-meeting-show.has-pin #meeting-show .meeting-part {
+    width: 177px;
+    height: 104px;
+  }
+  #main-meeting.has-share #meeting-show img,
+  .wrap-meeting-show.has-pin #meeting-show .meeting-part img {
+    max-width: 55px;
   }
 }
 @media only screen and (max-width: 575px) {

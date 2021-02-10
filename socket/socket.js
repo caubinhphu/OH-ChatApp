@@ -78,6 +78,16 @@ const socket = function (io) {
         formatMessage("Hải", data.message, "/images/oh-bot.jpg")
       );
     });
+
+    // share screen
+    // receive track stream share screen
+    socket.on('shareScreenStream', (data) => {
+      console.log(data);
+      socket.broadcast.emit(
+        'shareScreen',
+        data
+      );
+    })
   });
 };
 

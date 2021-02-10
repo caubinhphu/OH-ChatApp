@@ -21,6 +21,7 @@ navigator.mediaDevices.getUserMedia =
   navigator.mediaDevices.msGetUserMedia;
 
 window.localStream = new MediaStream();
+window.localShare = new MediaStream();
 
 // when user join the room -> create a list peer to connect to the rest user in the room
 // receive room info (exclude self) to set
@@ -171,7 +172,7 @@ function outputShowMeeting(id = 'my_video', avatar = '/images/917385.jpg', name 
 function createPeer(socketId, callerId, callerName) {
   const peer = new SimplePeer({
     initiator: true, // init -> offer peer
-    trickle: false,
+    trickle: false
   });
 
   // add events
@@ -183,18 +184,25 @@ function createPeer(socketId, callerId, callerName) {
 
   // peer.on('data', (data) => console.log(data.toString()));
 
-  // peer.on('stream', (stream) => {
-  //   // window.testStream = stream;
-  //   console.log('call stream');
-  //   // outputVideo(stream, socketId);
-  // });
+  peer.on('stream', (stream) => {
+    // window.testStream = stream;
+    console.log('call stream');
+    // outputVideo(stream, socketId);
+  });
 
   peer.on('track', (track, stream) => {
     console.log('call track');
+    console.dir(track, callerId);
     if (track.kind === 'video') {
-      outputVideo(stream, socketId);
+      if (/(screen)|(window)/.test(track.label)) {
+        // output video share screen
+        outputShare(stream, callerId)
+      } else {
+        // output video
+        outputVideo(stream, callerId);
+      }
     } else if (track.kind === 'audio') {
-      outputAudio(stream, socketId);
+      outputAudio(stream, callerId);
     }
   });
 
@@ -236,16 +244,18 @@ function addPeer(signal, callerId, avatar, callerName) {
 
   // peer.on('data', (data) => console.log(data.toString()));
 
-  // peer.on('stream', (stream) => {
-  //   // window.testStream = stream;
-  //   console.log('answer stream');
-  //   // outputVideo(stream, callerId);
-  // });
+  peer.on('stream', (stream) => {
+    // window.testStream = stream;
+    console.log('answer stream');
+    window.xxx = stream
+    // outputVideo(stream, callerId);
+  });
 
   peer.on('track', (track, stream) => {
     console.log('call track');
+    console.log(track);
     if (track.kind === 'video') {
-      if (/screen/.test(track.label)) {
+      if (/(screen)|(window)/.test(track.label)) {
         // output video share screen
         outputShare(stream, callerId)
       } else {
@@ -294,38 +304,21 @@ function outputVideo(stream = window.localStream, id = 'my_video') {
 }
 
 // output share screen
-function outputShare(stream = window.localStream, id = 'my_video') {
+function outputShare(stream = window.localShare, id = 'my_video') {
+  $('#main-meeting').addClass('has-share')
   if (id === 'my_video') {
     // show my share screen
-    $('.meeting-part').removeClass('is-pin');
-    $('.meeting-part .pin-btn').removeClass('pin');
-    $('.meeting-part .pin-btn').attr('title', 'Pin')
-    // $('.wrap-meeting-show').removeClass('has-pin');
-    $('.wrap-meet-pin').html(`
-      <div class="align-items-center d-flex justify-content-center ps-as">
-        <div class="wrap-my-share p-4 text-center">
-          <i class="fas fa-share-square"></i>
-          <div class="my-3 my-share-text">Bạn đang chia sẽ màn hình cho tất cả mọi người</div>
-          <div>
-            <button class="btn btn-primary">Dừng chia sẻ</button>
-          </div>
-        </div>
-      </div>
-    `)
+    $('.my-share').removeClass('d-none')
   } else {
-    const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
-    if ($meetingItem.length) {
-      $meetingItem.find('img').css('display', 'none');
-      const $video = $meetingItem.find('video[name="video"]');
-      $video.css('display', 'block');
-      $video.each((i, vd) => {
-        if ('srcObject' in vd) {
-          vd.srcObject = stream;
-        } else {
-          vd.src = window.URL.createObjectURL(stream);
-        }
-      })
-    }
+    $('.them-share').removeClass('d-none')
+    const $video = $('.them-share').find('video')
+    $video.each((i, vd) => {
+      if ('srcObject' in vd) {
+        vd.srcObject = stream;
+      } else {
+        vd.src = window.URL.createObjectURL(stream);
+      }
+    })
   }
 }
 
@@ -381,22 +374,19 @@ function outputStopVideo(id = 'my_video') {
 
 // output stop video share screen
 function outputStopShareScreen(id = 'my_video') {
+  $('#main-meeting').removeClass('has-share')
   if (id === 'my_video') {
-    console.log('stop share');
+    $('.my-share').addClass('d-none')
   } else {
-    // const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
-    // if ($meetingItem.length) {
-    //   $meetingItem.find('img').css('display', 'inline');
-    //   const $video = $meetingItem.find('video[name="video"]');
-    //   $video.css('display', 'none');
-    //   $video.each((i, vd) => {
-    //     if ('srcObject' in vd) {
-    //       vd.srcObject = null;
-    //     } else {
-    //       vd.src = null;
-    //     }
-    //   })
-    // }
+    $('.them-share').addClass('d-none')
+    const $video = $('.them-share').find('video')
+    $video.each((i, vd) => {
+      if ('srcObject' in vd) {
+        vd.srcObject = null;
+      } else {
+        vd.src = null;
+      }
+    })
   }
 }
 
@@ -560,20 +550,33 @@ async function handleShareScreen() {
           video: {
             cursor: "always"
           },
-          audio: false
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100
+          }
         });
 
-        // console.log(shareStream);
-        // add video share screen track for stream each peer
+        if (navigator.mediaDevices.getUserMedia) {
+          const audioStream = await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: true,
+          });
+  
+          // add audio track for stream of local stream
+          shareStream.addTrack(audioStream.getAudioTracks()[0]);
+        }
+
         peers.forEach((peer) => {
-          peer.peer.addTrack(
-            shareStream.getVideoTracks()[0],
-            window.localStream
+          peer.peer.addStream(
+            shareStream
           );
         });
 
+        window.localShare = shareStream
+
         // add video track for stream in local
-        window.localStream.addTrack(shareStream.getVideoTracks()[0]);
+        // window.localShare = shareStream;
 
         // output my video
         outputShare();
@@ -588,14 +591,17 @@ async function handleShareScreen() {
       // remove video share screen track of stream each peer
       peers.forEach((peer) => {
         peer.peer.removeTrack(
-          window.localStream.getVideoTracks().find(track => /screen/.test(track.label)),
-          window.localStream
+          // window.localShare.getVideoTracks().find(track => /screen/.test(track.label)),
+          window.localShare.getVideoTracks()[0],
+          window.localShare
         );
       });
 
       // // stop and remove video  share screen track of stream in local
-      window.localStream.getVideoTracks().find(track => /screen/.test(track.label)).stop();
-      window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+      // window.localStream.getVideoTracks().find(track => /screen/.test(track.label)).stop();
+      // window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+      window.localShare.getVideoTracks()[0].stop();
+      window.localShare.removeTrack(window.localShare.getVideoTracks()[0]);
 
       // output stop my video share screen
       socket.emit('stopShareScreenStream');
