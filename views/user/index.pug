@@ -1,47 +1,47 @@
 extends ./layout
 
-append styles
-  link(rel="stylesheet", href="/styles/user/index.css")
-
 block contentMain
-    .content-area.d-flex.justify-content-center.align-items-center
-      #main-area
-        #chat-company.p-3
-          img.mr-2(src="/images/logo.png", alt="OH", width="30px")
-          span.text-secondary OH Chat
-        #login-area.p-3
-          if(loginError) 
-            em.text-danger.mb-2= loginError
-          form(action="/login", method="POST")
-            .form-group.d-flex.justify-content-center
-              label.text-secondary(for="email", style="width: 100px") Email
-              input#email.form-control.form-control-sm(type="email", name="email", required, value=email?email:"")
-            .form-group.d-flex.justify-content-center
-              label.text-secondary(for="password", style="width: 100px") Mật khẩu
-              input#password.form-control.form-control-sm(type="password", name="password", required)
-            .form-group.d-flex.justify-content-end
-                a.btn.btn-sm.btn-link.mr-2(href="/login/register", role="button") Đăng ký
-                button.btn.btn-primary.btn-sm(type="submit") Đăng nhập
-          .text-secondary.text-center.border-top
-            span Hoặc đăng nhập với
-          .d-flex.justify-content-center.mt-2
-            a.btn.btn-sm.btn-info(href="/login/facebook", role="button")
-              i.fab.fa-facebook
-              span.ml-1 Facebook
-            a.btn.btn-sm.btn-danger.ml-1(href="/login/google", role="button")
-              i.fab.fa-google
-              span.ml-1  Google
-
+  .content-area.d-flex.justify-content-center.align-items-center
+    #main-area
+      #chat-company.p-3
+        img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
+        span.text-secondary OH Chat
+      #login-area.p-3
+        if(loginError) 
+          em.text-danger.mb-2= loginError
+        form(action="/login", method="POST")
+          .form-group.d-flex.justify-content-center
+            label(for="email", style="width: 100px") Email
+            input#email.form-control.form-control-sm(type="email", name="email", required, value=email?email:"")
+          .form-group.d-flex.justify-content-center
+            label(for="password", style="width: 100px") Mật khẩu
+            input#password.form-control.form-control-sm(type="password", name="password", required)
+          .form-group.d-flex.justify-content-end
+              a.btn.btn-link.mr-2(href="/login/register", role="button") Đăng ký
+              button.btn(type="submit") Đăng nhập
         .text-secondary.text-center.border-top
-          span Tạo phòng chat mà không cần đăng nhập
-        #choose-area.d-flex
-          .choose-item.mr-4.text-center
-            a(href="/create", role="button")
-              #create-room
-                i.fas.fa-plus-square.fa-2x
-            span.text-secondary Tạo phòng
-          .choose-item.text-center
-            a(href="/join", role="button")
-              #join-room
-                i.fas.fa-sign-in-alt.fa-2x
-            span.text-secondary Tham gia
+          span Hoặc đăng nhập với
+        .d-flex.justify-content-center.mt-2
+          a.btn.btn-blue(href="/login/facebook", role="button")
+            span.icomoon.icon-facebook
+            span.ml-1 Facebook
+          a.btn.btn-red.ml-1(href="/login/google", role="button")
+            span.icomoon.icon-google
+            span.ml-1  Google
+
+      .text-secondary.text-center.border-top
+        span Tạo phòng chat mà không cần đăng nhập
+      #choose-area.d-flex
+        .choose-item.mr-4.text-center
+          a.btn.btn-icon.btn-green.big-btn.mx-auto(href="/create", role="button")
+            i.icomoon.icon-plus
+            span.sr-only Tạo phòng
+          span Tạo phòng
+        .choose-item.text-center
+          a.btn.btn-icon.btn-purple.big-btn.mx-auto(href="/join", role="button")
+            i.icomoon.icon-sign-in
+            span.sr-only Tham gia phòng
+          span Tham gia
+
+append scripts
+  script(src="/js/home.js")

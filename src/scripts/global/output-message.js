@@ -21,3 +21,13 @@ function outputInfoMessage(msg) {
   hideLoader()
   $.notify(msg, { className: 'info', position:'top left' });
 }
+
+const OutputMessage = (() => {
+  window.outputErrorMessage = outputErrorMessage;
+  window.outputSuccessMessage = outputSuccessMessage;
+  window.outputWarnMessage = outputWarnMessage;
+  window.outputInfoMessage = outputInfoMessage;
+})()
+
+export default OutputMessage
+

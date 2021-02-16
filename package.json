@@ -1,11 +1,14 @@
 {
   "name": "oh-chat",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Chat realtime application",
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "dev": "nodemon --inspect app"
+    "start:dev": "nodemon --inspect app",
+    "build": "webpack",
+    "build:dev": "webpack --watch --progress",
+    "build:product": "webpack -p"
   },
   "author": "NAH",
   "license": "ISC",
@@ -29,9 +32,23 @@
     "passport-local": "^1.0.0",
     "pug": "^2.0.4",
     "request": "^2.88.2",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "bootstrap": "v4.3.1",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.7"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^0.28.9",
+    "extract-text-webpack-plugin": "~3.0.2",
+    "file-loader": "^6.2.0",
+    "node-sass": "^4.14.1",
+    "nodemon": "^2.0.3",
+    "sass-loader": "~6.0",
+    "style-loader": "^0.22.1",
+    "webpack": "~3.10.0"
   }
 }

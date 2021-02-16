@@ -1,0 +1,153 @@
+.btn {
+  display: inline-block;
+  padding: 5px 18px;
+  border-radius: 10px;
+  color: $white;
+  font-size: 1rem;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  border: transparent;
+  font-weight: 600;
+  line-height: 1.5rem;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $color-22;
+    border-radius: 10px;
+    z-index: -2;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 100%;
+    height: 100%;
+    background-color: darken($color-22, 15%);
+    transition: all .3s;
+    border-radius: 10px;
+    z-index: -1;
+  }
+  &:hover {
+    color: $white;
+    text-decoration: none;
+    &:before {
+      right: 0;
+    }
+  }
+}
+
+.btn-link {
+  color: $color-22;
+  border-radius: 0;
+  &::after {
+    content: none;
+  }
+  &::before {
+    bottom: 2px;
+    left: 10px;
+    right: calc(100% - 10px);
+    height: 2px;
+    background-color: darken($color-22, 15%);
+    transition: all .3s;
+    border-radius: 0;
+    z-index: 1;
+  }
+  &:hover {
+    color: darken($color-22, 15%);
+    &:before {
+      right: 10px;
+    }
+  }
+}
+
+.btn-red {
+  &:after {
+    background-color: $color-c8;
+  }
+  &:before {
+    background-color: darken($color-c8, 15%);
+  }
+}
+
+.btn-blue {
+  &:after {
+    background-color: $color-2f;
+  }
+  &:before {
+    background-color: darken($color-2f, 15%);
+  }
+}
+
+.btn-white {
+  color: $black;
+  
+  &:after {
+    background-color: $white;
+    border: 1px solid $black;
+  }
+  &:before {
+    background-color: $black;
+  }
+}
+
+.btn-icon {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 20px;
+  justify-content: center;
+  color: $color-22;
+  &::after {
+    transition-duration: 0.5s;
+    box-shadow: inset 0 0 0 1px $color-22;
+    background-color: transparent;
+    border-radius: 50%;
+  }
+  &:hover {
+    color: $white;
+    &::after {
+      box-shadow: inset 0 0 0 45px $color-22;
+    }
+  }
+  &::before {
+    content: none;
+  }
+  &.big-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 25px;
+  }
+  &.btn-purple {
+    color: $color-7f;
+    &::after {
+      box-shadow: inset 0 0 0 1px $color-7f;
+    }
+    &:hover {
+      color: $white;
+      &::after {
+        box-shadow: inset 0 0 0 45px $color-7f;
+      }
+    }
+  }
+  &.btn-green {
+    color: $color-14;
+    &::after {
+      box-shadow: inset 0 0 0 1px $color-14;
+    }
+    &:hover {
+      color: $white;
+      &::after {
+        box-shadow: inset 0 0 0 45px $color-14;
+      }
+    }
+  }
+}

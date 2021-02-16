@@ -8,6 +8,9 @@
   padding: 10px;
   width: 355px;
   z-index: 10;
+  &:not(.is-active) {
+    display: none;
+  }
 }
 
 .emoji-btn {
@@ -15,7 +18,4 @@
   border: none;
   width: 30px;
   height: 30px;
-}
-.wrap-emojis:not(.is-active) {
-  display: none;
 }

@@ -1,13 +1,10 @@
 extends ./layout
 
-append styles
-  link(rel="stylesheet", href="/styles/user/x-room.css")
-
 block contentMain
   .content-area.d-flex.justify-content-center.align-items-center
     #form-x.mx-auto
-      #chat-company
-        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+      #chat-company.p-3
+        img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
         span.text-secondary OH Chat
       form.mt-2(name="joinRoomForm", action="/chat")
         input(type="hidden", name="memberId", value=memberId)
@@ -25,10 +22,10 @@ block contentMain
           span Mật khẩu phòng
           span.text-danger &nbsp;*
         input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng", value=password)
-        .text-center.mt-2
-          button.btn.btn-info.mr-4 Tham gia
-          a.btn.btn-light(role="button", href="javascript:history.back()") Quay lại
+        .d-flex.justify-content-center.p-3
+          button.btn.mr-4 Tham gia
+          a.btn.btn-white(role="button", href="javascript:history.back()") Quay lại
 
 append scripts
-  script(src="/socket.io/socket.io.js")
-  script(src="/scripts/user/join-room.js")
+  //- script(src="/socket.io/socket.io.js")
+  //- script(src="/scripts/user/join-room.js")

@@ -1,27 +1,24 @@
 extends ../user/layout
 
-append styles
-  link(rel="stylesheet", href="/styles/user/index.css")
-
 block contentMain
   .content-area.d-flex.justify-content-center.align-items-center
     #main-area
       #chat-company.p-3
-        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+        img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
         span.text-secondary OH Chat
-      #login-area.p-3
+      #login-area.py-3.px-2
         form(action="/login/register", method="POST")
           .form-group.d-flex.justify-content-center
-            label.text-secondary(for="name", style="width: 230px") Họ tên
+            label(for="name", style="width: 160px") Họ tên
             input#name.form-control.form-control-sm(type="text", name="name", required, placeholder="Nhập họ tên", value=name?name:"", title="Họ tên dài không quá 40 ký tự")
           .form-group.d-flex.justify-content-center
-            label.text-secondary(for="email", style="width: 230px") Email
+            label(for="email", style="width: 160px") Email
             input#email.form-control.form-control-sm(type="email", name="email", required, placeholder="Nhập email", value=email?email:"")
           .form-group.d-flex.justify-content-center
-            label.text-secondary(for="password", style="width: 230px") Mật khẩu
+            label(for="password", style="width: 160px") Mật khẩu
             input#password.form-control.form-control-sm(type="password", name="password", required, placeholder="Nhập mật khẩu", title="Mật khẩu dài ít nhất 6 ký tự")
           .form-group.d-flex.justify-content-center
-            label.text-secondary(for="password2", style="width: 230px") Xác nhận mật khẩu
+            label(for="password2", style="width: 160px") Xác nhận MK
             input#password2.form-control.form-control-sm(type="password", name="password2", required, placeholder="Nhập lại mật khẩu")
           .form-group.d-flex.justify-content-end
             a.btn.btn-sm.btn-link.mr-1(href="/", role="button") Đăng nhập
@@ -29,9 +26,9 @@ block contentMain
         .text-secondary.text-center.border-top
           span Hoặc đăng ký với
         .d-flex.justify-content-center.mt-2
-          a.btn.btn-sm.btn-info(href="/login/facebook", role="button")
-            i.fab.fa-facebook
+          a.btn.btn-sm.btn-blue(href="/login/facebook", role="button")
+            i.icomoon.icon-facebook
             span.ml-1 Facebook
-          a.btn.btn-sm.btn-danger.ml-1(href="/login/google", role="button")
-            i.fab.fa-google
-            span.ml-1  Google
+          a.btn.btn-sm.btn-red.ml-1(href="/login/google", role="button")
+            i.icomoon.icon-google
+            span.ml-1 Google

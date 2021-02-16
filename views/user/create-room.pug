@@ -1,13 +1,10 @@
 extends ./layout
 
-append styles
-  link(rel="stylesheet", href="/styles/user/x-room.css")
-
 block contentMain
   .content-area.d-flex.justify-content-center.align-items-center
     #form-x
-      #chat-company
-        img.mr-2(src="/images/logo.png", alt="OH", width="30px")
+      #chat-company.p-3
+        img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
         span.text-secondary OH Chat
       form.mt-2(name="createRoomForm")
         input(type="hidden", name="roomId", value=idRandom)
@@ -17,17 +14,16 @@ block contentMain
         input#name.form-control(type="text", disabled=true, value=idRandom)
         label.mt-2 Mật khẩu phòng
         input#name.form-control(type="text", disabled=true, value=passwordRandom)
-        label(for="hostname")
+        label.mt-2(for="hostname")
           span Tên hiển thị
           span.text-danger &nbsp;*
         input#hostname.form-control(type="text", name="hostname", required=true, placeholder="Ít nhất 1 ký tự, nhiều nhất 30 kí tự", value=name)
         div
           em#err-join-name.text-danger
-
-        .text-center.mt-2
-          button.btn.btn-info.mr-4 Tạo phòng
-          a.btn.btn-light(role="button", href="javascript:history.back()") Quay lại
+        .d-flex.justify-content-center.p-3
+          button.btn.mr-4 Tạo phòng
+          a.btn.btn-white(role="button", href="javascript:history.back()") Quay lại
 
 append scripts
   script(src="/socket.io/socket.io.js")
-  script(src="/scripts/user/create-room.js")
+  script(src="/js/create-room.js")

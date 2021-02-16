@@ -1,0 +1,27 @@
+#main-area,
+#form-x {
+  margin: 0 auto;
+  background-color: $white;
+  width: 380px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 12px;
+  max-width: 90%;
+  padding: 0 15px;
+}
+
+#choose-area {
+  padding: 10px 0 20px 0;
+  justify-content: center;
+}
+
+#chat-company {
+  border-bottom: 1px dotted $color-22;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.content-area {
+  min-height: 100vh;
+  width: 100%;
+}
