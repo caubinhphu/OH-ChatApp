@@ -99,9 +99,10 @@
 .msg {
   width: max-content;
   max-width: 100%;
-  background-color: #f1f0f0;
+  background-color: $color-e6;
   padding: 4px 8px;
   border-radius: 5px;
+  line-height: 23px;
 }
 
 .msg-me {
@@ -112,6 +113,7 @@
   border-radius: 5px;
   margin-left: auto;
   text-align: left;
+  line-height: 23px;
 }
 
 .message-avatar,
