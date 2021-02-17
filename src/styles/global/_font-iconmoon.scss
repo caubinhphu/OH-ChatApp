@@ -25,6 +25,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-dot-single:before {
+  content: "\e91e";
+}
 .icon-dots-three-vertical:before {
   content: "\e901";
 }
@@ -111,6 +114,39 @@
 }
 .icon-chevron-down:before {
   content: "\e90c";
+}
+.icon-circle-down:before {
+  content: "\e921";
+}
+.icon-down:before {
+  content: "\e921";
+}
+.icon-circle-bottom:before {
+  content: "\e921";
+}
+.icon-arrow:before {
+  content: "\e921";
+}
+.icon-user-plus:before {
+  content: "\e922";
+}
+.icon-user:before {
+  content: "\e922";
+}
+.icon-user-add:before {
+  content: "\e922";
+}
+.icon-profile:before {
+  content: "\e922";
+}
+.icon-avatar:before {
+  content: "\e922";
+}
+.icon-person:before {
+  content: "\e922";
+}
+.icon-member:before {
+  content: "\e922";
 }
 .icon-arrow-right:before {
   content: "\e91a";

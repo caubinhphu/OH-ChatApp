@@ -1,18 +1,18 @@
 extends ./common-chat-room
 
-block chatStyle
-  link(rel="stylesheet", href="/styles/user/chat-room-host.css")
+//- block chatStyle
+  //- link(rel="stylesheet", href="/styles/user/chat-room-host.css")
 
 block subMeetingControl
   .meeting-control-item.d-none.d-md-block.ps-rv
     .popup Quản lý phòng
     .control-show-pop(data-control="manager")
-      i.fas.fa-user-shield
+      span.icomoon.icon-security
     
 block subMeetingControl2
   .meeting-control-item.ps-rv
     .control-show-pop(data-control="manager")
-      i.fas.fa-user-shield
+      span.icomoon.icon-security
 
 block waitingRoomInfo
   #waiting-room(style="display: none")
@@ -29,7 +29,7 @@ block subControlArea
     .control-area-main.d-flex.flex-column
       .control-area-top.p-1.d-flex.justify-content-between
         button.arrow-smaller.btn.btn-default(data-area="manager")
-          i.fas.fa-arrow-right
+          span.icomoon.icon-arrow-right
         .align-self-center.control-title Tùy chỉnh
         div
       .control-area-middle.flex-fill
@@ -56,10 +56,10 @@ block subArea
         .modal-body
           span Bạn có chắc muốn rời phòng?
           .text-right.mt-4
-            button#disconnect-all-btn.btn.btn-danger(type='button') Rời phòng tất cả
-            button#disconnect-btn.btn.btn-warning.ml-3(type='button') Rời phòng
-        button.btn.btn-light.close-popup(type='button', data-dismiss='modal')
-          i.fas.fa-times
+            button#disconnect-all-btn.btn.btn-red(type='button') Rời phòng tất cả
+            button#disconnect-btn.btn.ml-3(type='button') Rời phòng
+        button.btn.btn-icon.close-popup(type='button', data-dismiss='modal')
+          span.icomoon.icon-close
   
   #confirm-join-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='joinRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
@@ -94,7 +94,7 @@ block subFormChat
   .flex-fill.wrap-msg-box.ps-rv
     textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
   button.btn.btn-default.text-secondary
-    i.fas.fa-paper-plane
+    span.icomoon.icon-send
   
 block chatScript
-  script(src="/scripts/user/chat-room-host.js")
+  script(src="/js/chat-room-host.js")

@@ -19,7 +19,7 @@
 // @import '~bootstrap/scss/dropdown';
 // @import '~bootstrap/scss/button-group';
 // @import '~bootstrap/scss/input-group';
-// @import '~bootstrap/scss/custom-forms';
+@import '~bootstrap/scss/custom-forms';
 // @import '~bootstrap/scss/nav';
 // @import '~bootstrap/scss/navbar';
 // @import '~bootstrap/scss/card';
@@ -33,7 +33,7 @@
 // @import '~bootstrap/scss/list-group';
 @import '~bootstrap/scss/close';
 // @import '~bootstrap/scss/toasts';
-// @import '~bootstrap/scss/modal';
+@import '~bootstrap/scss/modal';
 // @import '~bootstrap/scss/tooltip';
 // @import '~bootstrap/scss/popover';
 // @import '~bootstrap/scss/carousel';
@@ -48,5 +48,7 @@
 @import 'global/button';
 @import 'global/font-iconmoon';
 @import 'global/form';
+@import 'global/layout';
 @import 'user/index';
 @import 'user/x-room';
+@import 'user/common-chat-room';

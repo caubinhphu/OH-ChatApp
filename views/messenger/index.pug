@@ -49,7 +49,7 @@ block contentMain
           form.d-flex(name="sendMsgForm")
             input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
             button.btn.btn-default.text-secondary
-              i.fas.fa-paper-plane
+              span.icomoon.icon-send
   div
     each member in m
       a.btn.btn-success(href=`/messenger/addfriend/${member.id}`)= member.name

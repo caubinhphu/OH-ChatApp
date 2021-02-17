@@ -1,7 +1,7 @@
 extends ./common-chat-room
 
-block chatStyle
-  link(rel="stylesheet", href="/styles/user/chat-room.css")
+//- block chatStyle
+//-   link(rel="stylesheet", href="/styles/user/chat-room.css")
 
 block subArea
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
@@ -10,9 +10,9 @@ block subArea
         .modal-body
           span Bạn có chắc muốn rời phòng?
           .text-right.mt-4
-            button#disconnect-btn.btn.btn-danger(type='button') Rời phòng
-        button.btn.btn-light.close-popup(type='button', data-dismiss='modal')
-          i.fas.fa-times
+            button#disconnect-btn.btn.btn-red(type='button') Rời phòng
+        button.btn.btn-icon.close-popup(type='button', data-dismiss='modal')
+          span.icomoon.icon-close
               
 block chatScript
-  script(src="/scripts/user/chat-room.js")
+  script(src="/js/chat-room.js")

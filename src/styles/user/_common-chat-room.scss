@@ -1,8 +1,3 @@
-#meeting-area {
-  height: 100vh;
-  width: 100%;
-}
-
 #main-meeting-area {
   width: 100%;
   height: 100%;
@@ -20,71 +15,57 @@
   height: 100%;
 }
 
-/* #meeting-show::-webkit-scrollbar {
-  width: 5px;
-}
-
-#meeting-show::-webkit-scrollbar-track {
-  background-color: #1e1e24;
-}
-
-#meeting-show::-webkit-scrollbar-thumb {
-  background-color: #6649b8;
-} */
-
 .meeting-part {
   text-align: center;
   width: 325px;
   height: 202px;
   margin: 2px;
-  background-color: #0e1e29;
+  background-color: $color-0c;
   transition: all .3s;
   max-width: calc(100vw - 15px);
-}
-
-.meeting-part img {
-  max-width: 100px;
-  border-radius: 20%;
-}
-
-.meeting-part video {
-  width: 100%;
+  img {
+    max-width: 100px;
+    border-radius: 20%;
+  }
+  video {
+    width: 100%;
+  }
 }
 
 #meeting-control {
   position: fixed;
   height: 47px;
   width: 100%;
-  background-color: #0e1e29;
+  background-color: $color-0c;
   bottom: 0;
   left: 0;
   padding: 5px 0;
-  z-index: 99;
+  z-index: 101;
 }
 .control-show-pop,
 .control-no-show-pop,
 .open-popup-icon,
 .wrap-pin {
   cursor: pointer;
-  padding: 0 25px;  
+  padding: 4px 20px;
+  line-height: 1;  
   font-size: 25px;
   color: white;
   user-select: none;
   border-radius: 5px;
   transition: all .2s;
+  &:hover {
+    background-color: $gray-900;
+    transform: scale(1.1);
+  }
 }
 .wrap-pin {
   padding: 0;
+  &:hover {
+    background-color: transparent;
+  }
 }
-.control-show-pop:hover,
-.control-no-show-pop:hover,
-.open-popup-icon:hover {
-  background-color: rgb(21, 37, 59);
-  transform: scale(1.1);
-}
-.wrap-pin:hover {
-  transform: scale(1.1);
-}
+
 .wrap-conts {
   transform: none;
 }
@@ -104,19 +85,10 @@
   background-color: #f9f9f9;
   padding: 4px;
   overflow-y: auto;
+  .management-title {
+    color: $color-10;
+  }
 }
-
-/* .control-area-middle::-webkit-scrollbar {
-  width: 5px;
-}
-
-.control-area-middle::-webkit-scrollbar-track {
-  background-color: #1e1e24;
-}
-
-.control-area-middle::-webkit-scrollbar-thumb {
-  background-color: #6649b8;
-} */
 
 .message {
   width: 100%;
@@ -135,14 +107,15 @@
 .msg-me {
   width: max-content;
   max-width: 100%;
-  background-color: #0099ff;
+  background-color: $color-22;
   padding: 4px 8px;
   border-radius: 5px;
   margin-left: auto;
   text-align: left;
 }
 
-.message-avatar, .room-user-avatar,
+.message-avatar,
+.room-user-avatar,
 .waiting-room-user-avatar {
   width: 25px;
   height: 25px;
@@ -162,6 +135,7 @@
 
 .message-content {
   margin-left: 10px;
+  color: $color-10;
 }
 
 #message-area {
@@ -180,17 +154,13 @@
   background-color: rgba(138, 138, 138, 0.08);
 }
 
-/* #msg:focus {
-  border-bottom: 1px solid #0099ff;
-} */
-
 .room-user-name {
-  font-size: smaller;
+  font-size: 15px;
 }
 
 #room-users {
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: $color-10;
 }
 
 .modal-body > span{
@@ -218,12 +188,11 @@
   box-shadow: 5px 5px 10px #555;
   width: 600px;
   padding: 10px;
-}
-
-#leave-modal-main > span {
-  font-size: 20px;
-  font-weight: 600;
-  color: #555;
+  & > span {
+    font-size: 20px;
+    font-weight: 600;
+    color: #555;
+  }
 }
 
 .control-title {
@@ -234,7 +203,7 @@
 #show-control {
   width: 0;
   height: calc(100% - 47px);
-  background-color: #0099ff;
+  background-color: $color-22;
   /* transition: width .4s ease; */
   /* overflow: hidden; */
   position: relative;
@@ -242,12 +211,9 @@
 .control-area {
   display: none;
   transition: all .35s;
-}
-.control-area.is-active {
-  display: block;
-}
-.wrap-control-meet:not(.is-active) {
-  display: none;
+  &.is-active {
+    display: block;
+  }
 }
 .wrap-control-meet {
   position: absolute;
@@ -259,29 +225,32 @@
   padding-top: 12px;
   padding-bottom: 12px;
   width: max-content;
-}
-.wrap-control-meet::after {
-  content: "";
-  width: 20px;
-  height: 20px;
-  background: white;
-  position: absolute;
-  transform: rotate(45deg);
-  right: 88px;
-}
-.wrap-control-meet .control-show-pop {
-  color: #0099ff;
+  &:not(.is-active) {
+    display: none;
+  }
+  &::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: white;
+    position: absolute;
+    transform: rotate(45deg);
+    right: 92px;
+  }
+  .control-show-pop {
+    color: $color-22;
+    &:hover {
+      background-color: transparent;
+    }
+  }
 }
 .arrow-smaller {
-  color: #0099ff;
+  color: $color-22;
   transition: all .35s;
-}
-.arrow-smaller:hover {
-  color: #0099ff;
-  transform: scale(1.1);
-}
-.wrap-control-meet .control-show-pop:hover {
-  background-color: transparent;
+  &:hover {
+    color: $color-22;
+    transform: scale(1.1);
+  }
 }
 #meeting-show {
   width: 100%;
@@ -337,7 +306,7 @@
   left: 0;
   right: 100%;
   height: 2px;
-  background-color: #0099ff;
+  background-color: $color-22;
   transition: all .35s;
 }
 .wrap-msg-box.is-focus::after {
@@ -354,13 +323,13 @@
   transition: all .2s;
   z-index: 9;
   line-height: 27px;
-  color: #0099ff;
-}
-.scroll-bottom:hover {
-  transform: translateX(-50%) scale(1.1);
-}
-.scroll-bottom.is-show {
-  display: block;
+  color: $color-22;
+  &:hover {
+    transform: translateX(-50%) scale(1.1);
+  }
+  &.is-show {
+    display: block;
+  }
 }
 .popup {
   position: absolute;
@@ -374,35 +343,35 @@
   white-space: nowrap;
   color: white;
   display: none;
-}
-.popup::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: inherit;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  z-index: 99;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: inherit;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    z-index: 99;
+  }
 }
 
-#btn-audio-connect.is-turn-on i::before {
+#btn-audio-connect.is-turn-on span::before {
   content: "\f130";
   color: white;
 }
-#btn-video-connect.is-turn-on i::before {
+#btn-video-connect.is-turn-on span::before {
   content: "\f03d";
   color: white;
 }
-#btn-share-screen.is-turn-on i {
+#btn-share-screen.is-turn-on span {
   font-weight: 900;
 }
-#btn-share-screen.is-turn-on i::before {
+#btn-share-screen.is-turn-on span::before {
   color: white;
 }
-#hide-time-btn[data-status="off"] i {
-  font-weight: 900;
+#hide-time-btn[data-status="off"] span::before {
+  content: "\e914";
 }
 .amount-participants,
 .amount-msg-unread {
@@ -412,32 +381,35 @@
 .has-unread {
   animation: bounce 2s 4;
   color: #ff7600 !important;
-}
-.has-unread i{
-  position: relative;
-}
-.has-unread i::after {
-  content: "\f111";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  font-size: 10px;
-  position: absolute;
-  right: -5px;
-  top: -5px;
-  color: #0099ff;
+  span{
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      right: 21px;
+      top: -1px;
+      background-color: $color-22;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+  }
 }
 #link-info {
+  position: absolute;
   border: none;
   outline: none;
   background: transparent;
   color: transparent;
   user-select: none;
   padding: 0;
-  font-size: .5px;
-}
-#link-info::selection {
-  background: transparent;
-  color: transparent;
+  font-size: 5px;
+  min-height: 1px;
+  min-width: 1px;
+  &::selection {
+    background: transparent;
+    color: transparent;
+  }
 }
 .wrap-my-video {
   position: absolute;
@@ -447,18 +419,22 @@
   bottom: auto;
   width: 100px;
   height: 65px;
-  background-color: #0e1e29;
+  background-color: $color-0c;
   border-radius: 5px;
   z-index: 99;
-}
-.wrap-my-video.meeting-part img {
-  max-width: 40px;
-}
-.wrap-my-video.meeting-part.meeting-part-cloned img {
-  max-width: 100px;
-}
-.meeting-part.meeting-part-cloned .meeting-part-pin-ctrl {
-  padding: 1rem !important;
+  &.meeting-part {
+    img {
+      max-width: 40px;
+    }
+    &.meeting-part-cloned {
+      img {
+        max-width: 100px;
+      }
+      .meeting-part-pin-ctrl {
+        padding: 1rem !important;
+      }
+    }
+  }
 }
 .close-popup {
   position: absolute;
@@ -469,14 +445,14 @@
 .wrap-my-share {
   background-color: #202124;
   border-radius: 10px;
-}
-.wrap-my-share .my-share-text {
-  font-size: 20px;
-  color: white;
-}
-.wrap-my-share i {
-  color: #007bff;
-  font-size: 45px;
+  .my-share-text {
+    font-size: 20px;
+    color: white;
+  }
+  span {
+    color: #007bff;
+    font-size: 45px;
+  }
 }
 #main-meeting.has-share #meeting-show{
   width:unset;
@@ -489,7 +465,7 @@
     position: absolute !important;
     top: 0;
     right: 0;
-    z-index: 9999;
+    z-index: 100;
   }
 }
 @media only screen and (max-width: 767px) {
@@ -510,14 +486,15 @@
   }
 }
 @media only screen and (max-width: 374px) {
-  .wrap-control-meet .control-show-pop {
-    padding: 0 17px;
-  }
   .wrap-control-meet {
     right: -31px;
-  }
-  .wrap-control-meet::after {
-    right: 51px;
+    top: -65px;
+    .control-show-pop {
+      padding: 0 17px;
+    }
+    &::after {
+      right: 53px;
+    }
   }
   .control-no-show-pop {
     padding: 0 20px;

@@ -11,6 +11,7 @@
   border: transparent;
   font-weight: 600;
   line-height: 1.5rem;
+  background-color: $white;
   &:after {
     content: '';
     position: absolute;
@@ -41,11 +42,15 @@
       right: 0;
     }
   }
+  &:focus {
+    outline: none;
+  }
 }
 
 .btn-link {
   color: $color-22;
   border-radius: 0;
+  background-color: transparent;
   &::after {
     content: none;
   }
@@ -96,7 +101,16 @@
     background-color: $black;
   }
 }
-
+.btn-default {
+  color: $blue;
+  background-color: transparent;
+  &:after {
+    content: none;
+  }
+  &:before {
+    content: none;
+  }
+}
 .btn-icon {
   width: 45px;
   height: 45px;

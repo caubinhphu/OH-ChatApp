@@ -1,18 +1,18 @@
 extends ./layout
 
-append styles
-  link(rel="stylesheet", href="/styles/user/common-chat-room.css")
-  link(rel="stylesheet", href="/styles/emoji.css")
+//- append styles
+  //- link(rel="stylesheet", href="/styles/user/common-chat-room.css")
+  //- link(rel="stylesheet", href="/styles/emoji.css")
   block chatStyle
 
 block contentMain
   #meeting-area
-    #main-meeting-area.bg-secondary.p-1.d-flex
+    #main-meeting-area.p-1.d-flex
       #main-meeting.p-1.flex-fill
         .wrap-meeting-show.d-flex.ps-rv
           .wrap-my-video.meeting-part
             .ps-as.over-hidden.d-flex.align-items-center.justify-content-center
-              img(src="/images/logo.png")
+              img(src="/images/logo-mini.png")
               video(name="video", autoplay, muted, style="display:none")
               .meeting-part-pin-ctrl.justify-content-between.align-items-center.text-primary.px-1
                 strong Bạn
@@ -24,7 +24,7 @@ block contentMain
               .my-share.d-none
                 .d-flex.justify-content-center.align-items-center.ps-as
                   .wrap-my-share.p-4.text-center
-                    i.fas.fa-share-square
+                    span.icomoon.icon_screen_share
                     .my-3.my-share-text Bạn đang chia sẻ màn hình cho tất cả mọi người
                     div
                       button.btn.btn-primary.btn-stop-share Dừng chia sẻ
@@ -34,67 +34,67 @@ block contentMain
 
             .wrap-meet-pin
       #meeting-control
-        .d-flex.justify-content-around.h-100.mx-auto(style="max-width: 1000px")
+        .d-flex.justify-content-around.h-100.mx-auto.align-items-center(style="max-width: 1000px")
           #btn-audio-connect.meeting-control-item.ps-rv(data-state="off")
             .popup Bật audio (Alt + A)
             .control-no-show-pop
-              i.fas.fa-microphone-slash.text-danger
+              span.icomoon.icon-microphone-slash
           #btn-video-connect.meeting-control-item.ps-rv(data-state="off")
             .popup Bật camera (Alt + V)
             .control-no-show-pop
-              i.fas.fa-video-slash.text-danger
+              span.icomoon.icon-videocam_off.text-danger
           #btn-share-screen.meeting-control-item.ps-rv(data-state="off")
             .popup Share Screen (Alt + S)
             .control-no-show-pop
-              i.far.fa-share-square.text-danger
+              span.icomoon.icon-stop_screen_share
           block subMeetingControl
           .meeting-control-item.d-none.d-md-block.ps-rv(data-control="user")
             .popup Thành viên
             .control-show-pop(data-control="user")
+              span.icomoon.icon-users
               sup.amount-participants
-              i.fas.fa-users
           .meeting-control-item.d-none.d-md-block.ps-rv
             .popup Chat
             .control-show-pop(data-control="chat")
-              i.fas.fa-comment-alt
+              span.icomoon.icon-chat
               sup.amount-msg-unread
           .meeting-control-item.d-none.d-md-block.ps-rv
             .popup Thông tin phòng
             .control-show-pop.text-info(data-control="info")
-              i.fas.fa-info
+              span.icomoon.icon-information
           .meeting-control-item.ps-rv.d-md-none.wrap-conts
             .open-popup-icon
-              i.fas.fa-ellipsis-v
+              span.icomoon.icon-dots-three-vertical
             .wrap-control-meet
               .d-flex.justify-content-center.align-items-center
                 block subMeetingControl2
                 .meeting-control-item.ps-rv
                   .control-show-pop(data-control="user")
                     sup.amount-participants
-                    i.fas.fa-users
+                    span.icomoon.icon-users
                 .meeting-control-item.ps-rv
                   .control-show-pop(data-control="chat")
-                    i.fas.fa-comment-alt
+                    span.icomoon.icon-chat
                     sup.amount-msg-unread
                 .meeting-control-item.ps-rv
                   .control-show-pop.text-info(data-control="info")
-                    i.fas.fa-info
+                    span.icomoon.icon-information
           .meeting-control-item.ps-rv(data-toggle="modal", data-target="#confirm-leave-room-modal")
             .popup Rời phòng
             .control-no-show-pop.text-danger
-              i.fas.fa-sign-out-alt
+              span.icomoon.icon-sign-out
       
       #show-control.show-control.no-show
         #chat-area.control-area(data-control="chat")
           .control-area-main.d-flex.flex-column.ps-rv
             .scroll-bottom
-              i.far.fa-arrow-alt-circle-down
+              span.icomoon.icon-circle-down
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="chat")
-                i.fas.fa-arrow-right
+                span.icomoon.icon-arrow-right
               .align-self-center.control-title Chat
-              button#hide-time-btn.btn.btn-light(data-status="on", title="Ẩn thời gian")
-                i.far.fa-clock
+              button#hide-time-btn.btn-icon.btn(data-status="on", title="Ẩn thời gian")
+                span.icomoon.icon-timer_off
             #chat-middle.control-area-middle.flex-fill
             .control-area-bottom.p-1.ps-rv.wrap-chat-input
               form.d-flex(name="sendMsgForm")
@@ -104,7 +104,7 @@ block contentMain
           .control-area-main.d-flex.flex-column
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="users")
-                i.fas.fa-arrow-right
+                span.icomoon.icon-arrow-right
               .align-self-center.control-title Thành viên
               div
             block waitingRoomInfo
@@ -114,7 +114,7 @@ block contentMain
           .control-area-main.d-flex.flex-column
             .control-area-top.p-1.d-flex.justify-content-between
               button.arrow-smaller.btn.btn-default(data-area="info")
-                i.fas.fa-arrow-right
+                span.icomoon.icon-arrow-right
               .align-self-center.control-title Thông tin phòng
               div
             .control-area-middle.flex-fill
@@ -135,10 +135,10 @@ block contentMain
   
 append scripts
   script(src="/socket.io/socket.io.js")
-  script(src="/scripts/simple-peer.min.js")
-  script(src="/scripts/moment.min.js")
-  script(src="/scripts/common-chat.js")
-  script(src="/scripts/user/common-chat-room.js")
-  script(src="/scripts/user/common-chat-room-video.js")
-  script(src="/scripts/emoji.js")
+  //- script(src="/scripts/simple-peer.min.js")
+  //- script(src="/scripts/moment.min.js")
+  //- script(src="/scripts/common-chat.js")
+  //- script(src="/scripts/user/common-chat-room.js")
+  //- script(src="/scripts/user/common-chat-room-video.js")
+  //- script(src="/scripts/emoji.js")
   block chatScript
