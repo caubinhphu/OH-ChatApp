@@ -44652,7 +44652,7 @@ var CommonChatRoomVideo = function () {
       var div = document.createElement('div');
       div.className = 'meeting-part ps-rv';
       div.dataset.id = id;
-      div.innerHTML = "<div class=\"ps-as over-hidden d-flex align-items-center justify-content-center\">\n      <img src=\"".concat(avatar, "\">\n      <video name=\"video\" autoplay style=\"display:none\" ").concat(id ? '' : 'muted', "></video>\n      <video name=\"audio\" autoplay ").concat(id ? '' : 'muted', " class=\"d-none\"></video>\n      <div class=\"meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3\">\n        <strong>").concat(name, "</strong>\n        <div class=\"wrap-pin text-primary m-2 pin-btn\" title=\"Pin\">\n          <i class=\"fas fa-expand-arrows-alt\"></i>\n        </div>\n      </div>\n    </div>");
+      div.innerHTML = "<div class=\"ps-as over-hidden d-flex align-items-center justify-content-center\">\n      <img src=\"".concat(avatar, "\">\n      <video name=\"video\" autoplay style=\"display:none\" ").concat(id ? '' : 'muted', "></video>\n      <video name=\"audio\" autoplay ").concat(id ? '' : 'muted', " class=\"d-none\"></video>\n      <div class=\"meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3\">\n        <strong>").concat(name, "</strong>\n        <div class=\"wrap-pin text-primary m-2 pin-btn\" title=\"Pin\">\n          <span class=\"icomoon icon-arrows-alt\"></span>\n        </div>\n      </div>\n    </div>");
       meetingShow.appendChild(div);
     }
   } // create new peer

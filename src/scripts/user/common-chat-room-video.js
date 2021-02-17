@@ -191,7 +191,7 @@ const CommonChatRoomVideo = (() => {
       <div class="meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3">
         <strong>${name}</strong>
         <div class="wrap-pin text-primary m-2 pin-btn" title="Pin">
-          <i class="fas fa-expand-arrows-alt"></i>
+          <span class="icomoon icon-arrows-alt"></span>
         </div>
       </div>
     </div>`;

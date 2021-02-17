@@ -6128,10 +6128,6 @@ a.text-dark:hover, a.text-dark:focus {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-dot-single:before {
-  content: "\E91E";
-}
-
 .icon-dots-three-vertical:before {
   content: "\E901";
 }
@@ -6168,10 +6164,6 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E909";
 }
 
-.icon-arrows:before {
-  content: "\E90D";
-}
-
 .icon-group:before {
   content: "\E90E";
 }
@@ -6188,12 +6180,12 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E910";
 }
 
-.icon-microphone-slash:before {
-  content: "\E911";
+.icon-mic_off:before {
+  content: "\E923";
 }
 
-.icon-microphone:before {
-  content: "\E912";
+.icon-mic:before {
+  content: "\E924";
 }
 
 .icon-timer_off:before {
@@ -6248,20 +6240,20 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E90C";
 }
 
-.icon-circle-down:before {
-  content: "\E921";
+.icon-shrink:before {
+  content: "\E90D";
 }
 
-.icon-down:before {
-  content: "\E921";
+.icon-collapse:before {
+  content: "\E90D";
 }
 
-.icon-circle-bottom:before {
-  content: "\E921";
+.icon-minimize:before {
+  content: "\E90D";
 }
 
-.icon-arrow:before {
-  content: "\E921";
+.icon-contract:before {
+  content: "\E90D";
 }
 
 .icon-user-plus:before {
@@ -6322,26 +6314,6 @@ a.text-dark:hover, a.text-dark:focus {
 
 .icon-information:before {
   content: "\E91C";
-}
-
-.icon-phone-hang-up:before {
-  content: "\E91D";
-}
-
-.icon-telephone:before {
-  content: "\E91D";
-}
-
-.icon-contact:before {
-  content: "\E91D";
-}
-
-.icon-support:before {
-  content: "\E91D";
-}
-
-.icon-call:before {
-  content: "\E91D";
 }
 
 .icon-plus:before {
@@ -6788,8 +6760,8 @@ input:-webkit-autofill {
   display: flex;
 }
 
-.pin-btn.pin .fas::before {
-  content: "\F78C";
+.pin-btn.pin .icomoon::before {
+  content: "\E90D";
 }
 
 .meeting-part.is-pin:not(.meeting-part-cloned) {
@@ -6860,7 +6832,7 @@ input:-webkit-autofill {
 }
 
 #btn-audio-connect.is-turn-on span::before {
-  content: "\E911";
+  content: "\E924";
   color: #fff;
 }
 
@@ -6966,7 +6938,7 @@ input:-webkit-autofill {
 
 .wrap-my-share span {
   color: #007bff;
-  font-size: 45px;
+  font-size: 60px;
 }
 
 #main-meeting.has-share #meeting-show {
