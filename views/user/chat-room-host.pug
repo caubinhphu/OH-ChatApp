@@ -18,7 +18,7 @@ block waitingRoomInfo
   #waiting-room(style="display: none")
     #waiting-room-info.p-2.flex-fill.d-flex.flex-column
       .mb-2.text-secondary
-        i.fas.fa-user-clock
+        span.icomoon.icon-user-plus
         div.d-inline-block
           span &nbsp; Phòng chờ
           span#amount-waiting.ml-1
@@ -67,8 +67,9 @@ block subArea
         .modal-body
           span Bạn có chắc muốn cho phép người này vào phòng?
           .text-right.mt-4
-            button#allow-join-btn.btn.btn-danger.ml-3(type='button', data-dismiss='modal') OK
-            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+            button#allow-join-btn.btn(type='button', data-dismiss='modal') OK
+            button.btn.btn-icon.close-popup(type="button", data-dismiss="modal")
+              span.icomoon.icon-close
 
   #confirm-no-join-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='notJoinRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
@@ -76,8 +77,9 @@ block subArea
         .modal-body
           span Bạn có chắc muốn xóa người này khỏi danh sách chờ?
           .text-right.mt-4
-            button#no-allow-join-btn.btn.btn-danger(type='button', data-dismiss='modal') OK
-            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+            button#no-allow-join-btn.btn.btn-red(type='button', data-dismiss='modal') OK
+            button.btn.btn-icon.close-popup(type="button", data-dismiss="modal")
+              span.icomoon.icon-close
 
   #confirm-kick-user-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='kickUser', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')
@@ -85,8 +87,9 @@ block subArea
         .modal-body
           span Bạn có chắc muốn kick người này khỏi phòng?
           .text-right.mt-4
-            button#confirm-kick-user-btn.btn.btn-danger(type='button', data-dismiss='modal') OK
-            button.btn.btn-light.ml-3(type='button', data-dismiss='modal') Trở lại
+            button#confirm-kick-user-btn.btn.btn-red(type='button', data-dismiss='modal') OK
+            button.btn.btn-icon.close-popup(type="button", data-dismiss="modal")
+              span.icomoon.icon-close
 
 block subFormChat
   button.btn.btn-default.open-emojis(type="button") &#128512;

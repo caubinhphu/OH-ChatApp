@@ -1,3 +1,4 @@
+import 'bootstrap/js/dist/modal'
 import './global/loading'
 import './global/notify'
 import './global/output-message'

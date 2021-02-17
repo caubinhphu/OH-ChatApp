@@ -94,7 +94,7 @@ const ChatRoom = (() => {
     <div class="d-flex justify-content-center align-items-center" id="leave-modal">
         <div id="leave-modal-main"><span>${msg}</span>
             <div class="text-right">
-              <a class="btn btn-primary mt-2" id="leave-btn" href="/" role="button">OK</a>
+              <a class="btn btn-primary mt-2" id="leave-btn" href="/" role="button">OK </a>
             </div>
         </div>
     </div>

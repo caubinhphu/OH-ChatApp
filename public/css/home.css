@@ -5961,6 +5961,11 @@ a.text-dark:hover, a.text-dark:focus {
   outline: none;
 }
 
+.btn.btn-sm {
+  line-height: 1;
+  padding: 5px;
+}
+
 .btn-link {
   color: #22c0c9;
   border-radius: 0;
@@ -6447,9 +6452,9 @@ input:-webkit-autofill {
 }
 
 .waiting-room-id {
-  color: #555;
+  color: #102131;
   font-weight: 700;
-  font-size: larger;
+  font-size: 20px;
 }
 
 #leave-room-modal {
@@ -6468,10 +6473,9 @@ input:-webkit-autofill {
 }
 
 #leave-modal-main {
-  background-color: white;
-  border: 1px solid #555;
-  border-radius: 5px;
-  box-shadow: 5px 5px 10px #555;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 2px 2px 12px;
   width: 600px;
   padding: 10px;
 }
@@ -6479,7 +6483,10 @@ input:-webkit-autofill {
 #leave-modal-main span {
   font-size: 20px;
   font-weight: 600;
-  color: #555;
+}
+
+#waiting-room-modal {
+  padding: 15px 0;
 }
 
 #main-meeting-area {
@@ -6662,35 +6669,6 @@ input:-webkit-autofill {
 
 .modal-body > span {
   font-size: large;
-}
-
-#leave-room-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #f5f5f5;
-  width: 100%;
-  height: 100%;
-}
-
-#leave-modal {
-  width: 100%;
-  height: 100%;
-}
-
-#leave-modal-main {
-  background-color: white;
-  border: 1px solid #555;
-  border-radius: 5px;
-  box-shadow: 5px 5px 10px #555;
-  width: 600px;
-  padding: 10px;
-}
-
-#leave-modal-main > span {
-  font-size: 20px;
-  font-weight: 600;
-  color: #555;
 }
 
 .control-title {

@@ -29705,7 +29705,7 @@ var ChatRoomHost = function () {
   function outputWaitingRoom(waitingRoom) {
     if (waitingRoom.length > 0) {
       waitingRoomUsers.innerHTML = waitingRoom.map(function (user) {
-        return "<div class=\"waiting-room-user p-2 d-flex justify-content-between\">\n          <div>\n            <img class=\"waiting-room-user-avatar\" src=\"".concat(user.avatar, "\" alt=\"u\" />\n            <span class=\"waiting-room-user-name ml-2\">").concat(user.name, "</span>\n          </div>\n          <div>\n            <button class=\"btn btn-default text-success waiting-room-allow-btn\" title=\"Cho ph\xE9p\"\n              data-toggle=\"modal\" data-target=\"#confirm-join-room-modal\" data-id=\"").concat(user.id, "\">\n                <i class=\"fas fa-check-circle\"></i>\n            </button>\n            <button class=\"btn btn-default text-danger waiting-room-not-allow-btn\" title=\"Kh\xF4ng cho ph\xE9p\"\n              data-toggle=\"modal\" data-target=\"#confirm-no-join-room-modal\" data-id=\"").concat(user.id, "\">\n                <i class=\"fas fa-times-circle\"></i>\n            </button>\n          </div>\n        </div>");
+        return "<div class=\"waiting-room-user p-2 d-flex justify-content-between\">\n          <div>\n            <img class=\"waiting-room-user-avatar\" src=\"".concat(user.avatar, "\" alt=\"u\" />\n            <span class=\"waiting-room-user-name ml-2\">").concat(user.name, "</span>\n          </div>\n          <div>\n            <button class=\"btn btn-default btn-sm text-success waiting-room-allow-btn\" title=\"Cho ph\xE9p\"\n              data-toggle=\"modal\" data-target=\"#confirm-join-room-modal\" data-id=\"").concat(user.id, "\">\n                <span class=\"icomoon icon-check-circle-o\"></span>\n            </button>\n            <button class=\"btn btn-default btn-sm text-danger waiting-room-not-allow-btn\" title=\"Kh\xF4ng cho ph\xE9p\"\n              data-toggle=\"modal\" data-target=\"#confirm-no-join-room-modal\" data-id=\"").concat(user.id, "\">\n                <span class=\"icomoon icon-times-circle-o\"></span>\n            </button>\n          </div>\n        </div>");
       }).join('');
       waitingRoomArea.style.display = 'block';
 
@@ -29771,7 +29771,7 @@ var ChatRoomHost = function () {
   }
 
   function outputKickBtn(userId) {
-    return "<div>\n    <button class=\"btn btn-default text-danger kick-user-btn\" title=\"Kick kh\u1ECFi ph\xF2ng\" data-toggle=\"modal\"\n      data-target=\"#confirm-kick-user-modal\" data-id=\"".concat(userId, "\">\n        <i class=\"fas fa-times-circle\"></i>\n    </button>\n  </div>");
+    return "<div>\n    <button class=\"btn btn-default btn-sm text-danger kick-user-btn\" title=\"Kick kh\u1ECFi ph\xF2ng\" data-toggle=\"modal\"\n      data-target=\"#confirm-kick-user-modal\" data-id=\"".concat(userId, "\">\n        <span class=\"icomoon icon-times-circle-o\"></span>\n    </button>\n  </div>");
   }
 
   kickUserBtn.addEventListener('click', function () {

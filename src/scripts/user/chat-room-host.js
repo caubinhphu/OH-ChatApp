@@ -72,13 +72,13 @@ const ChatRoomHost = (() => {
             <span class="waiting-room-user-name ml-2">${user.name}</span>
           </div>
           <div>
-            <button class="btn btn-default text-success waiting-room-allow-btn" title="Cho phép"
+            <button class="btn btn-default btn-sm text-success waiting-room-allow-btn" title="Cho phép"
               data-toggle="modal" data-target="#confirm-join-room-modal" data-id="${user.id}">
-                <i class="fas fa-check-circle"></i>
+                <span class="icomoon icon-check-circle-o"></span>
             </button>
-            <button class="btn btn-default text-danger waiting-room-not-allow-btn" title="Không cho phép"
+            <button class="btn btn-default btn-sm text-danger waiting-room-not-allow-btn" title="Không cho phép"
               data-toggle="modal" data-target="#confirm-no-join-room-modal" data-id="${user.id}">
-                <i class="fas fa-times-circle"></i>
+                <span class="icomoon icon-times-circle-o"></span>
             </button>
           </div>
         </div>`;
@@ -168,9 +168,9 @@ const ChatRoomHost = (() => {
 
   function outputKickBtn(userId) {
     return `<div>
-    <button class="btn btn-default text-danger kick-user-btn" title="Kick khỏi phòng" data-toggle="modal"
+    <button class="btn btn-default btn-sm text-danger kick-user-btn" title="Kick khỏi phòng" data-toggle="modal"
       data-target="#confirm-kick-user-modal" data-id="${userId}">
-        <i class="fas fa-times-circle"></i>
+        <span class="icomoon icon-times-circle-o"></span>
     </button>
   </div>`;
   }

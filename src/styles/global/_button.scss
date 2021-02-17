@@ -45,6 +45,10 @@
   &:focus {
     outline: none;
   }
+  &.btn-sm {
+    line-height: 1;
+    padding: 5px;
+  }
 }
 
 .btn-link {

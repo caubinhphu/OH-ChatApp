@@ -66,9 +66,9 @@ function outputHtmlWaitingRoom(message, roomId, userId) {
   document.getElementById('form-x').innerHTML = `<div id="waiting-room-modal">
     <div class="d-flex justify-content-center align-items-center" id="waiting-modal">
       <div id="waiting-modal-main">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between mb-3">
           <span class="waiting-room-id">Phòng: ${roomId}</span>
-          <button type="button" data-toggle="modal" data-target="#confirm-leave-waiting-room-modal" class="btn btn-link">Rời phòng</span>
+          <button type="button" data-toggle="modal" data-target="#confirm-leave-waiting-room-modal" class="btn btn-red">Rời phòng</span>
         </div>
         <span>${message}</span>
       </div>
@@ -79,8 +79,10 @@ function outputHtmlWaitingRoom(message, roomId, userId) {
       <div class="modal-content">
         <div class="modal-body"><span>Bạn có chắc muốn rời phòng chờ?</span>
           <div class="text-right mt-4">
-            <button class="btn btn-danger" id="leave-waiting-room-btn" type="button">Rời phòng</button>
-            <button class="btn btn-light ml-3" type="button" data-dismiss="modal">Trở lại</button>
+            <button class="btn btn-red" id="leave-waiting-room-btn" type="button">Rời phòng</button>
+            <button class="btn btn-icon close-popup" type="button" data-dismiss="modal">
+              <span class="icomoon icon-close"></span>
+            </button>
           </div>
         </div>
       </div>
@@ -92,6 +94,8 @@ function outputHtmlWaitingRoom(message, roomId, userId) {
     .addEventListener('click', function () {
       socket.emit('leaveWaitingRoom', { typeLeave: 'self', roomId, userId });
     });
+  
+  hideLoader()
 }
 
 function outputJoinRoomBlocked(msg) {
@@ -99,7 +103,7 @@ function outputJoinRoomBlocked(msg) {
     <div class="d-flex justify-content-center align-items-center" id="leave-modal">
         <div id="leave-modal-main"><span>${msg}</span>
             <div class="text-right">
-              <a class="btn btn-primary mt-2" id="leave-btn" href="/" role="button">OK</a>
+              <a class="btn mt-2" id="leave-btn" href="/" role="button">OK</a>
             </div>
         </div>
     </div>

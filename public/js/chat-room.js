@@ -29709,7 +29709,7 @@ console.log('page chat room');
 
 
   function outputLeaveRoom(msg) {
-    document.querySelector('#meeting-area').innerHTML = "<div id=\"leave-room-modal\">\n    <div class=\"d-flex justify-content-center align-items-center\" id=\"leave-modal\">\n        <div id=\"leave-modal-main\"><span>".concat(msg, "</span>\n            <div class=\"text-right\">\n              <a class=\"btn btn-primary mt-2\" id=\"leave-btn\" href=\"/\" role=\"button\">OK</a>\n            </div>\n        </div>\n    </div>\n  </div>");
+    document.querySelector('#meeting-area').innerHTML = "<div id=\"leave-room-modal\">\n    <div class=\"d-flex justify-content-center align-items-center\" id=\"leave-modal\">\n        <div id=\"leave-modal-main\"><span>".concat(msg, "</span>\n            <div class=\"text-right\">\n              <a class=\"btn btn-primary mt-2\" id=\"leave-btn\" href=\"/\" role=\"button\">OK </a>\n            </div>\n        </div>\n    </div>\n  </div>");
   } // countdown 5 seconds
 
 
