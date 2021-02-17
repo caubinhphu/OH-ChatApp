@@ -6860,21 +6860,18 @@ input:-webkit-autofill {
 }
 
 #btn-audio-connect.is-turn-on span::before {
-  content: "\F130";
-  color: white;
+  content: "\E911";
+  color: #fff;
 }
 
 #btn-video-connect.is-turn-on span::before {
-  content: "\F03D";
-  color: white;
-}
-
-#btn-share-screen.is-turn-on span {
-  font-weight: 900;
+  content: "\E919";
+  color: #fff;
 }
 
 #btn-share-screen.is-turn-on span::before {
-  color: white;
+  content: "\E916";
+  color: #fff;
 }
 
 #hide-time-btn[data-status="off"] span::before {

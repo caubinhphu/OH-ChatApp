@@ -358,18 +358,19 @@
 }
 
 #btn-audio-connect.is-turn-on span::before {
-  content: "\f130";
-  color: white;
+  content: "\e911";
+  color: $white;
 }
 #btn-video-connect.is-turn-on span::before {
-  content: "\f03d";
-  color: white;
+  content: "\e919";
+  color: $white;
 }
-#btn-share-screen.is-turn-on span {
-  font-weight: 900;
-}
+// #btn-share-screen.is-turn-on span {
+//   font-weight: 900;
+// }
 #btn-share-screen.is-turn-on span::before {
-  color: white;
+  content: "\e916";
+  color: $white;
 }
 #hide-time-btn[data-status="off"] span::before {
   content: "\e914";

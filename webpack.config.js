@@ -9,13 +9,14 @@ const extractPlugin = new ExtractTextPlugin({
 module.exports = {
   entry: {
     'home': [
+      'babel-polyfill',
       './src/scripts/home.js',
       './src/styles/app-meeting.scss'
     ],
-    'create-room': './src/scripts/create-room.js',
-    'join-room': './src/scripts/join-room.js',
-    'chat-room-host': './src/scripts/chat-room-host.js',
-    'chat-room': './src/scripts/chat-room.js'
+    'create-room': ['babel-polyfill', './src/scripts/create-room.js'],
+    'join-room': ['babel-polyfill', './src/scripts/join-room.js'],
+    'chat-room-host': ['babel-polyfill', './src/scripts/chat-room-host.js'],
+    'chat-room': ['babel-polyfill', './src/scripts/chat-room.js']
   },
   output: {
     path: path.resolve(__dirname, 'public'),
