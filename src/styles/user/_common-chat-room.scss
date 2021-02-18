@@ -41,15 +41,18 @@
     display: none;
   }
   &.has-share {
+    .pin-btn {
+      display: none;
+    }
     #meeting-show {
       margin-left: 1px;
       width: unset;
       margin-top: 67px;
       display: block;
       min-width: max-content;
-      &.offset {
-        min-width: 106px;
-      }
+      // &.offset {
+      //   min-width: 106px;
+      // }
       img {
         max-width: 70px;
       }

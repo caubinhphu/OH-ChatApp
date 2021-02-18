@@ -6508,16 +6508,16 @@ input:-webkit-autofill {
   display: none;
 }
 
+#main-meeting.has-share .pin-btn {
+  display: none;
+}
+
 #main-meeting.has-share #meeting-show {
   margin-left: 1px;
   width: unset;
   margin-top: 67px;
   display: block;
   min-width: max-content;
-}
-
-#main-meeting.has-share #meeting-show.offset {
-  min-width: 106px;
 }
 
 #main-meeting.has-share #meeting-show img {

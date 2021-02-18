@@ -332,6 +332,8 @@ const CommonChatRoomVideo = (() => {
 
   // output share screen
   function outputShare(stream = window.localShare, id = 'my_video') {
+    unPinAll($('.meeting-part.is-pin'))
+    $('#meeting-show').removeClass('offset')
     $('#main-meeting').addClass('has-share')
     if (id === 'my_video') {
       // show my share screen
@@ -655,17 +657,21 @@ const CommonChatRoomVideo = (() => {
     outputStopShareScreen();
   }
 
+  function unPinAll($ele) {
+    $ele.removeClass('is-pin');
+    $('.meeting-part .pin-btn').removeClass('pin');
+    $('.meeting-part .pin-btn').attr('title', 'Pin')
+    $('.wrap-meeting-show').removeClass('has-pin');
+    $('.wrap-meet-pin').html('');
+    $('#meeting-show').removeClass('mt-0')
+  }
+
   // pin meeting
   $(document).on('click', '.pin-btn', function (e) {
     $('.meeting-part').removeClass('is-pin'); // remove all pin
     const $parent = $(this).parents('.meeting-part');
     if ($(this).hasClass('pin')) { // is pin ->  unpin
-      $parent.removeClass('is-pin');
-      $('.meeting-part .pin-btn').removeClass('pin');
-      $('.meeting-part .pin-btn').attr('title', 'Pin')
-      $('.wrap-meeting-show').removeClass('has-pin');
-      $('.wrap-meet-pin').html('');
-      $('#meeting-show').removeClass('mt-0')
+      unPinAll($parent)
     } else { // pin
       $(`.meeting-part:not('meeting-part-cloned') .pin-btn`).removeClass('pin');
       $(this).addClass('pin');

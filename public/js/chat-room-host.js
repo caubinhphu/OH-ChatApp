@@ -44793,6 +44793,8 @@ var CommonChatRoomVideo = function () {
   function outputShare() {
     var stream = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.localShare;
     var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'my_video';
+    unPinAll($('.meeting-part.is-pin'));
+    $('#meeting-show').removeClass('offset');
     $('#main-meeting').addClass('has-share');
 
     if (id === 'my_video') {
@@ -45233,6 +45235,15 @@ var CommonChatRoomVideo = function () {
     window.localShare = new MediaStream();
     socket.emit('stopShareScreenStream');
     outputStopShareScreen();
+  }
+
+  function unPinAll($ele) {
+    $ele.removeClass('is-pin');
+    $('.meeting-part .pin-btn').removeClass('pin');
+    $('.meeting-part .pin-btn').attr('title', 'Pin');
+    $('.wrap-meeting-show').removeClass('has-pin');
+    $('.wrap-meet-pin').html('');
+    $('#meeting-show').removeClass('mt-0');
   } // pin meeting
 
 
@@ -45243,12 +45254,7 @@ var CommonChatRoomVideo = function () {
 
     if ($(this).hasClass('pin')) {
       // is pin ->  unpin
-      $parent.removeClass('is-pin');
-      $('.meeting-part .pin-btn').removeClass('pin');
-      $('.meeting-part .pin-btn').attr('title', 'Pin');
-      $('.wrap-meeting-show').removeClass('has-pin');
-      $('.wrap-meet-pin').html('');
-      $('#meeting-show').removeClass('mt-0');
+      unPinAll($parent);
     } else {
       // pin
       $(".meeting-part:not('meeting-part-cloned') .pin-btn").removeClass('pin');
