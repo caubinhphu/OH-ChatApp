@@ -665,6 +665,7 @@ const CommonChatRoomVideo = (() => {
       $('.meeting-part .pin-btn').attr('title', 'Pin')
       $('.wrap-meeting-show').removeClass('has-pin');
       $('.wrap-meet-pin').html('');
+      $('#meeting-show').removeClass('mt-0')
     } else { // pin
       $(`.meeting-part:not('meeting-part-cloned') .pin-btn`).removeClass('pin');
       $(this).addClass('pin');
@@ -672,6 +673,17 @@ const CommonChatRoomVideo = (() => {
       this.title = 'Unpin'
       $parent.addClass('is-pin');
       $('.wrap-meeting-show').addClass('has-pin');
+      
+      if (!$parent.hasClass('wrap-my-video')) {
+        $('#meeting-show').removeClass('mt-0')
+        if ($('#meeting-show .meeting-part').length < 2) {
+          $('#meeting-show').addClass('offset')
+        } else {
+          $('#meeting-show').removeClass('offset')
+        }
+      } else {
+        $('#meeting-show').addClass('mt-0')
+      }
       $('.wrap-meet-pin').html($parent.get(0).outerHTML);
       $('.wrap-meet-pin').find('.meeting-part').addClass('meeting-part-cloned');
       const video = $parent.find('video[name="video"]').get(0);

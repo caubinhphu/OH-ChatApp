@@ -4,17 +4,6 @@
   position: relative;
 }
 
-#main-meeting {
-  height: calc(100% - 47px);
-  position: relative;
-  margin: 0 auto;
-}
-
-.wrap-meeting-show {
-  width: 100%;
-  height: 100%;
-}
-
 .meeting-part {
   text-align: center;
   width: 325px;
@@ -29,6 +18,82 @@
   }
   video {
     width: 100%;
+  }
+  &:hover {
+    .meeting-part-pin-ctrl {
+      display: flex;
+    }
+  }
+  &.is-pin:not(.meeting-part-cloned) {
+    display: none;
+  }
+}
+
+.pin-btn.pin .icomoon::before {
+  content: "\e90d";
+}
+
+#main-meeting {
+  height: calc(100% - 47px);
+  position: relative;
+  margin: 0 auto;
+  .wrap-share-screen {
+    display: none;
+  }
+  &.has-share {
+    #meeting-show {
+      margin-left: 1px;
+      width: unset;
+      margin-top: 67px;
+      display: block;
+      min-width: max-content;
+      &.offset {
+        min-width: 106px;
+      }
+      img {
+        max-width: 70px;
+      }
+      .meeting-part {
+        width: 240px;
+        height: 130px;
+      }
+    }
+    .wrap-share-screen {
+      display: block;
+    }
+  }
+}
+// #main-meeting.has-share #meeting-show{
+//   width:unset;
+// }
+.wrap-meeting-show {
+  width: 100%;
+  height: 100%;
+  &.has-pin {
+    #meeting-show {
+      margin-left: 1px;
+      width: unset;
+      margin-top: 67px;
+      display: block;
+      min-width: max-content;
+      &.offset {
+        min-width: 106px;
+      }
+    }
+    .meeting-part:not(.wrap-my-video) {
+      width: 240px;
+      height: 130px;
+      img {
+        max-width: 70px;
+      }
+    }
+    .wrap-meet-pin {
+      display: block;
+      .meeting-part {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 }
 
@@ -234,29 +299,8 @@
 .wrap-meet-pin {
   display: none;
 }
-.wrap-meeting-show.has-pin .wrap-meet-pin {
-  display: block;
-}
-.wrap-meeting-show.has-pin .wrap-meet-pin .meeting-part {
-  width: 100%;
-  height: 100%;
-}
-#main-meeting.has-share #meeting-show,
-.wrap-meeting-show.has-pin #meeting-show {
-  width: unset;
-  margin-top: 67px;
-  display: block;
-  min-width: max-content;
-}
-#main-meeting.has-share #meeting-show .meeting-part,
-.wrap-meeting-show.has-pin #meeting-show .meeting-part {
-  width: 240px;
-  height: 130px;
-}
-#main-meeting.has-share #meeting-show img,
-.wrap-meeting-show.has-pin #meeting-show .meeting-part img {
-  max-width: 70px;
-}
+
+
 .meeting-part-pin-ctrl {
   position: absolute;
   left: 0;
@@ -264,27 +308,21 @@
   top: 0;
   display: none;
 }
-.meeting-part:hover .meeting-part-pin-ctrl{
-  display: flex;
-}
-.pin-btn.pin .icomoon::before {
-  content: "\e90d";
-}
-.meeting-part.is-pin:not(.meeting-part-cloned) {
-  display: none;
-}
-.wrap-msg-box::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 100%;
-  height: 2px;
-  background-color: $color-22;
-  transition: all .35s;
-}
-.wrap-msg-box.is-focus::after {
-  right: 0;
+
+.wrap-msg-box {
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 100%;
+    height: 2px;
+    background-color: $color-22;
+    transition: all .35s;
+  }
+  &.is-focus::after {
+    right: 0;
+  }
 }
 .scroll-bottom {
   position: absolute;
@@ -394,8 +432,8 @@
   bottom: auto;
   width: 100px;
   height: 65px;
-  background-color: $color-0c;
-  border-radius: 5px;
+  // background-color: $color-0c;
+  // border-radius: 5px;
   z-index: 99;
   &.meeting-part {
     img {
@@ -429,9 +467,7 @@
     font-size: 60px;
   }
 }
-#main-meeting.has-share #meeting-show{
-  width:unset;
-}
+
 .them-share {
   display: flex;
 }
