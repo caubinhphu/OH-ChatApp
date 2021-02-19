@@ -12,6 +12,7 @@
   - [Passport](http://www.passportjs.org/)
   - [NodeMailer](https://nodemailer.com/)
   - [Cloudinary](https://cloudinary.com/)
+  - [Webpack](https://webpack.js.org/)
 ### Tác giả: NAH - Nguyễn Anh Hải
 
 ### Quá trình phát triển
@@ -73,4 +74,11 @@
   - Đăng ký tài khoản, đăng nhập
   - Đăng nhập bằng facebook, google
   - Chat với biểu tượng cảm xúc
+</details>
+<details>
+  <summary>Version 2.3.0 (19/01/2021)</summary>
+  Chức năng thêm:
+
+  - Chia sẻ màn hình
+  - Sử dụng webpack
 </details>
