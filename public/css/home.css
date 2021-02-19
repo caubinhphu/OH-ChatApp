@@ -6455,6 +6455,7 @@ input:-webkit-autofill {
 #leave-modal-main span {
   font-size: 20px;
   font-weight: 600;
+  color: #102131;
 }
 
 #waiting-room-modal {
@@ -6711,7 +6712,8 @@ input:-webkit-autofill {
 }
 
 .modal-body > span {
-  font-size: large;
+  font-size: 22px;
+  color: #102131;
 }
 
 .control-title {
