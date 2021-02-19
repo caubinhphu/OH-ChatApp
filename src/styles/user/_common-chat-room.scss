@@ -475,6 +475,17 @@
 .them-share {
   display: flex;
 }
+@media only screen and (max-width: 1024px) {
+  .popup {
+    &.special {
+      left: 86%;
+      &::after {
+        left: 33%;
+      }
+    }
+  }
+}
+
 @media only screen and (max-width: 1000px) {
   #show-control {
     position: absolute !important;
