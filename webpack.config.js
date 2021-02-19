@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 const extractPlugin = new ExtractTextPlugin({
   filename: 'css/[name].css'
@@ -45,7 +46,10 @@ module.exports = {
             // Translates CSS into CommonJS
             {
               loader: 'css-loader',
-              options: { url: false }
+              options: {
+                url: false,
+                minimize: true
+              }
             },
             // Compiles Sass to CSS
             {
@@ -57,7 +61,8 @@ module.exports = {
                 outputStyle: 'expanded',
                 sourceMap: true,
                 sourceMapContents: true,
-                url: false
+                url: false,
+                minimize: true
               }
             }
           ]
@@ -79,6 +84,11 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
+    }),
+    new webpack.LoaderOptionsPlugin({
+      optimization: {
+        minimizer: [new UglifyJSPlugin()],
+      },
     })
   ]
 };

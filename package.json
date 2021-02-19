@@ -6,9 +6,8 @@
   "scripts": {
     "start": "node app",
     "start:dev": "nodemon --inspect app",
-    "build": "webpack",
-    "build:dev": "webpack --watch --progress",
-    "build:product": "webpack -p"
+    "build:product": "webpack --progress",
+    "build:dev": "webpack --watch --progress"
   },
   "author": "NAH",
   "license": "ISC",
@@ -16,14 +15,12 @@
     "@hapi/joi": "^17.1.1",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
-    "bootstrap": "v4.3.1",
     "cloudinary": "^1.22.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "jquery": "^3.3.1",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.13",
@@ -32,10 +29,8 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
-    "popper.js": "^1.14.7",
     "pug": "^2.0.4",
     "request": "^2.88.2",
-    "simple-peer": "^9.9.3",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
@@ -44,13 +39,19 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.2",
     "babel-polyfill": "^6.26.0",
+    "bootstrap": "v4.3.1",
     "css-loader": "^0.28.9",
-    "extract-text-webpack-plugin": "~3.0.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^6.2.0",
+    "jquery": "^3.3.1",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.3",
+    "popper.js": "^1.14.7",
     "sass-loader": "~6.0",
+    "simple-peer": "^9.9.3",
     "style-loader": "^0.22.1",
-    "webpack": "~3.10.0"
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.5.0"
   }
 }
