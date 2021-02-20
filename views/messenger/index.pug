@@ -1,40 +1,38 @@
 extend ./layout
 
-append styles
-  link(rel="stylesheet", href="/styles/messenger/index.css")
-
 block contentMain
   #main-messenger.d-flex
     #main-left.p-3.d-flex.flex-column
-      #main-left-top.d-flex.justify-content-between
-        h4 Chat
-        #room
-          span.text-secondary Phòng chat 
-          a.btn.btn-light(href="/create", role="button", title="Tạo phòng")
-            i.fas.fa-plus-square
-          a.btn.btn-light.ml-2(href="/join", role="button", title="Tham gia vào phòng")
-            i.fas.fa-sign-in-alt
+      #main-left-top.d-flex.justify-content-between.align-items-center
+        h4.mb-0 Chat
+        #room.d-flex.align-items-center.justify-content-center
+          span.text-secondary.mr-3 Phòng chat 
+          a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng")
+            span.icomoon.icon-plus
+          a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
+            span.icomoon.icon-sign-in
       #main-left-search.mt-2
         input.form-control(type="text", placeholder="Tìm bạn bè để chat")
       #main-left-friends.mt-2.flex-fill
         each friend in friends
-          a(href=`/messenger/chat/${friend.id}`)
-            .friend-item.mt-1(class=`${friendChat ? friend.id === friendChat.id ? "friend-item-active": "" : ""}`)
-              .friend-item-main.d-flex
-                .friend-item-img
-                  img.lazyload.rounded-circle(data-src=friend.avatar, alt=friend.name, width="45px")
-                .friend-item-info.ml-2
-                  strong= friend.name
-                  br
-                  small Message
-                  small.ml-2 T2
+          .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""}`)
+            .friend-item-main.d-flex
+              .friend-item-img
+                img.rounded-circle(src=friend.avatar, alt=friend.name, width="45px")
+              .friend-item-info.ml-2
+                strong= friend.name
+                br
+                small Message
+                small.ml-2 T2
+            a.ps-as(href=`/messenger/chat/${friend.id}`)
+              span.sr-only= `Chat with ${friend.name}`
 
     if (friendChat)
       #main-right.flex-fill.d-flex.flex-column
         #main-right-top.d-flex.justify-content-between.p-2.align-items-center
           #main-right-top-left.d-flex
             .friend-img
-              img.lazyload.rounded-circle(data-src=friendChat.avatar, alt=friendChat.name, width="45px")
+              img.rounded-circle(src=friendChat.avatar, alt=friendChat.name, width="45px")
             .friend-info.ml-2
               strong= friendChat.name
               br
@@ -45,9 +43,12 @@ block contentMain
             button(type="button")
               i.fas.fa-video
         #main-right-chat-content.flex-fill.p-2
-        #main-right-top-chat-input.mb-1.px-2
+        #main-right-top-chat-input.mb-1.px-2.wrap-chat-input
           form.d-flex(name="sendMsgForm")
-            input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+            button.btn.btn-default.open-emojis(type="button") &#128512;
+            .flex-fill.wrap-msg-box.ps-rv
+              //- input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+              textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
             button.btn.btn-default.text-secondary
               span.icomoon.icon-send
   div
@@ -56,8 +57,8 @@ block contentMain
 
 append scripts
   script(src="/socket.io/socket.io.js")
-  script(src="/scripts/moment.min.js")
-  script(src="/scripts/emoji.js")
-  script(src="/scripts/common-chat.js")
-  script(src="/scripts/member/messenger.js")
+  script(src="/js/home-messenger.js")
+//-   script(src="/scripts/moment.min.js")
+//-   script(src="/scripts/emoji.js")
+//-   script(src="/scripts/common-chat.js")
   

@@ -1,5 +1,5 @@
 import './global/loading'
-import './global/notify'
+// import './global/notify'
 import './global/output-message'
 import './user/create-room'
 

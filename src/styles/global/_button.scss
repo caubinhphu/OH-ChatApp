@@ -144,6 +144,10 @@
     height: 60px;
     font-size: 25px;
   }
+  &.small-btn {
+    width: 36px;
+    height: 36px;
+  }
   &.btn-purple {
     color: $color-7f;
     &::after {

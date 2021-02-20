@@ -1,3 +1,5 @@
+import './notify'
+
 // output error message
 function outputErrorMessage(msg) {
   hideLoader()

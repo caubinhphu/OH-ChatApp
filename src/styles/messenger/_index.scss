@@ -1,0 +1,150 @@
+#main {
+  height: calc(100vh - 60px);
+}
+
+#main-messenger {
+  height: inherit;
+}
+
+#main-left {
+  height: 100%;
+  width: 400px;
+  border-right: 1px solid;
+}
+
+#main-left-friends {
+  border-top: 1px solid;
+  height: 100%;
+  overflow-y: auto;
+  > a {
+    color: black;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.friend-item {
+  padding: 5px;
+  border-radius: 5px;
+  &:hover,
+  &.is-active {
+    background-color: #f0f2f5;
+  }
+}
+
+#main-right {
+  width: 0;
+}
+
+#main-right-top {
+  border-bottom: 1px solid;
+}
+
+#main-right-top-right > button {
+  background-color: transparent;
+  border: none;
+}
+
+#main-right-chat-content {
+  overflow-y: auto;
+}
+
+.friend-item-info > small {
+  color: #6c757d;
+}
+
+.message {
+  width: 100%;
+  height: max-content;
+  padding: 2px;
+}
+
+.msg {
+  width: max-content;
+  max-width: 100%;
+  background-color: $color-e6;
+  padding: 4px 8px;
+  border-radius: 5px;
+  line-height: 23px;
+}
+
+.msg-me {
+  width: max-content;
+  max-width: 100%;
+  background-color: $color-22;
+  padding: 4px 8px;
+  border-radius: 5px;
+  margin-left: auto;
+  text-align: left;
+  line-height: 23px;
+}
+
+.message-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+}
+
+.message-time {
+  color: #a7a7a7;
+  margin: 0 10px;
+  font-size: x-small;
+}
+
+.message-content {
+  margin-left: 10px;
+}
+#main-left-top {
+  h4 {
+    font-weight: 800;
+  }
+}
+#msg {
+  border: none;
+  padding: 5px;
+  font-size: 15px;
+  resize: none;
+  overflow: auto;
+  max-height: 100px;
+  height: 35px;
+  min-height: 35px;
+  background-color: rgba(138, 138, 138, 0.08);
+}
+.wrap-msg-box {
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 100%;
+    height: 2px;
+    background-color: $color-22;
+    transition: all .35s;
+  }
+  &.is-focus::after {
+    right: 0;
+  }
+}
+@media only screen and (max-width: 850px) {
+  .friend-item-info {
+    display: none;
+  }
+
+  #main-left {
+    width: fit-content;
+  }
+
+  #main-left-top,
+  #main-left-search {
+    display: none !important;
+  }
+
+  #main-left-friends {
+    border: none;
+  }
+
+  .friend-item-main {
+    justify-content: center;
+  }
+}

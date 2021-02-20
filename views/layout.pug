@@ -35,16 +35,16 @@ html(lang="en")
       //- script(src="/scripts/output-message.js")
       //- script(src="/scripts/layout.js")
       //- script(src="/js/home.js")
-      if (errorText)
-        each error in errorText
-          script(type='text/javascript')= `outputErrorMessage('${error}')`
-      if (successText)
-        each success in successText
-          script(type='text/javascript')= `outputSuccessMessage('${success}')`
-      if (infoText)
-        each info in infoText
-          script(type='text/javascript')= `outputInfoMessage('${info}')`
-      if (warnText)
-        each warn in warnText
-          script(type='text/javascript')= `outputWarnMessage('${warn}')`
+    if (errorText)
+      each error in errorText
+        script(type='text/javascript')= `outputErrorMessage('${error}')`
+    if (successText)
+      each success in successText
+        script(type='text/javascript')= `outputSuccessMessage('${success}')`
+    if (infoText)
+      each info in infoText
+        script(type='text/javascript')= `outputInfoMessage('${info}')`
+    if (warnText)
+      each warn in warnText
+        script(type='text/javascript')= `outputWarnMessage('${warn}')`
     

@@ -17,7 +17,12 @@ module.exports = {
     'create-room': ['babel-polyfill', './src/scripts/create-room.js'],
     'join-room': ['babel-polyfill', './src/scripts/join-room.js'],
     'chat-room-host': ['babel-polyfill', './src/scripts/chat-room-host.js'],
-    'chat-room': ['babel-polyfill', './src/scripts/chat-room.js']
+    'chat-room': ['babel-polyfill', './src/scripts/chat-room.js'],
+    'home-messenger': [
+      'babel-polyfill',
+      './src/scripts/home-messenger.js',
+      './src/styles/app-messenger.scss'
+    ]
   },
   output: {
     path: path.resolve(__dirname, 'public'),

@@ -25,6 +25,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-bell:before {
+  content: "\e911";
+}
+.icon-cog:before {
+  content: "\e912";
+}
 .icon-dots-three-vertical:before {
   content: "\e901";
 }

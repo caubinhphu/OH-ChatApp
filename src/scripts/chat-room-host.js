@@ -1,6 +1,6 @@
 import 'bootstrap/js/dist/modal'
 import './global/loading'
-import './global/notify'
+// import './global/notify'
 import './global/output-message'
 import './global/common-chat'
 import './global/emoji'
