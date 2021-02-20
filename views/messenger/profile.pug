@@ -1,7 +1,7 @@
 extend ./layout
 
-append styles
-  link(rel="stylesheet", href="/styles/messenger/profile.css")
+//- append styles
+//-   link(rel="stylesheet", href="/styles/messenger/profile.css")
 
 block contentMain
   #info-area.mt-2
@@ -9,7 +9,7 @@ block contentMain
       .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
         img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
         .form-group.mt-md-2.ml-2.ml-md-0.mb-0
-          label.btn.btn-secondary.btn-sm(for="avatar") Đổi ảnh đại diện
+          label.btn(for="avatar") Đổi ảnh đại diện
           input#avatar.d-none(type="file", name="avatar")
       .mt-2.mt-md-0.pl-md-5
         form
@@ -36,7 +36,7 @@ block contentMain
             label.text-secondary(for="address", style="width: 130px") Địa chỉ
             input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
           .text-right
-            button.btn.btn-sm.btn-success Lưu
+            button.btn Lưu
   #friend-area
     .container
       ul.nav.nav-tabs.justify-content-center(role='tablist')
@@ -54,11 +54,11 @@ block contentMain
                 img.rounded-circle(alt="a", width="80px", data-src="/images/logo.png" class="lazyload")
                 a.flex-fill.mx-2(href="#")
                   strong Name
-                button.btn.btn-sm.btn-danger Hủy kết bạn
+                button.btn.btn-red Hủy kết bạn
         #friend-request.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-request-tab')
           #friend-request-content.row
         #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
           #friend-request-content.row
 
 append scripts
-  script(src="/scripts/member/profile.js")
+  script(src="/js/msg-profile.js")

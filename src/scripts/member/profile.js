@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const Profile = (() => {
   const friendContent = document.getElementById('friend-content');
 
