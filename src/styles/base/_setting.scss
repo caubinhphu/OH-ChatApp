@@ -245,3 +245,11 @@ $input-box-shadow: none;
 // $breadcrumb-padding-y: rem(1);
 // $breadcrumb-padding-x: rem(0);
 // $breadcrumb-bg: $white;
+
+$nav-tabs-border-color:             $color-22 !default;
+// $nav-tabs-border-width:             $border-width !default;
+// $nav-tabs-border-radius:            $border-radius !default;
+$nav-tabs-link-hover-border-color:  transparent !default;
+$nav-tabs-link-active-color:        $color-10 !default;
+// $nav-tabs-link-active-bg:           $body-bg !default;
+$nav-tabs-link-active-border-color: $color-22 $color-22 transparent $color-22 !default;

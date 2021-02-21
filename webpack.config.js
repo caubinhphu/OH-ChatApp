@@ -51,7 +51,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 url: false,
-                minimize: true,
+                minimize: false,
               },
             },
             // Compiles Sass to CSS
@@ -65,7 +65,7 @@ module.exports = {
                 sourceMap: true,
                 sourceMapContents: true,
                 url: false,
-                minimize: true,
+                minimize: false,
               },
             },
           ],
@@ -88,10 +88,10 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
     }),
-    new webpack.LoaderOptionsPlugin({
-      optimization: {
-        minimizer: [new UglifyJSPlugin()],
-      },
-    }),
+    // new webpack.LoaderOptionsPlugin({
+    //   optimization: {
+    //     minimizer: [new UglifyJSPlugin()],
+    //   },
+    // }),
   ],
 };

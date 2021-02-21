@@ -13,7 +13,7 @@ body {
 #header {
   box-shadow: 1px 1px 5px;
   height: 60px;
-  background-color: $color-10;
+  background-color: $color-0c;
 }
 
 #user {
@@ -28,7 +28,7 @@ body {
     }
   }
   &:hover {
-    background-color: #f0f2f5;
+    background-color: $gray-900;
   }
 }
 

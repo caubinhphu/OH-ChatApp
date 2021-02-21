@@ -4,8 +4,8 @@ extend ./layout
 //-   link(rel="stylesheet", href="/styles/messenger/profile.css")
 
 block contentMain
-  #info-area.mt-2
-    .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center
+  #info-area.my-2
+    .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center.wrap-info-member
       .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
         img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
         .form-group.mt-md-2.ml-2.ml-md-0.mb-0
@@ -49,12 +49,6 @@ block contentMain
       .tab-content
         #friend.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-tab')
           #friend-content.row
-            .col-12.col-md-6
-              .d-flex.align-items-center.border.p-2.rounded.my-2
-                img.rounded-circle(alt="a", width="80px", data-src="/images/logo.png" class="lazyload")
-                a.flex-fill.mx-2(href="#")
-                  strong Name
-                button.btn.btn-red Hủy kết bạn
         #friend-request.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-request-tab')
           #friend-request-content.row
         #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')

@@ -24,7 +24,7 @@ block contentMain
                 br
                 small Message
                 small.ml-2 T2
-            a.ps-as(href=`/messenger/chat/${friend.id}`)
+            a.ps-as(href=`/messenger/chat/${friend.id}`, title=`${friend.name}`)
               span.sr-only= `Chat with ${friend.name}`
 
     if (friendChat)
