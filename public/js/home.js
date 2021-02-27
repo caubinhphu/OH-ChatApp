@@ -20979,8 +20979,10 @@ module.exports = __webpack_require__(558);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(335);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(339);
+/* harmony import */ var _user_home__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(561);
 // import $ from 'jquery';
  // import './global/notify'
+
 
 
 console.log('page home');
@@ -21027,6 +21029,30 @@ console.log('page home');
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 559 */,
+/* 560 */,
+/* 561 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {var Home = function () {
+  if (document.formLogin) {
+    document.formLogin.addEventListener('submit', function () {
+      $('.wrap-loader').removeClass('d-none');
+    });
+  }
+
+  if (document.formRegister) {
+    document.formRegister.addEventListener('submit', function () {
+      $('.wrap-loader').removeClass('d-none');
+    });
+  }
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Home);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
 
 /***/ })
 /******/ ]);

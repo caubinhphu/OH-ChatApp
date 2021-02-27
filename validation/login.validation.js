@@ -10,7 +10,7 @@ module.exports.validateRegister = (data) => {
         'string.base': 'Họ tên phải là chuỗi',
         'string.max': 'Họ tên không dài quá 40 ký tự',
         'string.pattern.base':
-          'Họ tên không chứa các ký tự đặc biệt (ngoài - và _)',
+          'Họ tên không chứa các ký tự đặc biệt (trừ - và _)',
         'any.required': 'Chưa nhập họ tên',
       }),
     email: Joi.string().email().messages({

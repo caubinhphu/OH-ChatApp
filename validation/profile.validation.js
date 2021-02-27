@@ -10,7 +10,7 @@ module.exports.validateProfile = (data) => {
         'string.base': 'Họ tên phải là chuỗi',
         'string.max': 'Họ tên không dài quá 40 ký tự',
         'string.pattern.base':
-          'Họ tên không chứa các ký tự đặc biệt (ngoài - và _)',
+          'Họ tên không chứa các ký tự đặc biệt (trừ - và _)',
         'any.required': 'Chưa nhập họ tên',
       }),
     gender: Joi.string()
@@ -43,7 +43,7 @@ module.exports.validateProfile = (data) => {
       .allow('')
       .messages({
         'string.base': 'Địa chỉ không hợp lệ',
-        'string.pattern.base':'Địa chỉ không chứa các ký tự đặc biệt (ngoài - và _)'
+        'string.pattern.base':'Địa chỉ không chứa các ký tự đặc biệt (trừ - và _)'
       })
 
   });

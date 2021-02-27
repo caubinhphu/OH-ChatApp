@@ -9,7 +9,7 @@ block contentMain
       #login-area.p-3
         if(loginError) 
           em.text-danger.mb-2= loginError
-        form(action="/login", method="POST")
+        form(action="/login", method="POST", name="formLogin")
           .form-group.d-flex.justify-content-center
             label(for="email", style="width: 100px") Email
             input#email.form-control.form-control-sm(type="email", name="email", required, value=email?email:"")
