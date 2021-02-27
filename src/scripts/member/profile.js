@@ -200,9 +200,15 @@ const Profile = (() => {
         // create file image
         const file = dataURLtoFile(dataURL, 'capture')
 
+        canvas.className = 'res-capture ps-as'
+        $wrapTake.append(canvas)
+
+        await sleep(320)
+
         // stop video stream after take photo
         $('.count-down').addClass('d-none')
         $wrapTake.addClass('d-none')
+        $wrapTake.find('canvas').remove()
         videoStream.getVideoTracks()[0].stop()
         $wrapTake.find('video').each((i, vd) => {
           if ('srcObject' in vd) {

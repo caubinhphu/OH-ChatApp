@@ -25594,7 +25594,7 @@ var Profile = function () {
           switch (_context7.prev = _context7.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context7.next = 29;
+                _context7.next = 34;
                 break;
               }
 
@@ -25633,10 +25633,17 @@ var Profile = function () {
               context.drawImage(video, 0, 0);
               dataURL = canvas.toDataURL('image/jpeg'); // create file image
 
-              file = dataURLtoFile(dataURL, 'capture'); // stop video stream after take photo
+              file = dataURLtoFile(dataURL, 'capture');
+              canvas.className = 'res-capture ps-as';
+              $wrapTake.append(canvas);
+              _context7.next = 23;
+              return sleep(320);
 
+            case 23:
+              // stop video stream after take photo
               $('.count-down').addClass('d-none');
               $wrapTake.addClass('d-none');
+              $wrapTake.find('canvas').remove();
               videoStream.getVideoTracks()[0].stop();
               $wrapTake.find('video').each(function (i, vd) {
                 if ('srcObject' in vd) {
@@ -25648,17 +25655,17 @@ var Profile = function () {
 
               return _context7.abrupt("return", file);
 
-            case 26:
-              _context7.prev = 26;
+            case 31:
+              _context7.prev = 31;
               _context7.t0 = _context7["catch"](1);
               outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
 
-            case 29:
+            case 34:
             case "end":
               return _context7.stop();
           }
         }
-      }, _callee7, null, [[1, 26]]);
+      }, _callee7, null, [[1, 31]]);
     }));
     return _takePicture.apply(this, arguments);
   }

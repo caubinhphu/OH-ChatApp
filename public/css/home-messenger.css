@@ -6778,6 +6778,22 @@ input:-webkit-autofill {
   max-width: 100px;
 }
 
+.res-capture {
+  animation: take-photo .3s;
+  max-width: 100%;
+  transform: scale(0.8);
+  border: 2px solid;
+}
+
+@keyframes take-photo {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.8);
+  }
+}
+
 body {
   height: 100vh;
 }
