@@ -1,6 +1,7 @@
 const moment = require('moment');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
+const { validateProfile } = require('../validation/profile.validation');
 
 // get index messenger page
 module.exports.getIndex = async (req, res, next) => {
@@ -44,6 +45,67 @@ module.exports.getProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.putProfile = async (req, res, next) => {
+  // get data put
+  const {
+    name,
+    birthday,
+    gender,
+    phone,
+    address,
+    'fake-avatar': fakeAvatar,
+    'fake-email': fakeEmail
+  } = req.body;
+
+  // validate info register
+  const { error } = validateProfile({ name, birthday, gender, phone, address });
+
+  const errorText = [];
+  if (error) {
+    errorText.push(error.details[0].message);
+    const fakeMember = {
+      name,
+      birthday,
+      gender: +gender,
+      phone,
+      address,
+      avatar: fakeAvatar,
+      email: fakeEmail
+    }
+    res.render('messenger/profile', {
+      titleSide: 'OH Chat - Messenger',
+      errorText,
+      member: fakeMember,
+      birthOfDate: fakeMember.birthday
+    });
+  } else {
+    // get member
+    try {
+      const member = await Member.findById(req.user.id);
+      if (member) {
+        // update info
+        member.name = name
+        member.gender = +gender
+        member.phone = phone
+        member.address = address
+        member.birthOfDate = new Date(birthday)
+
+        // save info
+        await member.save()
+
+        req.flash('success', 'Cập nhật thông tin thành công')
+        res.redirect('/messenger/profile')
+      } else {
+        req.flash('error', 'Thành viên không tồn tại');
+        res.redirect('/');
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+};
+
 
 // get my friends
 module.exports.getFriends = async (req, res) => {

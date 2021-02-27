@@ -5922,6 +5922,7 @@ a.text-dark:hover, a.text-dark:focus {
   line-height: 1.5rem;
   background-color: #fff;
   text-align: center;
+  cursor: pointer;
 }
 
 .btn:after {

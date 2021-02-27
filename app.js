@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const methodOverride = require('method-override');
 
 // init server
 const app = express();
@@ -37,6 +38,20 @@ app.use(bodyParser.json());
 
 // cookie parser middleware
 app.use(cookieParser(process.env.COOKIE_SECRET));
+
+// method http override using string query
+// app.use(methodOverride('_method'));
+// method http override using form
+app.use(
+  methodOverride((req) => {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      // look in urlencoded POST bodies and delete it
+      const method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+  })
+);
 
 // session middleware
 app.use(

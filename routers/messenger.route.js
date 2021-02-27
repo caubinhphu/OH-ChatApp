@@ -1,5 +1,4 @@
 const express = require('express');
-const Member = require('../models/Member');
 
 const router = express.Router();
 
@@ -7,7 +6,9 @@ const controller = require('../controllers/messenger.controller');
 
 router.get('/', controller.getIndex);
 
-router.get('/profile', controller.getProfile);
+router.route('/profile')
+  .get(controller.getProfile)
+  .put(controller.putProfile)
 
 router.get('/profile/friends', controller.getFriends);
 

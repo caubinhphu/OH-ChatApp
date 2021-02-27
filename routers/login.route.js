@@ -23,9 +23,9 @@ router.get(
 
 router.post('/', checkNotAuthenticated, controller.postLogin);
 
-router.get('/register', checkNotAuthenticated, controller.getRegister);
-
-router.post('/register', checkNotAuthenticated, controller.postRegister);
+router.route('/register')
+  .get(checkNotAuthenticated, controller.getRegister)
+  .post(checkNotAuthenticated, controller.postRegister)
 
 router.get('/logout', controller.getLogout);
 
