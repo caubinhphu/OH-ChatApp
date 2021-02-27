@@ -25588,13 +25588,13 @@ var Profile = function () {
 
   function _takePicture() {
     _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-      var videoStream, $wrapTake, video, canvas, context, dataURL, file;
+      var videoStream, $wrapTake, snd, video, canvas, context, dataURL, file;
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context7.next = 34;
+                _context7.next = 35;
                 break;
               }
 
@@ -25616,14 +25616,15 @@ var Profile = function () {
                   vd.src = window.URL.createObjectURL(videoStream);
                 }
               });
+              snd = new Audio('/sounds/take-photo.mp3');
               $wrapTake.removeClass('d-none'); // count down
 
               $('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context7.next = 11;
+              _context7.next = 12;
               return sleep(4000);
 
-            case 11:
+            case 12:
               // take photo from video
               video = $wrapTake.find('video').get(0);
               canvas = document.createElement('canvas');
@@ -25636,10 +25637,10 @@ var Profile = function () {
               file = dataURLtoFile(dataURL, 'capture');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context7.next = 23;
-              return sleep(320);
+              _context7.next = 24;
+              return Promise.all([snd.play(), sleep(320)]);
 
-            case 23:
+            case 24:
               // stop video stream after take photo
               $('.count-down').addClass('d-none');
               $wrapTake.addClass('d-none');
@@ -25655,17 +25656,17 @@ var Profile = function () {
 
               return _context7.abrupt("return", file);
 
-            case 31:
-              _context7.prev = 31;
+            case 32:
+              _context7.prev = 32;
               _context7.t0 = _context7["catch"](1);
               outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
 
-            case 34:
+            case 35:
             case "end":
               return _context7.stop();
           }
         }
-      }, _callee7, null, [[1, 31]]);
+      }, _callee7, null, [[1, 32]]);
     }));
     return _takePicture.apply(this, arguments);
   }

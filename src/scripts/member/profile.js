@@ -182,6 +182,7 @@ const Profile = (() => {
             vd.src = window.URL.createObjectURL(videoStream);
           }
         })
+        const snd = new Audio('/sounds/take-photo.mp3');
         $wrapTake.removeClass('d-none')
         // count down
         $('.count-down').removeClass('d-none')
@@ -203,7 +204,10 @@ const Profile = (() => {
         canvas.className = 'res-capture ps-as'
         $wrapTake.append(canvas)
 
-        await sleep(320)
+        await Promise.all([
+          snd.play(),
+          sleep(320)
+        ]);
 
         // stop video stream after take photo
         $('.count-down').addClass('d-none')
