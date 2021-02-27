@@ -17,7 +17,7 @@ block contentMain
           input(type="hidden", name="fake-email", value=member.email)
           .form-group.d-flex
             label.text-secondary(for="name", style="width: 130px") Họ tên
-            input#name.form-control.form-control-sm(type="text", name="name", value=member.name)
+            input#name.form-control.form-control-sm(type="text", name="name", value=member.name, required)
           .form-group.d-flex
             label.text-secondary(for="email", style="width: 130px") Email
             input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
@@ -75,9 +75,13 @@ block contentMain
         .modal-body
           .wrap-opt-avatar
             .d-flex.justify-content-center.align-items-center
-              label.btn.mb-0(for="avatar") Chọn avatar
+              label.btn.mb-0(for="avatar")
+                span.icomoon.icon-image
+                span  Chọn avatar
               input#avatar.d-none(type="file", name="avatar", accept="image/*")
-              button#btn-takephoto.btn.btn-blue.ml-3 Chụp ảnh
+              button#btn-takephoto.btn.btn-blue.ml-3
+                span.icomoon.icon-camera
+                span  Chụp ảnh
           .wrap-crop-img.d-none
             #crop-img.mb-3
             .text-center

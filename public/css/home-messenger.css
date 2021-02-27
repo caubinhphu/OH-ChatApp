@@ -6487,6 +6487,14 @@ background: #ccc;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-image:before {
+  content: "\E91E";
+}
+
+.icon-camera:before {
+  content: "\E91D";
+}
+
 .icon-bell:before {
   content: "\E911";
 }

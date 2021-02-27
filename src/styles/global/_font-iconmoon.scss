@@ -25,6 +25,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-image:before {
+  content: "\e91e";
+}
+.icon-camera:before {
+  content: "\e91d";
+}
 .icon-bell:before {
   content: "\e911";
 }

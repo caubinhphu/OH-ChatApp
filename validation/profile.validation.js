@@ -11,7 +11,7 @@ module.exports.validateProfile = (data) => {
         'string.max': 'Họ tên không dài quá 40 ký tự',
         'string.pattern.base':
           'Họ tên không chứa các ký tự đặc biệt (trừ - và _)',
-        'any.required': 'Chưa nhập họ tên',
+        'string.empty': 'Chưa nhập họ tên',
       }),
     gender: Joi.string()
       .pattern(/(0|1)/)

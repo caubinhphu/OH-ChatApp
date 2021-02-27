@@ -37,6 +37,7 @@ module.exports.postRegister = async (req, res, next) => {
 
   const errorText = [];
   if (error) {
+    console.log(error);
     errorText.push(error.details[0].message);
   }
 
