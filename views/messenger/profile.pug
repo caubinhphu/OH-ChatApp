@@ -68,7 +68,7 @@ block contentMain
   #modal-crop-avatar.modal.fade(tabindex='-1', aria-labelledby='modal-crop-avatar', aria-hidden='true')
     .modal-dialog.modal-dialog-centered
       .modal-content
-        .modal-header
+        .modal-header.align-items-center
           h4#exampleModalLabel.modal-title Đổi ảnh đại diện
           button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') &times;
@@ -77,12 +77,19 @@ block contentMain
             .d-flex.justify-content-center.align-items-center
               label.btn.mb-0(for="avatar") Chọn avatar
               input#avatar.d-none(type="file", name="avatar", accept="image/*")
-              button.btn.btn-blue.ml-3 Chụp ảnh
+              button#btn-takephoto.btn.btn-blue.ml-3 Chụp ảnh
           .wrap-crop-img.d-none
             #crop-img.mb-3
             .text-center
               button#crop-btn.btn(type="button") Cắt và lưu
               button#cancel-crop-btn.btn.btn-white.ml-3(type="button") Hủy
+          .wrap-takephoto.d-none
+            .count-down.d-none.ps-as
+              .wrap-num-cd.d-flex.justify-content-center.align-items-center.ps-as
+                -var n = 3
+                  while n > 0 
+                    span(class='cd-num' + n)= n--
+            video(autoplay=true, muted=true, controls=false)
 
 
 append scripts

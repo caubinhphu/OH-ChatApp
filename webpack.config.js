@@ -90,8 +90,12 @@ module.exports = {
     }),
     // new webpack.LoaderOptionsPlugin({
     //   optimization: {
-    //     minimizer: [new UglifyJSPlugin()],
+    //     // minimizer: [new UglifyJSPlugin()],
+    //     minimizer: false,
     //   },
     // }),
   ],
+  optimization: {
+    minimize: false,
+  },
 };

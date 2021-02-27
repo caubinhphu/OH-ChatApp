@@ -2,6 +2,12 @@ import axios from 'axios'
 import Croppie from "croppie";
 
 const Profile = (() => {
+  navigator.mediaDevices.getUserMedia =
+    navigator.mediaDevices.getUserMedia ||
+    navigator.mediaDevices.webkitGetUserMedia ||
+    navigator.mediaDevices.mozGetUserMedia ||
+    navigator.mediaDevices.msGetUserMedia;
+
   const friendContent = document.getElementById('friend-content');
 
   async function loadDataFriend(hash) {
@@ -96,26 +102,41 @@ const Profile = (() => {
 
   $('#cancel-crop-btn').on('click', reInitChooseFile)
 
-  function reInitChooseFile() {
-    $('.wrap-crop-img').addClass('d-none')
-    $('.wrap-opt-avatar').removeClass('d-none')
-    $('input#avatar').val('')
-  }
+  // take photo
+  $('#btn-takephoto').on('click', async () => {
+    $('.wrap-opt-avatar').addClass('d-none')
+    // get photo
+    const picture = await takePicture()
+    if (picture) {
+      // create reader read file from input file avatar
+      // crop photo
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        await croppie.bind({
+          url: e.target.result
+        });
+      };
+      reader.readAsDataURL(picture);
 
+      $('.wrap-crop-img').removeClass('d-none')
+    }
+  })
+
+  // crop image
   $('#crop-btn').on('click', async function() {
     $('.wrap-loader').removeClass('d-none')
     const dataCrop = await croppie.result({
       type: 'base64',
       size: 'viewport'
     });
-  
+
     const blob = dataURLtoFile(dataCrop, 'avatar.png');
     const formData = new FormData();
     formData.append('avatar', blob);
-  
+
     const xhr = new XMLHttpRequest();
     xhr.open('put', `${location.origin}/messenger/profile/avatar`, true);
-  
+
     xhr.onreadystatechange = function() {
       if (this.readyState === 4) {
         $('.wrap-loader').addClass('d-none')
@@ -135,9 +156,76 @@ const Profile = (() => {
         }
       }
     };
-  
+
     xhr.send(formData);
   });
+
+  // function sleep
+  const sleep = m => new Promise(r => setTimeout(r, m))
+
+  // function take a photo and return file type image
+  async function takePicture() {
+    if (navigator.mediaDevices.getUserMedia) {
+      try {
+        // get video stream
+        const videoStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+
+        // show video stream
+        const $wrapTake = $('.wrap-takephoto')
+        $wrapTake.find('video').each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = videoStream;
+          } else {
+            vd.src = window.URL.createObjectURL(videoStream);
+          }
+        })
+        $wrapTake.removeClass('d-none')
+        // count down
+        $('.count-down').removeClass('d-none')
+
+        // sleep 4s
+        await sleep(4000)
+
+        // take photo from video
+        const video = $wrapTake.find('video').get(0)
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
+        const dataURL = canvas.toDataURL('image/jpeg');
+        // create file image
+        const file = dataURLtoFile(dataURL, 'capture')
+
+        // stop video stream after take photo
+        $('.count-down').addClass('d-none')
+        $wrapTake.addClass('d-none')
+        videoStream.getVideoTracks()[0].stop()
+        $wrapTake.find('video').each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = null;
+          } else {
+            vd.src = null;
+          }
+        })
+
+        // return file
+        return file
+      } catch (error) {
+        outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
+      }
+    }
+  }
+
+  // re-init choose file avatar
+  function reInitChooseFile() {
+    $('.wrap-crop-img').addClass('d-none')
+    $('.wrap-opt-avatar').removeClass('d-none')
+    $('input#avatar').val('')
+  }
 
   // create file from data base64
   function dataURLtoFile(dataurl, filename) {
