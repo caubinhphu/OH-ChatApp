@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Croppie from "croppie";
 
 const Profile = (() => {
   const friendContent = document.getElementById('friend-content');
@@ -47,6 +48,110 @@ const Profile = (() => {
     loadDataFriend(e.target.hash)
   });
 
+  const imgCrop = document.querySelector('#crop-img')
+  // init croppie avatar
+  const croppie = new Croppie(imgCrop, {
+    enableExif: true,
+    viewport: {
+      width: 100,
+      height: 100,
+      type: 'circle'
+    },
+    boundary: {
+      width: 300,
+      height: 300
+    }
+  });
+
+  $('#avatar').on('change', function() {
+    const extTypes = /jpeg|jpg|png|gif/;
+  
+    const extFile = this.files[0].name
+      .split('.')
+      .pop()
+      .toLowerCase();
+    // check extname
+    const extname = extTypes.test(extFile);
+  
+    // check type file
+    const type = extTypes.test(this.files[0].type);
+  
+    if (extname && type) {
+      // show modal crop avatar
+      $('.wrap-crop-img').removeClass('d-none')
+      $('.wrap-opt-avatar').addClass('d-none')
+  
+      // create reader read file from input file avatar
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        await croppie.bind({
+          url: e.target.result
+        });
+      };
+      reader.readAsDataURL(this.files[0]);
+    } else {
+      outputErrorMessage('File ảnh không đúng định dạng')
+    }
+  });
+
+  $('#cancel-crop-btn').on('click', reInitChooseFile)
+
+  function reInitChooseFile() {
+    $('.wrap-crop-img').addClass('d-none')
+    $('.wrap-opt-avatar').removeClass('d-none')
+    $('input#avatar').val('')
+  }
+
+  $('#crop-btn').on('click', async function() {
+    $('.wrap-loader').removeClass('d-none')
+    const dataCrop = await croppie.result({
+      type: 'base64',
+      size: 'viewport'
+    });
+  
+    const blob = dataURLtoFile(dataCrop, 'avatar.png');
+    const formData = new FormData();
+    formData.append('avatar', blob);
+  
+    const xhr = new XMLHttpRequest();
+    xhr.open('put', `${location.origin}/messenger/profile/avatar`, true);
+  
+    xhr.onreadystatechange = function() {
+      if (this.readyState === 4) {
+        $('.wrap-loader').addClass('d-none')
+        $('#modal-crop-avatar').modal('hide')
+        reInitChooseFile()
+        console.log('finish');
+        // finish
+        // check status
+        const data = JSON.parse(this.responseText);
+        if (this.status === 200) {
+          // OK
+          $('img.avatar').attr('src', data.src)
+          outputSuccessMessage(data.mgs)
+        } else {
+          // error
+          outputErrorMessage(data.mgs)
+        }
+      }
+    };
+  
+    xhr.send(formData);
+  });
+
+  // create file from data base64
+  function dataURLtoFile(dataurl, filename) {
+    let arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
 })()
 
 export default Profile

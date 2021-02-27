@@ -38,3 +38,16 @@
     transform: translateY(-4px);
   }
 }
+
+.wrap-loader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  justify-content: center;
+  display: flex;
+  background: #898d906b;
+  img {
+    max-width: 100px;
+  }
+}

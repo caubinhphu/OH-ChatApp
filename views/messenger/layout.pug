@@ -14,7 +14,7 @@ block header
     #header-right.d-flex.align-items-center
       #user
         a(href="/messenger/profile")
-          img.rounded-circle.mr-1(src=memberAvatar, alt=`${memberName}`, width="30px")
+          img.rounded-circle.mr-1.avatar(src=memberAvatar, alt=`${memberName}`, width="30px")
           span= memberName
       #notification.mx-2
         button#member-notify-btn.btn.btn-icon.small-btn(type="button", data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
@@ -28,7 +28,7 @@ block header
         .p-3
           a.p-2.d-flex(href="/messenger/profile")
             div
-              img.rounded-circle(src=memberAvatar, alt="oh-chat", width="55px")
+              img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat", width="55px")
             .ml-3
               span= memberName
               br

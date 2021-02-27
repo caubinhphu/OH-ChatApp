@@ -1,7 +1,46 @@
+const fs = require('fs');
 const moment = require('moment');
+const multer = require('multer');
+const path = require('path');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
 const { validateProfile } = require('../validation/profile.validation');
+const cloudinary = require('../utils/cloudinary');
+
+const storage = multer.diskStorage({
+  // destination: './public/images/users/',
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+// upload file
+const upload = multer({
+  storage: storage,
+  // limits: { fileSize: 10 },
+  fileFilter: (req, file, cb) => {
+    // ext type
+    const extTypes = /jpeg|jpg|png|gif/;
+
+    // check extname
+    const extname = extTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+
+    // check mimetype
+    const mime = extTypes.test(file.mimetype);
+
+    if (extname && mime) {
+      cb(null, true);
+    } else {
+      cb('File ảnh không đúng định dạng');
+    }
+  },
+}).single('avatar');
 
 // get index messenger page
 module.exports.getIndex = async (req, res, next) => {
@@ -46,6 +85,7 @@ module.exports.getProfile = async (req, res, next) => {
   }
 };
 
+// put profile of member
 module.exports.putProfile = async (req, res, next) => {
   // get data put
   const {
@@ -106,6 +146,39 @@ module.exports.putProfile = async (req, res, next) => {
   }
 };
 
+// put avatar of member
+module.exports.putAvatar = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ mgs: err.message });
+    } else {
+      try {
+        const member = await Member.findById(req.user.id);
+        if (member) {
+          // upload
+          const result = await cloudinary.upload(
+            req.file.path,
+            path.basename(req.file.filename, path.extname(req.file.filename)),
+            'ohchat/avatar'
+          );
+          const urlAvatar = result.url;
+
+          // update db
+          member.avatar = urlAvatar
+          await member.save()
+
+          return res
+            .status(200)
+            .json({ mgs: 'Cập nhật avatar thành công', src: urlAvatar });
+        } else {
+          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+        }
+        } catch (error) {
+          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+      }
+    }
+  });
+};
 
 // get my friends
 module.exports.getFriends = async (req, res) => {

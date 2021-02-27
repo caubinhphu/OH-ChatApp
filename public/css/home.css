@@ -6404,6 +6404,20 @@ input:-webkit-autofill {
   }
 }
 
+.wrap-loader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  justify-content: center;
+  display: flex;
+  background: #898d906b;
+}
+
+.wrap-loader img {
+  max-width: 100px;
+}
+
 #main-area,
 #form-x {
   margin: 0 auto;

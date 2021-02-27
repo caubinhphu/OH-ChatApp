@@ -9,8 +9,7 @@ block contentMain
       .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
         img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
         .form-group.mt-md-2.ml-2.ml-md-0.mb-0
-          label.btn(for="avatar") Đổi ảnh đại diện
-          input#avatar.d-none(type="file", name="avatar")
+          button.btn(data-toggle="modal", data-target="#modal-crop-avatar") Đổi ảnh đại diện
       .mt-2.mt-md-0.pl-md-5
         form(method="post", action="/messenger/profile")
           input(type="hidden", name="_method", value='PUT')
@@ -58,6 +57,33 @@ block contentMain
           #friend-request-content.row
         #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
           #friend-request-content.row
+  //- #modal-crop-avatar
+  //-   #modal-main.d-flex.align-items-center
+  //-     #modal-content
+  //-       #crop-img
+  //-     .text-center.flex-fill
+  //-       button#crop-btn.btn.btn-success(type="button") Cắt và lưu
+        //- button.btn.btn-light(type="button") Trở lại
+
+  #modal-crop-avatar.modal.fade(tabindex='-1', aria-labelledby='modal-crop-avatar', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h4#exampleModalLabel.modal-title Đổi ảnh đại diện
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          .wrap-opt-avatar
+            .d-flex.justify-content-center.align-items-center
+              label.btn.mb-0(for="avatar") Chọn avatar
+              input#avatar.d-none(type="file", name="avatar", accept="image/*")
+              button.btn.btn-blue.ml-3 Chụp ảnh
+          .wrap-crop-img.d-none
+            #crop-img.mb-3
+            .text-center
+              button#crop-btn.btn(type="button") Cắt và lưu
+              button#cancel-crop-btn.btn.btn-white.ml-3(type="button") Hủy
+
 
 append scripts
   script(src="/js/msg-profile.js")
