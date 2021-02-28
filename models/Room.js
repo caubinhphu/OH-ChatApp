@@ -50,7 +50,7 @@ roomSchema.methods.getHost = function () {
 roomSchema.methods.getUser = function (key, value) {
   if (key === 'id') {
     return this.users.find((user) => user.id === value);
-  } else if (key === 'socketId') {
+  } else {
     return this.users.find((user) => user.socketId === value);
   }
 };
@@ -107,7 +107,7 @@ roomSchema.methods.notAllowJoinRoom = function (userId) {
 
 // remove the user in the waiting room by idUser
 roomSchema.methods.removeUserInWaitingRoom = function (userId) {
-  let index = this.waitingRoom.findIndex((user) => user.id === userId);
+  const index = this.waitingRoom.findIndex((user) => user.id === userId);
 
   if (index !== -1) {
     return this.waitingRoom.splice(index, 1)[0];
@@ -116,7 +116,7 @@ roomSchema.methods.removeUserInWaitingRoom = function (userId) {
 
 // remove the user in the room by userId and return this user
 roomSchema.methods.removeUserById = function (userId) {
-  let index = this.users.findIndex((user) => user.id === userId);
+  const index = this.users.findIndex((user) => user.id === userId);
 
   if (index !== -1) {
     return this.users.splice(index, 1)[0];

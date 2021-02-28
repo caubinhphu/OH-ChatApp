@@ -11,6 +11,8 @@ const cloudinary = require('../utils/cloudinary');
 
 const Member = require('../models/Member');
 
+const loginSuccText = 'Đăng nhập thành công'
+
 // login with email and password
 module.exports.local = (passport) => {
   passport.use(
@@ -46,8 +48,8 @@ module.exports.local = (passport) => {
           }
 
           // pass login
-          return done(null, member, { message: 'Đăng nhập thành công' });
-        } catch (error) {
+          return done(null, member, { message: loginSuccText });
+        } catch (err) {
           done(err, false);
         }
       }
@@ -99,7 +101,7 @@ module.exports.facebook = (passport) => {
             );
             if (profile.photos) {
               // download
-              download(profile.photos[0].value, pathFile, () => {});
+              download(profile.photos[0].value, pathFile, () => { /* */ });
 
               // upload
               const result = await cloudinary.upload(
@@ -120,7 +122,7 @@ module.exports.facebook = (passport) => {
           }
 
           // pass login
-          return done(null, member, { message: 'Đăng nhập thành công' });
+          return done(null, member, { message: loginSuccText });
         } catch (error) {
           return done(error);
         }
@@ -156,7 +158,7 @@ module.exports.google = (passport) => {
             );
             if (profile.photos) {
               // download
-              download(profile.photos[0].value, pathFile, () => {});
+              download(profile.photos[0].value, pathFile, () => {/* */});
 
               // upload
               const result = await cloudinary.upload(
@@ -175,13 +177,13 @@ module.exports.google = (passport) => {
               type: 'google',
               OAuthId: profile.id,
             });
-            return done(null, member, { message: 'Đăng nhập thành công' });
+            return done(null, member, { message: loginSuccText });
           } else {
             // email exists
             if (member.OAuthId !== profile.id) {
               done(null, false, { message: 'Email đã được sử dụng' });
             } else {
-              return done(null, member, { message: 'Đăng nhập thành công' });
+              return done(null, member, { message: loginSuccText });
             }
           }
         } catch (error) {

@@ -15,6 +15,10 @@ const cloudinary = require('../utils/cloudinary');
 const sendMail = require('../utils/send-mail');
 const key = require('../config/key');
 
+const siteMes = 'OH Chat - Messenger'
+const notMem = 'Thành viên không tồn tại'
+const settingUrl = '/messenger/setting'
+
 const storage = multer.diskStorage({
   // destination: './public/images/users/',
   filename: (req, file, cb) => {
@@ -60,12 +64,12 @@ module.exports.getIndex = async (req, res, next) => {
         res.redirect(`/messenger/chat/${friends[0].id}`);
       } else {
         res.render('messenger', {
-          titleSite: 'OH Chat - Messenger',
+          titleSite: siteMes,
           friends,
         });
       }
     } else {
-      next(new Error('Not member'));
+      next(new Error(notMem));
     }
   } catch (error) {
     next(error);
@@ -80,12 +84,12 @@ module.exports.getProfile = async (req, res, next) => {
     if (member) {
       const birthOfDate = moment(member.birthOfDate).format('YYYY-MM-DD');
       res.render('messenger/profile', {
-        titleSite: 'OH Chat - Messenger',
+        titleSite: siteMes,
         member,
         birthOfDate,
       });
     } else {
-      req.flash('error', 'Thành viên không tồn tại');
+      req.flash('error', notMem);
       res.redirect('/');
     }
   } catch (error) {
@@ -122,7 +126,7 @@ module.exports.putProfile = async (req, res, next) => {
       // email: fakeEmail
     }
     res.render('messenger/profile', {
-      titleSide: 'OH Chat - Messenger',
+      titleSide: siteMes,
       errorText,
       member: fakeMember,
       birthOfDate: fakeMember.birthday
@@ -145,7 +149,7 @@ module.exports.putProfile = async (req, res, next) => {
         req.flash('success', 'Cập nhật thông tin thành công')
         res.redirect('/messenger/profile')
       } else {
-        req.flash('error', 'Thành viên không tồn tại');
+        req.flash('error', notMem);
         res.redirect('/');
       }
     } catch (err) {
@@ -239,7 +243,7 @@ module.exports.getFriendInvitations = async (req, res) => {
   }
 };
 
-module.exports.getChatFriend = async (req, res) => {
+module.exports.getChatFriend = async (req, res, next) => {
   try {
     const member = await Member.findById(req.user.id).populate('friends._id');
     const friendsId = member.friends.map(f => f._id);
@@ -249,7 +253,7 @@ module.exports.getChatFriend = async (req, res) => {
       const friends = member.getFriends();
       const friendChat = friends.find(fr => fr.id === req.params.friendId);
       res.render('messenger', {
-        titleSite: 'OH Chat - Messenger',
+        titleSite: siteMes,
         friends,
         friendChat,
         m: m.map(x => {
@@ -260,14 +264,14 @@ module.exports.getChatFriend = async (req, res) => {
         })
       });
     } else {
-      next(new Error('Not member'));
+      next(new Error(notMem));
     }
   } catch (error) {
     next(error);
   }
 };
 
-module.exports.getAddFriend = async (req, res) => {
+module.exports.getAddFriend = async (req, res, next) => {
   try {
     const { friendId } = req.params;
     const member = await Member.findById(req.user.id);
@@ -288,7 +292,7 @@ module.exports.getAddFriend = async (req, res) => {
       await friend.save();
       res.send('ok');
     } else {
-      next(new Error('Not member'));
+      next(new Error(notMem));
     }
   } catch (error) {
     next(error);
@@ -306,7 +310,7 @@ module.exports.getSetting = async (req, res, next) => {
         email: member.email
       });
     } else {
-      req.flash('error', 'Thành viên không tồn tại');
+      req.flash('error', notMem);
       res.redirect('/');
     }
   } catch (error) {
@@ -327,7 +331,7 @@ module.exports.putPassword = async (req, res, next) => {
     req.flash('error', error.details[0].message);
     req.flash('tab', 'security');
     req.flash('sub-tab', 'password');
-    return res.redirect('/messenger/setting')
+    return res.redirect(settingUrl)
   } else {
     try {
       // pass validate
@@ -339,7 +343,7 @@ module.exports.putPassword = async (req, res, next) => {
           req.flash('error', 'Mật khẩu không đúng');
           req.flash('tab', 'security');
           req.flash('sub-tab', 'password');
-          return res.redirect('/messenger/setting')
+          return res.redirect(settingUrl)
         } else {
           // correct old password
           // change password by new password
@@ -352,10 +356,10 @@ module.exports.putPassword = async (req, res, next) => {
           req.flash('success', 'Đổi mật khẩu thành công');
           req.flash('tab', 'security');
           req.flash('sub-tab', 'password');
-          return res.redirect('/messenger/setting')
+          return res.redirect(settingUrl)
         }
       } else {
-        req.flash('error', 'Thành viên không tồn tại');
+        req.flash('error', notMem);
         res.redirect('/');
       }
     } catch (err) {
@@ -377,7 +381,7 @@ module.exports.putEmail = async (req, res, next) => {
     req.flash('error', error.details[0].message);
     req.flash('tab', 'security');
     req.flash('sub-tab', 'email');
-    return res.redirect('/messenger/setting')
+    return res.redirect(settingUrl)
   } else {
     // check email exists
     try {
@@ -386,7 +390,7 @@ module.exports.putEmail = async (req, res, next) => {
         req.flash('error', 'Email đã được sử dụng');
         req.flash('tab', 'security');
         req.flash('sub-tab', 'email');
-        return res.redirect('/messenger/setting')
+        return res.redirect(settingUrl)
       } else {
         const member = await Member.findById(req.user.id);
         const verifyToken = await crypto.randomBytes(16);
@@ -405,7 +409,7 @@ module.exports.putEmail = async (req, res, next) => {
         req.flash('success', 'Đổi email thành công, xin hãy vào email mới xác nhận để thực sự đổi');
         req.flash('tab', 'security');
         req.flash('sub-tab', 'email');
-        return res.redirect('/messenger/setting')
+        return res.redirect(settingUrl)
       }
     } catch (err) {
       next(err);
@@ -420,7 +424,7 @@ module.exports.getVerifyChangeEmail = async (req, res, next) => {
   try {
     const member = await Member.findById(req.user.id);
     if (!member) {
-      req.flash('error', 'Thành viên không tồn tại');
+      req.flash('error', notMem);
       return res.redirect('/');
     }
 
@@ -438,7 +442,7 @@ module.exports.getVerifyChangeEmail = async (req, res, next) => {
 };
 
 // get member info by ID
-module.exports.getMemberInfo = async (req, res) => {
+module.exports.getMemberInfo = async (req, res, next) => {
   try {
     const { memberId } = req.params;
     const member = await Member.findById(memberId);
@@ -450,12 +454,12 @@ module.exports.getMemberInfo = async (req, res) => {
         isFriend = true
       }
       res.render('messenger/member', {
-        titleSite: 'OH Chat - Messenger',
+        titleSite: siteMes,
         member,
         isFriend
       })
     } else {
-      next(new Error('Not member'));
+      next(new Error(notMem));
     }
   } catch (error) {
     next(error);

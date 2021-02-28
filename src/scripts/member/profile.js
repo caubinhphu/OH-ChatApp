@@ -2,6 +2,9 @@ import axios from 'axios'
 import Croppie from "croppie";
 
 const Profile = (() => {
+  const clWrapCrop = '.wrap-crop-img'
+  const clWrapOpt = '.wrap-opt-avatar'
+
   navigator.mediaDevices.getUserMedia =
     navigator.mediaDevices.getUserMedia ||
     navigator.mediaDevices.webkitGetUserMedia ||
@@ -46,7 +49,7 @@ const Profile = (() => {
       } catch (error) {
         console.error(error);
       }
-    }
+    } else { /* */ }
   }
 
   function reloadPage() {
@@ -93,8 +96,8 @@ const Profile = (() => {
   
     if (extname && type) {
       // show modal crop avatar
-      $('.wrap-crop-img').removeClass('d-none')
-      $('.wrap-opt-avatar').addClass('d-none')
+      $(clWrapCrop).removeClass('d-none')
+      $(clWrapOpt).addClass('d-none')
   
       // create reader read file from input file avatar
       const reader = new FileReader();
@@ -113,7 +116,7 @@ const Profile = (() => {
 
   // take photo
   $('#btn-takephoto').on('click', async () => {
-    $('.wrap-opt-avatar').addClass('d-none')
+    $(clWrapOpt).addClass('d-none')
     // get photo
     const picture = await takePicture()
     if (picture) {
@@ -127,7 +130,7 @@ const Profile = (() => {
       };
       reader.readAsDataURL(picture);
 
-      $('.wrap-crop-img').removeClass('d-none')
+      $(clWrapCrop).removeClass('d-none')
     }
   })
 
@@ -241,14 +244,14 @@ const Profile = (() => {
 
   // re-init choose file avatar
   function reInitChooseFile() {
-    $('.wrap-crop-img').addClass('d-none')
-    $('.wrap-opt-avatar').removeClass('d-none')
+    $(clWrapCrop).addClass('d-none')
+    $(clWrapOpt).removeClass('d-none')
     $('input#avatar').val('')
   }
 
   // create file from data base64
   function dataURLtoFile(dataurl, filename) {
-    let arr = dataurl.split(','),
+    const arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),
       n = bstr.length,

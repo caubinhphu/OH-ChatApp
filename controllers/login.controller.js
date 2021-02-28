@@ -10,10 +10,12 @@ const { validateRegister } = require('../validation/login.validation');
 
 const Member = require('../models/Member');
 
+const mesUrl = '/messenger'
+
 // post login
 module.exports.postLogin = async (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/messenger',
+    successRedirect: mesUrl,
     failureRedirect: '/',
     // successFlash: true,
     failureFlash: true,
@@ -85,8 +87,8 @@ module.exports.postRegister = async (req, res, next) => {
         'hex'
       )}'>vào đây</a> để xác nhận tài khoản của bạn</p>`;
       const info = await sendMail(email, 'Xác nhận tài khoản', html);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
 
     req.flash(
@@ -133,7 +135,7 @@ module.exports.getLoginFacebook = (req, res, next) => {
 // get login callback with facebook
 module.exports.getLoginFacebookCallback = (req, res, next) => {
   passport.authenticate('facebook', {
-    successRedirect: '/messenger',
+    successRedirect: mesUrl,
     failureRedirect: '/',
     failureFlash: true,
     successFlash: true,
@@ -150,7 +152,7 @@ module.exports.getLoginGoogle = (req, res, next) => {
 // get login callback with google
 module.exports.getLoginGoogleCallback = (req, res, next) => {
   passport.authenticate('google', {
-    successRedirect: '/messenger',
+    successRedirect: mesUrl,
     failureRedirect: '/',
     failureFlash: true,
     successFlash: true,

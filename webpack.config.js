@@ -7,24 +7,26 @@ const extractPlugin = new ExtractTextPlugin({
   filename: 'css/[name].css',
 });
 
+const babelPolyfill = 'babel-polyfill'
+
 module.exports = {
   entry: {
     home: [
-      'babel-polyfill',
+      babelPolyfill,
       './src/scripts/home.js',
       './src/styles/app-meeting.scss',
     ],
-    'create-room': ['babel-polyfill', './src/scripts/create-room.js'],
-    'join-room': ['babel-polyfill', './src/scripts/join-room.js'],
-    'chat-room-host': ['babel-polyfill', './src/scripts/chat-room-host.js'],
-    'chat-room': ['babel-polyfill', './src/scripts/chat-room.js'],
+    'create-room': [babelPolyfill, './src/scripts/create-room.js'],
+    'join-room': [babelPolyfill, './src/scripts/join-room.js'],
+    'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
+    'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
     'home-messenger': [
-      'babel-polyfill',
+      babelPolyfill,
       './src/scripts/home-messenger.js',
       './src/styles/app-messenger.scss',
     ],
-    'msg-profile': ['babel-polyfill', './src/scripts/msg-profile.js'],
-    'msg-setting': ['babel-polyfill', './src/scripts/msg-setting.js'],
+    'msg-profile': [babelPolyfill, './src/scripts/msg-profile.js'],
+    'msg-setting': [babelPolyfill, './src/scripts/msg-setting.js'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),
