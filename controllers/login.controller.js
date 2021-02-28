@@ -101,8 +101,11 @@ module.exports.postRegister = async (req, res, next) => {
 
 // logout
 module.exports.getLogout = (req, res) => {
-  req.logOut();
-  res.redirect('/');
+  // req.logOut();
+  // res.redirect('/');
+  req.session.destroy(function (err) {
+    res.redirect('/');
+  });
 };
 
 // get verify email

@@ -38,14 +38,15 @@ block contentMain
               br
               small Status
           #main-right-top-right.d-flex
-            button.btn.btn-icon.small-btn.btn-green(type="button").mr-2
+            button.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
               span.icomoon.icon-phone
-            button.btn.btn-icon.small-btn.btn-purple(type="button")
+            button.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
               span.icomoon.icon-camera
         #main-right-chat-content.flex-fill.p-2
-        #main-right-top-chat-input.mb-1.px-2.wrap-chat-input
-          form.d-flex(name="sendMsgForm")
+        #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
+          form.d-flex(name="sendMsgForm", method="post")
             button.btn.btn-default.open-emojis(type="button") &#128512;
+            input(type="hidden", name="_token" value=token)
             .flex-fill.wrap-msg-box.ps-rv
               //- input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
               textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
@@ -53,7 +54,6 @@ block contentMain
               span.icomoon.icon-send
 
 append scripts
-  script(src="/socket.io/socket.io.js")
   script(src="/js/home-messenger.js")
 //-   script(src="/scripts/moment.min.js")
 //-   script(src="/scripts/emoji.js")

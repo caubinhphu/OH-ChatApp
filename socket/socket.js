@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const roomController = require('./meeting-controller');
+const messengerController = require('./messenger-controller');
 
 const formatMessage = require('../utils/message');
 
@@ -12,6 +13,7 @@ mongoose.connect(process.env.URI_MONGODB, {
 
 const socket = function (io) {
   io.on('connection', (socket) => {
+    console.log('connection');
     // handle error
     socket.on('error', roomController.onError);
 
@@ -79,7 +81,11 @@ const socket = function (io) {
       roomController.onDisconnect.bind(this, io, data)();
     });
 
-    // messenger
+
+    // ----------------- messenger ------------------
+    // receive signal online from client
+    socket.on('memberOnline', messengerController.onMemberOnline)
+
     // receive message from client
     socket.on('messengerChat', (data) => {
       socket.broadcast.emit(

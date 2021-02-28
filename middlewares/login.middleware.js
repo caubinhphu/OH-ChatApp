@@ -27,6 +27,7 @@ module.exports.checkAuthenticated = async (req, res, next) => {
 
     // member exists
     // set global vars
+    res.locals.memberId = member.id;
     res.locals.memberName = member.name;
     res.locals.memberAvatar = member.avatar;
 

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 520);
+/******/ 	return __webpack_require__(__webpack_require__.s = 521);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -20964,23 +20964,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 517 */,
 /* 518 */,
 /* 519 */,
-/* 520 */
+/* 520 */,
+/* 521 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(133);
-__webpack_require__(521);
-module.exports = __webpack_require__(562);
+__webpack_require__(522);
+module.exports = __webpack_require__(563);
 
 
 /***/ }),
-/* 521 */
+/* 522 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(335);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(337);
-/* harmony import */ var _user_home__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(522);
+/* harmony import */ var _user_home__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(523);
 // import $ from 'jquery';
  // import './global/notify'
 
@@ -20989,7 +20990,7 @@ __webpack_require__.r(__webpack_exports__);
 console.log('page home');
 
 /***/ }),
-/* 522 */
+/* 523 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21011,7 +21012,6 @@ console.log('page home');
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
 
 /***/ }),
-/* 523 */,
 /* 524 */,
 /* 525 */,
 /* 526 */,
@@ -21050,7 +21050,8 @@ console.log('page home');
 /* 559 */,
 /* 560 */,
 /* 561 */,
-/* 562 */
+/* 562 */,
+/* 563 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

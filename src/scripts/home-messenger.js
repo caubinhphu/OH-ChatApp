@@ -3,8 +3,9 @@ import 'bootstrap/js/dist/collapse'
 import './global/loading'
 // import './global/notify'
 // import './global/output-message'
-import './global/common-chat'
+import './global/chat-utils'
 import './global/emoji'
+import './member/common-chat'
 import './member/messenger'
 
 

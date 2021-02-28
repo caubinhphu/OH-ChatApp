@@ -67,6 +67,11 @@ const memberSchema = mongoose.Schema({
     type: String,
     default: '',
   },
+  status: {
+    // type: 'online' or time text latest online
+    type: String,
+    default: '1969-12-31T17:00:00.000Z',
+  }
 });
 
 // get all friends

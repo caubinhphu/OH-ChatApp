@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 558);
+/******/ 	return __webpack_require__(__webpack_require__.s = 559);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -21538,7 +21538,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 486 */,
+/* 486 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {var CommonChat = function () {
+  var socket = io();
+  window.socket = socket;
+  socket.emit('memberOnline', {
+    memberId: $('#member-id').text()
+  });
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
+
+/***/ }),
 /* 487 */,
 /* 488 */,
 /* 489 */,
@@ -21562,7 +21577,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 507 */,
 /* 508 */,
 /* 509 */,
-/* 510 */
+/* 510 */,
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -21836,7 +21852,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 511 */,
 /* 512 */,
 /* 513 */,
 /* 514 */,
@@ -21883,27 +21898,30 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 555 */,
 /* 556 */,
 /* 557 */,
-/* 558 */
+/* 558 */,
+/* 559 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(133);
-module.exports = __webpack_require__(559);
+module.exports = __webpack_require__(560);
 
 
 /***/ }),
-/* 559 */
+/* 560 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(485);
 /* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bootstrap_js_dist_tab__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(510);
+/* harmony import */ var bootstrap_js_dist_tab__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(511);
 /* harmony import */ var bootstrap_js_dist_tab__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_js_dist_tab__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(335);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(337);
-/* harmony import */ var _member_setting__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(560);
+/* harmony import */ var _member_setting__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(561);
+/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(486);
 // import $ from 'jquery';
+
 
 
 
@@ -21912,7 +21930,7 @@ __webpack_require__.r(__webpack_exports__);
 console.log('page setting messenger');
 
 /***/ }),
-/* 560 */
+/* 561 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

@@ -2,9 +2,6 @@ const Messenger = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
 
-  // socket.io
-  const socket = io();
-
   socket.on('messenger', (msgObj) => {
     // output message
     outputMessage(msgObj);
@@ -26,7 +23,7 @@ const Messenger = (() => {
       // send message to server
       socket.emit('messengerChat', {
         message: inputMsg.value,
-        // token: qs.get('token'),
+        token: e.target.elements._token,
       });
 
       // create message obj to show in client
@@ -45,7 +42,6 @@ const Messenger = (() => {
 
       // focus input message
       inputMsg.focus();
-      console.log(inputMsg);
     }
   });
 

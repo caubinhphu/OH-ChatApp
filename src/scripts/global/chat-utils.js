@@ -15,8 +15,8 @@ const escapeHtml = function (html) {
   return html.replace(/[<>&]/g, replaceChar);
 };
 
-const CommonChat = (() => {
+const ChatUtils = (() => {
   window.escapeHtml = escapeHtml
 })()
 
-export default CommonChat
+export default ChatUtils

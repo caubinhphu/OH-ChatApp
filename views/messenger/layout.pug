@@ -30,6 +30,7 @@ block header
             div
               img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat", width="55px")
             .ml-3
+              span#member-id.d-none= memberId
               span= memberName
               br
               small Xem thông tin của bạn
@@ -49,6 +50,5 @@ block main
   #main
     block contentMain
 
-//- append scripts
-  //- script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js", crossorigin="anonymous")
-  //- script(src="/scripts/lazysizes.js")
+append scripts
+  script(src="/socket.io/socket.io.js")

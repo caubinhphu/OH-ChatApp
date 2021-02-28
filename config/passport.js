@@ -12,6 +12,7 @@ const cloudinary = require('../utils/cloudinary');
 const Member = require('../models/Member');
 
 const loginSuccText = 'Đăng nhập thành công'
+const loginErrorText = 'Thông tin đăng nhập không hợp lệ'
 
 // login with email and password
 module.exports.local = (passport) => {
@@ -27,7 +28,13 @@ module.exports.local = (passport) => {
           const member = await Member.findOne({ email });
           if (!member) {
             return done(null, false, {
-              message: 'Thông tin đăng nhập không hợp lệ',
+              message: loginErrorText,
+            });
+          }
+
+          if (member.type !== 'local') {
+            return done(null, false, {
+              message: loginErrorText,
             });
           }
 
@@ -35,7 +42,7 @@ module.exports.local = (passport) => {
           const checkPassword = await bcrypt.compare(password, member.password);
           if (!checkPassword) {
             return done(null, false, {
-              message: 'Thông tin đăng nhập không hợp lệ',
+              message: loginErrorText,
             });
           }
 

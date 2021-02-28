@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
 const {
@@ -252,10 +253,16 @@ module.exports.getChatFriend = async (req, res, next) => {
     if (member) {
       const friends = member.getFriends();
       const friendChat = friends.find(fr => fr.id === req.params.friendId);
+      // generate jwt token
+      const token = jwt.sign(
+        { data: { memberId: friendChat.id } },
+        process.env.JWT_SECRET
+      );
       res.render('messenger', {
         titleSite: siteMes,
         friends,
         friendChat,
+        token,
         // m: m.map(x => {
         //   return {
         //     id: x.id,

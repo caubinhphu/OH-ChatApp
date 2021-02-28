@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 533);
+/******/ 	return __webpack_require__(__webpack_require__.s = 534);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -20617,11 +20617,11 @@ var escapeHtml = function escapeHtml(html) {
   return html.replace(/[<>&]/g, replaceChar);
 };
 
-var CommonChat = function () {
+var ChatUtils = function () {
   window.escapeHtml = escapeHtml;
 }();
 
-/* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);
+/* unused harmony default export */ var _unused_webpack_default_export = (ChatUtils);
 
 /***/ }),
 /* 348 */
@@ -21231,7 +21231,22 @@ var CommonChat = function () {
 
 
 /***/ }),
-/* 486 */,
+/* 486 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {var CommonChat = function () {
+  var socket = io();
+  window.socket = socket;
+  socket.emit('memberOnline', {
+    memberId: $('#member-id').text()
+  });
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
+
+/***/ }),
 /* 487 */,
 /* 488 */,
 /* 489 */,
@@ -21278,16 +21293,17 @@ var CommonChat = function () {
 /* 530 */,
 /* 531 */,
 /* 532 */,
-/* 533 */
+/* 533 */,
+/* 534 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(133);
-__webpack_require__(534);
-module.exports = __webpack_require__(564);
+__webpack_require__(535);
+module.exports = __webpack_require__(565);
 
 
 /***/ }),
-/* 534 */
+/* 535 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21295,9 +21311,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(485);
 /* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(335);
-/* harmony import */ var _global_common_chat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(347);
+/* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(347);
 /* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(348);
-/* harmony import */ var _member_messenger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(535);
+/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(486);
+/* harmony import */ var _member_messenger__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(536);
 // import $ from 'jquery';
 
  // import './global/notify'
@@ -21306,19 +21323,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 console.log('page home messenger');
 
 /***/ }),
-/* 535 */
+/* 536 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {var Messenger = function () {
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
-  // socket.io
 
-  var socket = io();
   socket.on('messenger', function (msgObj) {
     // output message
     outputMessage(msgObj);
@@ -21336,8 +21352,8 @@ console.log('page home messenger');
     if (inputMsg.value !== '') {
       // send message to server
       socket.emit('messengerChat', {
-        message: inputMsg.value // token: qs.get('token'),
-
+        message: inputMsg.value,
+        token: e.target.elements._token
       }); // create message obj to show in client
 
       var msgObj = {
@@ -21352,7 +21368,6 @@ console.log('page home messenger');
       inputMsg.value = ''; // focus input message
 
       inputMsg.focus();
-      console.log(inputMsg);
     }
   }); // output message in main chat area
 
@@ -21393,7 +21408,6 @@ console.log('page home messenger');
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
 
 /***/ }),
-/* 536 */,
 /* 537 */,
 /* 538 */,
 /* 539 */,
@@ -21421,7 +21435,8 @@ console.log('page home messenger');
 /* 561 */,
 /* 562 */,
 /* 563 */,
-/* 564 */
+/* 564 */,
+/* 565 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
