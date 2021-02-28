@@ -296,6 +296,7 @@ module.exports.getSetting = async (req, res, next) => {
     if (member) {
       res.render('messenger/setting', {
         titleSite: 'OH Chat - Setting',
+        email: member.email
       });
     } else {
       req.flash('error', 'Thành viên không tồn tại');
@@ -315,16 +316,12 @@ module.exports.putPassword = async (req, res, next) => {
   // validate info change
   const { error } = validateSettingPassword({ password, password2 });
 
-  const errorText = [];
   if (error) {
     // not pass validate
-    errorText.push(error.details[0].message);
-    res.render('messenger/setting', {
-      titleSide: 'OH Chat - Setting',
-      errorText,
-      tab: 'security',
-      subTab: 'password'
-    });
+    req.flash('error', error.details[0].message);
+    req.flash('tab', 'security');
+    req.flash('sub-tab', 'password');
+    return res.redirect('/messenger/setting')
   } else {
     try {
       // pass validate
@@ -333,13 +330,10 @@ module.exports.putPassword = async (req, res, next) => {
         // check old password
         const checkPassword = await bcrypt.compare(password0, member.password);
         if (!checkPassword) {
-          errorText.push('Mật khẩu không đúng');
-          res.render('messenger/setting', {
-            titleSide: 'OH Chat - Setting',
-            errorText,
-            tab: 'security',
-            subTab: 'password'
-          });
+          req.flash('error', 'Mật khẩu không đúng');
+          req.flash('tab', 'security');
+          req.flash('sub-tab', 'password');
+          return res.redirect('/messenger/setting')
         } else {
           // correct old password
           // change password by new password
@@ -348,12 +342,11 @@ module.exports.putPassword = async (req, res, next) => {
           const passHash = await bcrypt.hash(password, salt);
           member.password = passHash
           await member.save()
-          res.render('messenger/setting', {
-            titleSide: 'OH Chat - Setting',
-            successText: ['Đổi mật khẩu thành công'],
-            tab: 'security',
-            subTab: 'password'
-          });
+
+          req.flash('success', 'Đổi mật khẩu thành công');
+          req.flash('tab', 'security');
+          req.flash('sub-tab', 'password');
+          return res.redirect('/messenger/setting')
         }
       } else {
         req.flash('error', 'Thành viên không tồn tại');

@@ -84,6 +84,8 @@ require('./socket/socket')(io);
 app.use((req, res, next) => {
   res.locals.successText = req.flash('success');
   res.locals.errorText = req.flash('error');
+  res.locals.tab = req.flash('tab');
+  res.locals.subTab = req.flash('sub-tab');
   next();
 });
 
