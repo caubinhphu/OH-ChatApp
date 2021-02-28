@@ -1,0 +1,59 @@
+extend ./layout
+
+block contentMain
+  .container-fluid.setting-container.mt-4
+    .row
+      .col-md-3.mb-3.pb-3.mb-md-0.pb-md-0.st-col-tab
+        h3.text-center.text-dark
+          strong Cài đặt
+        #v-pills-tab.nav.flex-column.nav-pills(role='tablist', aria-orientation='vertical')
+          a#v-pills-general-tab.nav-link(class=`${tab ? tab === 'general' ? 'active' : '' : 'active'}`, data-toggle='pill', href='#v-pills-general', role='tab', aria-controls='v-pills-general')
+            span.icomoon.icon-cog
+            span  Chung
+          a#v-pills-security-tab.nav-link(class=`${tab ? tab === 'security' ? 'active' : '' : ''}`, data-toggle='pill', href='#v-pills-security', role='tab', aria-controls='v-pills-security')
+            span.icomoon.icon-security
+            span  Bảo mật và đăng nhập
+      .col-md-9.st-col-content
+        #v-pills-tab-content.tab-content
+          #v-pills-general.tab-pane.fade(class=`${tab ? tab === 'general' ? 'show active' : '' : 'show active'}`, role='tabpanel', aria-labelledby='v-pills-general-tab') Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam autem, deleniti atque quae ut consequuntur quisquam consequatur quia, dolores quasi eos distinctio nostrum, sint facilis repudiandae aspernatur sunt neque magnam?
+          #v-pills-security.tab-pane.fade(class=`${tab ? tab === 'security' ? 'show active' : '' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
+            h4.text-dark Bảo mật và đăng nhập
+            table.table
+              tbody
+                tr
+                  td Email
+                  td example@gmail.com
+                  td
+                    button.btn(data-toggle="collapse" href="#collapse-email" aria-expanded="false" aria-controls="collapse-email")
+                      span.icomoon.icon-cog.d-md-none
+                      span.d-none.d-md-block Chỉnh sửa
+                tr#collapse-email.collapse(class=`${subTab ? subTab === 'email' ? 'show' : '' : ''}`, )
+                  td.border-0(colspan="3") Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores quibusdam earum aliquam consequatur a id! Cupiditate facilis alias illum odit quo dicta blanditiis, explicabo ea! Odit eaque harum consequuntur minima.
+                tr
+                  td Mật khấu
+                  td
+                    strong ..........
+                  td
+                    button.btn(data-toggle="collapse" href="#collapse-password" aria-expanded="false" aria-controls="collapse-password")
+                      span.icomoon.icon-cog.d-md-none
+                      span.d-none.d-md-block Chỉnh sửa
+                tr#collapse-password.collapse(class=`${subTab ? subTab === 'password' ? 'show' : '' : ''}`, )
+                  td.border-0(colspan="3")
+                    form(action="/messenger/setting/password", method="post")
+                      input(type="hidden", name="_method" value="PUT")
+                      .form-group.d-flex
+                        label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
+                        input#password0.form-control.form-control-sm(type="password", name="password0")
+                      .form-group.d-flex
+                        label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
+                        input#password.form-control.form-control-sm(type="password", name="password")
+                      .form-group.d-flex
+                        label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
+                        input#password2.form-control.form-control-sm(type="password", name="password2")
+                      div
+                        button.btn(type="submit") Lưu thay đổi
+
+
+
+append scripts
+  script(src="/js/msg-setting.js")

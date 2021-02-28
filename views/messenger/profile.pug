@@ -14,13 +14,13 @@ block contentMain
         form(method="post", action="/messenger/profile")
           input(type="hidden", name="_method", value='PUT')
           input(type="hidden", name="fake-avatar", value=member.avatar)
-          input(type="hidden", name="fake-email", value=member.email)
+          //- input(type="hidden", name="fake-email", value=member.email)
           .form-group.d-flex
             label.text-secondary(for="name", style="width: 130px") Họ tên
             input#name.form-control.form-control-sm(type="text", name="name", value=member.name, required)
-          .form-group.d-flex
-            label.text-secondary(for="email", style="width: 130px") Email
-            input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
+          //- .form-group.d-flex
+          //-   label.text-secondary(for="email", style="width: 130px") Email
+          //-   input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
           .form-group.d-flex
             label.text-secondary(for="birthday", style="width: 130px") Ngày sinh
             input#birthday.form-control.form-control-sm(type="date", name="birthday", value=birthOfDate)

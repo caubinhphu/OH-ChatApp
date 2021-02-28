@@ -29,7 +29,7 @@ module.exports.local = (passport) => {
             });
           }
 
-          // chekc password
+          // check password
           const checkPassword = await bcrypt.compare(password, member.password);
           if (!checkPassword) {
             return done(null, false, {

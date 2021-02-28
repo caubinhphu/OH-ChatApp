@@ -10,6 +10,10 @@ router.route('/profile')
   .get(controller.getProfile)
   .put(controller.putProfile)
 
+router.get('/setting', controller.getSetting)
+
+router.put('/setting/password', controller.putPassword)
+
 router.put('/profile/avatar', controller.putAvatar)
 
 router.get('/profile/friends', controller.getFriends);

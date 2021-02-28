@@ -47,8 +47,8 @@ module.exports.postRegister = async (req, res, next) => {
       if (member) {
         errorText.push('Email đã được sử dụng');
       }
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 

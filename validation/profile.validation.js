@@ -50,3 +50,18 @@ module.exports.validateProfile = (data) => {
 
   return schema.validate(data);
 };
+
+module.exports.validateSettingPassword = (data) => {
+  const schema = Joi.object({
+    password: Joi.string().min(6).required().messages({
+      'string.base': 'Mật khẩu phải là chuỗi',
+      'string.min': 'Mật khẩu dài ít nhất 6 ký tự',
+      'string.empty': 'Chưa nhập mật khẩu',
+    }),
+    password2: Joi.valid(Joi.ref('password')).messages({
+      'any.only': 'Xác nhận mật khẩu không đúng',
+    }),
+  });
+
+  return schema.validate(data);
+};

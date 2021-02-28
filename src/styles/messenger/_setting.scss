@@ -1,0 +1,10 @@
+.st-col-tab {
+  border-bottom: 1px solid;
+}
+
+@media only screen and (min-width: 768px) {
+  .st-col-tab {
+    border-bottom: none;
+    border-right: 1px solid;
+  }
+}

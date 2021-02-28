@@ -2,9 +2,10 @@ const fs = require('fs');
 const moment = require('moment');
 const multer = require('multer');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
-const { validateProfile } = require('../validation/profile.validation');
+const { validateProfile, validateSettingPassword } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
 
 const storage = multer.diskStorage({
@@ -95,7 +96,7 @@ module.exports.putProfile = async (req, res, next) => {
     phone,
     address,
     'fake-avatar': fakeAvatar,
-    'fake-email': fakeEmail
+    // 'fake-email': fakeEmail
   } = req.body;
 
   // validate info register
@@ -111,7 +112,7 @@ module.exports.putProfile = async (req, res, next) => {
       phone,
       address,
       avatar: fakeAvatar,
-      email: fakeEmail
+      // email: fakeEmail
     }
     res.render('messenger/profile', {
       titleSide: 'OH Chat - Messenger',
@@ -286,3 +287,80 @@ module.exports.getAddFriend = async (req, res) => {
     next(error);
   }
 };
+
+// get setting messenger page
+module.exports.getSetting = async (req, res, next) => {
+  // get member
+  try {
+    const member = await Member.findById(req.user.id);
+    if (member) {
+      res.render('messenger/setting', {
+        titleSite: 'OH Chat - Setting',
+      });
+    } else {
+      req.flash('error', 'Thành viên không tồn tại');
+      res.redirect('/');
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+// put setting change pasword
+module.exports.putPassword = async (req, res, next) => {
+  // get info change password
+  const { password0, password, password2 } = req.body;
+
+  // validate info change
+  const { error } = validateSettingPassword({ password, password2 });
+
+  const errorText = [];
+  if (error) {
+    // not pass validate
+    errorText.push(error.details[0].message);
+    res.render('messenger/setting', {
+      titleSide: 'OH Chat - Setting',
+      errorText,
+      tab: 'security',
+      subTab: 'password'
+    });
+  } else {
+    try {
+      // pass validate
+      const member = await Member.findById(req.user.id);
+      if (member) {
+        // check old password
+        const checkPassword = await bcrypt.compare(password0, member.password);
+        if (!checkPassword) {
+          errorText.push('Mật khẩu không đúng');
+          res.render('messenger/setting', {
+            titleSide: 'OH Chat - Setting',
+            errorText,
+            tab: 'security',
+            subTab: 'password'
+          });
+        } else {
+          // correct old password
+          // change password by new password
+          // create hash password
+          const salt = await bcrypt.genSalt(10);
+          const passHash = await bcrypt.hash(password, salt);
+          member.password = passHash
+          await member.save()
+          res.render('messenger/setting', {
+            titleSide: 'OH Chat - Setting',
+            successText: ['Đổi mật khẩu thành công'],
+            tab: 'security',
+            subTab: 'password'
+          });
+        }
+      } else {
+        req.flash('error', 'Thành viên không tồn tại');
+        res.redirect('/');
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
+}

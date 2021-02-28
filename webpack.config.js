@@ -24,6 +24,7 @@ module.exports = {
       './src/styles/app-messenger.scss',
     ],
     'msg-profile': ['babel-polyfill', './src/scripts/msg-profile.js'],
+    'msg-setting': ['babel-polyfill', './src/scripts/msg-setting.js'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),
