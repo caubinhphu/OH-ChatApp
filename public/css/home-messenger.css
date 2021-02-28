@@ -7204,12 +7204,8 @@ body {
   }
 }
 
-#main {
-  height: calc(100vh - 60px);
-}
-
 #main-messenger {
-  height: inherit;
+  height: calc(100vh - 60px);
 }
 
 #main-left {
@@ -7410,5 +7406,16 @@ body {
 @media only screen and (max-width: 375px) {
   .wrap-num-cd {
     font-size: 100px;
+  }
+}
+
+.st-col-tab {
+  border-bottom: 1px solid;
+}
+
+@media only screen and (min-width: 768px) {
+  .st-col-tab {
+    border-bottom: none;
+    border-right: 1px solid;
   }
 }

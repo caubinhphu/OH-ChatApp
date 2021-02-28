@@ -3,10 +3,17 @@ const moment = require('moment');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
-const { validateProfile, validateSettingPassword } = require('../validation/profile.validation');
+const {
+  validateProfile,
+  validateSettingPassword,
+  validateSettingEmail
+} = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
+const sendMail = require('../utils/send-mail');
+const key = require('../config/key');
 
 const storage = multer.diskStorage({
   // destination: './public/images/users/',
@@ -307,8 +314,7 @@ module.exports.getSetting = async (req, res, next) => {
   }
 }
 
-
-// put setting change pasword
+// put setting change password
 module.exports.putPassword = async (req, res, next) => {
   // get info change password
   const { password0, password, password2 } = req.body;
@@ -357,3 +363,101 @@ module.exports.putPassword = async (req, res, next) => {
     }
   }
 }
+
+// put setting change email
+module.exports.putEmail = async (req, res, next) => {
+  // get info change email
+  const { email } = req.body;
+
+  // validate info change
+  const { error } = validateSettingEmail({ email });
+
+  if (error) {
+    // not pass validate
+    req.flash('error', error.details[0].message);
+    req.flash('tab', 'security');
+    req.flash('sub-tab', 'email');
+    return res.redirect('/messenger/setting')
+  } else {
+    // check email exists
+    try {
+      const memberOther = await Member.findOne({ email });
+      if (memberOther) {
+        req.flash('error', 'Email đã được sử dụng');
+        req.flash('tab', 'security');
+        req.flash('sub-tab', 'email');
+        return res.redirect('/messenger/setting')
+      } else {
+        const member = await Member.findById(req.user.id);
+        const verifyToken = await crypto.randomBytes(16);
+
+        // send email verify account
+        const html = `<h2>OH chat</h2>
+          <p>Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi</p>
+          <p>Hãy chọn <a href='${key.host}/messenger/verify-email/${verifyToken.toString('hex')}'>
+            vào đây</a> để xác nhận thay đổi email tài khoản của bạn</p>`;
+        const info = await sendMail(email, 'Xác nhận tài khoản', html);
+
+        member.newEmail = email
+        member.verifyToken = verifyToken.toString('hex'),
+        await member.save()
+
+        req.flash('success', 'Đổi email thành công, xin hãy vào email mới xác nhận để thực sự đổi');
+        req.flash('tab', 'security');
+        req.flash('sub-tab', 'email');
+        return res.redirect('/messenger/setting')
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+}
+
+// get verify change email
+module.exports.getVerifyChangeEmail = async (req, res, next) => {
+  const { token } = req.params;
+
+  try {
+    const member = await Member.findById(req.user.id);
+    if (!member) {
+      req.flash('error', 'Thành viên không tồn tại');
+      return res.redirect('/');
+    }
+
+    member.verifyToken = '';
+    member.email = member.newEmail;
+    member.newEmail = '';
+
+    await member.save();
+    req.flash('success', 'Xác nhận thay đổi email thành công');
+
+    res.redirect('/');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// get member info by ID
+module.exports.getMemberInfo = async (req, res) => {
+  try {
+    const { memberId } = req.params;
+    const member = await Member.findById(memberId);
+
+    const me = await Member.findById(req.user.id);
+    if (member && me) {
+      let isFriend = false
+      if (me.friends.find(fr => fr.id === member.id)) {
+        isFriend = true
+      }
+      res.render('messenger/member', {
+        titleSite: 'OH Chat - Messenger',
+        member,
+        isFriend
+      })
+    } else {
+      next(new Error('Not member'));
+    }
+  } catch (error) {
+    next(error);
+  }
+};

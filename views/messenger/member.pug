@@ -1,0 +1,39 @@
+extend ./layout
+
+block contentMain
+  #info-area.my-2
+    .container
+      .d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center.wrap-info-member
+        .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
+          img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
+        .mt-3.mt-md-0.pl-md-5
+          table.table.table-sm
+            tbody
+              tr
+                td.text-secondary Họ tên
+                td= member.name
+              tr
+                td.text-secondary Giới tính
+                td= member.gender ? 'Nam' : 'Nữ'
+              tr
+                td.text-secondary Ngày sinh
+                td= member.birthday
+              tr
+                td.text-secondary Điện thoại
+                td= member.phone
+              tr
+                td.text-secondary Email
+                td= member.email
+              tr
+                td.text-secondary Địa chỉ
+                td= member.address
+      .bg-light.d-flex.justify-content-center.py-3
+        if (isFriend)
+          a.btn(href=`/messenger/${member.id}`) Chat
+          button.btn.btn-red.ml-3 Hủy kết bạn
+        else
+          a.btn(href=`/messenger/addfriend/${member.id}`) Gửi lời mời kết bạn
+
+
+append scripts
+  script(src="/js/msg-setting.js")

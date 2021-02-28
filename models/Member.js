@@ -62,7 +62,11 @@ const memberSchema = mongoose.Schema({
   socketId: {
     type: String,
     default: ''
-  }
+  },
+  newEmail: {
+    type: String,
+    default: '',
+  },
 });
 
 // get all friends

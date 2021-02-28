@@ -25295,119 +25295,113 @@ var Profile = function () {
 
   function loadDataFriend(_x) {
     return _loadDataFriend.apply(this, arguments);
-  } // loadDataFriend(location.hash)
-
+  }
 
   function _loadDataFriend() {
-    _loadDataFriend = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(hash) {
+    _loadDataFriend = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(hash) {
       var responsive, friends, requests, invitations;
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
               if (!(hash === '#friend')) {
-                _context6.next = 14;
+                _context5.next = 14;
                 break;
               }
 
-              _context6.prev = 1;
-              _context6.next = 4;
+              _context5.prev = 1;
+              _context5.next = 4;
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friends');
 
             case 4:
-              responsive = _context6.sent;
+              responsive = _context5.sent;
               friends = responsive.data.friends;
               friendContent.innerHTML = friends.map(function (friend) {
-                return "<div class=\"col-md-6\">\n          <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n            <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" />\n            <a class=\"flex-fill mx-2\" href=\"#\"><strong>").concat(friend.name, "</strong></a>\n            <div class=\"d-flex flex-column\">\n              <a href=\"#\" class=\"btn\">Chat</a>\n              <button class=\"btn btn-red mt-1\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n            </div>\n          </div>\n        </div>");
+                return "<div class=\"col-md-6\">\n          <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n            <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" />\n            <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.id, "\"><strong>").concat(friend.name, "</strong></a>\n            <div class=\"d-flex flex-column\">\n              <a href=\"/messenger/").concat(friend.id, "\" class=\"btn\">Chat</a>\n              <button class=\"btn btn-red mt-1\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n            </div>\n          </div>\n        </div>");
               }).join('');
-              _context6.next = 12;
+              _context5.next = 12;
               break;
 
             case 9:
-              _context6.prev = 9;
-              _context6.t0 = _context6["catch"](1);
-              console.error(_context6.t0);
+              _context5.prev = 9;
+              _context5.t0 = _context5["catch"](1);
+              console.error(_context5.t0);
 
             case 12:
-              _context6.next = 38;
+              _context5.next = 38;
               break;
 
             case 14:
               if (!(hash === '#friend-request')) {
-                _context6.next = 27;
+                _context5.next = 27;
                 break;
               }
 
-              _context6.prev = 15;
-              _context6.next = 18;
+              _context5.prev = 15;
+              _context5.next = 18;
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-request');
 
             case 18:
-              requests = _context6.sent;
+              requests = _context5.sent;
               console.log(requests);
-              _context6.next = 25;
+              _context5.next = 25;
               break;
 
             case 22:
-              _context6.prev = 22;
-              _context6.t1 = _context6["catch"](15);
-              console.error(_context6.t1);
+              _context5.prev = 22;
+              _context5.t1 = _context5["catch"](15);
+              console.error(_context5.t1);
 
             case 25:
-              _context6.next = 38;
+              _context5.next = 38;
               break;
 
             case 27:
               if (!(hash === '#friend-invitation')) {
-                _context6.next = 38;
+                _context5.next = 38;
                 break;
               }
 
-              _context6.prev = 28;
-              _context6.next = 31;
+              _context5.prev = 28;
+              _context5.next = 31;
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-invitation');
 
             case 31:
-              invitations = _context6.sent;
+              invitations = _context5.sent;
               console.log(invitations);
-              _context6.next = 38;
+              _context5.next = 38;
               break;
 
             case 35:
-              _context6.prev = 35;
-              _context6.t2 = _context6["catch"](28);
-              console.error(_context6.t2);
+              _context5.prev = 35;
+              _context5.t2 = _context5["catch"](28);
+              console.error(_context5.t2);
 
             case 38:
             case "end":
-              return _context6.stop();
+              return _context5.stop();
           }
         }
-      }, _callee6, null, [[1, 9], [15, 22], [28, 35]]);
+      }, _callee5, null, [[1, 9], [15, 22], [28, 35]]);
     }));
     return _loadDataFriend.apply(this, arguments);
   }
 
-  $('a[data-toggle="tab"]').on('shown.bs.tab', /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              loadDataFriend(e.target.hash);
+  function reloadPage() {
+    var hash = location.hash;
 
-            case 1:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
+    if (['#friend', '#friend-invitation', '#friend-request'].includes(hash)) {
+      loadDataFriend(hash);
+      $('#friend-area').find(".tab-pane".concat(hash)).addClass(['show', 'active']);
+      $('#friend-area').find(".nav-link[href=\"".concat(hash, "\"]")).addClass('active');
+    }
+  }
 
-    return function (_x2) {
-      return _ref.apply(this, arguments);
-    };
-  }());
+  reloadPage();
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    window.location.hash = e.target.hash;
+    loadDataFriend(e.target.hash);
+  });
   var imgCrop = document.querySelector('#crop-img'); // init croppie avatar
 
   var croppie = new croppie__WEBPACK_IMPORTED_MODULE_1___default.a(imgCrop, {
@@ -25438,26 +25432,26 @@ var Profile = function () {
       var reader = new FileReader();
 
       reader.onload = /*#__PURE__*/function () {
-        var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
-              switch (_context2.prev = _context2.next) {
+              switch (_context.prev = _context.next) {
                 case 0:
-                  _context2.next = 2;
+                  _context.next = 2;
                   return croppie.bind({
                     url: e.target.result
                   });
 
                 case 2:
                 case "end":
-                  return _context2.stop();
+                  return _context.stop();
               }
             }
-          }, _callee2);
+          }, _callee);
         }));
 
-        return function (_x3) {
-          return _ref2.apply(this, arguments);
+        return function (_x2) {
+          return _ref.apply(this, arguments);
         };
       }();
 
@@ -25468,19 +25462,19 @@ var Profile = function () {
   });
   $('#cancel-crop-btn').on('click', reInitChooseFile); // take photo
 
-  $('#btn-takephoto').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+  $('#btn-takephoto').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
     var picture, reader;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             $('.wrap-opt-avatar').addClass('d-none'); // get photo
 
-            _context4.next = 3;
+            _context3.next = 3;
             return takePicture();
 
           case 3:
-            picture = _context4.sent;
+            picture = _context3.sent;
 
             if (picture) {
               // create reader read file from input file avatar
@@ -25488,26 +25482,26 @@ var Profile = function () {
               reader = new FileReader();
 
               reader.onload = /*#__PURE__*/function () {
-                var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-                  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
                     while (1) {
-                      switch (_context3.prev = _context3.next) {
+                      switch (_context2.prev = _context2.next) {
                         case 0:
-                          _context3.next = 2;
+                          _context2.next = 2;
                           return croppie.bind({
                             url: e.target.result
                           });
 
                         case 2:
                         case "end":
-                          return _context3.stop();
+                          return _context2.stop();
                       }
                     }
-                  }, _callee3);
+                  }, _callee2);
                 }));
 
-                return function (_x4) {
-                  return _ref4.apply(this, arguments);
+                return function (_x3) {
+                  return _ref3.apply(this, arguments);
                 };
               }();
 
@@ -25517,27 +25511,27 @@ var Profile = function () {
 
           case 5:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
       }
-    }, _callee4);
+    }, _callee3);
   }))); // crop image
 
-  $('#crop-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+  $('#crop-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
     var dataCrop, blob, formData, xhr;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             $('.wrap-loader').removeClass('d-none');
-            _context5.next = 3;
+            _context4.next = 3;
             return croppie.result({
               type: 'base64',
               size: 'viewport'
             });
 
           case 3:
-            dataCrop = _context5.sent;
+            dataCrop = _context4.sent;
             blob = dataURLtoFile(dataCrop, 'avatar.png');
             formData = new FormData();
             formData.append('avatar', blob);
@@ -25569,10 +25563,10 @@ var Profile = function () {
 
           case 11:
           case "end":
-            return _context5.stop();
+            return _context4.stop();
         }
       }
-    }, _callee5);
+    }, _callee4);
   }))); // function sleep
 
   var sleep = function sleep(m) {
@@ -25588,26 +25582,26 @@ var Profile = function () {
 
 
   function _takePicture() {
-    _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
       var videoStream, $wrapTake, snd, video, canvas, context, dataURL, file;
-      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context7.prev = _context7.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context7.next = 35;
+                _context6.next = 35;
                 break;
               }
 
-              _context7.prev = 1;
-              _context7.next = 4;
+              _context6.prev = 1;
+              _context6.next = 4;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
             case 4:
-              videoStream = _context7.sent;
+              videoStream = _context6.sent;
               // show video stream
               $wrapTake = $('.wrap-takephoto');
               $wrapTake.find('video').each(function (i, vd) {
@@ -25622,7 +25616,7 @@ var Profile = function () {
 
               $('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context7.next = 12;
+              _context6.next = 12;
               return sleep(4000);
 
             case 12:
@@ -25638,7 +25632,7 @@ var Profile = function () {
               file = dataURLtoFile(dataURL, 'capture');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context7.next = 24;
+              _context6.next = 24;
               return Promise.all([snd.play(), sleep(320)]);
 
             case 24:
@@ -25655,19 +25649,19 @@ var Profile = function () {
                 }
               }); // return file
 
-              return _context7.abrupt("return", file);
+              return _context6.abrupt("return", file);
 
             case 32:
-              _context7.prev = 32;
-              _context7.t0 = _context7["catch"](1);
+              _context6.prev = 32;
+              _context6.t0 = _context6["catch"](1);
               outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
 
             case 35:
             case "end":
-              return _context7.stop();
+              return _context6.stop();
           }
         }
-      }, _callee7, null, [[1, 32]]);
+      }, _callee6, null, [[1, 32]]);
     }));
     return _takePicture.apply(this, arguments);
   }

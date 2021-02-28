@@ -12,7 +12,7 @@ block contentMain
             span  Chung
           a#v-pills-security-tab.nav-link(class=`${tab[0] === 'security' ? 'active' : ''}`, data-toggle='pill', href='#v-pills-security', role='tab', aria-controls='v-pills-security')
             span.icomoon.icon-security
-            span  Bảo mật và đăng nhập
+            span  Bảo mật
       .col-md-9.st-col-content
         #v-pills-tab-content.tab-content
           #v-pills-general.tab-pane.fade(class=`${tab[0] ? tab[0] === 'general' ? 'show active' : '' : 'show active'}`, role='tabpanel', aria-labelledby='v-pills-general-tab') Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam autem, deleniti atque quae ut consequuntur quisquam consequatur quia, dolores quasi eos distinctio nostrum, sint facilis repudiandae aspernatur sunt neque magnam?
@@ -28,7 +28,14 @@ block contentMain
                       span.icomoon.icon-cog.d-md-none
                       span.d-none.d-md-block Chỉnh sửa
                 tr#collapse-email.collapse(class=`${subTab[0] === 'email' ? 'show' : ''}`, )
-                  td.border-0(colspan="3") Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores quibusdam earum aliquam consequatur a id! Cupiditate facilis alias illum odit quo dicta blanditiis, explicabo ea! Odit eaque harum consequuntur minima.
+                  td.border-0(colspan="3")
+                    form(action="/messenger/setting/email", method="post", name="formSettingEmail")
+                      input(type="hidden", name="_method" value="PUT")
+                      .form-group.d-flex
+                        label.text-secondary(for="email", style="width: 140px") Email mới
+                        input#email.form-control.form-control-sm(type="email", name="email", required)
+                      div
+                        button.btn(type="submit") Lưu thay đổi
                 tr
                   td Mật khấu
                   td
@@ -39,18 +46,17 @@ block contentMain
                       span.d-none.d-md-block Chỉnh sửa
                 tr#collapse-password.collapse(class=`${subTab[0] === 'password' ? 'show' : ''}`, )
                   td.border-0(colspan="3")
-                    form(action="/messenger/setting/password", method="post")
+                    form(action="/messenger/setting/password", method="post", name="formSettingPassword")
                       input(type="hidden", name="_method" value="PUT")
-                      input(type="hidden", name="fake-email" value=email)
                       .form-group.d-flex
                         label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
-                        input#password0.form-control.form-control-sm(type="password", name="password0")
+                        input#password0.form-control.form-control-sm(type="password", name="password0", required)
                       .form-group.d-flex
                         label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
-                        input#password.form-control.form-control-sm(type="password", name="password")
+                        input#password.form-control.form-control-sm(type="password", name="password", required)
                       .form-group.d-flex
                         label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
-                        input#password2.form-control.form-control-sm(type="password", name="password2")
+                        input#password2.form-control.form-control-sm(type="password", name="password2", required)
                       div
                         button.btn(type="submit") Lưu thay đổi
 

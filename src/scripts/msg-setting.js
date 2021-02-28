@@ -3,7 +3,7 @@ import 'bootstrap/js/dist/collapse'
 import 'bootstrap/js/dist/tab'
 import './global/loading'
 import './global/output-message'
-// import './member/profile'
+import './member/setting'
 
 
 console.log('page setting messenger');

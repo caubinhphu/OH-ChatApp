@@ -1,5 +1,6 @@
 const Joi = require('@hapi/joi');
 
+// validate change profile
 module.exports.validateProfile = (data) => {
   const schema = Joi.object({
     name: Joi.string()
@@ -51,6 +52,7 @@ module.exports.validateProfile = (data) => {
   return schema.validate(data);
 };
 
+// validate change password
 module.exports.validateSettingPassword = (data) => {
   const schema = Joi.object({
     password: Joi.string().min(6).required().messages({
@@ -60,6 +62,19 @@ module.exports.validateSettingPassword = (data) => {
     }),
     password2: Joi.valid(Joi.ref('password')).messages({
       'any.only': 'Xác nhận mật khẩu không đúng',
+    }),
+  });
+
+  return schema.validate(data);
+};
+
+// validate change email
+module.exports.validateSettingEmail = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.base': 'Email phải là chuỗi',
+      'string.email': 'Email không hợp lệ',
+      'string.empty': 'Chưa nhập email',
     }),
   });
 

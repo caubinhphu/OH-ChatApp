@@ -21902,13 +21902,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap_js_dist_tab__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_js_dist_tab__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(335);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(337);
+/* harmony import */ var _member_setting__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(560);
 // import $ from 'jquery';
 
 
 
- // import './member/profile'
+
 
 console.log('page setting messenger');
+
+/***/ }),
+/* 560 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {var Setting = function () {
+  // for page setting
+  if (document.formSettingEmail) {
+    document.formSettingEmail.addEventListener('submit', function () {
+      $('.wrap-loader').removeClass('d-none');
+    });
+  }
+
+  if (document.formSettingPassword) {
+    document.formSettingPassword.addEventListener('submit', function () {
+      $('.wrap-loader').removeClass('d-none');
+    });
+  }
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Setting);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
 
 /***/ })
 /******/ ]);
