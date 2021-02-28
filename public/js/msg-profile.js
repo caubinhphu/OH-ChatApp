@@ -25282,6 +25282,8 @@ console.log('page profile messenger');
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(519);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(croppie__WEBPACK_IMPORTED_MODULE_1__);
+function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -25290,6 +25292,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Profile = function () {
+  var clWrapCrop = '.wrap-crop-img';
+  var clWrapOpt = '.wrap-opt-avatar';
   navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
   var friendContent = document.getElementById('friend-content');
 
@@ -25328,7 +25332,7 @@ var Profile = function () {
               console.error(_context5.t0);
 
             case 12:
-              _context5.next = 38;
+              _context5.next = 40;
               break;
 
             case 14:
@@ -25353,12 +25357,12 @@ var Profile = function () {
               console.error(_context5.t1);
 
             case 25:
-              _context5.next = 38;
+              _context5.next = 40;
               break;
 
             case 27:
               if (!(hash === '#friend-invitation')) {
-                _context5.next = 38;
+                _context5.next = 40;
                 break;
               }
 
@@ -25378,6 +25382,10 @@ var Profile = function () {
               console.error(_context5.t2);
 
             case 38:
+              _context5.next = 40;
+              break;
+
+            case 40:
             case "end":
               return _context5.stop();
           }
@@ -25426,8 +25434,8 @@ var Profile = function () {
 
     if (extname && type) {
       // show modal crop avatar
-      $('.wrap-crop-img').removeClass('d-none');
-      $('.wrap-opt-avatar').addClass('d-none'); // create reader read file from input file avatar
+      $(clWrapCrop).removeClass('d-none');
+      $(clWrapOpt).addClass('d-none'); // create reader read file from input file avatar
 
       var reader = new FileReader();
 
@@ -25468,7 +25476,7 @@ var Profile = function () {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            $('.wrap-opt-avatar').addClass('d-none'); // get photo
+            $(clWrapOpt).addClass('d-none'); // get photo
 
             _context3.next = 3;
             return takePicture();
@@ -25506,7 +25514,7 @@ var Profile = function () {
               }();
 
               reader.readAsDataURL(picture);
-              $('.wrap-crop-img').removeClass('d-none');
+              $(clWrapCrop).removeClass('d-none');
             }
 
           case 5:
@@ -25667,8 +25675,8 @@ var Profile = function () {
   }
 
   function reInitChooseFile() {
-    $('.wrap-crop-img').addClass('d-none');
-    $('.wrap-opt-avatar').removeClass('d-none');
+    $(clWrapCrop).addClass('d-none');
+    $(clWrapOpt).removeClass('d-none');
     $('input#avatar').val('');
   } // create file from data base64
 
@@ -25680,7 +25688,7 @@ var Profile = function () {
         n = bstr.length,
         u8arr = new Uint8Array(n);
 
-    while (n--) {
+    while (_readOnlyError("n"), n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
 

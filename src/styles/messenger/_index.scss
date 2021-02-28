@@ -4,6 +4,11 @@
 
 #main-messenger {
   height: calc(100vh - 60px);
+  overflow: hidden;
+  .wrap-emojis {
+    right: unset;
+    left: 0;
+  }
 }
 
 #main-left {
@@ -146,5 +151,15 @@
 
   .friend-item-main {
     justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  #main-messenger {
+    .wrap-emojis {
+      width: 220px;
+      height: 201px;
+      overflow: auto;
+    }
   }
 }

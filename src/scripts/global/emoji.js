@@ -19,7 +19,7 @@ const Emoji = (() => {
     btn.addEventListener('click', function () {
       document.getElementById('msg').value += this.innerHTML;
       document.getElementById('msg').focus();
-      $('.wrap-emojis').removeClass('is-active');
+      // $('.wrap-emojis').removeClass('is-active');
     });
   });
   $(document).on('click', '.open-emojis', () => {
@@ -29,6 +29,15 @@ const Emoji = (() => {
       $('.wrap-emojis').addClass('is-active');
     }
   })
+  $(document).on('click', e => {
+    const $target = $(e.target)
+    if(!$target.closest('.wrap-emojis').length &&
+      !$target.closest('.open-emojis').length &&
+      $('.wrap-emojis').hasClass('is-active'))
+    {
+      $('.wrap-emojis').removeClass('is-active')
+    }
+  });
 })()
 
 export default Emoji

@@ -37,11 +37,11 @@ block contentMain
               strong= friendChat.name
               br
               small Status
-          #main-right-top-right
-            button(type="button").mr-2
-              i.fas.fa-phone
-            button(type="button")
-              i.fas.fa-video
+          #main-right-top-right.d-flex
+            button.btn.btn-icon.small-btn.btn-green(type="button").mr-2
+              span.icomoon.icon-phone
+            button.btn.btn-icon.small-btn.btn-purple(type="button")
+              span.icomoon.icon-camera
         #main-right-chat-content.flex-fill.p-2
         #main-right-top-chat-input.mb-1.px-2.wrap-chat-input
           form.d-flex(name="sendMsgForm")
@@ -51,9 +51,6 @@ block contentMain
               textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
             button.btn.btn-default.text-secondary
               span.icomoon.icon-send
-  div
-    each member in m
-      a.btn.btn-success(href=`/messenger/addfriend/${member.id}`)= member.name
 
 append scripts
   script(src="/socket.io/socket.io.js")

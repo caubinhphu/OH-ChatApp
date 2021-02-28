@@ -29699,8 +29699,7 @@ var CommonChat = function () {
   document.querySelectorAll('.emoji-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       document.getElementById('msg').value += this.innerHTML;
-      document.getElementById('msg').focus();
-      $('.wrap-emojis').removeClass('is-active');
+      document.getElementById('msg').focus(); // $('.wrap-emojis').removeClass('is-active');
     });
   });
   $(document).on('click', '.open-emojis', function () {
@@ -29708,6 +29707,13 @@ var CommonChat = function () {
       $('.wrap-emojis').removeClass('is-active');
     } else {
       $('.wrap-emojis').addClass('is-active');
+    }
+  });
+  $(document).on('click', function (e) {
+    var $target = $(e.target);
+
+    if (!$target.closest('.wrap-emojis').length && !$target.closest('.open-emojis').length && $('.wrap-emojis').hasClass('is-active')) {
+      $('.wrap-emojis').removeClass('is-active');
     }
   });
 }();

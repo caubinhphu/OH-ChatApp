@@ -25,6 +25,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-phone:before {
+  content: "\e925";
+}
 .icon-image:before {
   content: "\e91e";
 }

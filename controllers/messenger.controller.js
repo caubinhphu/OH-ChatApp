@@ -248,7 +248,7 @@ module.exports.getChatFriend = async (req, res, next) => {
     const member = await Member.findById(req.user.id).populate('friends._id');
     const friendsId = member.friends.map(f => f._id);
     friendsId.push(member._id);
-    const m = await Member.find({ _id: { "$nin": friendsId } });
+    // const m = await Member.find({ _id: { "$nin": friendsId } });
     if (member) {
       const friends = member.getFriends();
       const friendChat = friends.find(fr => fr.id === req.params.friendId);
@@ -256,12 +256,12 @@ module.exports.getChatFriend = async (req, res, next) => {
         titleSite: siteMes,
         friends,
         friendChat,
-        m: m.map(x => {
-          return {
-            id: x.id,
-            name: x.name
-          }
-        })
+        // m: m.map(x => {
+        //   return {
+        //     id: x.id,
+        //     name: x.name
+        //   }
+        // })
       });
     } else {
       next(new Error(notMem));

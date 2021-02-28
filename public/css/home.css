@@ -6135,6 +6135,10 @@ a.text-dark:hover, a.text-dark:focus {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-phone:before {
+  content: "\E925";
+}
+
 .icon-image:before {
   content: "\E91E";
 }

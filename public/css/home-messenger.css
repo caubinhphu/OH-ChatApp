@@ -6830,6 +6830,10 @@ background: #ccc;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-phone:before {
+  content: "\E925";
+}
+
 .icon-image:before {
   content: "\E91E";
 }
@@ -7206,6 +7210,12 @@ body {
 
 #main-messenger {
   height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+#main-messenger .wrap-emojis {
+  right: unset;
+  left: 0;
 }
 
 #main-left {
@@ -7347,6 +7357,14 @@ body {
   }
   .friend-item-main {
     justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  #main-messenger .wrap-emojis {
+    width: 220px;
+    height: 201px;
+    overflow: auto;
   }
 }
 
