@@ -6830,6 +6830,10 @@ background: #ccc;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-circle-down:before {
+  content: "\E926";
+}
+
 .icon-phone:before {
   content: "\E925";
 }
@@ -7308,6 +7312,7 @@ body {
 
 .message-content {
   margin-left: 10px;
+  color: #102131;
 }
 
 #main-left-top h4 {
@@ -7339,6 +7344,32 @@ body {
 
 .wrap-msg-box.is-focus::after {
   right: 0;
+}
+
+.scroll-bottom {
+  position: absolute;
+  bottom: 65px;
+  left: 50%;
+  display: none;
+  font-size: 27px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  transition: all .2s;
+  z-index: 9;
+  line-height: 27px;
+  color: #22c0c9;
+}
+
+.scroll-bottom:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+.scroll-bottom.is-show {
+  display: block;
+}
+
+.wrap-msg-box {
+  overflow: hidden;
 }
 
 @media only screen and (max-width: 850px) {

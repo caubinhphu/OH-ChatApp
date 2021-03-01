@@ -42,7 +42,11 @@ block contentMain
               span.icomoon.icon-phone
             button.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
               span.icomoon.icon-camera
-        #main-right-chat-content.flex-fill.p-2
+        .wrap-msg-box.ps-rv.flex-fill
+          .scroll-bottom
+            span.icomoon.icon-circle-down
+          #main-right-chat-content.p-2.h-100
+
         #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
           form.d-flex(name="sendMsgForm", method="post")
             button.btn.btn-default.open-emojis(type="button") &#128512;

@@ -1,6 +1,11 @@
+import moment from 'moment';
+import '../global/chat-utils'
+
 const Messenger = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
+
+  const classScBottom = '.scroll-bottom'
 
   socket.on('messenger', (msgObj) => {
     // output message
@@ -86,6 +91,21 @@ const Messenger = (() => {
   }).on('blur', '#msg', function(e) {
     $(this).parents('.wrap-msg-box').removeClass('is-focus');
   });
+
+  $('#main-right-chat-content').on('scroll', function() {
+    if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+      $(classScBottom).addClass('is-show');
+    } else {
+      $(classScBottom).removeClass('is-show');
+    }
+  });
+
+  $(classScBottom).on('click', scrollBottomChatBox);
+
+  function scrollBottomChatBox() {
+    const $ele = $('#main-right-chat-content');
+    $ele.animate({scrollTop: $ele[0].scrollHeight - $ele.innerHeight()}, 350, 'swing');
+  }
 })()
 
 export default Messenger
