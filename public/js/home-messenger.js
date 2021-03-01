@@ -37307,33 +37307,37 @@ var ChatUtils = function () {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {var Emoji = function () {
-  var emojiData = '[{"emoji":"👍","dec":128077},{"emoji":"👎","dec":128078},{"emoji":"🤚","dec":129306},{"emoji":"💖","dec":128150},{"emoji":"😀","dec":128512},{"emoji":"😁","dec":128513},{"emoji":"😂","dec":128514},{"emoji":"😃","dec":128515},{"emoji":"😄","dec":128516},{"emoji":"😅","dec":128517},{"emoji":"😆","dec":128518},{"emoji":"😇","dec":128519},{"emoji":"😈","dec":128520},{"emoji":"😉","dec":128521},{"emoji":"😊","dec":128522},{"emoji":"😋","dec":128523},{"emoji":"😌","dec":128524},{"emoji":"😍","dec":128525},{"emoji":"😎","dec":128526},{"emoji":"😏","dec":128527},{"emoji":"😐","dec":128528},{"emoji":"😑","dec":128529},{"emoji":"😒","dec":128530},{"emoji":"😓","dec":128531},{"emoji":"😔","dec":128532},{"emoji":"😕","dec":128533},{"emoji":"😖","dec":128534},{"emoji":"😗","dec":128535},{"emoji":"😘","dec":128536},{"emoji":"😙","dec":128537},{"emoji":"😚","dec":128538},{"emoji":"😛","dec":128539},{"emoji":"😜","dec":128540},{"emoji":"😝","dec":128541},{"emoji":"😞","dec":128542},{"emoji":"😟","dec":128543},{"emoji":"😠","dec":128544},{"emoji":"😡","dec":128545},{"emoji":"😢","dec":128546},{"emoji":"😣","dec":128547},{"emoji":"😤","dec":128548},{"emoji":"😥","dec":128549},{"emoji":"😦","dec":128550},{"emoji":"😧","dec":128551},{"emoji":"😨","dec":128552},{"emoji":"😩","dec":128553},{"emoji":"😪","dec":128554},{"emoji":"😫","dec":128555},{"emoji":"😬","dec":128556},{"emoji":"😭","dec":128557},{"emoji":"😮","dec":128558},{"emoji":"😯","dec":128559},{"emoji":"😰","dec":128560},{"emoji":"😱","dec":128561},{"emoji":"😲","dec":128562},{"emoji":"😳","dec":128563},{"emoji":"😴","dec":128564},{"emoji":"😵","dec":128565},{"emoji":"😶","dec":128566},{"emoji":"😷","dec":128567},{"emoji":"🙁","dec":128577},{"emoji":"🙂","dec":128578},{"emoji":"🙃","dec":128579},{"emoji":"🙄","dec":128580},{"emoji":"🤐","dec":129296},{"emoji":"🤑","dec":129297},{"emoji":"🤒","dec":129298},{"emoji":"🤓","dec":129299},{"emoji":"🤔","dec":129300},{"emoji":"🤕","dec":129301},{"emoji":"🤠","dec":129312},{"emoji":"🤡","dec":129313},{"emoji":"🤢","dec":129314},{"emoji":"🤣","dec":129315},{"emoji":"🤤","dec":129316},{"emoji":"🤥","dec":129317},{"emoji":"🤧","dec":129319},{"emoji":"🤨","dec":129320},{"emoji":"🤩","dec":129321},{"emoji":"🤪","dec":129322},{"emoji":"🤫","dec":129323},{"emoji":"🤬","dec":129324},{"emoji":"🤭","dec":129325},{"emoji":"🤮","dec":129326},{"emoji":"🤯","dec":129327},{"emoji":"🧐","dec":129488}]';
-  var wrapEmoji = document.createElement('div');
-  $(wrapEmoji).addClass('wrap-emojis');
-  wrapEmoji.innerHTML = JSON.parse(emojiData).map(function (emoji) {
-    return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
-  }).join('');
-  document.querySelector('.wrap-chat-input').appendChild(wrapEmoji);
-  document.querySelectorAll('.emoji-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.getElementById('msg').value += this.innerHTML;
-      document.getElementById('msg').focus(); // $('.wrap-emojis').removeClass('is-active');
-    });
-  });
-  $(document).on('click', '.open-emojis', function () {
-    if ($('.wrap-emojis').hasClass('is-active')) {
-      $('.wrap-emojis').removeClass('is-active');
-    } else {
-      $('.wrap-emojis').addClass('is-active');
-    }
-  });
-  $(document).on('click', function (e) {
-    var $target = $(e.target);
+  var wrapInputChat = document.querySelector('.wrap-chat-input');
 
-    if (!$target.closest('.wrap-emojis').length && !$target.closest('.open-emojis').length && $('.wrap-emojis').hasClass('is-active')) {
-      $('.wrap-emojis').removeClass('is-active');
-    }
-  });
+  if (wrapInputChat) {
+    var emojiData = '[{"emoji":"👍","dec":128077},{"emoji":"👎","dec":128078},{"emoji":"🤚","dec":129306},{"emoji":"💖","dec":128150},{"emoji":"😀","dec":128512},{"emoji":"😁","dec":128513},{"emoji":"😂","dec":128514},{"emoji":"😃","dec":128515},{"emoji":"😄","dec":128516},{"emoji":"😅","dec":128517},{"emoji":"😆","dec":128518},{"emoji":"😇","dec":128519},{"emoji":"😈","dec":128520},{"emoji":"😉","dec":128521},{"emoji":"😊","dec":128522},{"emoji":"😋","dec":128523},{"emoji":"😌","dec":128524},{"emoji":"😍","dec":128525},{"emoji":"😎","dec":128526},{"emoji":"😏","dec":128527},{"emoji":"😐","dec":128528},{"emoji":"😑","dec":128529},{"emoji":"😒","dec":128530},{"emoji":"😓","dec":128531},{"emoji":"😔","dec":128532},{"emoji":"😕","dec":128533},{"emoji":"😖","dec":128534},{"emoji":"😗","dec":128535},{"emoji":"😘","dec":128536},{"emoji":"😙","dec":128537},{"emoji":"😚","dec":128538},{"emoji":"😛","dec":128539},{"emoji":"😜","dec":128540},{"emoji":"😝","dec":128541},{"emoji":"😞","dec":128542},{"emoji":"😟","dec":128543},{"emoji":"😠","dec":128544},{"emoji":"😡","dec":128545},{"emoji":"😢","dec":128546},{"emoji":"😣","dec":128547},{"emoji":"😤","dec":128548},{"emoji":"😥","dec":128549},{"emoji":"😦","dec":128550},{"emoji":"😧","dec":128551},{"emoji":"😨","dec":128552},{"emoji":"😩","dec":128553},{"emoji":"😪","dec":128554},{"emoji":"😫","dec":128555},{"emoji":"😬","dec":128556},{"emoji":"😭","dec":128557},{"emoji":"😮","dec":128558},{"emoji":"😯","dec":128559},{"emoji":"😰","dec":128560},{"emoji":"😱","dec":128561},{"emoji":"😲","dec":128562},{"emoji":"😳","dec":128563},{"emoji":"😴","dec":128564},{"emoji":"😵","dec":128565},{"emoji":"😶","dec":128566},{"emoji":"😷","dec":128567},{"emoji":"🙁","dec":128577},{"emoji":"🙂","dec":128578},{"emoji":"🙃","dec":128579},{"emoji":"🙄","dec":128580},{"emoji":"🤐","dec":129296},{"emoji":"🤑","dec":129297},{"emoji":"🤒","dec":129298},{"emoji":"🤓","dec":129299},{"emoji":"🤔","dec":129300},{"emoji":"🤕","dec":129301},{"emoji":"🤠","dec":129312},{"emoji":"🤡","dec":129313},{"emoji":"🤢","dec":129314},{"emoji":"🤣","dec":129315},{"emoji":"🤤","dec":129316},{"emoji":"🤥","dec":129317},{"emoji":"🤧","dec":129319},{"emoji":"🤨","dec":129320},{"emoji":"🤩","dec":129321},{"emoji":"🤪","dec":129322},{"emoji":"🤫","dec":129323},{"emoji":"🤬","dec":129324},{"emoji":"🤭","dec":129325},{"emoji":"🤮","dec":129326},{"emoji":"🤯","dec":129327},{"emoji":"🧐","dec":129488}]';
+    var wrapEmoji = document.createElement('div');
+    $(wrapEmoji).addClass('wrap-emojis');
+    wrapEmoji.innerHTML = JSON.parse(emojiData).map(function (emoji) {
+      return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
+    }).join('');
+    wrapInputChat.appendChild(wrapEmoji);
+    document.querySelectorAll('.emoji-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.getElementById('msg').value += this.innerHTML;
+        document.getElementById('msg').focus(); // $('.wrap-emojis').removeClass('is-active');
+      });
+    });
+    $(document).on('click', '.open-emojis', function () {
+      if ($('.wrap-emojis').hasClass('is-active')) {
+        $('.wrap-emojis').removeClass('is-active');
+      } else {
+        $('.wrap-emojis').addClass('is-active');
+      }
+    });
+    $(document).on('click', function (e) {
+      var $target = $(e.target);
+
+      if (!$target.closest('.wrap-emojis').length && !$target.closest('.open-emojis').length && $('.wrap-emojis').hasClass('is-active')) {
+        $('.wrap-emojis').removeClass('is-active');
+      }
+    });
+  }
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Emoji);
@@ -38098,7 +38102,7 @@ webpackContext.id = 477;
 /* WEBPACK VAR INJECTION */(function($) {var CommonChat = function () {
   var socket = io();
   window.socket = socket;
-  socket.emit('memberOnline', {
+  socket.emit('msg-memberOnline', {
     memberId: $('#member-id').text()
   });
 }();
@@ -38197,41 +38201,67 @@ var Messenger = function () {
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
 
-  var classScBottom = '.scroll-bottom';
-  socket.on('messenger', function (msgObj) {
+  if (msgForm) {
+    var classScBottom = '.scroll-bottom'; // event submit form chat
+
+    msgForm.addEventListener('submit', function (e) {
+      // stop submit form
+      e.preventDefault(); // input message
+
+      var inputMsg = e.target.elements.message;
+
+      if (inputMsg.value !== '') {
+        // send message to server
+        socket.emit('msg-messageChat', {
+          message: inputMsg.value,
+          token: e.target.elements._token.value
+        }); // create message obj to show in client
+
+        var msgObj = {
+          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('h:mm A'),
+          username: 'Me',
+          message: escapeHtml(inputMsg.value)
+        };
+        outputMessage(msgObj, true); // scroll bottom
+
+        chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
+
+        inputMsg.value = ''; // focus input message
+
+        inputMsg.focus();
+      }
+    }); // change height form input msg
+
+    $(document).on('keydown', '#msg', function (e) {
+      if (e.which === 13 && !e.shiftKey) {
+        e.preventDefault();
+        $(msgForm).find('button.text-secondary').trigger('click');
+        $(this).css('height', '35px');
+      }
+    }).on('input', '#msg', function (e) {
+      $(this).css('height', '5px');
+      $(this).css('height', "".concat(this.scrollHeight, "px"));
+    }).on('focus', '#msg', function (e) {
+      $(this).parents('.wrap-msg-box').addClass('is-focus');
+    }).on('blur', '#msg', function (e) {
+      $(this).parents('.wrap-msg-box').removeClass('is-focus');
+    });
+    $('#main-right-chat-content').on('scroll', function () {
+      if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+        $(classScBottom).addClass('is-show');
+      } else {
+        $(classScBottom).removeClass('is-show');
+      }
+    });
+    $(classScBottom).on('click', scrollBottomChatBox);
+  } // receive msg obj from server
+
+
+  socket.on('msg-messenger', function (msgObj) {
     // output message
     outputMessage(msgObj);
     console.log(msgObj); // scroll bottom
-
-    chatMain.scrollTop = chatMain.scrollHeight;
-  }); // event submit form chat
-
-  msgForm.addEventListener('submit', function (e) {
-    // stop submit form
-    e.preventDefault(); // input message
-
-    var inputMsg = e.target.elements.message;
-
-    if (inputMsg.value !== '') {
-      // send message to server
-      socket.emit('messengerChat', {
-        message: inputMsg.value,
-        token: e.target.elements._token
-      }); // create message obj to show in client
-
-      var msgObj = {
-        time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('h:mm A'),
-        username: 'Me',
-        message: escapeHtml(inputMsg.value)
-      };
-      outputMessage(msgObj, true); // scroll bottom
-
-      chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
-
-      inputMsg.value = ''; // focus input message
-
-      inputMsg.focus();
-    }
+    // chatMain.scrollTop = chatMain.scrollHeight;
   }); // output message in main chat area
 
   function outputMessage(msgObj) {
@@ -38248,31 +38278,7 @@ var Messenger = function () {
 
 
     chatMain.appendChild(div);
-  } // change height form input msg
-
-
-  $(document).on('keydown', '#msg', function (e) {
-    if (e.which === 13 && !e.shiftKey) {
-      e.preventDefault();
-      $(msgForm).find('button.text-secondary').trigger('click');
-      $(this).css('height', '35px');
-    }
-  }).on('input', '#msg', function (e) {
-    $(this).css('height', '5px');
-    $(this).css('height', "".concat(this.scrollHeight, "px"));
-  }).on('focus', '#msg', function (e) {
-    $(this).parents('.wrap-msg-box').addClass('is-focus');
-  }).on('blur', '#msg', function (e) {
-    $(this).parents('.wrap-msg-box').removeClass('is-focus');
-  });
-  $('#main-right-chat-content').on('scroll', function () {
-    if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-      $(classScBottom).addClass('is-show');
-    } else {
-      $(classScBottom).removeClass('is-show');
-    }
-  });
-  $(classScBottom).on('click', scrollBottomChatBox);
+  }
 
   function scrollBottomChatBox() {
     var $ele = $('#main-right-chat-content');

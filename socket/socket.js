@@ -84,14 +84,11 @@ const socket = function (io) {
 
     // ----------------- messenger ------------------
     // receive signal online from client
-    socket.on('memberOnline', messengerController.onMemberOnline)
+    socket.on('msg-memberOnline', messengerController.onMemberOnline)
 
     // receive message from client
-    socket.on('messengerChat', (data) => {
-      socket.broadcast.emit(
-        'messenger',
-        formatMessage("Hải", data.message, "/images/oh-bot.jpg")
-      );
+    socket.on('msg-messageChat', function (data) {
+      messengerController.onMessageChat.bind(this, io, data)()
     });
   });
 };

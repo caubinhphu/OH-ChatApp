@@ -4,51 +4,80 @@ import '../global/chat-utils'
 const Messenger = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
+  if (msgForm) {
+    const classScBottom = '.scroll-bottom'
 
-  const classScBottom = '.scroll-bottom'
+    // event submit form chat
+    msgForm.addEventListener('submit', (e) => {
+      // stop submit form
+      e.preventDefault();
 
-  socket.on('messenger', (msgObj) => {
+      // input message
+      const inputMsg = e.target.elements.message;
+
+      if (inputMsg.value !== '') {
+        // send message to server
+        socket.emit('msg-messageChat', {
+          message: inputMsg.value,
+          token: e.target.elements._token.value,
+        });
+
+        // create message obj to show in client
+        const msgObj = {
+          time: moment().format('h:mm A'),
+          username: 'Me',
+          message: escapeHtml(inputMsg.value),
+        };
+        outputMessage(msgObj, true);
+
+        // scroll bottom
+        chatMain.scrollTop = chatMain.scrollHeight;
+
+        // set value for input message
+        inputMsg.value = '';
+
+        // focus input message
+        inputMsg.focus();
+      }
+    });
+
+    // change height form input msg
+    $(document).on('keydown', '#msg', function(e) {
+      if (e.which === 13 && ! e.shiftKey) {
+        e.preventDefault();
+        $(msgForm).find('button.text-secondary').trigger('click');
+        $(this).css('height', '35px');
+      }
+    }).on('input', '#msg', function(e) {
+      $(this).css('height', '5px');
+      $(this).css('height', `${this.scrollHeight}px`);
+    }).on('focus', '#msg', function(e) {
+      $(this).parents('.wrap-msg-box').addClass('is-focus');
+    }).on('blur', '#msg', function(e) {
+      $(this).parents('.wrap-msg-box').removeClass('is-focus');
+    });
+
+    $('#main-right-chat-content').on('scroll', function() {
+      if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+        $(classScBottom).addClass('is-show');
+      } else {
+        $(classScBottom).removeClass('is-show');
+      }
+    });
+
+    $(classScBottom).on('click', scrollBottomChatBox);
+  }
+
+  // receive msg obj from server
+  socket.on('msg-messenger', (msgObj) => {
     // output message
     outputMessage(msgObj);
     console.log(msgObj);
 
     // scroll bottom
-    chatMain.scrollTop = chatMain.scrollHeight;
+    // chatMain.scrollTop = chatMain.scrollHeight;
   });
 
-  // event submit form chat
-  msgForm.addEventListener('submit', (e) => {
-    // stop submit form
-    e.preventDefault();
-
-    // input message
-    const inputMsg = e.target.elements.message;
-
-    if (inputMsg.value !== '') {
-      // send message to server
-      socket.emit('messengerChat', {
-        message: inputMsg.value,
-        token: e.target.elements._token,
-      });
-
-      // create message obj to show in client
-      const msgObj = {
-        time: moment().format('h:mm A'),
-        username: 'Me',
-        message: escapeHtml(inputMsg.value),
-      };
-      outputMessage(msgObj, true);
-
-      // scroll bottom
-      chatMain.scrollTop = chatMain.scrollHeight;
-
-      // set value for input message
-      inputMsg.value = '';
-
-      // focus input message
-      inputMsg.focus();
-    }
-  });
 
   // output message in main chat area
   function outputMessage(msgObj, me = false) {
@@ -75,32 +104,6 @@ const Messenger = (() => {
     // append message
     chatMain.appendChild(div);
   }
-
-  // change height form input msg
-  $(document).on('keydown', '#msg', function(e) {
-    if (e.which === 13 && ! e.shiftKey) {
-      e.preventDefault();
-      $(msgForm).find('button.text-secondary').trigger('click');
-      $(this).css('height', '35px');
-    }
-  }).on('input', '#msg', function(e) {
-    $(this).css('height', '5px');
-    $(this).css('height', `${this.scrollHeight}px`);
-  }).on('focus', '#msg', function(e) {
-    $(this).parents('.wrap-msg-box').addClass('is-focus');
-  }).on('blur', '#msg', function(e) {
-    $(this).parents('.wrap-msg-box').removeClass('is-focus');
-  });
-
-  $('#main-right-chat-content').on('scroll', function() {
-    if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-      $(classScBottom).addClass('is-show');
-    } else {
-      $(classScBottom).removeClass('is-show');
-    }
-  });
-
-  $(classScBottom).on('click', scrollBottomChatBox);
 
   function scrollBottomChatBox() {
     const $ele = $('#main-right-chat-content');

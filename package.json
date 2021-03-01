@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "start:dev": "nodemon --inspect app",
+    "start:dev": "nodemon --inspect app --ignore 'public/*.*'",
     "build:product": "webpack --progress",
     "build:dev": "webpack --watch --progress"
   },

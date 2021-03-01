@@ -244,6 +244,7 @@ module.exports.getFriendInvitations = async (req, res) => {
   }
 };
 
+// get view chat with friend
 module.exports.getChatFriend = async (req, res, next) => {
   try {
     const member = await Member.findById(req.user.id).populate('friends._id');
@@ -278,6 +279,7 @@ module.exports.getChatFriend = async (req, res, next) => {
   }
 };
 
+// add friend
 module.exports.getAddFriend = async (req, res, next) => {
   try {
     const { friendId } = req.params;
@@ -292,7 +294,7 @@ module.exports.getAddFriend = async (req, res, next) => {
         groupMessageId: groupMessage._id
       });
       friend.friends.push({
-        _id: member._id,
+        _id: member.id,
         groupMessageId: groupMessage._id
       });
       await member.save();
