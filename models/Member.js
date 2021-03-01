@@ -81,6 +81,7 @@ memberSchema.methods.getFriends = function () {
       id: friend._id.id,
       name: friend._id.name,
       avatar: friend._id.avatar,
+      status: friend._id.status
     }
   });
 };

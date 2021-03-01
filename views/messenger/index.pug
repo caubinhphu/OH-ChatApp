@@ -15,9 +15,10 @@ block contentMain
         input.form-control(type="text", placeholder="Tìm bạn bè để chat")
       #main-left-friends.mt-2.flex-fill
         each friend in friends
-          .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""}`)
+          .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""} ${friend.status === 'online' ? "is-online" : ""}`, data-id=friend.id)
             .friend-item-main.d-flex
-              .friend-item-img
+              .friend-item-img.ps-rv
+                div.dot-status
                 img.rounded-circle(src=friend.avatar, alt=friend.name, width="45px")
               .friend-item-info.ml-2
                 strong= friend.name
@@ -28,7 +29,7 @@ block contentMain
               span.sr-only= `Chat with ${friend.name}`
 
     if (friendChat)
-      #main-right.flex-fill.d-flex.flex-column
+      #main-right.flex-fill.d-flex.flex-column(data-id=friendChat.id)
         #main-right-top.d-flex.justify-content-between.p-2.align-items-center
           #main-right-top-left.d-flex
             .friend-img
@@ -36,7 +37,7 @@ block contentMain
             .friend-info.ml-2
               strong= friendChat.name
               br
-              small Status
+              small.text-status !{statusText}
           #main-right-top-right.d-flex
             button.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
               span.icomoon.icon-phone

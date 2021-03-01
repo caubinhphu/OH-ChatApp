@@ -7251,6 +7251,10 @@ body {
   background-color: #f0f2f5;
 }
 
+.friend-item.is-online .dot-status {
+  background-color: #14a76c;
+}
+
 #main-right {
   width: 0;
 }
@@ -7370,6 +7374,16 @@ body {
 
 .wrap-msg-box {
   overflow: hidden;
+}
+
+.dot-status {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #747474;
+  border-radius: 50%;
+  right: 4px;
+  top: 36px;
 }
 
 @media only screen and (max-width: 850px) {

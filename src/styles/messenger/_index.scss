@@ -36,6 +36,11 @@
   &.is-active {
     background-color: #f0f2f5;
   }
+  &.is-online {
+    .dot-status {
+      background-color: $color-14;
+    }
+  }
 }
 
 #main-right {
@@ -154,7 +159,15 @@
 .wrap-msg-box {
   overflow: hidden;
 }
-
+.dot-status {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: $color-74;
+  border-radius: 50%;
+  right: 4px;
+  top: 36px;
+}
 @media only screen and (max-width: 850px) {
   .friend-item-info {
     display: none;
