@@ -21,8 +21,8 @@ module.exports.onMemberOnline = async function (io, { memberId }) {
 
       // send signal online to friends are online
       member.friends.forEach(fr => {
-        if (fr.status === 'online' && fr.socketId) {
-          io.to(fr.socketId).emit('msg-friendOnline', { memberId: member.id });
+        if (fr._id.status === 'online' && fr._id.socketId) {
+          io.to(fr._id.socketId).emit('msg-friendOnline', { memberId: member.id });
         }
       })
     } else {

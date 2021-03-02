@@ -588,8 +588,8 @@ module.exports.onDisconnect = async function (io, reason) {
 
     // send signal offline to friends are online
     member.friends.forEach(fr => {
-      if (fr.status === 'online' && fr.socketId) {
-        io.to(fr.socketId).emit('msg-friendOffline', { memberId: member.id });
+      if (fr._id.status === 'online' && fr._id.socketId) {
+        io.to(fr._id.socketId).emit('msg-friendOffline', { memberId: member.id });
       }
     })
   } else {
