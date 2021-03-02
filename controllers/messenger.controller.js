@@ -247,12 +247,23 @@ module.exports.getFriendInvitations = async (req, res) => {
 // get view chat with friend
 module.exports.getChatFriend = async (req, res, next) => {
   try {
-    const member = await Member.findById(req.user.id).populate('friends._id');
+    const member = await Member.findById(req.user.id)
+      .populate('friends._id')
+      .populate({
+        path: 'friends.groupMessageId',
+        populate: {
+          path: 'messages',
+          options: {
+            limit: 2,
+            sort: { _id: -1},
+          }
+        },
+      });
     // const friendsId = member.friends.map(f => f._id);
     // friendsId.push(member._id);
     // const m = await Member.find({ _id: { "$nin": friendsId } });
     if (member) {
-      const friends = member.getFriends();
+      const friends = member.getFriendsHaveMessage();
       const friendChat = friends.find(fr => fr.id === req.params.friendId);
       // generate jwt token
       const token = jwt.sign(
@@ -267,6 +278,33 @@ module.exports.getChatFriend = async (req, res, next) => {
         const textTimeFrom = moment(friendChat.status).fromNow()
         statusText = `<strong class="text-secondary">Hoạt động ${textTimeFrom}</strong>`
       }
+
+      friends.forEach(fr => {
+        fr.latestMessage = {
+          msg: '',
+          timeFromNow: ''
+        }
+        if (fr.messages.length) {
+          const latestMsgObj = fr.messages[0]
+          let msg = '';
+          if (member.id === latestMsgObj.memberSendId) {
+            msg += 'Bạn: '
+          }
+
+          if (latestMsgObj.type === 'text') {
+            msg += latestMsgObj.content
+          } else {
+            if (member.id === latestMsgObj.memberSendId) {
+              msg = 'Bạn đã gửi một đính kèm'
+            } else {
+              msg = `${fr.name} đã gửi một đính kèm`
+            }
+          }
+          fr.latestMessage.msg = msg
+          moment.locale('vi')
+          fr.latestMessage.timeFromNow = moment(latestMsgObj.time).fromNow(true)
+        }
+      })
 
       res.render('messenger', {
         titleSite: siteMes,

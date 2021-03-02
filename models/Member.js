@@ -81,7 +81,20 @@ memberSchema.methods.getFriends = function () {
       id: friend._id.id,
       name: friend._id.name,
       avatar: friend._id.avatar,
-      status: friend._id.status
+      status: friend._id.status.socketId,
+    }
+  });
+};
+
+// get all friends have message
+memberSchema.methods.getFriendsHaveMessage = function () {
+  return this.friends.map((friend) => {
+    return {
+      id: friend._id.id,
+      name: friend._id.name,
+      avatar: friend._id.avatar,
+      status: friend._id.status.socketId,
+      messages: friend.groupMessageId.messages
     }
   });
 };
