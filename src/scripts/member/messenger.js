@@ -1,4 +1,5 @@
 import moment from 'moment';
+import socket from '../../../socket/socket';
 import '../global/chat-utils'
 
 const Messenger = (() => {
@@ -77,6 +78,22 @@ const Messenger = (() => {
     // scroll bottom
     // chatMain.scrollTop = chatMain.scrollHeight;
   });
+
+  socket.on('msg-friendOnline', ({ memberId }) => {
+    $(`.friend-item[data-id="${memberId}"]`).addClass('is-online')
+    const $mainChat = $(`#main-right[data-id="${memberId}"]`)
+    if ($mainChat.length) {
+      $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>')
+    }
+  })
+
+  socket.on('msg-friendOffline', ({ memberId }) => {
+    $(`.friend-item[data-id="${memberId}"]`).removeClass('is-online')
+    const $mainChat = $(`#main-right[data-id="${memberId}"]`)
+    if ($mainChat.length) {
+      $mainChat.find('.text-status').html('<strong class="text-secondary">Hoạt động 1 phút trước</strong>')
+    }
+  })
 
 
   // output message in main chat area

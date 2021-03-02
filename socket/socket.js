@@ -13,7 +13,6 @@ mongoose.connect(process.env.URI_MONGODB, {
 
 const socket = function (io) {
   io.on('connection', (socket) => {
-    console.log('connection');
     // handle error
     socket.on('error', roomController.onError);
 
@@ -84,7 +83,9 @@ const socket = function (io) {
 
     // ----------------- messenger ------------------
     // receive signal online from client
-    socket.on('msg-memberOnline', messengerController.onMemberOnline)
+    socket.on('msg-memberOnline', function (data) {
+      messengerController.onMemberOnline.bind(this, io, data)()
+    })
 
     // receive message from client
     socket.on('msg-messageChat', function (data) {

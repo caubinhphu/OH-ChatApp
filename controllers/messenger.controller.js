@@ -263,7 +263,9 @@ module.exports.getChatFriend = async (req, res, next) => {
       // set status text
       let statusText = '<strong class="text-success">Đang hoạt động</strong>'
       if (friendChat.status !== 'online') {
-        statusText = '<strong class="text-secondary">Hiện không hoạt động</strong>'
+        moment.locale('vi')
+        const textTimeFrom = moment(friendChat.status).fromNow()
+        statusText = `<strong class="text-secondary">Hoạt động ${textTimeFrom}</strong>`
       }
 
       res.render('messenger', {

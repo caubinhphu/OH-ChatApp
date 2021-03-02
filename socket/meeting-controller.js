@@ -575,16 +575,23 @@ module.exports.onDisconnectRequest = function (reason) {
 
 // disconnect
 module.exports.onDisconnect = async function (io, reason) {
-  console.log('disconnect', this.id);
+  // console.log('disconnect', this.id);
 
   // check is member
-  const member = await Member.findOne({ socketId: this.id });
+  const member = await Member.findOne({ socketId: this.id }).populate('friends._id');
   if (member) {
     // set offline for member
     member.socketId = ''
     member.status = new Date().toISOString()
 
     await member.save()
+
+    // send signal offline to friends are online
+    member.friends.forEach(fr => {
+      if (fr.status === 'online' && fr.socketId) {
+        io.to(fr.socketId).emit('msg-friendOffline', { memberId: member.id });
+      }
+    })
   } else {
     // find user by socketId to find the room
     const user = await User.findOne({ socketId: this.id });

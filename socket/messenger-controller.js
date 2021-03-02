@@ -8,16 +8,23 @@ const GroupMessage = require('../models/GroupMessage');
 const formatMessage = require('../utils/message');
 
 // receive event join to the room from client
-module.exports.onMemberOnline = async function ({ memberId }) {
+module.exports.onMemberOnline = async function (io, { memberId }) {
   try {
   // find member
-    const member = await Member.findById(memberId);
+    const member = await Member.findById(memberId).populate('friends._id');
     if (member) {
       // change status and socketId
       member.status = 'online'
       member.socketId = this.id
 
       await member.save()
+
+      // send signal online to friends are online
+      member.friends.forEach(fr => {
+        if (fr.status === 'online' && fr.socketId) {
+          io.to(fr.socketId).emit('msg-friendOnline', { memberId: member.id });
+        }
+      })
     } else {
       this.emit('error', 'Không tồn tại thành viên');
     }
