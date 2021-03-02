@@ -301,7 +301,6 @@ module.exports.getChatFriend = async (req, res, next) => {
             }
           }
           fr.latestMessage.msg = msg
-          moment.locale('vi')
           fr.latestMessage.timeFromNow = moment(latestMsgObj.time).fromNow(true)
         }
       })

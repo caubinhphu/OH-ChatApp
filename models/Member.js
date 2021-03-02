@@ -81,7 +81,7 @@ memberSchema.methods.getFriends = function () {
       id: friend._id.id,
       name: friend._id.name,
       avatar: friend._id.avatar,
-      status: friend._id.status.socketId,
+      status: friend._id.status,
     }
   });
 };
@@ -93,7 +93,7 @@ memberSchema.methods.getFriendsHaveMessage = function () {
       id: friend._id.id,
       name: friend._id.name,
       avatar: friend._id.avatar,
-      status: friend._id.status.socketId,
+      status: friend._id.status,
       messages: friend.groupMessageId.messages
     }
   });
