@@ -254,7 +254,7 @@ module.exports.getChatFriend = async (req, res, next) => {
         populate: {
           path: 'messages',
           options: {
-            limit: 2,
+            limit: 10,
             sort: { _id: -1},
           }
         },
@@ -271,14 +271,17 @@ module.exports.getChatFriend = async (req, res, next) => {
         process.env.JWT_SECRET
       );
 
+      // set local time moment
+      moment.locale('vi')
+
       // set status text
       let statusText = '<strong class="text-success">Đang hoạt động</strong>'
       if (friendChat.status !== 'online') {
-        moment.locale('vi')
         const textTimeFrom = moment(friendChat.status).fromNow()
         statusText = `<strong class="text-secondary">Hoạt động ${textTimeFrom}</strong>`
       }
 
+      // format msg latest
       friends.forEach(fr => {
         fr.latestMessage = {
           msg: '',
@@ -305,10 +308,41 @@ module.exports.getChatFriend = async (req, res, next) => {
         }
       })
 
+      // format list msg friend is chatting
+      const messagesActive = friendChat.messages.map(msg => {
+        const msgFormat = {
+          id: msg._id,
+          content: msg.content,
+          avatar: '',
+          time: '',
+          me: true,
+          name: ''
+        }
+        const timeDate = moment(msg.time).date()
+        const nowDate = moment().date()
+
+        if (nowDate - timeDate <= 0) {
+          msgFormat.time = moment(msg.time).format('H:mm')
+        } else if (nowDate - timeDate === 1) {
+          msgFormat.time = 'Hôm qua: ' + moment(msg.time).format('H:mm')
+        } else {
+          msgFormat.time = moment(msg.time).format('DD/MM/YYYY H:mm')
+        }
+        if (msg.memberSendId.toString() !== member.id) {
+          msgFormat.me = false
+          msgFormat.avatar = friendChat.avatar
+          msgFormat.name = friendChat.name
+        }
+        return msgFormat
+      }).sort((a, b) => {
+        return a.id.getTimestamp() - b.id.getTimestamp()
+      })
+
       res.render('messenger', {
         titleSite: siteMes,
         friends,
         friendChat,
+        messagesActive,
         token,
         statusText
       });
@@ -326,7 +360,7 @@ module.exports.getAddFriend = async (req, res, next) => {
     const { friendId } = req.params;
     const member = await Member.findById(req.user.id);
     const friend = await Member.findById(friendId);
-    if (member && friend) {
+    if (member && friend && friend.active) {
       const groupMessage = await GroupMessage.create({
         messages: []
       });

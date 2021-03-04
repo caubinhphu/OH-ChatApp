@@ -4,6 +4,9 @@ import '../global/chat-utils'
 const Messenger = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
+
+  scrollBottomChatBox()
+
   if (msgForm) {
     const classScBottom = '.scroll-bottom'
 
@@ -24,11 +27,15 @@ const Messenger = (() => {
 
         // create message obj to show in client
         const msgObj = {
-          time: moment().format('h:mm A'),
+          time: moment().format('H:mm'),
           username: 'Me',
           message: escapeHtml(inputMsg.value),
         };
-        outputMessage(msgObj, true);
+        outputMessage(msgObj, true)
+        const friendId = $('#main-right').attr('data-id')
+        $(`.friend-item[data-id="${friendId}"]`).find('.last-msg').html(
+          `<small>Bạn: ${msgObj.message}</small><small>1 phút</small>`
+        )
 
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
@@ -69,13 +76,18 @@ const Messenger = (() => {
   }
 
   // receive msg obj from server
-  socket.on('msg-messenger', (msgObj) => {
-    // output message
-    outputMessage(msgObj);
-    // console.log(msgObj);
+  socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
+    const friendId = $('#main-right').attr('data-id')
+    if (friendId === senderId) {
+      // output message
+      outputMessage(msgObj);
 
-    // scroll bottom
-    // chatMain.scrollTop = chatMain.scrollHeight;
+      // scroll bottom
+      chatMain.scrollTop = chatMain.scrollHeight;
+    }
+    $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
+      `<small>${msgObj.message}</small><small>1 phút</small>`
+    )
   });
 
   socket.on('msg-friendOnline', ({ memberId }) => {

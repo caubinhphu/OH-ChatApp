@@ -45200,7 +45200,7 @@ var CommonChatRoom = function () {
       }); // create message obj to show in client
 
       var msgObj = {
-        time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('h:mm A'),
+        time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
         username: 'Me',
         message: escapeHtml(inputMsg.value)
       };

@@ -38201,6 +38201,8 @@ var Messenger = function () {
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
 
+  scrollBottomChatBox();
+
   if (msgForm) {
     var classScBottom = '.scroll-bottom'; // event submit form chat
 
@@ -38218,11 +38220,13 @@ var Messenger = function () {
         }); // create message obj to show in client
 
         var msgObj = {
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('h:mm A'),
+          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
           username: 'Me',
           message: escapeHtml(inputMsg.value)
         };
-        outputMessage(msgObj, true); // scroll bottom
+        outputMessage(msgObj, true);
+        var friendId = $('#main-right').attr('data-id');
+        $(".friend-item[data-id=\"".concat(friendId, "\"]")).find('.last-msg').html("<small>B\u1EA1n: ".concat(msgObj.message, "</small><small>1 ph\xFAt</small>")); // scroll bottom
 
         chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
 
@@ -38257,15 +38261,23 @@ var Messenger = function () {
   } // receive msg obj from server
 
 
-  socket.on('msg-messenger', function (msgObj) {
-    // output message
-    outputMessage(msgObj);
-    console.log(msgObj); // scroll bottom
-    // chatMain.scrollTop = chatMain.scrollHeight;
+  socket.on('msg-messenger', function (_ref) {
+    var senderId = _ref.senderId,
+        msgObj = _ref.msg;
+    var friendId = $('#main-right').attr('data-id');
+
+    if (friendId === senderId) {
+      // output message
+      outputMessage(msgObj); // scroll bottom
+
+      chatMain.scrollTop = chatMain.scrollHeight;
+    }
+
+    $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
   });
-  socket.on('msg-friendOnline', function (_ref) {
-    var memberId = _ref.memberId;
-    console.log('online', memberId);
+  socket.on('msg-friendOnline', function (_ref2) {
+    var memberId = _ref2.memberId;
+    // console.log('online', memberId);
     $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
     var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
 
@@ -38273,13 +38285,13 @@ var Messenger = function () {
       $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
     }
   });
-  socket.on('msg-friendOffline', function (_ref2) {
-    var memberId = _ref2.memberId;
+  socket.on('msg-friendOffline', function (_ref3) {
+    var memberId = _ref3.memberId;
     $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
     var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
 
     if ($mainChat.length) {
-      $mainChat.find('.text-status').html('<strong class="text-secondary">Hoạt động 1 phút trước</strong>');
+      $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
     }
   }); // output message in main chat area
 

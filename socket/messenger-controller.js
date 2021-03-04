@@ -57,9 +57,11 @@ module.exports.onMessageChat = async function (io, { message, token }) {
         if (groupMessage) {
           // create new message
           const messageObj = await Message.create({
+            time: new Date(),
             content: msg.message,
             memberSendId: me.id
           })
+          console.log(messageObj.time);
           // push msg to group and save group
           groupMessage.messages.push(messageObj)
           await groupMessage.save()
@@ -70,7 +72,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
         // if friend is online => send msg by socket
         if (friend.status === 'online' && friend.socketId) {
           // member is online => emit socket
-          io.to(friend.socketId).emit('msg-messenger', msg);
+          io.to(friend.socketId).emit('msg-messenger', {senderId: me.id, msg});
         }
       } else {
         this.emit('error', 'Không thể chat với người không phải là bạn của bạn');

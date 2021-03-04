@@ -20,7 +20,7 @@ const formatMessage = function (username, message, avatar) {
     username,
     avatar,
     message: escapeHtml(message),
-    time: moment().format('h:mm A'),
+    time: moment().format('H:mm'),
   };
 };
 

@@ -38,7 +38,7 @@ const CommonChatRoom = (() => {
 
       // create message obj to show in client
       const msgObj = {
-        time: moment().format('h:mm A'),
+        time: moment().format('H:mm'),
         username: 'Me',
         message: escapeHtml(inputMsg.value),
       };
