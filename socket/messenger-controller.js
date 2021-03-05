@@ -38,18 +38,21 @@ module.exports.onMessageChat = async function (io, { message, token }) {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
-    const friend = await Member.findById(dataToken.memberId)
+    // const friend = await Member.findById(dataToken.memberId)
     const me = await Member.findOne({ socketId: this.id })
-                           .populate('friends._id')
+                           .populate({
+                             path: 'friends._id',
+                             match: { _id: dataToken.memberId }
+                           })
                            .populate('friends.groupMessageId')
 
-    if (friend && me) {
+    if (me) {
       // save msg to db
       // find friend related from friends of me and friend id
-      const friendRelated =  me.friends.find(fr => fr._id.id === friend.id)
+      const friendRelated =  me.friends.find(fr => fr._id)
       if (friendRelated) {
         // format msg
-        const msg = formatMessage(friend.name, message, friend.avatar)
+        const msg = formatMessage(me.name, message, me.avatar)
 
         // me save msg
         // find group msg
@@ -61,7 +64,6 @@ module.exports.onMessageChat = async function (io, { message, token }) {
             content: msg.message,
             memberSendId: me.id
           })
-          console.log(messageObj.time);
           // push msg to group and save group
           groupMessage.messages.push(messageObj)
           await groupMessage.save()
@@ -70,9 +72,9 @@ module.exports.onMessageChat = async function (io, { message, token }) {
         }
 
         // if friend is online => send msg by socket
-        if (friend.status === 'online' && friend.socketId) {
+        if (friendRelated._id.status === 'online' && friendRelated._id.socketId) {
           // member is online => emit socket
-          io.to(friend.socketId).emit('msg-messenger', {senderId: me.id, msg});
+          io.to(friendRelated._id.socketId).emit('msg-messenger', {senderId: me.id, msg});
         }
       } else {
         this.emit('error', 'Không thể chat với người không phải là bạn của bạn');

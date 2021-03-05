@@ -6,6 +6,8 @@ const controller = require('../controllers/messenger.controller');
 
 router.get('/', controller.getIndex);
 
+router.get('/chatold', controller.getChatOld)
+
 router.route('/profile')
   .get(controller.getProfile)
   .put(controller.putProfile)

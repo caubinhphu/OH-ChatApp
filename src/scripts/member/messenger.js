@@ -1,9 +1,12 @@
 import moment from 'moment';
+import axios from 'axios';
 import '../global/chat-utils'
 
 const Messenger = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
+  let hasMessenger = true
+  let currentPageChat = 0
 
   scrollBottomChatBox()
 
@@ -64,14 +67,59 @@ const Messenger = (() => {
       $(this).parents('.wrap-msg-box').removeClass('is-focus');
     });
 
-    $('#main-right-chat-content').on('scroll', function() {
-      if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+    // handle scroll box chat: load old msg, scroll to bottom
+    $('#main-right-chat-content').on('scroll', async function() {
+      if (this.scrollTop === 0 && hasMessenger === true) {
+        $('.wrap-loader-chat').removeClass('d-none')
+        try {
+          const friendId = $('#main-right').attr('data-id')
+          const responsive = await axios.get(`/messenger/chatold/?friendid=${friendId}&page=${currentPageChat + 1}`);
+          const { messages, hasMsg } = responsive.data;
+          $('.wrap-loader-chat').addClass('d-none')
+          currentPageChat++
+          hasMessenger = hasMsg
+          const htmlMsgs = messages.map(msg => {
+            if (msg.me) {
+              return `
+                <div class="message text-right">
+                  <small class="message-time">${msg.time}</small>
+                  <div>
+                    <div class="msg-me">
+                      <small class="message-content mx-0">${msg.content}</small>
+                    </div>
+                  </div>
+                </div>`
+            }
+            return `
+              <div class="message">
+                <small class="message-time">${msg.time}</small>
+                <div>
+                  <div class="msg">
+                    <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
+                    <small class="message-content">${msg.content}</small>
+                  </div>
+                </div>
+              </div>`
+          }).join('')
+
+          // prepend msg list
+          const curScrollPos = this.scrollTop;
+          const oldScroll = this.scrollHeight - this.clientHeight;
+          $(this).prepend(htmlMsgs)
+          const newScroll = this.scrollHeight - this.clientHeight;
+          this.scrollTop = curScrollPos + (newScroll - oldScroll);
+          console.log(messages);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
         $(classScBottom).addClass('is-show');
       } else {
         $(classScBottom).removeClass('is-show');
       }
     });
 
+    // scroll to bottom chat box
     $(classScBottom).on('click', scrollBottomChatBox);
   }
 

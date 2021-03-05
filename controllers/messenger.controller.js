@@ -14,11 +14,14 @@ const {
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
 const sendMail = require('../utils/send-mail');
+const formatMessageList = require('../utils/messenger');
 const key = require('../config/key');
 
 const siteMes = 'OH Chat - Messenger'
 const notMem = 'Thành viên không tồn tại'
 const settingUrl = '/messenger/setting'
+
+const msgPerLoad = 10
 
 const storage = multer.diskStorage({
   // destination: './public/images/users/',
@@ -254,7 +257,7 @@ module.exports.getChatFriend = async (req, res, next) => {
         populate: {
           path: 'messages',
           options: {
-            limit: 10,
+            limit: msgPerLoad,
             sort: { _id: -1},
           }
         },
@@ -309,34 +312,7 @@ module.exports.getChatFriend = async (req, res, next) => {
       })
 
       // format list msg friend is chatting
-      const messagesActive = friendChat.messages.map(msg => {
-        const msgFormat = {
-          id: msg._id,
-          content: msg.content,
-          avatar: '',
-          time: '',
-          me: true,
-          name: ''
-        }
-        const timeDate = moment(msg.time).date()
-        const nowDate = moment().date()
-
-        if (nowDate - timeDate <= 0) {
-          msgFormat.time = moment(msg.time).format('H:mm')
-        } else if (nowDate - timeDate === 1) {
-          msgFormat.time = 'Hôm qua: ' + moment(msg.time).format('H:mm')
-        } else {
-          msgFormat.time = moment(msg.time).format('DD/MM/YYYY H:mm')
-        }
-        if (msg.memberSendId.toString() !== member.id) {
-          msgFormat.me = false
-          msgFormat.avatar = friendChat.avatar
-          msgFormat.name = friendChat.name
-        }
-        return msgFormat
-      }).sort((a, b) => {
-        return a.id.getTimestamp() - b.id.getTimestamp()
-      })
+      const messagesActive = formatMessageList(friendChat.messages, member, friendChat)
 
       res.render('messenger', {
         titleSite: siteMes,
@@ -353,6 +329,44 @@ module.exports.getChatFriend = async (req, res, next) => {
     next(error);
   }
 };
+
+// get old msg
+module.exports.getChatOld = async (req, res) => {
+  const { friendid: friendId, page } = req.query
+  try {
+    const member = await Member.findById(req.user.id)
+      .populate({
+        path: 'friends._id',
+        match: { _id: friendId }
+      })
+      .populate({
+        path: 'friends.groupMessageId',
+        populate: {
+          path: 'messages',
+          options: {
+            limit: msgPerLoad + 1,
+            sort: { _id: -1},
+            skip: msgPerLoad * page
+          }
+        }
+      })
+    if (member) {
+      const friendRelated =  member.friends.find(fr => fr._id)
+      if (friendRelated) {
+        const messages = formatMessageList(friendRelated.groupMessageId.messages, member, friendRelated._id)
+        let hasMsg = false
+        if (messages.length > msgPerLoad) {
+          messages.pop()
+          hasMsg = true
+        }
+        return res.status(200).json({ messages, hasMsg })
+      }
+    }
+    return res.status(400).json({ mgs: 'User không tồn tại' })
+  } catch (error) {
+    res.status(400).json({ mgs: 'User không tồn tại' })
+  }
+}
 
 // add friend
 module.exports.getAddFriend = async (req, res, next) => {
@@ -549,3 +563,4 @@ module.exports.getMemberInfo = async (req, res, next) => {
     next(error);
   }
 };
+
