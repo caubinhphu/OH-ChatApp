@@ -22,9 +22,9 @@ block contentMain
                 img.rounded-circle(src=friend.avatar, alt=friend.name, width="45px")
               .friend-item-info.ml-2
                 strong= friend.name
-                .last-msg
+                .last-msg.text-dark.un-read
                   small= friend.latestMessage.msg
-                  small.ml-2= friend.latestMessage.timeFromNow
+                  small= friend.latestMessage.timeFromNow
             a.ps-as(href=`/messenger/chat/${friend.id}`, title=`${friend.name}`)
               span.sr-only= `Chat with ${friend.name}`
 

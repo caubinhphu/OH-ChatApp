@@ -7397,6 +7397,30 @@ body {
   max-width: 45px;
 }
 
+.last-msg small:first-child {
+  position: relative;
+}
+
+.last-msg small:first-child::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #22c0c9;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -10px;
+  border-radius: 50%;
+}
+
+.last-msg small:last-child {
+  margin-left: 1rem;
+}
+
+.last-msg.un-read {
+  font-weight: 800;
+}
+
 @media only screen and (max-width: 850px) {
   .friend-item-info {
     display: none;

@@ -177,7 +177,30 @@
     max-width: 45px;
   }
 }
-
+.last-msg {
+  small {
+    &:first-child {
+      position: relative;
+      &::after {
+        content: "";
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: $blue;
+        top: 50%;
+        transform: translateY(-50%);
+        right: -10px;
+        border-radius: 50%;
+      }
+    }
+    &:last-child {
+      margin-left: 1rem;
+    }
+  }
+  &.un-read {
+    font-weight: 800;
+  }
+}
 @media only screen and (max-width: 850px) {
   .friend-item-info {
     display: none;
