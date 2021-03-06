@@ -1,5 +1,6 @@
 import moment from 'moment';
 import axios from 'axios';
+import SimplePeer from 'simple-peer'
 import '../global/chat-utils'
 
 const Messenger = (() => {
@@ -121,6 +122,138 @@ const Messenger = (() => {
 
     // scroll to bottom chat box
     $(classScBottom).on('click', scrollBottomChatBox);
+
+    $('#call-friend-btn').on('click', () => {
+      const friendId = $('#main-right').attr('data-id')
+      const peerCall = new SimplePeer({
+        initiator: true, // init -> offer peer
+        trickle: false
+      });
+
+      peerCall.on('signal', (signal) => {
+            socket.emit('msg-offerStreamAudio', {
+              receiverId: $('#main-right').attr('data-id'),
+              callerId: $('#member-id').text(),
+              signal: JSON.stringify(signal),
+            });
+          });
+
+      window.peerCall = peerCall
+    console.log(window);
+    const h = $(window).height()
+        const w = $(window).width() < 1200 ? $(window).width() : 1200
+        const x = ($(window).width() - w) / 2
+      const newWindow2 = window.open('/messenger/chat-audio', 'OH-2', `height=${h},width=${w},left=${x},top=${0}`);
+      // popupWindow(`/messenger/chat-audio/${friendId}#call-audio`, 'OH Chat - Messenger')
+      console.log(newWindow2);
+      if (window.focus) {
+        newWindow2.focus();
+        newWindow2.typeCall = 'caller'
+        newWindow2.parentWindow = window
+
+
+        
+        // newWindow2.signalPeer = signal,
+        // newWindow2.peer = window.peerCall
+      }
+      window.newWindow2 = newWindow2
+    })
+    $(window).on('signalOffer', (e) => {
+      console.log(window.offerSignal)
+      console.log(e);
+    })
+
+    // create new peer
+  // function createPeer(receiverId, callerId) {
+  //   const peer = new SimplePeer({
+  //     initiator: true, // init -> offer peer
+  //     trickle: false
+  //   });
+
+  //   // add events
+  //   peer.on('connect', () => console.log('call connection'));
+
+  //   peer.on('close', () => console.log('call close'));
+
+  //   // peer.on('track', (track, stream) => {
+  //   //   console.log('call track');
+  //   //   if (track.kind === 'audio') {
+  //   //     outputAudio(stream);
+  //   //   }
+  //   // });
+
+  //   peer.on('signal', (signal) => {
+  //     socket.emit('msg-offerStreamAudio', {
+  //       receiverId,
+  //       callerId,
+  //       signal: JSON.stringify(signal),
+  //     });
+  //   });
+
+  //   return peer;
+  // }
+
+  // create a new peer (answer peer) to add peers
+  // function addPeer(signal, callerId) {
+  //   // outputShowMeeting(callerId, avatar, callerName);
+
+  //   const peer = new SimplePeer({
+  //     initiator: false, // no init -> answer peer
+  //     trickle: false,
+  //   });
+
+  //   // add offer signal (signal receive from caller (new user join)) for peer
+  //   // peer.signal(signal);
+
+  //   // add events
+  //   peer.on('connect', () => console.log('answer connect'));
+
+  //   peer.on('close', () => {
+  //     console.log('answer close');
+  //   });
+
+  //   peer.on('signal', (signal) => {
+  //     socket.emit('answerStream', {
+  //       signal: JSON.stringify(signal),
+  //       callerId
+  //     });
+  //   });
+
+  //   peer.on('stream', (stream) => {
+  //     console.log('answer stream');
+  //     if (stream.getVideoTracks().length >= 2) {
+  //       outputShare(stream, callerId)
+  //     }
+  //   });
+
+  //   peer.on('track', (track, stream) => {
+  //     console.log('answer track');
+  //     if (track.kind === 'video') {
+  //       if (stream.getVideoTracks().length < 2) {
+  //         outputVideo(stream, callerId);
+  //       }
+  //     } else if (track.kind === 'audio') {
+  //       outputAudio(stream, callerId);
+  //     }
+  //   });
+
+  //   return peer;
+  // }
+
+
+    function popupWindow(url, windowName, isCaller = true) {
+      const h = $(window).height()
+      const w = $(window).width() < 1200 ? $(window).width() : 1200
+      const x = ($(window).width() - w) / 2
+      const newWindow = window.open(url, windowName, `height=${h},width=${w},left=${x},top=${0}`);
+      if (window.focus) {
+        newWindow.focus();
+        if (!isCaller) {
+          newWindow.signalPeer = ''
+        }
+      }
+      return false;
+    }
   }
 
   // receive msg obj from server
@@ -155,6 +288,62 @@ const Messenger = (() => {
     }
   })
 
+  socket.on('msg-hasCallAudio', ({ signal, callerId }) => {
+    window.signal = signal
+    window.callerId = callerId
+
+    $('.popup-has-call').removeClass('d-none')
+  })
+
+  socket.on('msg-as', ({ signal, callerId }) => {
+    
+
+        // $('#main-left-top').on('click', () => {
+          // setTimeout(() => {
+          //   // window.open('http://google.com')
+            
+        
+        
+          // }, 3000);
+          
+        // })
+
+        // $('#main-left-top').trigger('click')
+
+        window.newWindow2.signalPeer = signal,
+        window.newWindow2.peer = window.peerCall
+
+        window.newWindow2.dispatchEvent(new CustomEvent('changePeer'))
+  })
+  
+  $('#btn-call-ok').on('click', () => {
+    console.log('okokokokokokokokokokokookokokokokookokokokokokoko');
+    const peerAnswer = new SimplePeer({
+      initiator: false, // no init -> answer peer
+      trickle: false,
+    })
+    peerAnswer.signal(window.signal)
+    peerAnswer.on('signal', (signal) => {
+      console.log('asdf asbfdasn f a sdf asdf as df asn  fn as n fd n as nfb asmndfnasdn fvf');
+          socket.emit('msg-answerStream', {
+            signal: JSON.stringify(signal),
+            callerId: window.callerId
+          });
+        });
+
+        const h = $(window).height()
+        const w = $(window).width() < 1200 ? $(window).width() : 1200
+        const x = ($(window).width() - w) / 2
+        const newWindow = window.open('/messenger/chat-audio', 'OH', `height=${h},width=${w},left=${x},top=${0}`);
+        console.log(window);
+        console.log(newWindow);
+        if (window.focus) {
+          newWindow.focus();
+          newWindow.signalPeer = window.signal,
+          newWindow.peer = peerAnswer
+          newWindow.typeCall = 'receiver'
+        }
+    });
 
   // output message in main chat area
   function outputMessage(msgObj, me = false) {

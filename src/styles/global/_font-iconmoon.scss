@@ -25,6 +25,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-telephone:before {
+  content: "\e927";
+}
 .icon-circle-down:before {
   content: "\e926";
 }

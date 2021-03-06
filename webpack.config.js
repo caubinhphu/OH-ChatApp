@@ -11,22 +11,23 @@ const babelPolyfill = 'babel-polyfill'
 
 module.exports = {
   entry: {
-    home: [
-      babelPolyfill,
-      './src/scripts/home.js',
-      './src/styles/app-meeting.scss',
-    ],
-    'create-room': [babelPolyfill, './src/scripts/create-room.js'],
-    'join-room': [babelPolyfill, './src/scripts/join-room.js'],
-    'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
-    'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
+    // home: [
+    //   babelPolyfill,
+    //   './src/scripts/home.js',
+    //   './src/styles/app-meeting.scss',
+    // ],
+    // 'create-room': [babelPolyfill, './src/scripts/create-room.js'],
+    // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
+    // 'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
+    // 'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
     'home-messenger': [
       babelPolyfill,
       './src/scripts/home-messenger.js',
       './src/styles/app-messenger.scss',
     ],
-    'msg-profile': [babelPolyfill, './src/scripts/msg-profile.js'],
-    'msg-setting': [babelPolyfill, './src/scripts/msg-setting.js'],
+    // 'msg-profile': [babelPolyfill, './src/scripts/msg-profile.js'],
+    // 'msg-setting': [babelPolyfill, './src/scripts/msg-setting.js'],
+    'msg-chat-audio': [babelPolyfill, './src/scripts/msg-chat-audio.js'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),

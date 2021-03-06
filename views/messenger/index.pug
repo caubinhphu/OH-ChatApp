@@ -1,7 +1,7 @@
 extend ./layout
 
 block contentMain
-  #main-messenger.d-flex
+  #main-messenger.d-flex.ps-rv
     #main-left.p-3.d-flex.flex-column
       #main-left-top.d-flex.justify-content-between.align-items-center
         h4.mb-0 Chat
@@ -39,9 +39,9 @@ block contentMain
               br
               small.text-status !{statusText}
           #main-right-top-right.d-flex
-            button.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
+            button#call-friend-btn.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
               span.icomoon.icon-phone
-            button.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
+            button#video-friend-btn.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
               span.icomoon.icon-camera
         .wrap-msg-box.ps-rv.flex-fill
           .wrap-loader-chat.d-none
@@ -73,6 +73,20 @@ block contentMain
               textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
             button.btn.btn-default.text-secondary
               span.icomoon.icon-send
+
+  .popup-has-call.d-none.ps-as
+    .d-flex.justify-content-center.align-items-center.h-100
+      .wrap-pop-has-call 
+        h3 Cuộc gọi đến
+        .d-flex
+          img.receiver-img
+          div
+            p Name đang gọi cho bạn 
+            p Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận
+        .text-right 
+          button.btn Từ chối
+          button.btn#btn-call-ok Chấp nhận
+
 
 append scripts
   script(src="/js/home-messenger.js")

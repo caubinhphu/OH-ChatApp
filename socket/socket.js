@@ -91,6 +91,14 @@ const socket = function (io) {
     socket.on('msg-messageChat', function (data) {
       messengerController.onMessageChat.bind(this, io, data)()
     });
+
+    socket.on('msg-offerStreamAudio', function(data) {
+      messengerController.onOfferStreamAudio.bind(this, io, data)()
+    })
+
+    socket.on('msg-answerStream', function(data) {
+      messengerController.onAnswerStreamAudio.bind(this, io, data)()
+    })
   });
 };
 

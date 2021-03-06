@@ -6807,6 +6807,22 @@ background: #ccc;
   box-shadow: inset 0 0 0 45px #14a76c;
 }
 
+.btn-icon.btn-red {
+  color: #c8102e;
+}
+
+.btn-icon.btn-red:after {
+  box-shadow: inset 0 0 0 1px #c8102e;
+}
+
+.btn-icon.btn-red:hover {
+  color: #fff;
+}
+
+.btn-icon.btn-red:hover::after {
+  box-shadow: inset 0 0 0 45px #c8102e;
+}
+
 @font-face {
   font-family: 'icomoon';
   src: url("../fonts/icomoon.eot?fttvtl");
@@ -6828,6 +6844,10 @@ background: #ccc;
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-telephone:before {
+  content: "\E927";
 }
 
 .icon-circle-down:before {
@@ -7421,6 +7441,16 @@ body {
   font-weight: 800;
 }
 
+.popup-has-call {
+  top: -60px;
+}
+
+.wrap-pop-has-call {
+  background: red;
+  padding: 20px;
+  border-radius: 20px;
+}
+
 @media only screen and (max-width: 850px) {
   .friend-item-info {
     display: none;
@@ -7516,4 +7546,22 @@ body {
     border-bottom: none;
     border-right: 1px solid;
   }
+}
+
+.main-chat-audio {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.wrap-avatar-call {
+  margin-bottom: 20px;
+}
+
+.wrap-avatar-call img {
+  max-width: 150px;
+}
+
+.wrap-ctrl-call {
+  margin-bottom: 30px;
 }

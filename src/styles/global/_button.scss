@@ -174,4 +174,16 @@
       }
     }
   }
+  &.btn-red {
+    color: $color-c8;
+    &:after {
+      box-shadow: inset 0 0 0 1px $color-c8;
+    }
+    &:hover {
+      color: $white;
+      &::after {
+        box-shadow: inset 0 0 0 45px $color-c8;
+      }
+    }
+  }
 }

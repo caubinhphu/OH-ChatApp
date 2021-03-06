@@ -8,6 +8,8 @@ router.get('/', controller.getIndex);
 
 router.get('/chatold', controller.getChatOld)
 
+router.get('/chat-audio', controller.getChatAudioFriend);
+
 router.route('/profile')
   .get(controller.getProfile)
   .put(controller.putProfile)

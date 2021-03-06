@@ -201,6 +201,14 @@
     font-weight: 800;
   }
 }
+.popup-has-call {
+  top: -60px;
+}
+.wrap-pop-has-call {
+  background: red;
+  padding: 20px;
+  border-radius: 20px;
+}
 @media only screen and (max-width: 850px) {
   .friend-item-info {
     display: none;

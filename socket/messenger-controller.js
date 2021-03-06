@@ -86,3 +86,47 @@ module.exports.onMessageChat = async function (io, { message, token }) {
     this.emit('error', error.message);
   }
 }
+
+module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, signal }) {
+  try {
+    const me = await Member.findById(callerId)
+                            .populate({
+                              path: 'friends._id',
+                              match: { _id: receiverId }
+                            })
+    if (me) {
+      const friend = me.friends.find(fr => fr._id)
+      if (friend && friend._id.status === 'online' && friend._id.socketId) {
+        io.to(friend._id.socketId).emit('msg-hasCallAudio', { signal, callerId })
+      }
+    }
+    // io.to(receiveId).emit('msg-offerSignalAudio', {
+    //   callerId: data.callerId,
+    //   avatarCaller: data.avatar,
+    //   callerName: data.callerName,
+    //   signal: data.signal,
+    // });
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
+
+module.exports.onAnswerStreamAudio = async function (io, { signal, callerId }) {
+  try {
+    const friend = await Member.findById(callerId)
+    console.log(friend);
+    console.log(signal);
+    console.log(callerId);
+    if (friend && friend.status === 'online') {
+      io.to(friend.socketId).emit('msg-as', { signal, callerId })
+    }
+    // io.to(receiveId).emit('msg-offerSignalAudio', {
+    //   callerId: data.callerId,
+    //   avatarCaller: data.avatar,
+    //   callerName: data.callerName,
+    //   signal: data.signal,
+    // });
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}

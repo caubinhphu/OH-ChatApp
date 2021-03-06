@@ -564,3 +564,10 @@ module.exports.getMemberInfo = async (req, res, next) => {
   }
 };
 
+// get chat audio with friend
+module.exports.getChatAudioFriend = async (req, res, next) => {
+  const { friendId } = req.params
+  res.render('messenger/chat-audio', {
+    titleSide: siteMes
+  })
+}
