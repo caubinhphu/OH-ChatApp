@@ -101,12 +101,6 @@ module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, 
         io.to(friend._id.socketId).emit('msg-hasCallAudio', { signal, callerId })
       }
     }
-    // io.to(receiveId).emit('msg-offerSignalAudio', {
-    //   callerId: data.callerId,
-    //   avatarCaller: data.avatar,
-    //   callerName: data.callerName,
-    //   signal: data.signal,
-    // });
   } catch (error) {
     this.emit('error', error.message);
   }
@@ -114,20 +108,10 @@ module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, 
 
 module.exports.onAnswerStreamAudio = async function (io, { signal, callerId }) {
   try {
-    console.log(signal, callerId);
     const friend = await Member.findById(callerId)
-    console.log(friend);
-    console.log(signal);
-    console.log(callerId);
     if (friend && friend.status === 'online') {
-      io.to(friend.socketId).emit('msg-answerSignal', { signal, callerId })
+      io.to(friend.socketId).emit('msg-answerSignal', { signal })
     }
-    // io.to(receiveId).emit('msg-offerSignalAudio', {
-    //   callerId: data.callerId,
-    //   avatarCaller: data.avatar,
-    //   callerName: data.callerName,
-    //   signal: data.signal,
-    // });
   } catch (error) {
     this.emit('error', error.message);
   }

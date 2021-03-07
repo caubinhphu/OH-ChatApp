@@ -45487,7 +45487,7 @@ var CommonChatRoomVideo = function () {
   socket.on('infoLeaveRoomForStream', function (_ref2) {
     var userId = _ref2.userId;
     // remove peer of this user
-    console.log(userId);
+    // console.log(userId);
     var peerIndex = peers.findIndex(function (p) {
       return p.offerId === userId || p.answerId === userId;
     });

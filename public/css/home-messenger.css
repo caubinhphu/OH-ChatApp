@@ -7565,3 +7565,15 @@ body {
 .wrap-ctrl-call {
   margin-bottom: 30px;
 }
+
+.mic-ctrl-btn.ctrl-off .icomoon::before {
+  content: "\E923";
+}
+
+.video-ctrl-btn.ctrl-off .icomoon::before {
+  content: "\E918";
+}
+
+.share-ctrl-btn.ctrl-off .icomoon::before {
+  content: "\E915";
+}

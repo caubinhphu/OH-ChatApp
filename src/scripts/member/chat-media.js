@@ -20,7 +20,7 @@ const ChatAudio = (() => {
 
       // add events to peer
       // after connect => add stream audio
-      peer.on('connect', async () => {
+      peer.on('connect', () => {
         console.log('call connection')
         addTrackAudio(peer)
       });
@@ -80,7 +80,7 @@ const ChatAudio = (() => {
 
       // add events
       // conect => add audio stream
-      peer.on('connect', async () => {
+      peer.on('connect', () => {
         console.log('answer connection')
         addTrackAudio(peer)
       });
@@ -142,7 +142,7 @@ const ChatAudio = (() => {
     }
 
     // function add stream track audio to peer
-    function addTrackAudio(peer) {
+    async function addTrackAudio(peer) {
       if (navigator.mediaDevices.getUserMedia) {
         try {
           const audioStream = await navigator.mediaDevices.getUserMedia({

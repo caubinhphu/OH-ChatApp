@@ -1,0 +1,28 @@
+extend ../layout
+
+append styles
+  link(rel="stylesheet", href="/css/home-messenger.css")
+
+block main
+  .main-chat-audio.d-flex
+    .d-flex.flex-column.flex-fill.wrap-chat-audio-box
+      .d-flex.flex-column.flex-fill.justify-content-center
+        .text-center.wrap-avatar-call
+          img.rounded-circle.img-thumbnail(src=friend.avatar, alt=friend.name)
+          video.d-none(autoplay=true)
+        .text-center
+          h3= friend.name
+        .text-calling.text-center
+          h4 Đang gọi....
+      .wrap-ctrl-call.d-flex.justify-content-center
+        button.btn.btn-icon.share-ctrl-btn.btn-disabled
+          span.icomoon.icon-screen_share
+        button.btn.btn-icon.ml-3.video-ctrl-btn.btn-disabled
+          span.icomoon.icon-videocam
+        button.btn.btn-icon.ml-3.mic-ctrl-btn.ctrl-off
+          span.icomoon.icon-mic
+        button.btn.btn-icon.btn-red.ml-3.end-call-btn
+          span.icomoon.icon-telephone
+
+append scripts
+  script(src="/js/msg-chat-media.js")

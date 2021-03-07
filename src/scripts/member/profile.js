@@ -210,9 +210,9 @@ const Profile = (() => {
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0);
         const dataURL = canvas.toDataURL('image/jpeg');
+
         // create file image
         const file = dataURLtoFile(dataURL, 'capture')
-
         canvas.className = 'res-capture ps-as'
         $wrapTake.append(canvas)
 
@@ -237,7 +237,8 @@ const Profile = (() => {
         // return file
         return file
       } catch (error) {
-        outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
+        console.error(error);
+        outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
       }
     }
   }
@@ -251,7 +252,7 @@ const Profile = (() => {
 
   // create file from data base64
   function dataURLtoFile(dataurl, filename) {
-    const arr = dataurl.split(','),
+    let arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),
       n = bstr.length,

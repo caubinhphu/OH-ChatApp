@@ -564,10 +564,20 @@ module.exports.getMemberInfo = async (req, res, next) => {
   }
 };
 
-// get chat audio with friend
-module.exports.getChatAudioFriend = async (req, res, next) => {
+// get chat media (audio, video, share screen) with friend
+module.exports.getChatMediaFriend = async (req, res, next) => {
   const { friendId } = req.params
-  res.render('messenger/chat-audio', {
-    titleSide: siteMes
-  })
+  try {
+    const friend = await Member.findById(friendId)
+    if (friend) {
+      res.render('messenger/chat-media', {
+        titleSide: siteMes,
+        friend
+      })
+    } else {
+      next(new Error(notMem));
+    }
+  } catch (error) {
+    next(error)
+  }
 }

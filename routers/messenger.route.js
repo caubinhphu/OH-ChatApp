@@ -8,8 +8,6 @@ router.get('/', controller.getIndex);
 
 router.get('/chatold', controller.getChatOld)
 
-router.get('/chat-audio', controller.getChatAudioFriend);
-
 router.route('/profile')
   .get(controller.getProfile)
   .put(controller.putProfile)
@@ -30,29 +28,12 @@ router.get('/profile/friend-invitation', controller.getFriendInvitations);
 
 router.get('/chat/:friendId', controller.getChatFriend);
 
+router.get('/chat-media/:friendId', controller.getChatMediaFriend);
+
 router.get('/addfriend/:friendId', controller.getAddFriend);
 
 router.get('/member/:memberId', controller.getMemberInfo);
 
 // router.get('/verify-email/:token', controller.getAddFriend)
-
-// router.get('/profile/add', async (req, res) => {
-//   try {
-//     const member = await Member.findById(req.user.id);
-//     if (member) {
-//       const ms = await Member.find({});
-//       console.log(ms);
-//       ms.forEach((m) => {
-//         member.friends.push({ _id: m._id });
-//       });
-//       await member.save();
-//       res.sendStatus(200);
-//     } else {
-//       res.sendStatus(401);
-//     }
-//   } catch (error) {
-//     res.sendStatus(403);
-//   }
-// });
 
 module.exports = router;

@@ -125,11 +125,12 @@ const Messenger = (() => {
 
     // call audio to friend
     $('#call-friend-btn').on('click', () => {
+      const friendId = $('#main-right').attr('data-id')
       // open sub window call
       const h = $(window).height()
       const w = $(window).width() < 1200 ? $(window).width() : 1200
       const x = ($(window).width() - w) / 2
-      const windowCall = window.open('/messenger/chat-audio', 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
+      const windowCall = window.open(`/messenger/chat-media/${friendId}`, 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
 
       if (window.focus) {
         windowCall.focus();
@@ -233,7 +234,7 @@ const Messenger = (() => {
     const h = $(window).height()
     const w = $(window).width() < 1200 ? $(window).width() : 1200
     const x = ($(window).width() - w) / 2
-    const windowReceive = window.open('/messenger/chat-audio', 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
+    const windowReceive = window.open(`/messenger/chat-media/${window.callerId}`, 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
 
     if (window.focus) {
       windowReceive.focus();
