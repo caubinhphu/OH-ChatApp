@@ -201,8 +201,11 @@
     font-weight: 800;
   }
 }
-.popup-has-call {
+.popup-has-call,
+.overlay-calling {
   top: -60px;
+  background-color: $color-ol;
+  z-index: 9999;
 }
 .wrap-pop-has-call {
   background: red;

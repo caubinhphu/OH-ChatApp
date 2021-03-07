@@ -127,6 +127,7 @@ const Messenger = (() => {
     $('#call-friend-btn').on('click', () => {
       if (!window.isCall) {
         window.isCall = true
+        $('.overlay-calling').removeClass('d-none')
         const friendId = $('#main-right').attr('data-id')
         // open sub window call
         const h = $(window).height()
@@ -223,6 +224,7 @@ const Messenger = (() => {
       }
     });
     window.windowCall.dispatchEvent(event)
+    $('.overlay-calling').addClass('d-none')
   })
 
   // accept call from receiver

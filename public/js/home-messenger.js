@@ -39043,6 +39043,7 @@ var Messenger = function () {
     $('#call-friend-btn').on('click', function () {
       if (!window.isCall) {
         window.isCall = true;
+        $('.overlay-calling').removeClass('d-none');
         var friendId = $('#main-right').attr('data-id'); // open sub window call
 
         var h = $(window).height();
@@ -39141,6 +39142,7 @@ var Messenger = function () {
       }
     });
     window.windowCall.dispatchEvent(event);
+    $('.overlay-calling').addClass('d-none');
   }); // accept call from receiver
 
   $('#btn-call-ok').on('click', function () {

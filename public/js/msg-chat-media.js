@@ -27526,12 +27526,10 @@ var ChatAudio = function () {
           signal: signal
         }));
       }
-    }); // window.peer = peer
-    // event receive signal answer from parent window (peer answer)
+    }); // event receive signal answer from parent window (peer answer)
 
     $(window).on('signalAnswer', function (e) {
-      var signalAnswer = e.detail.signalAnswer; // console.log('signalAnswer ', signalAnswer);
-
+      var signalAnswer = e.detail.signalAnswer;
       peer.signal(JSON.parse(signalAnswer));
     });
     addEventCtrl(peer);
@@ -27541,8 +27539,7 @@ var ChatAudio = function () {
     var _peer = new simple_peer__WEBPACK_IMPORTED_MODULE_0___default.a({
       initiator: false,
       trickle: false
-    }); // console.log('signal offer ', window.signalOffer);
-    // add signal offer to peer
+    }); // add signal offer to peer
 
 
     _peer.signal(JSON.parse(window.signalOffer)); // add events
@@ -27606,14 +27603,7 @@ var ChatAudio = function () {
       }
     });
 
-    addEventCtrl(_peer); // window.peer = peer
-    // event receive signal offer from parent window from caller
-    // because when caller add stream or track => create new signal offer => signal event => add signal again
-    // $(window).on('signalOffer', (e) => {
-    //   const { signalOffer } = e.detail
-    //   // console.log('signalOffer ', signalOffer);
-    //   peer.signal(JSON.parse(signalOffer))
-    // })
+    addEventCtrl(_peer);
   } // function output audio
 
 
