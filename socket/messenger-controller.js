@@ -88,7 +88,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
 }
 
 module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, signal }) {
-  console.log(receiverId, callerId, signal);
+  // console.log(receiverId, callerId, signal);
   try {
     const me = await Member.findById(callerId)
                             .populate({

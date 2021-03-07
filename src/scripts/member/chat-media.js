@@ -10,7 +10,7 @@ const ChatAudio = (() => {
 
     window.localStream = new MediaStream()
 
-    if (window.typeCall === 'caller') {
+    if (window.typeClient === 'caller') {
       // window of caller
       // init peer
       const peer = new SimplePeer({
@@ -23,13 +23,21 @@ const ChatAudio = (() => {
       peer.on('connect', () => {
         console.log('call connection')
         addTrackAudio(peer)
+        // be connected
+        window.connectPeer = true
       });
 
       peer.on('close', () => {
         console.log('call close');
       });
 
-      peer.on('data', (data) => console.log(data.toString()));
+      peer.on('data', (data) => {
+        const dataObj = JSON.parse(data.toString())
+        // console.log(dataObj)
+        if (dataObj.type === 'signal-add-stream') {
+          peer.signal(dataObj.signal)
+        }
+      });
 
       peer.on('stream', (stream) => {
         console.log('call stream');
@@ -47,24 +55,33 @@ const ChatAudio = (() => {
 
       peer.on('signal', (signal) => {
         console.log('call ');
-        // create custom event to send to window parent
-        const event = new CustomEvent('signalOffer', {
-          detail: {
-            // send signal offer
-            signalOffer: JSON.stringify(signal)
-          }
-        });
-        // dispatch (trigger) event custom
-        window.parentWindow.dispatchEvent(event)
+        // check be connected?
+        if (!window.connectPeer) {
+          // not connect => send offer signal
+          // create custom event to send to window parent
+          const event = new CustomEvent('signalOffer', {
+            detail: {
+              // send signal offer
+              signalOffer: JSON.stringify(signal)
+            }
+          });
+          // dispatch (trigger) event custom
+          window.parentWindow.dispatchEvent(event)
+        } else {
+          // be connected => send signal offer (when add stream) through data channel
+          peer.send(JSON.stringify({
+            type: 'signal-add-stream',
+            signal
+          }))
+        }
       });
-      // window.peer = peer
 
       // event receive signal answer from parent window (peer answer)
       $(window).on('signalAnswer', (e) => {
         const { signalAnswer } = e.detail
-        // console.log('signalAnswer ', signalAnswer);
         peer.signal(JSON.parse(signalAnswer))
       })
+      addEventCtrl(peer)
     } else {
       // window of receiver
       // init peer answer
@@ -72,8 +89,6 @@ const ChatAudio = (() => {
         initiator: false,
         trickle: false
       });
-  
-      // console.log('signal offer ', window.signalOffer);
 
       // add signal offer to peer
       peer.signal(JSON.parse(window.signalOffer))
@@ -83,13 +98,23 @@ const ChatAudio = (() => {
       peer.on('connect', () => {
         console.log('answer connection')
         addTrackAudio(peer)
+        // be connected
+        window.connectPeer = true
       });
 
       peer.on('close', () => {
         console.log('call close');
       });
 
-      peer.on('data', (data) => console.log(data.toString()));
+      // event receive signal offer from parent window from caller
+      // because when caller add stream or track => create new signal offer => signal event => add signal again
+      peer.on('data', (data) => {
+        const dataObj = JSON.parse(data.toString())
+        // console.log(dataObj)
+        if (dataObj.type === 'signal-add-stream') {
+          peer.signal(dataObj.signal)
+        }
+      });
 
       peer.on('stream', (stream) => {
         console.log('call stream');
@@ -108,25 +133,26 @@ const ChatAudio = (() => {
       // run after add signal => create custom event => send signal answer to parent window => caller
       peer.on('signal', (signal) => {
         console.log('answer signal')
-        const event = new CustomEvent("signalAnswer", {
-          detail: {
-            // send answer signal
-            signalAnswer: JSON.stringify(signal)
-          }
-        });
-        // dispatch event
-        window.parentWindow.dispatchEvent(event)
-        // window.signal = JSON.stringify(signal)
+        if (!window.connectPeer) {
+          const event = new CustomEvent('signalAnswer', {
+            detail: {
+              // send answer signal
+              signalAnswer: JSON.stringify(signal)
+            }
+          });
+          // dispatch event
+          window.parentWindow.dispatchEvent(event)
+          // window.signal = JSON.stringify(signal)
+        } else {
+          // be connected => send signal offer (when add stream) through data channel
+          peer.send(JSON.stringify({
+            type: 'signal-add-stream',
+            signal
+          }))
+        }
       });
-      // window.peer = peer
 
-      // event receive signal offer from parent window from caller
-      // because when caller add stream or track => create new signal offer => signal event => add signal again
-      $(window).on('signalOffer', (e) => {
-        const { signalOffer } = e.detail
-        // console.log('signalOffer ', signalOffer);
-        peer.signal(JSON.parse(signalOffer))
-      })
+      addEventCtrl(peer)
     }
 
     // function output audio
@@ -137,6 +163,20 @@ const ChatAudio = (() => {
           vd.srcObject = stream;
         } else {
           vd.src = window.URL.createObjectURL(stream);
+        }
+      })
+    }
+
+    function addEventCtrl(peer) {
+      $('.mic-ctrl-btn').on('click', function() {
+        if ($(this).hasClass('ctrl-off')) {
+          // turn off mic
+          removeTrackAudio(peer)
+          $(this).removeClass('ctrl-off')
+        } else {
+          // turn on mic
+          addTrackAudio(peer)
+          $(this).addClass('ctrl-off')
         }
       })
     }
@@ -162,6 +202,16 @@ const ChatAudio = (() => {
           outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
         }
       }
+    }
+
+    // function remove track autio stream
+    function removeTrackAudio(peer) {
+      peer.removeTrack(
+        window.localStream.getAudioTracks()[0],
+        window.localStream
+      );
+      // remove audio track of stream in local stream
+      window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
     }
 })()
 

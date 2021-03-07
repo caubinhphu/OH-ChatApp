@@ -236,6 +236,7 @@ const CommonChatRoomVideo = (() => {
     });
 
     peer.on('signal', (signal) => {
+      console.log('call signal');
       socket.emit('offerStream', {
         receiveId: socketId,
         callerId,
@@ -268,6 +269,7 @@ const CommonChatRoomVideo = (() => {
     });
 
     peer.on('signal', (signal) => {
+      console.log('answer signal');
       socket.emit('answerStream', {
         signal: JSON.stringify(signal),
         callerId

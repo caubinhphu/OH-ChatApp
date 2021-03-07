@@ -125,19 +125,29 @@ const Messenger = (() => {
 
     // call audio to friend
     $('#call-friend-btn').on('click', () => {
-      const friendId = $('#main-right').attr('data-id')
-      // open sub window call
-      const h = $(window).height()
-      const w = $(window).width() < 1200 ? $(window).width() : 1200
-      const x = ($(window).width() - w) / 2
-      const windowCall = window.open(`/messenger/chat-media/${friendId}`, 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
+      if (!window.isCall) {
+        window.isCall = true
+        const friendId = $('#main-right').attr('data-id')
+        // open sub window call
+        const h = $(window).height()
+        const w = $(window).width() < 1200 ? $(window).width() : 1200
+        const x = ($(window).width() - w) / 2
+        const windowCall = window.open(`/messenger/chat-media/${friendId}`, 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
 
-      if (window.focus) {
-        windowCall.focus();
-        windowCall.typeCall = 'caller'
-        windowCall.parentWindow = window // to dispatch event
+        if (window.focus) {
+          windowCall.focus();
+          windowCall.typeClient = 'caller'
+          windowCall.typeCall = 'audio'
+          windowCall.parentWindow = window // to dispatch event
+        }
+        window.windowCall = windowCall // to dispatch event
+      } else {
+        if (window.windowCall) {
+          window.windowCall.focus()
+        } else if (window.windowReceive) {
+          window.windowReceive.focus()
+        }
       }
-      window.windowCall = windowCall // to dispatch event
     })
 
     // receive signal offer from sub window call => send to server => receiver
@@ -152,6 +162,7 @@ const Messenger = (() => {
 
     // receive signal offer from sub window receiver => send to server => caller
     $(window).on('signalAnswer', (e) => {
+      console.log('signalAnswer');
       const { signalAnswer } = e.detail
       socket.emit('msg-answerStream', {
         signal: signalAnswer,
@@ -196,22 +207,8 @@ const Messenger = (() => {
 
   // receive signal has call from friend
   socket.on('msg-hasCallAudio', ({ signal, callerId }) => {
-    // check signal init or signal add stream
-    if (window.callerId === callerId) {
-      // signal offer after add stream
-      // send signal offer again to sub window
-      const event = new CustomEvent('signalOffer', {
-        detail: {
-          signalOffer: signal
-        }
-      });
-      window.windowReceive.dispatchEvent(event)
-    } else {
-      // signal init
-      // save to window
-      window.signalOffer = signal
-      window.callerId = callerId
-    }
+    window.signalOffer = signal
+    window.callerId = callerId
 
     // set IU
     $('.popup-has-call').removeClass('d-none')
@@ -238,11 +235,16 @@ const Messenger = (() => {
 
     if (window.focus) {
       windowReceive.focus();
-      windowReceive.typeCall = 'receiver'
+      windowReceive.typeClient = 'receiver'
+      windowReceive.typeCall = 'audio'
       windowReceive.signalOffer = window.signalOffer // signal offer
       windowReceive.parentWindow = window // to dispatch event
     }
     window.windowReceive = windowReceive // to dispatch event
+
+    // set IU
+    $('.popup-has-call').addClass('d-none')
+    window.isCall = true
   });
 
   // output message in main chat area
