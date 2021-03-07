@@ -88,6 +88,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
 }
 
 module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, signal }) {
+  console.log(receiverId, callerId, signal);
   try {
     const me = await Member.findById(callerId)
                             .populate({
@@ -113,12 +114,13 @@ module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, 
 
 module.exports.onAnswerStreamAudio = async function (io, { signal, callerId }) {
   try {
+    console.log(signal, callerId);
     const friend = await Member.findById(callerId)
     console.log(friend);
     console.log(signal);
     console.log(callerId);
     if (friend && friend.status === 'online') {
-      io.to(friend.socketId).emit('msg-as', { signal, callerId })
+      io.to(friend.socketId).emit('msg-answerSignal', { signal, callerId })
     }
     // io.to(receiveId).emit('msg-offerSignalAudio', {
     //   callerId: data.callerId,
