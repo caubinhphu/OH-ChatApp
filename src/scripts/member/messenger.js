@@ -167,8 +167,32 @@ const Messenger = (() => {
       const { signalAnswer } = e.detail
       socket.emit('msg-answerStream', {
         signal: signalAnswer,
-        callerId: window.callerId
+        callerId: window.callerId,
+        receiverId: $('#member-id').text()
       });
+    })
+
+    // receive signal error from sub window => send to server
+    $(window).on('connectPeerFail', (e) => {
+      console.log(e.detail);
+      const { code, error } = e.detail
+      if (window.windowCall) {
+        window.windowCall.close()
+        socket.emit('msg-connectPeerFail', {
+          callerId: $('#member-id').text(),
+          receiverId: $('#main-right').attr('data-id'),
+          code
+        });
+      } else if (window.windowReceive) {
+        window.windowReceive.close()
+        socket.emit('msg-connectPeerFail', {
+          callerId: window.callerId,
+          receiverId: $('#member-id').text(),
+          code
+        });
+      }
+      window.focus()
+      outputErrorMessage(error)
     })
   }
 
@@ -227,6 +251,15 @@ const Messenger = (() => {
     $('.overlay-calling').addClass('d-none')
   })
 
+  // receive signal call error
+  socket.on('msg-callError', ({msg}) => {
+    window.windowCall.close()
+    window.focus()
+    $('.overlay-calling').addClass('d-none')
+    window.isCall = false
+    outputErrorMessage(msg)
+  })
+
   // accept call from receiver
   $('#btn-call-ok').on('click', () => {
     // open sub window receiver
@@ -248,6 +281,14 @@ const Messenger = (() => {
     $('.popup-has-call').addClass('d-none')
     window.isCall = true
   });
+
+  window.onbeforeunload = function() {
+    if (window.windowCall) {
+      window.windowCall.close()
+    } else if (window.windowReceive) {
+      window.windowReceive.close()
+    }
+  }
 
   // output message in main chat area
   function outputMessage(msgObj, me = false) {

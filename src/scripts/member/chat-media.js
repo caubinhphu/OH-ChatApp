@@ -39,6 +39,26 @@ const ChatAudio = (() => {
         }
       });
 
+      peer.on('error', (err) => {
+        console.log(err);
+        console.log(err.code);
+        let errorText = ''
+        if (err.code === 'ERR_WEBRTC_SUPPORT') {
+          errorText = 'Trình duyệt không hỗ trợ'
+        } else if (err.code === 'ERR_DATA_CHANNEL') {
+          errorText = 'Ngắt kết nối'
+        } else {
+          errorText = 'Lỗi kết nối'
+        }
+        const event = new CustomEvent('connectPeerFail', {
+          detail: {
+            error: errorText,
+            code: err.code
+          }
+        })
+        window.parentWindow.dispatchEvent(event)
+      })
+
       peer.on('stream', (stream) => {
         console.log('call stream');
         // if (stream.getVideoTracks().length >= 2) {
@@ -101,6 +121,26 @@ const ChatAudio = (() => {
         // be connected
         window.connectPeer = true
       });
+
+      peer.on('error', (err) => {
+        console.log(err);
+        console.log(err.code);
+        let errorText = ''
+        if (err.code === 'ERR_WEBRTC_SUPPORT') {
+          errorText = 'Trình duyệt không hỗ trợ'
+        } else if (err.code === 'ERR_DATA_CHANNEL') {
+          errorText = 'Ngắt kết nối'
+        } else {
+          errorText = 'Lỗi kết nối'
+        }
+        const event = new CustomEvent('connectPeerFail', {
+          detail: {
+            error: errorText,
+            code: err.code
+          }
+        })
+        window.parentWindow.dispatchEvent(event)
+      })
 
       peer.on('close', () => {
         console.log('call close');

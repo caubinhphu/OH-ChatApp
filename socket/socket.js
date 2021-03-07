@@ -93,11 +93,14 @@ const socket = function (io) {
     });
 
     socket.on('msg-offerStreamAudio', function(data) {
-      messengerController.onOfferStreamAudio.bind(this, io, data)()
+      messengerController.onOfferSignal.bind(this, io, data)()
     })
 
     socket.on('msg-answerStream', function(data) {
-      messengerController.onAnswerStreamAudio.bind(this, io, data)()
+      messengerController.onAnswerSignal.bind(this, io, data)()
+    })
+    socket.on('msg-connectPeerFail', function(data) {
+      messengerController.onConnectPeerFail.bind(this, io, data)()
     })
   });
 };

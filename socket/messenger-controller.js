@@ -87,18 +87,42 @@ module.exports.onMessageChat = async function (io, { message, token }) {
   }
 }
 
-module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, signal }) {
-  // console.log(receiverId, callerId, signal);
+module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal }) {
   try {
+    // get caller and receiver
     const me = await Member.findById(callerId)
                             .populate({
                               path: 'friends._id',
                               match: { _id: receiverId }
                             })
     if (me) {
+      // get receiver obj
       const friend = me.friends.find(fr => fr._id)
       if (friend && friend._id.status === 'online' && friend._id.socketId) {
-        io.to(friend._id.socketId).emit('msg-hasCallAudio', { signal, callerId })
+        if (me.isCalling) {
+          this.emit('msg-callError', {
+            msg: 'Bạn không thể thực hiện cuộc gọi vì bạn đang có một cuộc gọi khác'
+          });
+        } else if (friend._id.isCalling) {
+          this.emit('msg-callError', {
+            msg: 'Bạn không thể thực hiện cuộc gọi vì bạn của bạn đang có một cuộc gọi khác'
+          });
+        } else {
+          me.isCalling = true
+          await me.save()
+
+          const fri = await Member.findById(receiverId)
+          if (fri) {
+            fri.isCalling = true
+            await fri.save()
+          }
+
+          io.to(friend._id.socketId).emit('msg-hasCallAudio', { signal, callerId })
+        }
+      } else {
+        this.emit('msg-callError', {
+          msg: 'Người dùng không online'
+        });
       }
     }
   } catch (error) {
@@ -106,11 +130,48 @@ module.exports.onOfferStreamAudio = async function (io, { receiverId, callerId, 
   }
 }
 
-module.exports.onAnswerStreamAudio = async function (io, { signal, callerId }) {
+module.exports.onAnswerSignal = async function (io, { signal, callerId }) {
   try {
     const friend = await Member.findById(callerId)
     if (friend && friend.status === 'online') {
       io.to(friend.socketId).emit('msg-answerSignal', { signal })
+    }
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
+
+module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, code }) {
+  try {
+    const callerMem = await Member.findById(callerId)
+    const receiverMem = await Member.findById(receiverId)
+    if (callerMem) {
+      callerMem.isCalling = false
+
+      await callerMem.save()
+    }
+    if (receiverMem) {
+      receiverMem.isCalling = false
+
+      await receiverMem.save()
+    }
+
+    if (code === 'ERR_DATA_CHANNEL') {
+      const friend = callerMem.friends.find(fr => fr._id.toString() === receiverId)
+      if (friend) {
+        const groupMessage = await GroupMessage.findById(friend.groupMessageId)
+        if (groupMessage) {
+          const messageObj = await Message.create({
+            time: new Date(),
+            content: 'Cuộc gọi kết thúc',
+            memberSendId: callerMem.id,
+            type: 'call-audio'
+          })
+          // push msg to group and save group
+          groupMessage.messages.push(messageObj)
+          await groupMessage.save()
+        }
+      }
     }
   } catch (error) {
     this.emit('error', error.message);

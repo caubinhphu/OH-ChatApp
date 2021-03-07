@@ -583,6 +583,7 @@ module.exports.onDisconnect = async function (io, reason) {
     // set offline for member
     member.socketId = ''
     member.status = new Date().toISOString()
+    member.isCalling = false
 
     await member.save()
 
