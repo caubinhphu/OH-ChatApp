@@ -39447,7 +39447,7 @@ var Messenger = function () {
 
     $(window).on('signalOffer', function (e) {
       var signalOffer = e.detail.signalOffer;
-      socket.emit('msg-offerStreamAudio', {
+      socket.emit('msg-offerStream', {
         receiverId: $('#main-right').attr('data-id'),
         callerId: $('#member-id').text(),
         signal: signalOffer
@@ -39487,99 +39487,121 @@ var Messenger = function () {
       }
 
       window.focus();
-      outputErrorMessage(error);
-    });
-  } // receive msg obj from server
 
-
-  socket.on('msg-messenger', function (_ref2) {
-    var senderId = _ref2.senderId,
-        msgObj = _ref2.msg;
-    var friendId = $('#main-right').attr('data-id');
-
-    if (friendId === senderId) {
-      // output message
-      outputMessage(msgObj); // scroll bottom
-
-      chatMain.scrollTop = chatMain.scrollHeight;
-    }
-
-    $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
-  }); // receive signal friend is online
-
-  socket.on('msg-friendOnline', function (_ref3) {
-    var memberId = _ref3.memberId;
-    // console.log('online', memberId);
-    $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
-    var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-    if ($mainChat.length) {
-      $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
-    }
-  }); // receive signal friend is offline
-
-  socket.on('msg-friendOffline', function (_ref4) {
-    var memberId = _ref4.memberId;
-    $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
-    var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-    if ($mainChat.length) {
-      $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
-    }
-  }); // receive signal has call from friend
-
-  socket.on('msg-hasCallAudio', function (_ref5) {
-    var signal = _ref5.signal,
-        callerId = _ref5.callerId;
-    window.signalOffer = signal;
-    window.callerId = callerId; // set IU
-
-    $('.popup-has-call').removeClass('d-none');
-  }); // receive signal answer
-
-  socket.on('msg-answerSignal', function (_ref6) {
-    var signal = _ref6.signal;
-    // send signal answer to sub window
-    var event = new CustomEvent('signalAnswer', {
-      detail: {
-        signalAnswer: signal
+      if (code === 'ERR_DATA_CHANNEL') {
+        outputInfoMessage(error);
+      } else {
+        outputErrorMessage(error);
       }
+    }); // receive msg obj from server
+
+    socket.on('msg-messenger', function (_ref2) {
+      var senderId = _ref2.senderId,
+          msgObj = _ref2.msg;
+      var friendId = $('#main-right').attr('data-id');
+
+      if (friendId === senderId) {
+        // output message
+        outputMessage(msgObj); // scroll bottom
+
+        chatMain.scrollTop = chatMain.scrollHeight;
+      }
+
+      $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+    }); // receive signal friend is online
+
+    socket.on('msg-friendOnline', function (_ref3) {
+      var memberId = _ref3.memberId;
+      // console.log('online', memberId);
+      $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
+      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+
+      if ($mainChat.length) {
+        $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
+      }
+    }); // receive signal friend is offline
+
+    socket.on('msg-friendOffline', function (_ref4) {
+      var memberId = _ref4.memberId;
+      $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
+      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+
+      if ($mainChat.length) {
+        $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
+      }
+    }); // receive signal has call from friend
+
+    socket.on('msg-hasCallAudio', function (_ref5) {
+      var signal = _ref5.signal,
+          callerId = _ref5.callerId;
+      window.signalOffer = signal;
+      window.callerId = callerId; // set IU
+
+      $('.popup-has-call').removeClass('d-none');
+    }); // receive signal answer
+
+    socket.on('msg-answerSignal', function (_ref6) {
+      var signal = _ref6.signal;
+      // send signal answer to sub window
+      var event = new CustomEvent('signalAnswer', {
+        detail: {
+          signalAnswer: signal
+        }
+      });
+      window.windowCall.dispatchEvent(event);
+      $('.overlay-calling').addClass('d-none');
+    }); // receive signal call error
+
+    socket.on('msg-callError', function (_ref7) {
+      var msg = _ref7.msg;
+      window.windowCall.close();
+      window.focus();
+      $('.overlay-calling').addClass('d-none');
+      window.isCall = false;
+      outputErrorMessage(msg);
+    }); // receive signal refuse call
+
+    socket.on('msg-receiverRefuseCall', function () {
+      if (window.windowCall) {
+        window.windowCall.close();
+        window.focus();
+        $('.overlay-calling').addClass('d-none');
+        outputInfoMessage('Không trả lời');
+      }
+    }); // accept call from receiver
+
+    $('#btn-call-ok').on('click', function () {
+      // open sub window receiver
+      var h = $(window).height();
+      var w = $(window).width() < 1200 ? $(window).width() : 1200;
+      var x = ($(window).width() - w) / 2;
+      var windowReceive = window.open("/messenger/chat-media/".concat(window.callerId), 'OH-Chat', "height=".concat(h, ",width=").concat(w, ",left=").concat(x, ",top=", 0));
+
+      if (window.focus) {
+        windowReceive.focus();
+        windowReceive.typeClient = 'receiver';
+        windowReceive.typeCall = 'audio';
+        windowReceive.signalOffer = window.signalOffer; // signal offer
+
+        windowReceive.parentWindow = window; // to dispatch event
+      }
+
+      window.windowReceive = windowReceive; // to dispatch event
+      // set IU
+
+      $('.popup-has-call').addClass('d-none');
+      window.isCall = true;
     });
-    window.windowCall.dispatchEvent(event);
-    $('.overlay-calling').addClass('d-none');
-  }); // receive signal call error
+    $('#btn-call-not-ok').on('click', function () {
+      socket.emit('msg-refuseCall', {
+        callerId: window.callerId,
+        receiverId: $('#member-id').text()
+      }); // set IU
 
-  socket.on('msg-callError', function (_ref7) {
-    var msg = _ref7.msg;
-    window.windowCall.close();
-    window.focus();
-    $('.overlay-calling').addClass('d-none');
-    window.isCall = false;
-    outputErrorMessage(msg);
-  }); // accept call from receiver
-
-  $('#btn-call-ok').on('click', function () {
-    // open sub window receiver
-    var h = $(window).height();
-    var w = $(window).width() < 1200 ? $(window).width() : 1200;
-    var x = ($(window).width() - w) / 2;
-    var windowReceive = window.open("/messenger/chat-media/".concat(window.callerId), 'OH-Chat', "height=".concat(h, ",width=").concat(w, ",left=").concat(x, ",top=", 0));
-
-    if (window.focus) {
-      windowReceive.focus();
-      windowReceive.typeClient = 'receiver';
-      windowReceive.typeCall = 'audio';
-      windowReceive.signalOffer = window.signalOffer; // signal offer
-
-      windowReceive.parentWindow = window; // to dispatch event
-    }
-
-    window.windowReceive = windowReceive; // to dispatch event
-    // set IU
-
-    $('.popup-has-call').addClass('d-none');
-    window.isCall = true;
-  });
+      $('.popup-has-call').addClass('d-none');
+      window.isCall = false;
+    });
+  }
 
   window.onbeforeunload = function () {
     if (window.windowCall) {

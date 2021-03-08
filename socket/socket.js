@@ -92,7 +92,7 @@ const socket = function (io) {
       messengerController.onMessageChat.bind(this, io, data)()
     });
 
-    socket.on('msg-offerStreamAudio', function(data) {
+    socket.on('msg-offerStream', function(data) {
       messengerController.onOfferSignal.bind(this, io, data)()
     })
 
@@ -101,6 +101,9 @@ const socket = function (io) {
     })
     socket.on('msg-connectPeerFail', function(data) {
       messengerController.onConnectPeerFail.bind(this, io, data)()
+    })
+    socket.on('msg-refuseCall', function(data) {
+      messengerController.onRefuseCall.bind(this, io, data)()
     })
   });
 };

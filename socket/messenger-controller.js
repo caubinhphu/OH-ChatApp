@@ -177,3 +177,32 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
     this.emit('error', error.message);
   }
 }
+
+module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
+  try {
+    console.log(callerId, receiverId);
+    const callerMem = await Member.findById(callerId)
+    if (callerMem) {
+      const receiver = callerMem.friends.find(fr => fr._id.toString() === receiverId)
+      if (receiver) {
+        const groupMessage = await GroupMessage.findById(receiver.groupMessageId)
+        if (groupMessage) {
+          const messageObj = await Message.create({
+            time: new Date(),
+            content: 'Cuộc gọi kết thúc',
+            memberSendId: callerMem.id,
+            type: 'call-audio-refuse'
+          })
+          // push msg to group and save group
+          groupMessage.messages.push(messageObj)
+          await groupMessage.save()
+        }
+        if (callerMem.status === 'online' && callerMem.socketId) {
+          io.to(callerMem.socketId).emit('msg-receiverRefuseCall')
+        }
+      }
+    }
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
