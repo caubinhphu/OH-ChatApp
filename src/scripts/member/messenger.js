@@ -345,6 +345,18 @@ const Messenger = (() => {
           callerId,
           receiverId
         })
+
+        outputInfoMessage('Không trả lời')
+        const $friItem = $(`.friend-item[data-id="${window.receiverId}"]`);
+        outputMessage({
+          time: moment().format('H:mm'),
+          username: 'Me',
+          message: 'Cuộc gọi thoại'
+        }, true)
+        scrollBottomChatBox()
+        $friItem.find('.last-msg').html(`
+          <small>Cuộc gọi thoại</small><small>1 phút</small>
+        `)
       }, 5000);
     })
 
@@ -362,21 +374,21 @@ const Messenger = (() => {
 
         // const event = new CustomEvent('receiverRefuseCall')
         // window.windowCall.dispatchEvent(event)
+
+        // create msg end call local
+        const $friItem = $(`.friend-item[data-id="${window.receiverId}"]`);
+        if ($friItem.length) {
+          outputMessage({
+            time: moment().format('H:mm'),
+            username: 'Me',
+            message: 'Cuộc gọi thoại'
+          }, true)
+          scrollBottomChatBox()
+          $friItem.find('.last-msg').html(`
+            <small>Cuộc gọi thoại</small><small>1 phút</small>
+          `)
+        }
       }
-      // create msg end call local
-      // const friendId = $('#main-right').attr('data-id')
-      // const $friItem = $(`.friend-item[data-id="${friendId}"]`);
-      // if ($friItem.length) {
-      //   outputMessage({
-      //     time: moment().format('H:mm'),
-      //     username: 'Me',
-      //     message: escapeHtml('Cuộc gọi thoại')
-      //   }, true)
-      //   scrollBottomChatBox()
-      //   $friItem.find('.last-msg').html(`
-      //     <small>Cuộc gọi thoại</small><small>1 phút</small>
-      //   `)
-      // }
     })
 
     socket.on('msg-missedCall', ({ callerId }) => {
@@ -390,10 +402,25 @@ const Messenger = (() => {
       $popup.find('#btn-call-ok').addClass('d-none')
       $popup.find('#btn-call-back').removeClass('d-none')
       $popup.find('#btn-call-back').attr('data-callerid', callerId)
+
+      const $friItem = $(`.friend-item[data-id="${callerId}"]`);
+      if ($friItem.length) {
+        outputMessage({
+          time: moment().format('H:mm'),
+          username: $friItem.find('.friend-item-info strong').text(),
+          message: 'Cuộc gọi nhỡ',
+          avatar: $friItem.find('img').attr('src')
+        })
+        scrollBottomChatBox()
+        $friItem.find('.last-msg').html(`
+          <small>Cuộc gọi nhỡ</small><small>1 phút</small>
+        `)
+      }
     })
 
 
     socket.on('msg-endCall', ({ callerId, receiverId, sender }) => {
+      window.isCall = false
       outputInfoMessage('Ngắt kết nối')
       if (sender === 'caller') {
         // computer of receiver
@@ -474,7 +501,7 @@ const Messenger = (() => {
         outputMessage({
           time: moment().format('H:mm'),
           username: $friItem.find('.friend-item-info strong').text(),
-          message: escapeHtml('Cuộc gọi nhỡ'),
+          message: 'Cuộc gọi nhỡ',
           avatar: $friItem.find('img').attr('src')
         })
         scrollBottomChatBox()

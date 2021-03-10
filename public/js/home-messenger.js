@@ -39470,6 +39470,7 @@ var Messenger = function () {
               message: 'Cuộc gọi thoại' // avatar: $friItem.find('img').attr('src')
 
             }, true);
+            scrollBottomChatBox();
             $friItem.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
           }
         } else {
@@ -39497,6 +39498,7 @@ var Messenger = function () {
               message: 'Cuộc gọi thoại',
               avatar: _$friItem.find('img').attr('src')
             });
+            scrollBottomChatBox();
 
             _$friItem.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
           }
@@ -39506,40 +39508,40 @@ var Messenger = function () {
       }
 
       window.focus();
-    });
-    $(window).on('endCall', function () {
-      console.log(window.windowCall, window.windowReceive);
-
-      if (window.windowCall) {
-        // create msg end call local
-        var friendId = $('#main-right').attr('data-id');
-        var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
-
-        if ($friItem.length) {
-          outputMessage({
-            time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-            username: 'Me',
-            message: 'Cuộc gọi thoại'
-          }, true);
-          scrollBottomChatBox();
-          $friItem.find('.last-msg').html("\n            <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n          ");
-        }
-      } else if (window.windowReceive) {
-        var _$friItem2 = $(".friend-item[data-id=\"".concat(window.callerId, "\"]"));
-
-        if (_$friItem2.length) {
-          outputMessage({
-            time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-            username: _$friItem2.find('.friend-item-info strong').text(),
-            message: 'Cuộc gọi nhỡ',
-            avatar: _$friItem2.find('img').attr('src')
-          });
-          scrollBottomChatBox();
-
-          _$friItem2.find('.last-msg').html("\n            <small>Cu\u1ED9c g\u1ECDi nh\u1EE1</small><small>1 ph\xFAt</small>\n          ");
-        }
-      }
-    }); // receive msg obj from server
+    }); // $(window).on('endCall', () => {
+    //   console.log(window.windowCall, window.windowReceive);
+    //   if (window.windowCall) {
+    //     // create msg end call local
+    //     const friendId = $('#main-right').attr('data-id')
+    //     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
+    //     if ($friItem.length) {
+    //       outputMessage({
+    //         time: moment().format('H:mm'),
+    //         username: 'Me',
+    //         message: 'Cuộc gọi thoại'
+    //       }, true)
+    //       scrollBottomChatBox()
+    //       $friItem.find('.last-msg').html(`
+    //         <small>Cuộc gọi thoại</small><small>1 phút</small>
+    //       `)
+    //     }
+    //   } else if (window.windowReceive) {
+    //     const $friItem = $(`.friend-item[data-id="${window.callerId}"]`);
+    //     if ($friItem.length) {
+    //       outputMessage({
+    //         time: moment().format('H:mm'),
+    //         username: $friItem.find('.friend-item-info strong').text(),
+    //         message: 'Cuộc gọi nhỡ',
+    //         avatar: $friItem.find('img').attr('src')
+    //       })
+    //       scrollBottomChatBox()
+    //       $friItem.find('.last-msg').html(`
+    //         <small>Cuộc gọi nhỡ</small><small>1 phút</small>
+    //       `)
+    //     }
+    //   }
+    // })
+    // receive msg obj from server
 
     socket.on('msg-messenger', function (_ref2) {
       var senderId = _ref2.senderId,
@@ -39634,6 +39636,15 @@ var Messenger = function () {
           callerId: callerId,
           receiverId: receiverId
         });
+        outputInfoMessage('Không trả lời');
+        var $friItem = $(".friend-item[data-id=\"".concat(window.receiverId, "\"]"));
+        outputMessage({
+          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+          username: 'Me',
+          message: 'Cuộc gọi thoại'
+        }, true);
+        scrollBottomChatBox();
+        $friItem.find('.last-msg').html("\n          <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n        ");
       }, 5000);
     }); // receive signal refuse call
 
@@ -39647,21 +39658,20 @@ var Messenger = function () {
         $('.overlay-calling').addClass('d-none');
         outputInfoMessage('Không trả lời'); // const event = new CustomEvent('receiverRefuseCall')
         // window.windowCall.dispatchEvent(event)
-      } // create msg end call local
-      // const friendId = $('#main-right').attr('data-id')
-      // const $friItem = $(`.friend-item[data-id="${friendId}"]`);
-      // if ($friItem.length) {
-      //   outputMessage({
-      //     time: moment().format('H:mm'),
-      //     username: 'Me',
-      //     message: escapeHtml('Cuộc gọi thoại')
-      //   }, true)
-      //   scrollBottomChatBox()
-      //   $friItem.find('.last-msg').html(`
-      //     <small>Cuộc gọi thoại</small><small>1 phút</small>
-      //   `)
-      // }
+        // create msg end call local
 
+        var $friItem = $(".friend-item[data-id=\"".concat(window.receiverId, "\"]"));
+
+        if ($friItem.length) {
+          outputMessage({
+            time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+            username: 'Me',
+            message: 'Cuộc gọi thoại'
+          }, true);
+          scrollBottomChatBox();
+          $friItem.find('.last-msg').html("\n            <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n          ");
+        }
+      }
     });
     socket.on('msg-missedCall', function (_ref9) {
       var callerId = _ref9.callerId;
@@ -39672,11 +39682,24 @@ var Messenger = function () {
       $popup.find('#btn-call-ok').addClass('d-none');
       $popup.find('#btn-call-back').removeClass('d-none');
       $popup.find('#btn-call-back').attr('data-callerid', callerId);
+      var $friItem = $(".friend-item[data-id=\"".concat(callerId, "\"]"));
+
+      if ($friItem.length) {
+        outputMessage({
+          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+          username: $friItem.find('.friend-item-info strong').text(),
+          message: 'Cuộc gọi nhỡ',
+          avatar: $friItem.find('img').attr('src')
+        });
+        scrollBottomChatBox();
+        $friItem.find('.last-msg').html("\n          <small>Cu\u1ED9c g\u1ECDi nh\u1EE1</small><small>1 ph\xFAt</small>\n        ");
+      }
     });
     socket.on('msg-endCall', function (_ref10) {
       var callerId = _ref10.callerId,
           receiverId = _ref10.receiverId,
           sender = _ref10.sender;
+      window.isCall = false;
       outputInfoMessage('Ngắt kết nối');
 
       if (sender === 'caller') {
@@ -39695,17 +39718,18 @@ var Messenger = function () {
         }
       } else if (sender === 'receiver') {
         // computer of caller
-        var _$friItem3 = $(".friend-item[data-id=\"".concat(receiverId, "\"]"));
+        var _$friItem2 = $(".friend-item[data-id=\"".concat(receiverId, "\"]"));
 
-        if (_$friItem3.length) {
+        if (_$friItem2.length) {
           outputMessage({
             time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
             username: 'Me',
             message: 'Cuộc gọi thoại' // avatar: $friItem.find('img').attr('src')
 
           }, true);
+          scrollBottomChatBox();
 
-          _$friItem3.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
+          _$friItem2.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
         }
       }
     });
@@ -39753,7 +39777,7 @@ var Messenger = function () {
         outputMessage({
           time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
           username: $friItem.find('.friend-item-info strong').text(),
-          message: escapeHtml('Cuộc gọi nhỡ'),
+          message: 'Cuộc gọi nhỡ',
           avatar: $friItem.find('img').attr('src')
         });
         scrollBottomChatBox();
