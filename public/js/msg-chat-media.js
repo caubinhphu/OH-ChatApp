@@ -27552,7 +27552,18 @@ var ChatAudio = function () {
     $(window).on('signalAnswer', function (e) {
       var signalAnswer = e.detail.signalAnswer;
       peer.signal(JSON.parse(signalAnswer));
-    });
+    }); // event is calling
+
+    $(window).on('isCalling', function () {
+      $('.img-load-call').addClass('d-none');
+      $('.text-calling').removeClass('d-none');
+    }); // event receiver refuse call
+    // $(window).on('receiverRefuseCall', () => {
+    //   // set UI call again
+    //   $('.wrap-ctrl-calling').addClass('d-none')
+    //   $('.wrap-ctrl-after-call').removeClass('d-none')
+    // })
+
     addEventCtrl(peer);
   } else {
     // window of receiver
@@ -27572,6 +27583,7 @@ var ChatAudio = function () {
       addTrackAudio(_peer); // be connected
 
       window.connectPeer = true;
+      $('.img-load-call').addClass('d-none');
     });
 
     _peer.on('error', function (err) {
@@ -27673,6 +27685,9 @@ var ChatAudio = function () {
         $(this).addClass('ctrl-off');
       }
     });
+    $('.end-call-btn').on('click', function () {
+      window.close();
+    });
   } // function add stream track audio to peer
 
 
@@ -27728,7 +27743,11 @@ var ChatAudio = function () {
     peer.removeTrack(window.localStream.getAudioTracks()[0], window.localStream); // remove audio track of stream in local stream
 
     window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
-  }
+  } // window.onbeforeunload = function() {
+  //   const event = new CustomEvent('endCall')
+  //   window.parentWindow.dispatchEvent(event)
+  // }
+
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (ChatAudio);

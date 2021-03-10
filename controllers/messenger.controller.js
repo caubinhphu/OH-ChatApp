@@ -14,14 +14,15 @@ const {
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
 const sendMail = require('../utils/send-mail');
-const formatMessageList = require('../utils/messenger');
+const { formatMessageList } = require('../utils/messenger');
 const key = require('../config/key');
 
 const siteMes = 'OH Chat - Messenger'
 const notMem = 'Thành viên không tồn tại'
 const settingUrl = '/messenger/setting'
 
-const msgPerLoad = 10
+// number msg be loaded per a time
+const msgPerLoad = 20
 
 const storage = multer.diskStorage({
   // destination: './public/images/users/',

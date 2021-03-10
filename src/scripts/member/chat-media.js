@@ -101,6 +101,19 @@ const ChatAudio = (() => {
         const { signalAnswer } = e.detail
         peer.signal(JSON.parse(signalAnswer))
       })
+
+      // event is calling
+      $(window).on('isCalling', () => {
+        $('.img-load-call').addClass('d-none')
+        $('.text-calling').removeClass('d-none')
+      })
+
+      // event receiver refuse call
+      // $(window).on('receiverRefuseCall', () => {
+      //   // set UI call again
+      //   $('.wrap-ctrl-calling').addClass('d-none')
+      //   $('.wrap-ctrl-after-call').removeClass('d-none')
+      // })
       addEventCtrl(peer)
     } else {
       // window of receiver
@@ -120,6 +133,7 @@ const ChatAudio = (() => {
         addTrackAudio(peer)
         // be connected
         window.connectPeer = true
+        $('.img-load-call').addClass('d-none')
       });
 
       peer.on('error', (err) => {
@@ -219,6 +233,10 @@ const ChatAudio = (() => {
           $(this).addClass('ctrl-off')
         }
       })
+
+      $('.end-call-btn').on('click', function() {
+        window.close()
+      })
     }
 
     // function add stream track audio to peer
@@ -253,6 +271,11 @@ const ChatAudio = (() => {
       // remove audio track of stream in local stream
       window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
     }
+
+    // window.onbeforeunload = function() {
+    //   const event = new CustomEvent('endCall')
+    //   window.parentWindow.dispatchEvent(event)
+    // }
 })()
 
 export default ChatAudio

@@ -105,6 +105,9 @@ const socket = function (io) {
     socket.on('msg-refuseCall', function(data) {
       messengerController.onRefuseCall.bind(this, io, data)()
     })
+    socket.on('msg-callTimeout', function(data) {
+      messengerController.onCallTimeout.bind(this, io, data)()
+    })
   });
 };
 

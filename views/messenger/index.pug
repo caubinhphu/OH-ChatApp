@@ -77,15 +77,16 @@ block contentMain
   .popup-has-call.d-none.ps-as
     .d-flex.justify-content-center.align-items-center.h-100
       .wrap-pop-has-call 
-        h3 Cuộc gọi đến
+        h3.text-call-info Cuộc gọi đến
         .d-flex
           img.receiver-img
-          div
-            p Name đang gọi cho bạn 
+          .text-call-sub
+            p Name đang gọi cho bạn
             p Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận
-        .text-right 
+        .text-right
           button.btn#btn-call-not-ok Từ chối
           button.btn#btn-call-ok Chấp nhận
+          button.btn#btn-call-back.d-none Gọi lại
   .overlay-calling.d-none.ps-as
 
 
