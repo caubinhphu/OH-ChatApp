@@ -6,13 +6,27 @@ import '../global/chat-utils'
 const Messenger = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
-  let hasMessenger = true
-  let currentPageChat = 0
+  let hasMessenger = true // has old msg
+  let currentPageChat = 0 // current page load old chat
 
-  scrollBottomChatBox()
+  const classScBottom = '.scroll-bottom'
+  const idBtnCallBack = '#btn-call-back'
+  const classPoHasCall = '.popup-has-call'
+  const classCallOK = '#btn-call-ok'
+  const classCallNotOK = '#btn-call-not-ok'
+  const classNameFriend = '.friend-item-info strong'
+  const classOvCalling = '.overlay-calling'
+
+  const callMissText = 'Cuộc gọi nhỡ'
+  const callText = 'Cuộc gọi thoại'
+
+  // scroll bottom
+  chatMain.scrollTop = chatMain.scrollHeight;
 
   if (msgForm) {
-    const classScBottom = '.scroll-bottom'
+    const friendIdChatting = $('#main-right').attr('data-id')
+    const meId = $('#member-id').text()
+
 
     // event submit form chat
     msgForm.addEventListener('submit', (e) => {
@@ -24,22 +38,13 @@ const Messenger = (() => {
 
       if (inputMsg.value !== '') {
         // send message to server
-        socket.emit('msg-messageChat', {
+        window.window.socket.emit('msg-messageChat', {
           message: inputMsg.value,
           token: e.target.elements._token.value,
         });
 
         // create message obj to show in client
-        const msgObj = {
-          time: moment().format('H:mm'),
-          username: 'Me',
-          message: escapeHtml(inputMsg.value),
-        };
-        outputMessage(msgObj, true)
-        const friendId = $('#main-right').attr('data-id')
-        $(`.friend-item[data-id="${friendId}"]`).find('.last-msg').html(
-          `<small>Bạn: ${msgObj.message}</small><small>1 phút</small>`
-        )
+        createMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), true)
 
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
@@ -59,12 +64,12 @@ const Messenger = (() => {
         $(msgForm).find('button.text-secondary').trigger('click');
         $(this).css('height', '35px');
       }
-    }).on('input', '#msg', function(e) {
+    }).on('input', '#msg', function() {
       $(this).css('height', '5px');
       $(this).css('height', `${this.scrollHeight}px`);
-    }).on('focus', '#msg', function(e) {
+    }).on('focus', '#msg', function() {
       $(this).parents('.wrap-msg-box').addClass('is-focus');
-    }).on('blur', '#msg', function(e) {
+    }).on('blur', '#msg', function() {
       $(this).parents('.wrap-msg-box').removeClass('is-focus');
     });
 
@@ -73,8 +78,7 @@ const Messenger = (() => {
       if (this.scrollTop === 0 && hasMessenger === true) {
         $('.wrap-loader-chat').removeClass('d-none')
         try {
-          const friendId = $('#main-right').attr('data-id')
-          const responsive = await axios.get(`/messenger/chatold/?friendid=${friendId}&page=${currentPageChat + 1}`);
+          const responsive = await axios.get(`/messenger/chatold/?friendid=${friendIdChatting}&page=${currentPageChat + 1}`);
           const { messages, hasMsg } = responsive.data;
           $('.wrap-loader-chat').addClass('d-none')
           currentPageChat++
@@ -103,15 +107,14 @@ const Messenger = (() => {
               </div>`
           }).join('')
 
-          // prepend msg list
+          // prepend msg list and hold position scroll top of chat box
           const curScrollPos = this.scrollTop;
           const oldScroll = this.scrollHeight - this.clientHeight;
           $(this).prepend(htmlMsgs)
           const newScroll = this.scrollHeight - this.clientHeight;
           this.scrollTop = curScrollPos + (newScroll - oldScroll);
-          console.log(messages);
         } catch (error) {
-          console.error(error);
+          window.outputErrorMessage(error.message)
         }
       } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
         $(classScBottom).addClass('is-show');
@@ -124,138 +127,135 @@ const Messenger = (() => {
     $(classScBottom).on('click', scrollBottomChatBox);
 
     // call audio to friend
-    $('#call-friend-btn').on('click', () => {
-      const friendId = $('#main-right').attr('data-id')
-      callFriend(friendId)
+    $('#call-friend-btn').on('click', () => { callFriend(friendIdChatting) })
+
+    $(idBtnCallBack).on('click', function() {
+      callFriend($(this).attr('data-callerid'))
+
+      // set IU
+      $(classPoHasCall).addClass('d-none')
+    })
+
+    // accept call from receiver
+    $(classCallOK).on('click', () => {
+      // set is call local is true => focus sub window when click call btn
+      window.isCall = true
+
+      // open sub window receiver
+      const h = $(window).height()
+      const w = $(window).width() < 1200 ? $(window).width() : 1200
+      const x = ($(window).width() - w) / 2
+      const windowReceive = window.open(`/messenger/chat-media/${window.callerId}`, 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
+
+      // focus sub window and set global var for sub window
+      if (window.focus) {
+        windowReceive.focus();
+        windowReceive.typeClient = 'receiver'
+        windowReceive.typeCall = 'audio'
+        windowReceive.signalOffer = window.signalOffer // signal offer
+        windowReceive.parentWindow = window // to dispatch event
+      }
+      window.windowReceive = windowReceive // to dispatch event
+
+      // set IU
+      $(classPoHasCall).addClass('d-none')
+    });
+
+    // no accept call from receiver
+    $(classCallNotOK).on('click', () => {
+      // send signal refuse call to caller
+      window.window.socket.emit('msg-refuseCall', {
+        callerId: window.callerId,
+        receiverId: meId
+      })
+
+      // set IU
+      $(classPoHasCall).addClass('d-none')
+      window.isCall = false
+      // create msg end call local
+      createMsgLocal(window.callerId, callMissText)
     })
 
     // receive signal offer from sub window call => send to server => receiver
     $(window).on('signalOffer', (e) => {
       const { signalOffer } = e.detail
-      socket.emit('msg-offerStream', {
-        receiverId: $('#main-right').attr('data-id'),
-        callerId: $('#member-id').text(),
+      window.socket.emit('msg-offerStream', {
+        receiverId: friendIdChatting,
+        callerId: meId,
         signal: signalOffer
       });
     })
 
     // receive signal offer from sub window receiver => send to server => caller
     $(window).on('signalAnswer', (e) => {
-      console.log('signalAnswer');
       const { signalAnswer } = e.detail
-      socket.emit('msg-answerStream', {
+      window.socket.emit('msg-answerStream', {
         signal: signalAnswer,
         callerId: window.callerId,
-        receiverId: $('#member-id').text()
+        receiverId: meId
       });
     })
 
     // receive signal error from sub window => send to server
     $(window).on('connectPeerFail', (e) => {
       const { code, error } = e.detail
-      console.log(e.detail);
       window.isCall = false
       if (window.windowCall) {
+        // computer of caller
+        // close sub window
         window.windowCall.close()
         window.windowCall = undefined
 
-        socket.emit('msg-connectPeerFail', {
-          callerId: $('#member-id').text(),
-          // receiverId: $('#main-right').attr('data-id'),
+        // send to server => send to receiver => end call
+        // receiver end call => caller on event end call but receiver not on event self end call => send again to receiver
+        window.socket.emit('msg-connectPeerFail', {
+          callerId: meId,
           receiverId: window.receiverId,
           code,
           sender: 'caller'
         });
 
         if (code === 'ERR_DATA_CHANNEL') {
-          outputInfoMessage(error)
-          const $friItem = $(`.friend-item[data-id="${window.receiverId}"]`);
-          if ($friItem.length) {
-            outputMessage({
-              time: moment().format('H:mm'),
-              username: 'Me',
-              message: 'Cuộc gọi thoại',
-              // avatar: $friItem.find('img').attr('src')
-            }, true)
-            scrollBottomChatBox()
-            $friItem.find('.last-msg').html(`
-              <small>Cuộc gọi thoại</small><small>1 phút</small>
-            `)
-          }
+          // peer fail for end call signal
+          window.outputInfoMessage(error)
+
+          // create msg local
+          createMsgLocal(window.receiverId, callText, true)
         } else {
-          outputErrorMessage(error)
+          // connect peer fail
+          window.outputErrorMessage(error)
         }
       } else if (window.windowReceive) {
+        // computer of receiver
+        // close sub window
         window.windowReceive.close()
         window.windowReceive = undefined
 
-        socket.emit('msg-connectPeerFail', {
+        // send to server => send to caller => end call
+        // caller end call => receiver on event end call but caller not on event self end call => send again to caller
+        window.socket.emit('msg-connectPeerFail', {
           callerId: window.callerId,
-          receiverId: $('#member-id').text(),
+          receiverId: meId,
           code,
           sender: 'receiver'
         });
 
         if (code === 'ERR_DATA_CHANNEL') {
-          outputInfoMessage(error)
-          const $friItem = $(`.friend-item[data-id="${window.callerId}"]`);
-          if ($friItem.length) {
-            outputMessage({
-              time: moment().format('H:mm'),
-              username: $friItem.find('.friend-item-info strong').text(),
-              message: 'Cuộc gọi thoại',
-              avatar: $friItem.find('img').attr('src')
-            })
-            scrollBottomChatBox()
-            $friItem.find('.last-msg').html(`
-              <small>Cuộc gọi thoại</small><small>1 phút</small>
-            `)
-          }
+          // peer fail for end call signal
+          window.outputInfoMessage(error)
+
+          // create msg local
+          createMsgLocal(window.callerId, callText)
         } else {
-          outputErrorMessage(error)
+          window.outputErrorMessage(error)
         }
       }
       window.focus()
     })
 
-    // $(window).on('endCall', () => {
-    //   console.log(window.windowCall, window.windowReceive);
-    //   if (window.windowCall) {
-    //     // create msg end call local
-    //     const friendId = $('#main-right').attr('data-id')
-    //     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
-    //     if ($friItem.length) {
-    //       outputMessage({
-    //         time: moment().format('H:mm'),
-    //         username: 'Me',
-    //         message: 'Cuộc gọi thoại'
-    //       }, true)
-    //       scrollBottomChatBox()
-    //       $friItem.find('.last-msg').html(`
-    //         <small>Cuộc gọi thoại</small><small>1 phút</small>
-    //       `)
-    //     }
-    //   } else if (window.windowReceive) {
-    //     const $friItem = $(`.friend-item[data-id="${window.callerId}"]`);
-    //     if ($friItem.length) {
-    //       outputMessage({
-    //         time: moment().format('H:mm'),
-    //         username: $friItem.find('.friend-item-info strong').text(),
-    //         message: 'Cuộc gọi nhỡ',
-    //         avatar: $friItem.find('img').attr('src')
-    //       })
-    //       scrollBottomChatBox()
-    //       $friItem.find('.last-msg').html(`
-    //         <small>Cuộc gọi nhỡ</small><small>1 phút</small>
-    //       `)
-    //     }
-    //   }
-    // })
-
     // receive msg obj from server
-    socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
-      const friendId = $('#main-right').attr('data-id')
-      if (friendId === senderId) {
+    window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
+      if (friendIdChatting === senderId) {
         // output message
         outputMessage(msgObj);
 
@@ -268,8 +268,7 @@ const Messenger = (() => {
     });
 
     // receive signal friend is online
-    socket.on('msg-friendOnline', ({ memberId }) => {
-      // console.log('online', memberId);
+    window.socket.on('msg-friendOnline', ({ memberId }) => {
       $(`.friend-item[data-id="${memberId}"]`).addClass('is-online')
       const $mainChat = $(`#main-right[data-id="${memberId}"]`)
       if ($mainChat.length) {
@@ -278,7 +277,7 @@ const Messenger = (() => {
     })
 
     // receive signal friend is offline
-    socket.on('msg-friendOffline', ({ memberId }) => {
+    window.socket.on('msg-friendOffline', ({ memberId }) => {
       $(`.friend-item[data-id="${memberId}"]`).removeClass('is-online')
       const $mainChat = $(`#main-right[data-id="${memberId}"]`)
       if ($mainChat.length) {
@@ -287,231 +286,119 @@ const Messenger = (() => {
     })
 
     // receive signal has call from friend
-    socket.on('msg-hasCallAudio', ({ signal, callerId }) => {
-      window.signalOffer = signal
+    window.socket.on('msg-hasCallAudio', ({ signal, callerId }) => {
+      window.signalOffer = signal // signal offer
       window.callerId = callerId
 
       // set IU
-      const $popup = $('.popup-has-call')
+      const $popup = $(classPoHasCall)
       if ($popup.hasClass('d-none')) {
-        $('.popup-has-call').removeClass('d-none')
+        $(classPoHasCall).removeClass('d-none')
       } else {
         $popup.find('.text-call-info').html('Cuộc gọi đến')
         $popup.find('.text-call-sub').html(`
           <p>Name đang gọi cho bạn</p>
           <p>Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận</p>
         `)
-        $popup.find('#btn-call-not-ok').removeClass('d-none')
-        $popup.find('#btn-call-ok').removeClass('d-none')
-        $popup.find('#btn-call-back').addClass('d-none')
+        $popup.find(classCallNotOK).removeClass('d-none')
+        $popup.find(classCallOK).removeClass('d-none')
+        $popup.find(idBtnCallBack).addClass('d-none')
       }
     })
 
     // receive signal answer
-    socket.on('msg-answerSignal', ({ signal }) => {
+    window.socket.on('msg-answerSignal', ({ signal }) => {
       // send signal answer to sub window
       clearTimeout(window.timeoutCallId)
       const event = new CustomEvent('signalAnswer', {
-        detail: {
-          signalAnswer: signal
-        }
+        detail: { signalAnswer: signal }
       });
       window.windowCall.dispatchEvent(event)
-      $('.overlay-calling').addClass('d-none')
+      $(classOvCalling).addClass('d-none')
     })
 
     // receive signal call error
-    socket.on('msg-callError', ({msg}) => {
+    window.socket.on('msg-callError', ({msg}) => {
+      window.isCall = false
       window.windowCall.close()
       window.windowCall = undefined
       window.focus()
-      $('.overlay-calling').addClass('d-none')
-      window.isCall = false
-      outputErrorMessage(msg)
+      $(classOvCalling).addClass('d-none')
+      window.outputErrorMessage(msg)
     })
 
     // receive signal send signal call to receiver done
-    socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
+    window.socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'))
       window.timeoutCallId = setTimeout(() => {
-        console.log('end call');
+        // call timeout
+        window.isCall = false
         window.windowCall.close()
         window.windowCall = undefined
         window.focus()
-        window.isCall = false
-        $('.overlay-calling').addClass('d-none')
+        $(classOvCalling).addClass('d-none')
 
-        socket.emit('msg-callTimeout', {
+        // send signal call timeout to server => receiver
+        window.socket.emit('msg-callTimeout', {
           callerId,
           receiverId
         })
 
-        outputInfoMessage('Không trả lời')
-        const $friItem = $(`.friend-item[data-id="${window.receiverId}"]`);
-        outputMessage({
-          time: moment().format('H:mm'),
-          username: 'Me',
-          message: 'Cuộc gọi thoại'
-        }, true)
-        scrollBottomChatBox()
-        $friItem.find('.last-msg').html(`
-          <small>Cuộc gọi thoại</small><small>1 phút</small>
-        `)
+        window.outputInfoMessage('Không trả lời')
+        createMsgLocal(window.receiverId, callText, true)
       }, 5000);
     })
 
     // receive signal refuse call
-    socket.on('msg-receiverRefuseCall', () => {
+    window.socket.on('msg-receiverRefuseCall', () => {
       if (window.windowCall) {
+        window.isCall = false
         window.windowCall.close()
         window.windowCall = undefined
         window.focus()
-        window.isCall = false
 
         // set UI
-        $('.overlay-calling').addClass('d-none')
-        outputInfoMessage('Không trả lời')
-
-        // const event = new CustomEvent('receiverRefuseCall')
-        // window.windowCall.dispatchEvent(event)
+        $(classOvCalling).addClass('d-none')
+        window.outputInfoMessage('Không trả lời')
 
         // create msg end call local
-        const $friItem = $(`.friend-item[data-id="${window.receiverId}"]`);
-        if ($friItem.length) {
-          outputMessage({
-            time: moment().format('H:mm'),
-            username: 'Me',
-            message: 'Cuộc gọi thoại'
-          }, true)
-          scrollBottomChatBox()
-          $friItem.find('.last-msg').html(`
-            <small>Cuộc gọi thoại</small><small>1 phút</small>
-          `)
-        }
+        createMsgLocal(window.receiverId, callText, true)
       }
     })
 
-    socket.on('msg-missedCall', ({ callerId }) => {
-      const $popup = $('.popup-has-call')
-      $popup.find('.text-call-info').html('Cuộc gọi nhỡ')
+    // receive signal miss call from server (caller)
+    window.socket.on('msg-missedCall', ({ callerId }) => {
+      const $popup = $(classPoHasCall)
+      $popup.find('.text-call-info').html(callMissText)
       $popup.find('.text-call-sub').html(`
         <p>Bạn đã bỡ lỡ cuộc gọi của name</p>
         <p>Nhấn gọi lại để gọi lại cho name</p>
       `)
-      $popup.find('#btn-call-not-ok').addClass('d-none')
-      $popup.find('#btn-call-ok').addClass('d-none')
-      $popup.find('#btn-call-back').removeClass('d-none')
-      $popup.find('#btn-call-back').attr('data-callerid', callerId)
+      $popup.find(classCallNotOK).addClass('d-none')
+      $popup.find(classCallOK).addClass('d-none')
+      $popup.find(idBtnCallBack).removeClass('d-none')
+      $popup.find(idBtnCallBack).attr('data-callerid', callerId)
 
-      const $friItem = $(`.friend-item[data-id="${callerId}"]`);
-      if ($friItem.length) {
-        outputMessage({
-          time: moment().format('H:mm'),
-          username: $friItem.find('.friend-item-info strong').text(),
-          message: 'Cuộc gọi nhỡ',
-          avatar: $friItem.find('img').attr('src')
-        })
-        scrollBottomChatBox()
-        $friItem.find('.last-msg').html(`
-          <small>Cuộc gọi nhỡ</small><small>1 phút</small>
-        `)
-      }
+      createMsgLocal(callerId, callMissText)
     })
 
-
-    socket.on('msg-endCall', ({ callerId, receiverId, sender }) => {
+    // receive signal end call from server (it self end call)
+    window.socket.on('msg-endCall', ({ callerId, receiverId, sender }) => {
       window.isCall = false
-      outputInfoMessage('Ngắt kết nối')
+      window.outputInfoMessage('Ngắt kết nối')
       if (sender === 'caller') {
         // computer of receiver
-        const $friItem = $(`.friend-item[data-id="${callerId}"]`);
-        if ($friItem.length) {
-          outputMessage({
-            time: moment().format('H:mm'),
-            username: $friItem.find('.friend-item-info strong').text(),
-            message: 'Cuộc gọi nhỡ',
-            avatar: $friItem.find('img').attr('src')
-          })
-          scrollBottomChatBox()
-          $friItem.find('.last-msg').html(`
-            <small>Cuộc gọi nhỡ</small><small>1 phút</small>
-          `)
-        }
+        window.windowReceive = undefined
+        createMsgLocal(callerId, callText)
       } else if (sender === 'receiver') {
         // computer of caller
-          const $friItem = $(`.friend-item[data-id="${receiverId}"]`);
-          if ($friItem.length) {
-            outputMessage({
-              time: moment().format('H:mm'),
-              username: 'Me',
-              message: 'Cuộc gọi thoại',
-              // avatar: $friItem.find('img').attr('src')
-            }, true)
-            scrollBottomChatBox()
-            $friItem.find('.last-msg').html(`
-              <small>Cuộc gọi thoại</small><small>1 phút</small>
-            `)
-          }
-      }
-    })
-
-    $('#btn-call-back').on('click', function() {
-      callFriend($(this).attr('data-callerid'))
-
-      // set IU
-      $('.popup-has-call').addClass('d-none')
-    })
-
-    // accept call from receiver
-    $('#btn-call-ok').on('click', () => {
-      window.isCall = true
-
-      // open sub window receiver
-      const h = $(window).height()
-      const w = $(window).width() < 1200 ? $(window).width() : 1200
-      const x = ($(window).width() - w) / 2
-      const windowReceive = window.open(`/messenger/chat-media/${window.callerId}`, 'OH-Chat', `height=${h},width=${w},left=${x},top=${0}`);
-
-      if (window.focus) {
-        windowReceive.focus();
-        windowReceive.typeClient = 'receiver'
-        windowReceive.typeCall = 'audio'
-        windowReceive.signalOffer = window.signalOffer // signal offer
-        windowReceive.parentWindow = window // to dispatch event
-      }
-      window.windowReceive = windowReceive // to dispatch event
-
-      // set IU
-      $('.popup-has-call').addClass('d-none')
-    });
-
-    $('#btn-call-not-ok').on('click', () => {
-      // send signal refuse call to caller
-      socket.emit('msg-refuseCall', {
-        callerId: window.callerId,
-        receiverId: $('#member-id').text()
-      })
-
-      // set IU
-      $('.popup-has-call').addClass('d-none')
-      window.isCall = false
-      // create msg end call local
-      const $friItem = $(`.friend-item[data-id="${window.callerId}"]`);
-      if ($friItem.length) {
-        outputMessage({
-          time: moment().format('H:mm'),
-          username: $friItem.find('.friend-item-info strong').text(),
-          message: 'Cuộc gọi nhỡ',
-          avatar: $friItem.find('img').attr('src')
-        })
-        scrollBottomChatBox()
-        $friItem.find('.last-msg').html(`
-          <small>Cuộc gọi nhỡ</small><small>1 phút</small>
-        `)
+        window.windowCall = undefined
+        createMsgLocal(receiverId, callText, true)
       }
     })
   }
 
+  // close sub window when close or refetch browser
   window.onbeforeunload = function() {
     if (window.windowCall) {
       window.windowCall.close()
@@ -520,13 +407,51 @@ const Messenger = (() => {
     }
   }
 
+  /**
+   * Function create and append message to local
+   * @param {string} friendId friend id
+   * @param {string} msg message
+   * @param {boolean} me is me
+   */
+  function createMsgLocal(friendId, msg = '', me = false) {
+    const $friItem = $(`.friend-item[data-id="${friendId}"]`);
+    if ($friItem.length) {
+      if (me) {
+        outputMessage({
+          time: moment().format('H:mm'),
+          username: 'Me',
+          message: msg
+        }, true)
+        scrollBottomChatBox()
+        $friItem.find('.last-msg').html(`
+          <small>${ msg }</small><small>1 phút</small>
+        `)
+      } else {
+        outputMessage({
+          time: moment().format('H:mm'),
+          username: $friItem.find(classNameFriend).text(),
+          message: msg,
+          avatar: $friItem.find('img').attr('src')
+        })
+        scrollBottomChatBox()
+        $friItem.find('.last-msg').html(`
+          <small>${ msg }</small><small>1 phút</small>
+        `)
+      }
+    }
+  }
+
+  /**
+   * function call to friend by friend id
+   * @param {string} friendId friend id to call
+   */
   function callFriend(friendId) {
     if (!window.isCall) {
       window.isCall = true
 
       window.receiverId = friendId
 
-      $('.overlay-calling').removeClass('d-none')
+      $(classOvCalling).removeClass('d-none')
       // open sub window call
       const h = $(window).height()
       const w = $(window).width() < 1200 ? $(window).width() : 1200
@@ -549,7 +474,11 @@ const Messenger = (() => {
     }
   }
 
-  // output message in main chat area
+  /**
+   * Function output message in main chat area
+   * @param {Object} msgObj message object { time, message, avatar, username }
+   * @param {boolean} me is me
+   */
   function outputMessage(msgObj, me = false) {
     const div = document.createElement('div');
     if (me) {
@@ -575,7 +504,9 @@ const Messenger = (() => {
     chatMain.appendChild(div);
   }
 
-  // function scroll to bottom chat box
+  /**
+   * Function scroll to bottom chat box
+   */
   function scrollBottomChatBox() {
     const $ele = $('#main-right-chat-content');
     $ele.animate({scrollTop: $ele[0].scrollHeight - $ele.innerHeight()}, 350, 'swing');

@@ -27478,24 +27478,23 @@ var ChatAudio = function () {
     // after connect => add stream audio
 
     peer.on('connect', function () {
-      console.log('call connection');
+      // console.log('call connection')
       addTrackAudio(peer); // be connected
 
       window.connectPeer = true;
     });
-    peer.on('close', function () {
-      console.log('call close');
-    });
+    peer.on('close', function () {// console.log('call close');
+    }); // event receive signal offer from parent window from caller
+    // because when caller add stream or track => create new signal offer => signal event => add signal again
+
     peer.on('data', function (data) {
-      var dataObj = JSON.parse(data.toString()); // console.log(dataObj)
+      var dataObj = JSON.parse(data.toString());
 
       if (dataObj.type === 'signal-add-stream') {
         peer.signal(dataObj.signal);
       }
     });
     peer.on('error', function (err) {
-      console.log(err);
-      console.log(err.code);
       var errorText = '';
 
       if (err.code === 'ERR_WEBRTC_SUPPORT') {
@@ -27513,15 +27512,12 @@ var ChatAudio = function () {
         }
       });
       window.parentWindow.dispatchEvent(event);
-    });
-    peer.on('stream', function (stream) {
-      console.log('call stream'); // if (stream.getVideoTracks().length >= 2) {
-      //   outputShare(stream, socketId)
-      // }
-    });
-    peer.on('track', function (track, stream) {
-      console.log('call track');
+    }); // peer.on('stream', (stream) => {
+    //   console.log('call stream');
+    // });
 
+    peer.on('track', function (track, stream) {
+      // console.log('call track');
       if (track.kind === 'audio') {
         outputAudio(stream);
       }
@@ -27557,13 +27553,7 @@ var ChatAudio = function () {
     $(window).on('isCalling', function () {
       $('.img-load-call').addClass('d-none');
       $('.text-calling').removeClass('d-none');
-    }); // event receiver refuse call
-    // $(window).on('receiverRefuseCall', () => {
-    //   // set UI call again
-    //   $('.wrap-ctrl-calling').addClass('d-none')
-    //   $('.wrap-ctrl-after-call').removeClass('d-none')
-    // })
-
+    });
     addEventCtrl(peer);
   } else {
     // window of receiver
@@ -27579,7 +27569,7 @@ var ChatAudio = function () {
 
 
     _peer.on('connect', function () {
-      console.log('answer connection');
+      // console.log('answer connection')
       addTrackAudio(_peer); // be connected
 
       window.connectPeer = true;
@@ -27587,8 +27577,6 @@ var ChatAudio = function () {
     });
 
     _peer.on('error', function (err) {
-      console.log(err);
-      console.log(err.code);
       var errorText = '';
 
       if (err.code === 'ERR_WEBRTC_SUPPORT') {
@@ -27608,8 +27596,7 @@ var ChatAudio = function () {
       window.parentWindow.dispatchEvent(event);
     });
 
-    _peer.on('close', function () {
-      console.log('call close');
+    _peer.on('close', function () {// console.log('call close');
     }); // event receive signal offer from parent window from caller
     // because when caller add stream or track => create new signal offer => signal event => add signal again
 
@@ -27620,17 +27607,13 @@ var ChatAudio = function () {
       if (dataObj.type === 'signal-add-stream') {
         _peer.signal(dataObj.signal);
       }
-    });
+    }); // peer.on('stream', (stream) => {
+    //   console.log('call stream');
+    // });
 
-    _peer.on('stream', function (stream) {
-      console.log('call stream'); // if (stream.getVideoTracks().length >= 2) {
-      //   outputShare(stream, socketId)
-      // }
-    });
 
     _peer.on('track', function (track, stream) {
-      console.log('call track');
-
+      // console.log('call track');
       if (track.kind === 'audio') {
         outputAudio(stream);
       }
@@ -27638,8 +27621,7 @@ var ChatAudio = function () {
 
 
     _peer.on('signal', function (signal) {
-      console.log('answer signal');
-
+      // console.log('answer signal')
       if (!window.connectPeer) {
         var event = new CustomEvent('signalAnswer', {
           detail: {
@@ -27693,7 +27675,7 @@ var ChatAudio = function () {
 
   function addTrackAudio(_x) {
     return _addTrackAudio.apply(this, arguments);
-  } // function remove track autio stream
+  } // function remove track audio stream
 
 
   function _addTrackAudio() {
@@ -27743,11 +27725,7 @@ var ChatAudio = function () {
     peer.removeTrack(window.localStream.getAudioTracks()[0], window.localStream); // remove audio track of stream in local stream
 
     window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
-  } // window.onbeforeunload = function() {
-  //   const event = new CustomEvent('endCall')
-  //   window.parentWindow.dispatchEvent(event)
-  // }
-
+  }
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (ChatAudio);

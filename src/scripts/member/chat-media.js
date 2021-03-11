@@ -21,27 +21,26 @@ const ChatAudio = (() => {
       // add events to peer
       // after connect => add stream audio
       peer.on('connect', () => {
-        console.log('call connection')
+        // console.log('call connection')
         addTrackAudio(peer)
         // be connected
         window.connectPeer = true
       });
 
       peer.on('close', () => {
-        console.log('call close');
+        // console.log('call close');
       });
 
+      // event receive signal offer from parent window from caller
+      // because when caller add stream or track => create new signal offer => signal event => add signal again
       peer.on('data', (data) => {
         const dataObj = JSON.parse(data.toString())
-        // console.log(dataObj)
         if (dataObj.type === 'signal-add-stream') {
           peer.signal(dataObj.signal)
         }
       });
 
       peer.on('error', (err) => {
-        console.log(err);
-        console.log(err.code);
         let errorText = ''
         if (err.code === 'ERR_WEBRTC_SUPPORT') {
           errorText = 'Trình duyệt không hỗ trợ'
@@ -59,15 +58,12 @@ const ChatAudio = (() => {
         window.parentWindow.dispatchEvent(event)
       })
 
-      peer.on('stream', (stream) => {
-        console.log('call stream');
-        // if (stream.getVideoTracks().length >= 2) {
-        //   outputShare(stream, socketId)
-        // }
-      });
+      // peer.on('stream', (stream) => {
+      //   console.log('call stream');
+      // });
 
       peer.on('track', (track, stream) => {
-        console.log('call track');
+        // console.log('call track');
         if (track.kind === 'audio') {
           outputAudio(stream);
         }
@@ -108,12 +104,6 @@ const ChatAudio = (() => {
         $('.text-calling').removeClass('d-none')
       })
 
-      // event receiver refuse call
-      // $(window).on('receiverRefuseCall', () => {
-      //   // set UI call again
-      //   $('.wrap-ctrl-calling').addClass('d-none')
-      //   $('.wrap-ctrl-after-call').removeClass('d-none')
-      // })
       addEventCtrl(peer)
     } else {
       // window of receiver
@@ -129,7 +119,7 @@ const ChatAudio = (() => {
       // add events
       // conect => add audio stream
       peer.on('connect', () => {
-        console.log('answer connection')
+        // console.log('answer connection')
         addTrackAudio(peer)
         // be connected
         window.connectPeer = true
@@ -137,8 +127,6 @@ const ChatAudio = (() => {
       });
 
       peer.on('error', (err) => {
-        console.log(err);
-        console.log(err.code);
         let errorText = ''
         if (err.code === 'ERR_WEBRTC_SUPPORT') {
           errorText = 'Trình duyệt không hỗ trợ'
@@ -157,7 +145,7 @@ const ChatAudio = (() => {
       })
 
       peer.on('close', () => {
-        console.log('call close');
+        // console.log('call close');
       });
 
       // event receive signal offer from parent window from caller
@@ -170,15 +158,12 @@ const ChatAudio = (() => {
         }
       });
 
-      peer.on('stream', (stream) => {
-        console.log('call stream');
-        // if (stream.getVideoTracks().length >= 2) {
-        //   outputShare(stream, socketId)
-        // }
-      });
+      // peer.on('stream', (stream) => {
+      //   console.log('call stream');
+      // });
 
       peer.on('track', (track, stream) => {
-        console.log('call track');
+        // console.log('call track');
         if (track.kind === 'audio') {
           outputAudio(stream);
         }
@@ -186,7 +171,7 @@ const ChatAudio = (() => {
 
       // run after add signal => create custom event => send signal answer to parent window => caller
       peer.on('signal', (signal) => {
-        console.log('answer signal')
+        // console.log('answer signal')
         if (!window.connectPeer) {
           const event = new CustomEvent('signalAnswer', {
             detail: {
@@ -262,7 +247,7 @@ const ChatAudio = (() => {
       }
     }
 
-    // function remove track autio stream
+    // function remove track audio stream
     function removeTrackAudio(peer) {
       peer.removeTrack(
         window.localStream.getAudioTracks()[0],
@@ -271,11 +256,6 @@ const ChatAudio = (() => {
       // remove audio track of stream in local stream
       window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
     }
-
-    // window.onbeforeunload = function() {
-    //   const event = new CustomEvent('endCall')
-    //   window.parentWindow.dispatchEvent(event)
-    // }
 })()
 
 export default ChatAudio

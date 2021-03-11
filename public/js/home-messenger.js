@@ -39298,12 +39298,25 @@ var Messenger = function () {
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
 
-  var hasMessenger = true;
-  var currentPageChat = 0;
-  scrollBottomChatBox();
+  var hasMessenger = true; // has old msg
+
+  var currentPageChat = 0; // current page load old chat
+
+  var classScBottom = '.scroll-bottom';
+  var idBtnCallBack = '#btn-call-back';
+  var classPoHasCall = '.popup-has-call';
+  var classCallOK = '#btn-call-ok';
+  var classCallNotOK = '#btn-call-not-ok';
+  var classNameFriend = '.friend-item-info strong';
+  var classOvCalling = '.overlay-calling';
+  var callMissText = 'Cuộc gọi nhỡ';
+  var callText = 'Cuộc gọi thoại'; // scroll bottom
+
+  chatMain.scrollTop = chatMain.scrollHeight;
 
   if (msgForm) {
-    var classScBottom = '.scroll-bottom'; // event submit form chat
+    var friendIdChatting = $('#main-right').attr('data-id');
+    var meId = $('#member-id').text(); // event submit form chat
 
     msgForm.addEventListener('submit', function (e) {
       // stop submit form
@@ -39313,19 +39326,12 @@ var Messenger = function () {
 
       if (inputMsg.value !== '') {
         // send message to server
-        socket.emit('msg-messageChat', {
+        window.window.socket.emit('msg-messageChat', {
           message: inputMsg.value,
           token: e.target.elements._token.value
         }); // create message obj to show in client
 
-        var msgObj = {
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-          username: 'Me',
-          message: escapeHtml(inputMsg.value)
-        };
-        outputMessage(msgObj, true);
-        var friendId = $('#main-right').attr('data-id');
-        $(".friend-item[data-id=\"".concat(friendId, "\"]")).find('.last-msg').html("<small>B\u1EA1n: ".concat(msgObj.message, "</small><small>1 ph\xFAt</small>")); // scroll bottom
+        createMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), true); // scroll bottom
 
         chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
 
@@ -39341,34 +39347,33 @@ var Messenger = function () {
         $(msgForm).find('button.text-secondary').trigger('click');
         $(this).css('height', '35px');
       }
-    }).on('input', '#msg', function (e) {
+    }).on('input', '#msg', function () {
       $(this).css('height', '5px');
       $(this).css('height', "".concat(this.scrollHeight, "px"));
-    }).on('focus', '#msg', function (e) {
+    }).on('focus', '#msg', function () {
       $(this).parents('.wrap-msg-box').addClass('is-focus');
-    }).on('blur', '#msg', function (e) {
+    }).on('blur', '#msg', function () {
       $(this).parents('.wrap-msg-box').removeClass('is-focus');
     }); // handle scroll box chat: load old msg, scroll to bottom
 
     $('#main-right-chat-content').on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var friendId, responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll;
+      var responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               if (!(this.scrollTop === 0 && hasMessenger === true)) {
-                _context.next = 25;
+                _context.next = 23;
                 break;
               }
 
               $('.wrap-loader-chat').removeClass('d-none');
               _context.prev = 2;
-              friendId = $('#main-right').attr('data-id');
-              _context.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat(friendId, "&page=").concat(currentPageChat + 1));
+              _context.next = 5;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat(friendIdChatting, "&page=").concat(currentPageChat + 1));
 
-            case 6:
+            case 5:
               responsive = _context.sent;
               _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg;
               $('.wrap-loader-chat').addClass('d-none');
@@ -39380,372 +39385,59 @@ var Messenger = function () {
                 }
 
                 return "\n              <div class=\"message\">\n                <small class=\"message-time\">".concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    <small class=\"message-content\">").concat(msg.content, "</small>\n                  </div>\n                </div>\n              </div>");
-              }).join(''); // prepend msg list
+              }).join(''); // prepend msg list and hold position scroll top of chat box
 
               curScrollPos = this.scrollTop;
               oldScroll = this.scrollHeight - this.clientHeight;
               $(this).prepend(htmlMsgs);
               newScroll = this.scrollHeight - this.clientHeight;
               this.scrollTop = curScrollPos + (newScroll - oldScroll);
-              console.log(messages);
-              _context.next = 23;
+              _context.next = 21;
               break;
 
-            case 20:
-              _context.prev = 20;
+            case 18:
+              _context.prev = 18;
               _context.t0 = _context["catch"](2);
-              console.error(_context.t0);
+              window.outputErrorMessage(_context.t0.message);
+
+            case 21:
+              _context.next = 24;
+              break;
 
             case 23:
-              _context.next = 26;
-              break;
-
-            case 25:
               if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
                 $(classScBottom).addClass('is-show');
               } else {
                 $(classScBottom).removeClass('is-show');
               }
 
-            case 26:
+            case 24:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, this, [[2, 20]]);
+      }, _callee, this, [[2, 18]]);
     }))); // scroll to bottom chat box
 
     $(classScBottom).on('click', scrollBottomChatBox); // call audio to friend
 
     $('#call-friend-btn').on('click', function () {
-      var friendId = $('#main-right').attr('data-id');
-      callFriend(friendId);
-    }); // receive signal offer from sub window call => send to server => receiver
-
-    $(window).on('signalOffer', function (e) {
-      var signalOffer = e.detail.signalOffer;
-      socket.emit('msg-offerStream', {
-        receiverId: $('#main-right').attr('data-id'),
-        callerId: $('#member-id').text(),
-        signal: signalOffer
-      });
-    }); // receive signal offer from sub window receiver => send to server => caller
-
-    $(window).on('signalAnswer', function (e) {
-      console.log('signalAnswer');
-      var signalAnswer = e.detail.signalAnswer;
-      socket.emit('msg-answerStream', {
-        signal: signalAnswer,
-        callerId: window.callerId,
-        receiverId: $('#member-id').text()
-      });
-    }); // receive signal error from sub window => send to server
-
-    $(window).on('connectPeerFail', function (e) {
-      var _e$detail = e.detail,
-          code = _e$detail.code,
-          error = _e$detail.error;
-      console.log(e.detail);
-      window.isCall = false;
-
-      if (window.windowCall) {
-        window.windowCall.close();
-        window.windowCall = undefined;
-        socket.emit('msg-connectPeerFail', {
-          callerId: $('#member-id').text(),
-          // receiverId: $('#main-right').attr('data-id'),
-          receiverId: window.receiverId,
-          code: code,
-          sender: 'caller'
-        });
-
-        if (code === 'ERR_DATA_CHANNEL') {
-          outputInfoMessage(error);
-          var $friItem = $(".friend-item[data-id=\"".concat(window.receiverId, "\"]"));
-
-          if ($friItem.length) {
-            outputMessage({
-              time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-              username: 'Me',
-              message: 'Cuộc gọi thoại' // avatar: $friItem.find('img').attr('src')
-
-            }, true);
-            scrollBottomChatBox();
-            $friItem.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
-          }
-        } else {
-          outputErrorMessage(error);
-        }
-      } else if (window.windowReceive) {
-        window.windowReceive.close();
-        window.windowReceive = undefined;
-        socket.emit('msg-connectPeerFail', {
-          callerId: window.callerId,
-          receiverId: $('#member-id').text(),
-          code: code,
-          sender: 'receiver'
-        });
-
-        if (code === 'ERR_DATA_CHANNEL') {
-          outputInfoMessage(error);
-
-          var _$friItem = $(".friend-item[data-id=\"".concat(window.callerId, "\"]"));
-
-          if (_$friItem.length) {
-            outputMessage({
-              time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-              username: _$friItem.find('.friend-item-info strong').text(),
-              message: 'Cuộc gọi thoại',
-              avatar: _$friItem.find('img').attr('src')
-            });
-            scrollBottomChatBox();
-
-            _$friItem.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
-          }
-        } else {
-          outputErrorMessage(error);
-        }
-      }
-
-      window.focus();
-    }); // $(window).on('endCall', () => {
-    //   console.log(window.windowCall, window.windowReceive);
-    //   if (window.windowCall) {
-    //     // create msg end call local
-    //     const friendId = $('#main-right').attr('data-id')
-    //     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
-    //     if ($friItem.length) {
-    //       outputMessage({
-    //         time: moment().format('H:mm'),
-    //         username: 'Me',
-    //         message: 'Cuộc gọi thoại'
-    //       }, true)
-    //       scrollBottomChatBox()
-    //       $friItem.find('.last-msg').html(`
-    //         <small>Cuộc gọi thoại</small><small>1 phút</small>
-    //       `)
-    //     }
-    //   } else if (window.windowReceive) {
-    //     const $friItem = $(`.friend-item[data-id="${window.callerId}"]`);
-    //     if ($friItem.length) {
-    //       outputMessage({
-    //         time: moment().format('H:mm'),
-    //         username: $friItem.find('.friend-item-info strong').text(),
-    //         message: 'Cuộc gọi nhỡ',
-    //         avatar: $friItem.find('img').attr('src')
-    //       })
-    //       scrollBottomChatBox()
-    //       $friItem.find('.last-msg').html(`
-    //         <small>Cuộc gọi nhỡ</small><small>1 phút</small>
-    //       `)
-    //     }
-    //   }
-    // })
-    // receive msg obj from server
-
-    socket.on('msg-messenger', function (_ref2) {
-      var senderId = _ref2.senderId,
-          msgObj = _ref2.msg;
-      var friendId = $('#main-right').attr('data-id');
-
-      if (friendId === senderId) {
-        // output message
-        outputMessage(msgObj); // scroll bottom
-
-        chatMain.scrollTop = chatMain.scrollHeight;
-      }
-
-      $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
-    }); // receive signal friend is online
-
-    socket.on('msg-friendOnline', function (_ref3) {
-      var memberId = _ref3.memberId;
-      // console.log('online', memberId);
-      $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
-      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-      if ($mainChat.length) {
-        $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
-      }
-    }); // receive signal friend is offline
-
-    socket.on('msg-friendOffline', function (_ref4) {
-      var memberId = _ref4.memberId;
-      $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
-      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-      if ($mainChat.length) {
-        $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
-      }
-    }); // receive signal has call from friend
-
-    socket.on('msg-hasCallAudio', function (_ref5) {
-      var signal = _ref5.signal,
-          callerId = _ref5.callerId;
-      window.signalOffer = signal;
-      window.callerId = callerId; // set IU
-
-      var $popup = $('.popup-has-call');
-
-      if ($popup.hasClass('d-none')) {
-        $('.popup-has-call').removeClass('d-none');
-      } else {
-        $popup.find('.text-call-info').html('Cuộc gọi đến');
-        $popup.find('.text-call-sub').html("\n          <p>Name \u0111ang g\u1ECDi cho b\u1EA1n</p>\n          <p>Cu\u1ED9c g\u1ECDi s\u1EBD b\u1EAFt \u0111\u1EA7u ngay sau khi b\u1EA1n ch\u1EA5p nh\u1EADn</p>\n        ");
-        $popup.find('#btn-call-not-ok').removeClass('d-none');
-        $popup.find('#btn-call-ok').removeClass('d-none');
-        $popup.find('#btn-call-back').addClass('d-none');
-      }
-    }); // receive signal answer
-
-    socket.on('msg-answerSignal', function (_ref6) {
-      var signal = _ref6.signal;
-      // send signal answer to sub window
-      clearTimeout(window.timeoutCallId);
-      var event = new CustomEvent('signalAnswer', {
-        detail: {
-          signalAnswer: signal
-        }
-      });
-      window.windowCall.dispatchEvent(event);
-      $('.overlay-calling').addClass('d-none');
-    }); // receive signal call error
-
-    socket.on('msg-callError', function (_ref7) {
-      var msg = _ref7.msg;
-      window.windowCall.close();
-      window.windowCall = undefined;
-      window.focus();
-      $('.overlay-calling').addClass('d-none');
-      window.isCall = false;
-      outputErrorMessage(msg);
-    }); // receive signal send signal call to receiver done
-
-    socket.on('msg-doneSendSignalCall', function (_ref8) {
-      var callerId = _ref8.callerId,
-          receiverId = _ref8.receiverId;
-      window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
-      window.timeoutCallId = setTimeout(function () {
-        console.log('end call');
-        window.windowCall.close();
-        window.windowCall = undefined;
-        window.focus();
-        window.isCall = false;
-        $('.overlay-calling').addClass('d-none');
-        socket.emit('msg-callTimeout', {
-          callerId: callerId,
-          receiverId: receiverId
-        });
-        outputInfoMessage('Không trả lời');
-        var $friItem = $(".friend-item[data-id=\"".concat(window.receiverId, "\"]"));
-        outputMessage({
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-          username: 'Me',
-          message: 'Cuộc gọi thoại'
-        }, true);
-        scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n        ");
-      }, 5000);
-    }); // receive signal refuse call
-
-    socket.on('msg-receiverRefuseCall', function () {
-      if (window.windowCall) {
-        window.windowCall.close();
-        window.windowCall = undefined;
-        window.focus();
-        window.isCall = false; // set UI
-
-        $('.overlay-calling').addClass('d-none');
-        outputInfoMessage('Không trả lời'); // const event = new CustomEvent('receiverRefuseCall')
-        // window.windowCall.dispatchEvent(event)
-        // create msg end call local
-
-        var $friItem = $(".friend-item[data-id=\"".concat(window.receiverId, "\"]"));
-
-        if ($friItem.length) {
-          outputMessage({
-            time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-            username: 'Me',
-            message: 'Cuộc gọi thoại'
-          }, true);
-          scrollBottomChatBox();
-          $friItem.find('.last-msg').html("\n            <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n          ");
-        }
-      }
+      callFriend(friendIdChatting);
     });
-    socket.on('msg-missedCall', function (_ref9) {
-      var callerId = _ref9.callerId;
-      var $popup = $('.popup-has-call');
-      $popup.find('.text-call-info').html('Cuộc gọi nhỡ');
-      $popup.find('.text-call-sub').html("\n        <p>B\u1EA1n \u0111\xE3 b\u1EE1 l\u1EE1 cu\u1ED9c g\u1ECDi c\u1EE7a name</p>\n        <p>Nh\u1EA5n g\u1ECDi l\u1EA1i \u0111\u1EC3 g\u1ECDi l\u1EA1i cho name</p>\n      ");
-      $popup.find('#btn-call-not-ok').addClass('d-none');
-      $popup.find('#btn-call-ok').addClass('d-none');
-      $popup.find('#btn-call-back').removeClass('d-none');
-      $popup.find('#btn-call-back').attr('data-callerid', callerId);
-      var $friItem = $(".friend-item[data-id=\"".concat(callerId, "\"]"));
-
-      if ($friItem.length) {
-        outputMessage({
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-          username: $friItem.find('.friend-item-info strong').text(),
-          message: 'Cuộc gọi nhỡ',
-          avatar: $friItem.find('img').attr('src')
-        });
-        scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>Cu\u1ED9c g\u1ECDi nh\u1EE1</small><small>1 ph\xFAt</small>\n        ");
-      }
-    });
-    socket.on('msg-endCall', function (_ref10) {
-      var callerId = _ref10.callerId,
-          receiverId = _ref10.receiverId,
-          sender = _ref10.sender;
-      window.isCall = false;
-      outputInfoMessage('Ngắt kết nối');
-
-      if (sender === 'caller') {
-        // computer of receiver
-        var $friItem = $(".friend-item[data-id=\"".concat(callerId, "\"]"));
-
-        if ($friItem.length) {
-          outputMessage({
-            time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-            username: $friItem.find('.friend-item-info strong').text(),
-            message: 'Cuộc gọi nhỡ',
-            avatar: $friItem.find('img').attr('src')
-          });
-          scrollBottomChatBox();
-          $friItem.find('.last-msg').html("\n            <small>Cu\u1ED9c g\u1ECDi nh\u1EE1</small><small>1 ph\xFAt</small>\n          ");
-        }
-      } else if (sender === 'receiver') {
-        // computer of caller
-        var _$friItem2 = $(".friend-item[data-id=\"".concat(receiverId, "\"]"));
-
-        if (_$friItem2.length) {
-          outputMessage({
-            time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-            username: 'Me',
-            message: 'Cuộc gọi thoại' // avatar: $friItem.find('img').attr('src')
-
-          }, true);
-          scrollBottomChatBox();
-
-          _$friItem2.find('.last-msg').html("\n              <small>Cu\u1ED9c g\u1ECDi tho\u1EA1i</small><small>1 ph\xFAt</small>\n            ");
-        }
-      }
-    });
-    $('#btn-call-back').on('click', function () {
+    $(idBtnCallBack).on('click', function () {
       callFriend($(this).attr('data-callerid')); // set IU
 
-      $('.popup-has-call').addClass('d-none');
+      $(classPoHasCall).addClass('d-none');
     }); // accept call from receiver
 
-    $('#btn-call-ok').on('click', function () {
+    $(classCallOK).on('click', function () {
+      // set is call local is true => focus sub window when click call btn
       window.isCall = true; // open sub window receiver
 
       var h = $(window).height();
       var w = $(window).width() < 1200 ? $(window).width() : 1200;
       var x = ($(window).width() - w) / 2;
-      var windowReceive = window.open("/messenger/chat-media/".concat(window.callerId), 'OH-Chat', "height=".concat(h, ",width=").concat(w, ",left=").concat(x, ",top=", 0));
+      var windowReceive = window.open("/messenger/chat-media/".concat(window.callerId), 'OH-Chat', "height=".concat(h, ",width=").concat(w, ",left=").concat(x, ",top=", 0)); // focus sub window and set global var for sub window
 
       if (window.focus) {
         windowReceive.focus();
@@ -39759,32 +39451,239 @@ var Messenger = function () {
       window.windowReceive = windowReceive; // to dispatch event
       // set IU
 
-      $('.popup-has-call').addClass('d-none');
-    });
-    $('#btn-call-not-ok').on('click', function () {
+      $(classPoHasCall).addClass('d-none');
+    }); // no accept call from receiver
+
+    $(classCallNotOK).on('click', function () {
       // send signal refuse call to caller
-      socket.emit('msg-refuseCall', {
+      window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
-        receiverId: $('#member-id').text()
+        receiverId: meId
       }); // set IU
 
-      $('.popup-has-call').addClass('d-none');
+      $(classPoHasCall).addClass('d-none');
       window.isCall = false; // create msg end call local
 
-      var $friItem = $(".friend-item[data-id=\"".concat(window.callerId, "\"]"));
+      createMsgLocal(window.callerId, callMissText);
+    }); // receive signal offer from sub window call => send to server => receiver
 
-      if ($friItem.length) {
-        outputMessage({
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
-          username: $friItem.find('.friend-item-info strong').text(),
-          message: 'Cuộc gọi nhỡ',
-          avatar: $friItem.find('img').attr('src')
+    $(window).on('signalOffer', function (e) {
+      var signalOffer = e.detail.signalOffer;
+      window.socket.emit('msg-offerStream', {
+        receiverId: friendIdChatting,
+        callerId: meId,
+        signal: signalOffer
+      });
+    }); // receive signal offer from sub window receiver => send to server => caller
+
+    $(window).on('signalAnswer', function (e) {
+      var signalAnswer = e.detail.signalAnswer;
+      window.socket.emit('msg-answerStream', {
+        signal: signalAnswer,
+        callerId: window.callerId,
+        receiverId: meId
+      });
+    }); // receive signal error from sub window => send to server
+
+    $(window).on('connectPeerFail', function (e) {
+      var _e$detail = e.detail,
+          code = _e$detail.code,
+          error = _e$detail.error;
+      window.isCall = false;
+
+      if (window.windowCall) {
+        // computer of caller
+        // close sub window
+        window.windowCall.close();
+        window.windowCall = undefined; // send to server => send to receiver => end call
+        // receiver end call => caller on event end call but receiver not on event self end call => send again to receiver
+
+        window.socket.emit('msg-connectPeerFail', {
+          callerId: meId,
+          receiverId: window.receiverId,
+          code: code,
+          sender: 'caller'
         });
-        scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>Cu\u1ED9c g\u1ECDi nh\u1EE1</small><small>1 ph\xFAt</small>\n        ");
+
+        if (code === 'ERR_DATA_CHANNEL') {
+          // peer fail for end call signal
+          window.outputInfoMessage(error); // create msg local
+
+          createMsgLocal(window.receiverId, callText, true);
+        } else {
+          // connect peer fail
+          window.outputErrorMessage(error);
+        }
+      } else if (window.windowReceive) {
+        // computer of receiver
+        // close sub window
+        window.windowReceive.close();
+        window.windowReceive = undefined; // send to server => send to caller => end call
+        // caller end call => receiver on event end call but caller not on event self end call => send again to caller
+
+        window.socket.emit('msg-connectPeerFail', {
+          callerId: window.callerId,
+          receiverId: meId,
+          code: code,
+          sender: 'receiver'
+        });
+
+        if (code === 'ERR_DATA_CHANNEL') {
+          // peer fail for end call signal
+          window.outputInfoMessage(error); // create msg local
+
+          createMsgLocal(window.callerId, callText);
+        } else {
+          window.outputErrorMessage(error);
+        }
+      }
+
+      window.focus();
+    }); // receive msg obj from server
+
+    window.socket.on('msg-messenger', function (_ref2) {
+      var senderId = _ref2.senderId,
+          msgObj = _ref2.msg;
+
+      if (friendIdChatting === senderId) {
+        // output message
+        outputMessage(msgObj); // scroll bottom
+
+        chatMain.scrollTop = chatMain.scrollHeight;
+      }
+
+      $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+    }); // receive signal friend is online
+
+    window.socket.on('msg-friendOnline', function (_ref3) {
+      var memberId = _ref3.memberId;
+      $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
+      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+
+      if ($mainChat.length) {
+        $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
+      }
+    }); // receive signal friend is offline
+
+    window.socket.on('msg-friendOffline', function (_ref4) {
+      var memberId = _ref4.memberId;
+      $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
+      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+
+      if ($mainChat.length) {
+        $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
+      }
+    }); // receive signal has call from friend
+
+    window.socket.on('msg-hasCallAudio', function (_ref5) {
+      var signal = _ref5.signal,
+          callerId = _ref5.callerId;
+      window.signalOffer = signal; // signal offer
+
+      window.callerId = callerId; // set IU
+
+      var $popup = $(classPoHasCall);
+
+      if ($popup.hasClass('d-none')) {
+        $(classPoHasCall).removeClass('d-none');
+      } else {
+        $popup.find('.text-call-info').html('Cuộc gọi đến');
+        $popup.find('.text-call-sub').html("\n          <p>Name \u0111ang g\u1ECDi cho b\u1EA1n</p>\n          <p>Cu\u1ED9c g\u1ECDi s\u1EBD b\u1EAFt \u0111\u1EA7u ngay sau khi b\u1EA1n ch\u1EA5p nh\u1EADn</p>\n        ");
+        $popup.find(classCallNotOK).removeClass('d-none');
+        $popup.find(classCallOK).removeClass('d-none');
+        $popup.find(idBtnCallBack).addClass('d-none');
+      }
+    }); // receive signal answer
+
+    window.socket.on('msg-answerSignal', function (_ref6) {
+      var signal = _ref6.signal;
+      // send signal answer to sub window
+      clearTimeout(window.timeoutCallId);
+      var event = new CustomEvent('signalAnswer', {
+        detail: {
+          signalAnswer: signal
+        }
+      });
+      window.windowCall.dispatchEvent(event);
+      $(classOvCalling).addClass('d-none');
+    }); // receive signal call error
+
+    window.socket.on('msg-callError', function (_ref7) {
+      var msg = _ref7.msg;
+      window.isCall = false;
+      window.windowCall.close();
+      window.windowCall = undefined;
+      window.focus();
+      $(classOvCalling).addClass('d-none');
+      window.outputErrorMessage(msg);
+    }); // receive signal send signal call to receiver done
+
+    window.socket.on('msg-doneSendSignalCall', function (_ref8) {
+      var callerId = _ref8.callerId,
+          receiverId = _ref8.receiverId;
+      window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
+      window.timeoutCallId = setTimeout(function () {
+        // call timeout
+        window.isCall = false;
+        window.windowCall.close();
+        window.windowCall = undefined;
+        window.focus();
+        $(classOvCalling).addClass('d-none'); // send signal call timeout to server => receiver
+
+        window.socket.emit('msg-callTimeout', {
+          callerId: callerId,
+          receiverId: receiverId
+        });
+        window.outputInfoMessage('Không trả lời');
+        createMsgLocal(window.receiverId, callText, true);
+      }, 5000);
+    }); // receive signal refuse call
+
+    window.socket.on('msg-receiverRefuseCall', function () {
+      if (window.windowCall) {
+        window.isCall = false;
+        window.windowCall.close();
+        window.windowCall = undefined;
+        window.focus(); // set UI
+
+        $(classOvCalling).addClass('d-none');
+        window.outputInfoMessage('Không trả lời'); // create msg end call local
+
+        createMsgLocal(window.receiverId, callText, true);
+      }
+    }); // receive signal miss call from server (caller)
+
+    window.socket.on('msg-missedCall', function (_ref9) {
+      var callerId = _ref9.callerId;
+      var $popup = $(classPoHasCall);
+      $popup.find('.text-call-info').html(callMissText);
+      $popup.find('.text-call-sub').html("\n        <p>B\u1EA1n \u0111\xE3 b\u1EE1 l\u1EE1 cu\u1ED9c g\u1ECDi c\u1EE7a name</p>\n        <p>Nh\u1EA5n g\u1ECDi l\u1EA1i \u0111\u1EC3 g\u1ECDi l\u1EA1i cho name</p>\n      ");
+      $popup.find(classCallNotOK).addClass('d-none');
+      $popup.find(classCallOK).addClass('d-none');
+      $popup.find(idBtnCallBack).removeClass('d-none');
+      $popup.find(idBtnCallBack).attr('data-callerid', callerId);
+      createMsgLocal(callerId, callMissText);
+    }); // receive signal end call from server (it self end call)
+
+    window.socket.on('msg-endCall', function (_ref10) {
+      var callerId = _ref10.callerId,
+          receiverId = _ref10.receiverId,
+          sender = _ref10.sender;
+      window.isCall = false;
+      window.outputInfoMessage('Ngắt kết nối');
+
+      if (sender === 'caller') {
+        // computer of receiver
+        window.windowReceive = undefined;
+        createMsgLocal(callerId, callText);
+      } else if (sender === 'receiver') {
+        // computer of caller
+        window.windowCall = undefined;
+        createMsgLocal(receiverId, callText, true);
       }
     });
-  }
+  } // close sub window when close or refetch browser
+
 
   window.onbeforeunload = function () {
     if (window.windowCall) {
@@ -39793,12 +39692,51 @@ var Messenger = function () {
       window.windowReceive.close();
     }
   };
+  /**
+   * Function create and append message to local
+   * @param {string} friendId friend id
+   * @param {string} msg message
+   * @param {boolean} me is me
+   */
+
+
+  function createMsgLocal(friendId) {
+    var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var me = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
+
+    if ($friItem.length) {
+      if (me) {
+        outputMessage({
+          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+          username: 'Me',
+          message: msg
+        }, true);
+        scrollBottomChatBox();
+        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
+      } else {
+        outputMessage({
+          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+          username: $friItem.find(classNameFriend).text(),
+          message: msg,
+          avatar: $friItem.find('img').attr('src')
+        });
+        scrollBottomChatBox();
+        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
+      }
+    }
+  }
+  /**
+   * function call to friend by friend id
+   * @param {string} friendId friend id to call
+   */
+
 
   function callFriend(friendId) {
     if (!window.isCall) {
       window.isCall = true;
       window.receiverId = friendId;
-      $('.overlay-calling').removeClass('d-none'); // open sub window call
+      $(classOvCalling).removeClass('d-none'); // open sub window call
 
       var h = $(window).height();
       var w = $(window).width() < 1200 ? $(window).width() : 1200;
@@ -39820,7 +39758,12 @@ var Messenger = function () {
         window.windowReceive.focus();
       }
     }
-  } // output message in main chat area
+  }
+  /**
+   * Function output message in main chat area
+   * @param {Object} msgObj message object { time, message, avatar, username }
+   * @param {boolean} me is me
+   */
 
 
   function outputMessage(msgObj) {
@@ -39837,7 +39780,10 @@ var Messenger = function () {
 
 
     chatMain.appendChild(div);
-  } // function scroll to bottom chat box
+  }
+  /**
+   * Function scroll to bottom chat box
+   */
 
 
   function scrollBottomChatBox() {
