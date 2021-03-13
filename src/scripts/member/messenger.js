@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../global/chat-utils'
 
 const Messenger = (() => {
+  const callTimeout = 5000
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
   let hasMessenger = true // has old msg
@@ -180,7 +181,7 @@ const Messenger = (() => {
     })
 
     // close popup miss call
-    $('.miss-call .close-popup').on('click', () => {
+    $('.popup-has-call .close-popup').on('click', () => {
       $('.wrap-pop-has-call').removeClass('miss-call')
       $('.popup-has-call').addClass('d-none')
     })
@@ -229,7 +230,7 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createCallMsgLocal(window.receiverId, callTextReceiver, classCallCome, true)
+          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true)
         } else {
           // connect peer fail
           window.outputErrorMessage(error)
@@ -254,7 +255,7 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createCallMsgLocal(window.callerId, callTextCaller, classCallOut)
+          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome)
         } else {
           window.outputErrorMessage(error)
         }
@@ -298,6 +299,7 @@ const Messenger = (() => {
     window.socket.on('msg-hasCallAudio', ({ signal, callerId, callerName, callerAvatar }) => {
       window.signalOffer = signal // signal offer
       window.callerId = callerId
+      window.timeStartCall = new Date()
 
       // set IU
       const $popup = $(classPoHasCall)
@@ -334,6 +336,7 @@ const Messenger = (() => {
 
     // receive signal send signal call to receiver done
     window.socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
+      window.timeStartCall = new Date()
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'))
       window.timeoutCallId = setTimeout(() => {
         // call timeout
@@ -350,8 +353,8 @@ const Messenger = (() => {
         })
 
         window.outputInfoMessage('Không trả lời')
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallCome, true)
-      }, 5000);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true)
+      }, callTimeout);
     })
 
     // receive signal refuse call
@@ -413,10 +416,15 @@ const Messenger = (() => {
    */
   function createCallMsgLocal(friendId, msg = '', className = '', me = false) {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
+    let time = moment().format('H:mm')
+    if (window.timeStartCall) {
+      time = moment(window.timeStartCall).format('H:mm')
+      window.timeStartCall = undefined
+    }
     if ($friItem.length) {
       if (me) {
         outputMessage({
-          time: moment().format('H:mm'),
+          time,
           username: 'Me',
           message: msg,
           className
@@ -427,7 +435,7 @@ const Messenger = (() => {
         `)
       } else {
         outputMessage({
-          time: moment().format('H:mm'),
+          time,
           username: $friItem.find(classNameFriend).text(),
           message: msg,
           avatar: $friItem.find('img').attr('src'),

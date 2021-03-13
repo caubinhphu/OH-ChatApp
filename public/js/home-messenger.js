@@ -39290,11 +39290,11 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
- // import SimplePeer from 'simple-peer'
 
 
 
 var Messenger = function () {
+  var callTimeout = 5000;
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
 
@@ -39471,7 +39471,7 @@ var Messenger = function () {
       createCallMsgLocal(window.callerId, callMissText, classCallMissed);
     }); // close popup miss call
 
-    $('.miss-call .close-popup').on('click', function () {
+    $('.popup-has-call .close-popup').on('click', function () {
       $('.wrap-pop-has-call').removeClass('miss-call');
       $('.popup-has-call').addClass('d-none');
     }); // receive signal offer from sub window call => send to server => receiver
@@ -39518,7 +39518,7 @@ var Messenger = function () {
           // peer fail for end call signal
           window.outputInfoMessage(error); // create msg local
 
-          createCallMsgLocal(window.receiverId, callTextReceiver, classCallCome, true);
+          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true);
         } else {
           // connect peer fail
           window.outputErrorMessage(error);
@@ -39541,7 +39541,7 @@ var Messenger = function () {
           // peer fail for end call signal
           window.outputInfoMessage(error); // create msg local
 
-          createCallMsgLocal(window.callerId, callTextCaller, classCallOut);
+          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome);
         } else {
           window.outputErrorMessage(error);
         }
@@ -39591,7 +39591,8 @@ var Messenger = function () {
           callerAvatar = _ref5.callerAvatar;
       window.signalOffer = signal; // signal offer
 
-      window.callerId = callerId; // set IU
+      window.callerId = callerId;
+      window.timeStartCall = new Date(); // set IU
 
       var $popup = $(classPoHasCall);
       $popup.find('.wrap-pop-has-call').removeClass('miss-call');
@@ -39627,6 +39628,7 @@ var Messenger = function () {
     window.socket.on('msg-doneSendSignalCall', function (_ref8) {
       var callerId = _ref8.callerId,
           receiverId = _ref8.receiverId;
+      window.timeStartCall = new Date();
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
       window.timeoutCallId = setTimeout(function () {
         // call timeout
@@ -39641,8 +39643,8 @@ var Messenger = function () {
           receiverId: receiverId
         });
         window.outputInfoMessage('Không trả lời');
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallCome, true);
-      }, 5000);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true);
+      }, callTimeout);
     }); // receive signal refuse call
 
     window.socket.on('msg-receiverRefuseCall', function () {
@@ -39707,11 +39709,17 @@ var Messenger = function () {
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var me = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
+    var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
+
+    if (window.timeStartCall) {
+      time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
+      window.timeStartCall = undefined;
+    }
 
     if ($friItem.length) {
       if (me) {
         outputMessage({
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+          time: time,
           username: 'Me',
           message: msg,
           className: className
@@ -39720,10 +39728,11 @@ var Messenger = function () {
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       } else {
         outputMessage({
-          time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+          time: time,
           username: $friItem.find(classNameFriend).text(),
           message: msg,
-          avatar: $friItem.find('img').attr('src')
+          avatar: $friItem.find('img').attr('src'),
+          className: className
         });
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));

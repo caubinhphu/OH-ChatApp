@@ -81,26 +81,26 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
     timeFromNow: ''
   }
   let msg = '';
-  if (me.id === latestMsgObj.memberSendId) {
+  if (me.id === latestMsgObj.memberSendId.toString()) {
     msg += 'Bạn: '
   }
 
   if (latestMsgObj.type === 'text') {
     msg += latestMsgObj.content
   } else if (latestMsgObj.type === 'call-audio') {
-    if (me.id === latestMsgObj.memberSendId) {
+    if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = `Bạn đã gọi cho ${friend.name}`
     } else {
       msg = `${friend.name} đã gọi cho bạn`
     }
   } else if (latestMsgObj.type === 'call-audio-refuse') {
-    if (me.id === latestMsgObj.memberSendId) {
+    if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = `Bạn đã gọi cho ${friend.name}`
     } else {
       msg = `Bạn đã bỏ lỡ cuộc gọi của ${friend.name}`
     }
   } else {
-    if (me.id === latestMsgObj.memberSendId) {
+    if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = 'Bạn đã gửi một đính kèm'
     } else {
       msg = `${friend.name} đã gửi một đính kèm`

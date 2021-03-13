@@ -6,7 +6,65 @@ const GroupMessage = require('../models/GroupMessage');
 
 
 const formatMessage = require('../utils/message');
-// const { formatMsg } = require('../utils/messenger');
+
+/**
+ * Function get caller member and its info
+ * @param {string} callerId caller ID
+ * @param {string} receiverId receiver ID
+ * @returns Caller member and info
+ */
+function getCallerMemAndInfo(callerId, receiverId) {
+  return new Promise((resolve, reject) => {
+    Member.findById(callerId || null)
+      .populate({
+        path: 'friends._id',
+        match: {
+          _id: receiverId
+        },
+        options: {
+          limit: 1
+        }
+      })
+      .populate('friends.groupMessageId')
+      .exec((err, member) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(member)
+        }
+      })
+  })
+}
+
+/**
+ * Function get group message has latest call audio
+ * @param {object | string} groupMessageId group message id
+ * @returns group message has latest call audio
+ */
+function getGroupHasCallLatest(groupMessageId) {
+  return new Promise((resolve, reject) => {
+    GroupMessage.findById(groupMessageId)
+      .populate({
+        path: 'messages',
+        match: {
+          type: 'call-audio'
+        },
+        options: {
+          limit: 1,
+          sort: {
+            _id: -1
+          }
+        }
+      })
+      .exec((err, group) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(group)
+        }
+      })
+  })
+}
 
 // receive event join to the room from client
 module.exports.onMemberOnline = async function (io, { memberId }) {
@@ -41,14 +99,15 @@ module.exports.onMessageChat = async function (io, { message, token }) {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
 
-    // const friend = await Member.findById(dataToken.memberId)
     const me = await Member.findOne({ socketId: this.id })
-                           .populate({
-                             path: 'friends._id',
-                             match: { _id: dataToken.memberId }
-                           })
-                           .populate('friends.groupMessageId')
-
+      .populate({
+        path: 'friends._id',
+        match: { _id: dataToken.memberId },
+        options: {
+          limit: 1
+        }
+      })
+      .populate('friends.groupMessageId')
     if (me) {
       // save msg to db
       // find friend related from friends of me and friend id
@@ -59,8 +118,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
 
         // me save msg
         // find group msg
-        const groupMessage = await GroupMessage.findById(friendRelated.groupMessageId)
-        if (groupMessage) {
+        if (friendRelated.groupMessageId) {
           // create new message
           const messageObj = await Message.create({
             time: new Date(),
@@ -68,8 +126,8 @@ module.exports.onMessageChat = async function (io, { message, token }) {
             memberSendId: me.id
           })
           // push msg to group and save group
-          groupMessage.messages.push(messageObj)
-          await groupMessage.save()
+          friendRelated.groupMessageId.messages.push(messageObj)
+          await friendRelated.groupMessageId.save()
         } else {
           this.emit('error', 'Group chat không tồn tại');
         }
@@ -94,44 +152,52 @@ module.exports.onMessageChat = async function (io, { message, token }) {
 module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal }) {
   try {
     // get caller and receiver
-    const me = await Member.findById(callerId || null)
-                            .populate({
-                              path: 'friends._id',
-                              match: { _id: receiverId }
-                            })
-    if (me) {
+    const callerMem = await getCallerMemAndInfo(callerId, receiverId)
+
+    if (callerMem) {
       // get receiver obj
-      const friend = me.friends.find(fr => fr._id)
-      if (friend && friend._id.status === 'online' && friend._id.socketId) {
-        if (me.isCalling) {
+      const receiverMem = callerMem.friends.find(fr => fr._id)
+      if (receiverMem && receiverMem._id.status === 'online' && receiverMem._id.socketId) {
+        if (callerMem.isCalling) {
           this.emit('msg-callError', {
             msg: 'Không thể thực hiện cuộc gọi vì bạn đang có một cuộc gọi khác'
           });
-        } else if (friend._id.isCalling) {
+        } else if (receiverMem._id.isCalling) {
           this.emit('msg-callError', {
-            msg: `${ friend._id.name } đang bận`
+            msg: `${ receiverMem._id.name } đang bận`
           });
         } else {
-          me.isCalling = true
-          await me.save()
+          callerMem.isCalling = true
+          await callerMem.save()
 
-          const fri = await Member.findById(receiverId || null)
-          if (fri) {
-            fri.isCalling = true
-            await fri.save()
+          receiverMem._id.isCalling = true
+          await receiverMem._id.save()
+
+          if (receiverMem.groupMessageId) {
+            const messageObj = await Message.create({
+              time: new Date(),
+              content: 'Cuộc gọi thoại',
+              memberSendId: callerMem.id,
+              type: 'call-audio',
+              timeEndCall: new Date()
+            })
+
+            // push msg to group and save group
+            receiverMem.groupMessageId.messages.push(messageObj)
+            await receiverMem.groupMessageId.save()
+
+            io.to(receiverMem._id.socketId).emit('msg-hasCallAudio', {
+              signal,
+              callerId,
+              callerName: callerMem.name,
+              callerAvatar: callerMem.avatar
+            })
+            this.emit('msg-doneSendSignalCall', { callerId, receiverId })
           }
-
-          io.to(friend._id.socketId).emit('msg-hasCallAudio', {
-            signal,
-            callerId,
-            callerName: me.name,
-            callerAvatar: me.avatar
-          })
-          this.emit('msg-doneSendSignalCall', { callerId, receiverId })
         }
       } else {
         this.emit('msg-callError', {
-          msg: `${ friend._id.name } đang không online`
+          msg: `${ receiverMem._id.name } đang không online`
         });
       }
     }
@@ -143,25 +209,21 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
 // receive signal answer call peer of receiver => send to caller
 module.exports.onAnswerSignal = async function (io, { signal, callerId, receiverId }) {
   try {
-    const callerMem = await Member.findById(callerId || null)
-    const receiverMem = await Member.findById(receiverId || null)
-    const friend = receiverMem.friends.find(fr => fr._id.toString() === callerId)
-    if (friend && callerMem && callerMem.status === 'online') {
-      const groupMessage = await GroupMessage.findById(friend.groupMessageId)
-      if (groupMessage) {
-        const messageObj = await Message.create({
-          time: new Date(),
-          content: 'Cuộc gọi thoại',
-          memberSendId: callerMem.id,
-          type: 'call-audio',
-          timeEndCall: new Date()
-        })
+    // get caller and receiver
+    const callerMem = await getCallerMemAndInfo(callerId, receiverId)
 
-        // push msg to group and save group
-        groupMessage.messages.push(messageObj)
-        await groupMessage.save()
-
-        io.to(callerMem.socketId).emit('msg-answerSignal', { signal })
+    if(callerMem) {
+      const receiverMem = callerMem.friends.find(fr => fr._id)
+      if (receiverMem && receiverMem.groupMessageId) {
+        const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+        if (groupMessage && groupMessage.messages.length) {
+          if (callerMem.isCalling) {
+            io.to(callerMem.socketId).emit('msg-answerSignal', { signal })
+          } else {
+            groupMessage.messages[0].type = 'call-audio-refuse'
+            await groupMessage.messages[0].save()
+          }
+        }
       }
     }
   } catch (error) {
@@ -172,62 +234,39 @@ module.exports.onAnswerSignal = async function (io, { signal, callerId, receiver
 // receive signal connect peer fail
 module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, code, sender }) {
   try {
-    const callerMem = await Member.findById(callerId || null)
-    const receiverMem = await Member.findById(receiverId || null)
+    // get caller and receiver
+    const callerMem = await getCallerMemAndInfo(callerId, receiverId)
+
     if (callerMem) {
       callerMem.isCalling = false
       await callerMem.save()
-    }
 
-    // signal error code is end call => create msg => send to !sender
-    if (code === 'ERR_DATA_CHANNEL') {
-      const friend = callerMem.friends.find(fr => fr._id.toString() === receiverId)
-      if (friend && receiverMem) {
-        receiverMem.isCalling = false
-        await receiverMem.save()
-        const groupMessage = await GroupMessage.findById(friend.groupMessageId)
-                                                .populate({
-                                                  path: 'messages',
-                                                  match: { type: 'call-audio' },
-                                                  options: {
-                                                    limit: 1,
-                                                    sort: { _id: -1 }
-                                                  }
-                                                })
+      const receiverMem = callerMem.friends.find(fr => fr._id)
+      if (receiverMem && code === 'ERR_DATA_CHANNEL') {
+        receiverMem._id.isCalling = false
+        await receiverMem._id.save()
 
-        console.log(groupMessage);
+        const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+
         if (groupMessage && groupMessage.messages.length) {
           groupMessage.messages[0].timeEndCall = new Date()
           await groupMessage.messages[0].save()
-          // const message = await Message.findById(groupMessage.messages[0])
         }
-        // if (groupMessage) {
-        //   // Create msg => save to db
-        //   const messageObj = await Message.create({
-        //     time: new Date(),
-        //     content: 'Cuộc gọi thoại',
-        //     memberSendId: callerMem.id,
-        //     type: 'call-audio'
-        //   })
-        //   // push msg to group and save group
-        //   groupMessage.messages.push(messageObj)
-        //   await groupMessage.save()
 
-        //   // send signal end call to !sender
-        //   if (sender === 'caller' && receiverMem.status === 'online' && receiverMem.socketId) {
-        //     io.to(receiverMem.socketId).emit('msg-endCall', {
-        //       callerId,
-        //       receiverId,
-        //       sender
-        //     })
-        //   } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId) {
-        //     io.to(callerMem.socketId).emit('msg-endCall', {
-        //       callerId,
-        //       receiverId,
-        //       sender
-        //     })
-        //   }
-        // }
+        // send signal end call to !sender
+        if (sender === 'caller' && receiverMem._id.status === 'online' && receiverMem._id.socketId) {
+          io.to(receiverMem._id.socketId).emit('msg-endCall', {
+            callerId,
+            receiverId,
+            sender
+          })
+        } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId) {
+          io.to(callerMem.socketId).emit('msg-endCall', {
+            callerId,
+            receiverId,
+            sender
+          })
+        }
       }
     }
   } catch (error) {
@@ -238,33 +277,25 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
 // receive signal refuse call from receiver
 module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
   try {
-    const callerMem = await Member.findById(callerId || null)
-    const receiverMem = await Member.findById(receiverId || null)
-    if (receiverMem) {
-      receiverMem.isCalling = false
-      await receiverMem.save()
-    }
+    // get caller and receiver
+    const callerMem = await getCallerMemAndInfo(callerId, receiverId)
+
     if (callerMem) {
       callerMem.isCalling = false
       await callerMem.save()
 
-      const receiver = callerMem.friends.find(fr => fr._id.toString() === receiverId)
-      if (receiver) {
-        const groupMessage = await GroupMessage.findById(receiver.groupMessageId)
-        if (groupMessage) {
-          // create msg call refuse => save to db
-          const messageObj = await Message.create({
-            time: new Date(),
-            content: 'Cuộc gọi thoại',
-            memberSendId: callerMem.id,
-            type: 'call-audio-refuse'
-          })
-          // push msg to group and save group
-          groupMessage.messages.push(messageObj)
-          await groupMessage.save()
+      const receiverMem = callerMem.friends.find(fr => fr._id)
+      if (receiverMem) {
+        receiverMem._id.isCalling = false
+        await receiverMem._id.save()
+        if (receiverMem.groupMessageId && callerMem.isCalling) {
+          const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
 
-          // send signal to caller
-          if (callerMem.status === 'online' && callerMem.socketId) {
+          if (groupMessage && groupMessage.messages.length) {
+            groupMessage.messages[0].type = 'call-audio-refuse'
+            await groupMessage.messages[0].save()
+
+            // send signal to caller
             io.to(callerMem.socketId).emit('msg-receiverRefuseCall')
           }
         }
@@ -278,34 +309,28 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
 // receive signal call timeout
 module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
   try {
-    const callerMem = await Member.findById(callerId || null)
-    const receiverMem = await Member.findById(receiverId || null)
-    if (receiverMem) {
-      receiverMem.isCalling = false
-      await receiverMem.save()
-    }
+    // get caller and receiver
+    const callerMem = await getCallerMemAndInfo(callerId, receiverId)
+
     if (callerMem) {
       callerMem.isCalling = false
       await callerMem.save()
 
-      const receiver = callerMem.friends.find(fr => fr._id.toString() === receiverId)
-      if (receiver && receiverMem.id === receiver._id.toString()) {
-        const groupMessage = await GroupMessage.findById(receiver.groupMessageId)
-        if (groupMessage) {
-          // create msg call refuse => save to db
-          const messageObj = await Message.create({
-            time: new Date(),
-            content: 'Cuộc gọi thoại',
-            memberSendId: callerMem.id,
-            type: 'call-audio-refuse'
-          })
-          // push msg to group and save group
-          groupMessage.messages.push(messageObj)
-          await groupMessage.save()
+      const receiverMem = callerMem.friends.find(fr => fr._id)
 
-          // send to receiver signal call timeout
-          if (receiverMem.status === 'online' && receiverMem.socketId) {
-            io.to(receiverMem.socketId).emit('msg-missedCall', {
+      if (receiverMem) {
+        receiverMem._id.isCalling = false
+        await receiverMem._id.save()
+
+        if (receiverMem.groupMessageId) {
+          const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+
+          if (groupMessage && groupMessage.messages.length) {
+            groupMessage.messages[0].type = 'call-audio-refuse'
+            await groupMessage.messages[0].save()
+
+            // send to receiver signal call timeout
+            io.to(receiverMem._id.socketId).emit('msg-missedCall', {
               callerId
             })
           }
