@@ -12,7 +12,7 @@ const formatMessage = require('../utils/message');
 module.exports.onMemberOnline = async function (io, { memberId }) {
   try {
   // find member
-    const member = await Member.findById(memberId).populate('friends._id');
+    const member = await Member.findById(memberId || null).populate('friends._id');
     if (member) {
       // change status and socketId
       member.status = 'online'
@@ -94,7 +94,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
 module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal }) {
   try {
     // get caller and receiver
-    const me = await Member.findById(callerId)
+    const me = await Member.findById(callerId || null)
                             .populate({
                               path: 'friends._id',
                               match: { _id: receiverId }
@@ -115,7 +115,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
           me.isCalling = true
           await me.save()
 
-          const fri = await Member.findById(receiverId)
+          const fri = await Member.findById(receiverId || null)
           if (fri) {
             fri.isCalling = true
             await fri.save()
@@ -141,11 +141,28 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
 }
 
 // receive signal answer call peer of receiver => send to caller
-module.exports.onAnswerSignal = async function (io, { signal, callerId }) {
+module.exports.onAnswerSignal = async function (io, { signal, callerId, receiverId }) {
   try {
-    const friend = await Member.findById(callerId)
-    if (friend && friend.status === 'online') {
-      io.to(friend.socketId).emit('msg-answerSignal', { signal })
+    const callerMem = await Member.findById(callerId || null)
+    const receiverMem = await Member.findById(receiverId || null)
+    const friend = receiverMem.friends.find(fr => fr._id.toString() === callerId)
+    if (friend && callerMem && callerMem.status === 'online') {
+      const groupMessage = await GroupMessage.findById(friend.groupMessageId)
+      if (groupMessage) {
+        const messageObj = await Message.create({
+          time: new Date(),
+          content: 'Cuộc gọi thoại',
+          memberSendId: callerMem.id,
+          type: 'call-audio',
+          timeEndCall: new Date()
+        })
+
+        // push msg to group and save group
+        groupMessage.messages.push(messageObj)
+        await groupMessage.save()
+
+        io.to(callerMem.socketId).emit('msg-answerSignal', { signal })
+      }
     }
   } catch (error) {
     this.emit('error', error.message);
@@ -155,8 +172,8 @@ module.exports.onAnswerSignal = async function (io, { signal, callerId }) {
 // receive signal connect peer fail
 module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, code, sender }) {
   try {
-    const callerMem = await Member.findById(callerId)
-    const receiverMem = await Member.findById(receiverId)
+    const callerMem = await Member.findById(callerId || null)
+    const receiverMem = await Member.findById(receiverId || null)
     if (callerMem) {
       callerMem.isCalling = false
       await callerMem.save()
@@ -165,38 +182,52 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
     // signal error code is end call => create msg => send to !sender
     if (code === 'ERR_DATA_CHANNEL') {
       const friend = callerMem.friends.find(fr => fr._id.toString() === receiverId)
-      if (friend && receiverMem && receiverMem.id === friend._id.toString()) {
+      if (friend && receiverMem) {
         receiverMem.isCalling = false
         await receiverMem.save()
-
         const groupMessage = await GroupMessage.findById(friend.groupMessageId)
-        if (groupMessage) {
-          // Create msg => save to db
-          const messageObj = await Message.create({
-            time: new Date(),
-            content: 'Cuộc gọi thoại',
-            memberSendId: callerMem.id,
-            type: 'call-audio'
-          })
-          // push msg to group and save group
-          groupMessage.messages.push(messageObj)
-          await groupMessage.save()
+                                                .populate({
+                                                  path: 'messages',
+                                                  match: { type: 'call-audio' },
+                                                  options: {
+                                                    limit: 1,
+                                                    sort: { _id: -1 }
+                                                  }
+                                                })
 
-          // send signal end call to !sender
-          if (sender === 'caller' && receiverMem.status === 'online' && receiverMem.socketId) {
-            io.to(receiverMem.socketId).emit('msg-endCall', {
-              callerId,
-              receiverId,
-              sender
-            })
-          } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId) {
-            io.to(callerMem.socketId).emit('msg-endCall', {
-              callerId,
-              receiverId,
-              sender
-            })
-          }
+        console.log(groupMessage);
+        if (groupMessage && groupMessage.messages.length) {
+          groupMessage.messages[0].timeEndCall = new Date()
+          await groupMessage.messages[0].save()
+          // const message = await Message.findById(groupMessage.messages[0])
         }
+        // if (groupMessage) {
+        //   // Create msg => save to db
+        //   const messageObj = await Message.create({
+        //     time: new Date(),
+        //     content: 'Cuộc gọi thoại',
+        //     memberSendId: callerMem.id,
+        //     type: 'call-audio'
+        //   })
+        //   // push msg to group and save group
+        //   groupMessage.messages.push(messageObj)
+        //   await groupMessage.save()
+
+        //   // send signal end call to !sender
+        //   if (sender === 'caller' && receiverMem.status === 'online' && receiverMem.socketId) {
+        //     io.to(receiverMem.socketId).emit('msg-endCall', {
+        //       callerId,
+        //       receiverId,
+        //       sender
+        //     })
+        //   } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId) {
+        //     io.to(callerMem.socketId).emit('msg-endCall', {
+        //       callerId,
+        //       receiverId,
+        //       sender
+        //     })
+        //   }
+        // }
       }
     }
   } catch (error) {
@@ -207,8 +238,8 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
 // receive signal refuse call from receiver
 module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
   try {
-    const callerMem = await Member.findById(callerId)
-    const receiverMem = await Member.findById(receiverId)
+    const callerMem = await Member.findById(callerId || null)
+    const receiverMem = await Member.findById(receiverId || null)
     if (receiverMem) {
       receiverMem.isCalling = false
       await receiverMem.save()
@@ -247,9 +278,8 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
 // receive signal call timeout
 module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
   try {
-    console.log(callerId, receiverId);
-    const callerMem = await Member.findById(callerId)
-    const receiverMem = await Member.findById(receiverId)
+    const callerMem = await Member.findById(callerId || null)
+    const receiverMem = await Member.findById(receiverId || null)
     if (receiverMem) {
       receiverMem.isCalling = false
       await receiverMem.save()
