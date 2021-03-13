@@ -119,7 +119,12 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
             await fri.save()
           }
 
-          io.to(friend._id.socketId).emit('msg-hasCallAudio', { signal, callerId })
+          io.to(friend._id.socketId).emit('msg-hasCallAudio', {
+            signal,
+            callerId,
+            callerName: me.name,
+            callerAvatar: me.avatar
+          })
           this.emit('msg-doneSendSignalCall', { callerId, receiverId })
         }
       } else {

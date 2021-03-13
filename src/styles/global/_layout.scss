@@ -20,6 +20,11 @@
   bottom: 0;
   right: 0;
 }
+.last-mb-none {
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
 .text-nowrap {
   white-space: nowrap;
 }

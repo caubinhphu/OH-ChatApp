@@ -7115,6 +7115,10 @@ input:-webkit-autofill {
   right: 0;
 }
 
+.last-mb-none > *:last-child {
+  margin-bottom: 0;
+}
+
 .text-nowrap {
   white-space: nowrap;
 }
@@ -7449,9 +7453,52 @@ body {
 }
 
 .wrap-pop-has-call {
-  background: red;
-  padding: 20px;
-  border-radius: 20px;
+  background-color: #fff;
+  padding: 20px 30px;
+  color: #00142a;
+  border-radius: 15px;
+  box-shadow: 2px 2px 12px #22c0c9;
+  position: relative;
+  max-width: calc(100vw - 20px);
+}
+
+.wrap-pop-has-call .close-popup {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  border-radius: 50%;
+  display: none;
+}
+
+.wrap-pop-has-call .title-call-miss,
+.wrap-pop-has-call .text-miss-call-sub,
+.wrap-pop-has-call #btn-call-back {
+  display: none;
+}
+
+.wrap-pop-has-call.miss-call .close-popup {
+  display: flex;
+}
+
+.wrap-pop-has-call.miss-call #btn-call-back {
+  display: inline-block;
+}
+
+.wrap-pop-has-call.miss-call .title-call-miss,
+.wrap-pop-has-call.miss-call .text-miss-call-sub {
+  display: block;
+}
+
+.wrap-pop-has-call.miss-call .title-call-info,
+.wrap-pop-has-call.miss-call .text-call-sub,
+.wrap-pop-has-call.miss-call #btn-call-not-ok,
+.wrap-pop-has-call.miss-call #btn-call-ok {
+  display: none;
+}
+
+.wrap-pop-has-call .caller-img {
+  max-width: 100px;
+  margin-right: 20px;
 }
 
 @media only screen and (max-width: 850px) {

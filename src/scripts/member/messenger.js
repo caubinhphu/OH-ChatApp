@@ -176,6 +176,12 @@ const Messenger = (() => {
       createMsgLocal(window.callerId, callMissText)
     })
 
+    // close popup miss call
+    $('.miss-call .close-popup').on('click', () => {
+      $('.wrap-pop-has-call').removeClass('miss-call')
+      $('.popup-has-call').addClass('d-none')
+    })
+
     // receive signal offer from sub window call => send to server => receiver
     $(window).on('signalOffer', (e) => {
       const { signalOffer } = e.detail
@@ -286,24 +292,20 @@ const Messenger = (() => {
     })
 
     // receive signal has call from friend
-    window.socket.on('msg-hasCallAudio', ({ signal, callerId }) => {
+    window.socket.on('msg-hasCallAudio', ({ signal, callerId, callerName, callerAvatar }) => {
       window.signalOffer = signal // signal offer
       window.callerId = callerId
 
       // set IU
       const $popup = $(classPoHasCall)
-      if ($popup.hasClass('d-none')) {
-        $(classPoHasCall).removeClass('d-none')
-      } else {
-        $popup.find('.text-call-info').html('Cuộc gọi đến')
-        $popup.find('.text-call-sub').html(`
-          <p>Name đang gọi cho bạn</p>
-          <p>Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận</p>
-        `)
-        $popup.find(classCallNotOK).removeClass('d-none')
-        $popup.find(classCallOK).removeClass('d-none')
-        $popup.find(idBtnCallBack).addClass('d-none')
-      }
+      $popup.find('.wrap-pop-has-call').removeClass('miss-call')
+      $popup.find('.caller-img').attr('src', callerAvatar)
+      $popup.find('.text-name-call').html(`${ callerName } đang gọi cho bạn`)
+      $popup.find('.text-miss-call-sub').html(`
+        <p>Bạn đã bõ lỡ cuộc gọi của ${ callerName }</p>
+        <p>Nhấn gọi lại để gọi lại cho  ${ callerName }</p>
+      `)
+      $popup.removeClass('d-none')
     })
 
     // receive signal answer
@@ -369,14 +371,7 @@ const Messenger = (() => {
     // receive signal miss call from server (caller)
     window.socket.on('msg-missedCall', ({ callerId }) => {
       const $popup = $(classPoHasCall)
-      $popup.find('.text-call-info').html(callMissText)
-      $popup.find('.text-call-sub').html(`
-        <p>Bạn đã bỡ lỡ cuộc gọi của name</p>
-        <p>Nhấn gọi lại để gọi lại cho name</p>
-      `)
-      $popup.find(classCallNotOK).addClass('d-none')
-      $popup.find(classCallOK).addClass('d-none')
-      $popup.find(idBtnCallBack).removeClass('d-none')
+      $popup.find('.wrap-pop-has-call').addClass('miss-call')
       $popup.find(idBtnCallBack).attr('data-callerid', callerId)
 
       createMsgLocal(callerId, callMissText)

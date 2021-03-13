@@ -39465,6 +39465,11 @@ var Messenger = function () {
       window.isCall = false; // create msg end call local
 
       createMsgLocal(window.callerId, callMissText);
+    }); // close popup miss call
+
+    $('.miss-call .close-popup').on('click', function () {
+      $('.wrap-pop-has-call').removeClass('miss-call');
+      $('.popup-has-call').addClass('d-none');
     }); // receive signal offer from sub window call => send to server => receiver
 
     $(window).on('signalOffer', function (e) {
@@ -39577,22 +39582,19 @@ var Messenger = function () {
 
     window.socket.on('msg-hasCallAudio', function (_ref5) {
       var signal = _ref5.signal,
-          callerId = _ref5.callerId;
+          callerId = _ref5.callerId,
+          callerName = _ref5.callerName,
+          callerAvatar = _ref5.callerAvatar;
       window.signalOffer = signal; // signal offer
 
       window.callerId = callerId; // set IU
 
       var $popup = $(classPoHasCall);
-
-      if ($popup.hasClass('d-none')) {
-        $(classPoHasCall).removeClass('d-none');
-      } else {
-        $popup.find('.text-call-info').html('Cuộc gọi đến');
-        $popup.find('.text-call-sub').html("\n          <p>Name \u0111ang g\u1ECDi cho b\u1EA1n</p>\n          <p>Cu\u1ED9c g\u1ECDi s\u1EBD b\u1EAFt \u0111\u1EA7u ngay sau khi b\u1EA1n ch\u1EA5p nh\u1EADn</p>\n        ");
-        $popup.find(classCallNotOK).removeClass('d-none');
-        $popup.find(classCallOK).removeClass('d-none');
-        $popup.find(idBtnCallBack).addClass('d-none');
-      }
+      $popup.find('.wrap-pop-has-call').removeClass('miss-call');
+      $popup.find('.caller-img').attr('src', callerAvatar);
+      $popup.find('.text-name-call').html("".concat(callerName, " \u0111ang g\u1ECDi cho b\u1EA1n"));
+      $popup.find('.text-miss-call-sub').html("\n        <p>B\u1EA1n \u0111\xE3 b\xF5 l\u1EE1 cu\u1ED9c g\u1ECDi c\u1EE7a ".concat(callerName, "</p>\n        <p>Nh\u1EA5n g\u1ECDi l\u1EA1i \u0111\u1EC3 g\u1ECDi l\u1EA1i cho  ").concat(callerName, "</p>\n      "));
+      $popup.removeClass('d-none');
     }); // receive signal answer
 
     window.socket.on('msg-answerSignal', function (_ref6) {
@@ -39656,11 +39658,7 @@ var Messenger = function () {
     window.socket.on('msg-missedCall', function (_ref9) {
       var callerId = _ref9.callerId;
       var $popup = $(classPoHasCall);
-      $popup.find('.text-call-info').html(callMissText);
-      $popup.find('.text-call-sub').html("\n        <p>B\u1EA1n \u0111\xE3 b\u1EE1 l\u1EE1 cu\u1ED9c g\u1ECDi c\u1EE7a name</p>\n        <p>Nh\u1EA5n g\u1ECDi l\u1EA1i \u0111\u1EC3 g\u1ECDi l\u1EA1i cho name</p>\n      ");
-      $popup.find(classCallNotOK).addClass('d-none');
-      $popup.find(classCallOK).addClass('d-none');
-      $popup.find(idBtnCallBack).removeClass('d-none');
+      $popup.find('.wrap-pop-has-call').addClass('miss-call');
       $popup.find(idBtnCallBack).attr('data-callerid', callerId);
       createMsgLocal(callerId, callMissText);
     }); // receive signal end call from server (it self end call)

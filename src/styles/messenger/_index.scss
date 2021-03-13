@@ -208,9 +208,47 @@
   z-index: 9999;
 }
 .wrap-pop-has-call {
-  background: red;
-  padding: 20px;
-  border-radius: 20px;
+  background-color: $white;
+  padding: 20px 30px;
+  color: $black;
+  border-radius: 15px;
+  box-shadow: 2px 2px 12px $color-22;
+  position: relative;
+  max-width: calc(100vw - 20px);
+  .close-popup {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    border-radius: 50%;
+    display: none;
+  }
+  .title-call-miss,
+  .text-miss-call-sub,
+  #btn-call-back {
+    display: none;
+  }
+  &.miss-call {
+    .close-popup {
+      display: flex;
+    }
+    #btn-call-back {
+      display: inline-block;
+    }
+    .title-call-miss,
+    .text-miss-call-sub {
+      display: block;
+    }
+    .title-call-info,
+    .text-call-sub,
+    #btn-call-not-ok,
+    #btn-call-ok {
+      display: none;
+    }
+  }
+  .caller-img {
+    max-width: 100px;
+    margin-right: 20px;
+  }
 }
 @media only screen and (max-width: 850px) {
   .friend-item-info {

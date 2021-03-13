@@ -76,17 +76,25 @@ block contentMain
 
   .popup-has-call.d-none.ps-as
     .d-flex.justify-content-center.align-items-center.h-100
-      .wrap-pop-has-call 
-        h3.text-call-info Cuộc gọi đến
-        .d-flex
-          img.receiver-img
-          .text-call-sub
-            p Name đang gọi cho bạn
+      .wrap-pop-has-call
+        button.btn.btn-icon.close-popup(type="button")
+          span.icomoon.icon-close
+        h3.title-call-info.text-center Cuộc gọi đến
+        h3.title-call-miss.text-center Cuộc gọi nhỡ
+        .d-flex.align-items-center.mb-3
+          img.caller-img.rounded-circle(src="/images/default-avatar.jpg", alt="OH")
+          .text-call-sub.last-mb-none
+            p.text-name-call Name đang gọi cho bạn
             p Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận
+          .text-miss-call-sub.last-mb-none
+            p Bạn đã bõ lỡ cuộc gọi của name
+            p Nhấn gọi lại để gọi lại cho name
         .text-right
-          button.btn#btn-call-not-ok Từ chối
-          button.btn#btn-call-ok Chấp nhận
-          button.btn#btn-call-back.d-none Gọi lại
+          button.btn.btn-red.mr-3#btn-call-not-ok Từ chối
+          button.btn#btn-call-ok
+            span.icomoon.icon-phone  Chấp nhận
+          button.btn#btn-call-back
+            span.icomoon.icon-phone  Gọi lại
   .overlay-calling.d-none.ps-as
 
 
