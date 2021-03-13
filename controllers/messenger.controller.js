@@ -258,14 +258,11 @@ module.exports.getChatFriend = async (req, res, next) => {
         populate: {
           path: 'messages',
           options: {
-            limit: msgPerLoad,
             sort: { _id: -1},
-          }
+          },
+          perDocumentLimit: msgPerLoad,
         },
       });
-    // const friendsId = member.friends.map(f => f._id);
-    // friendsId.push(member._id);
-    // const m = await Member.find({ _id: { "$nin": friendsId } });
     if (member) {
       const friends = member.getFriendsHaveMessage();
       const friendChat = friends.find(fr => fr.id === req.params.friendId);

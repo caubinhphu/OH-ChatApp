@@ -93,6 +93,7 @@ memberSchema.methods.getFriends = function () {
 // get all friends have message
 memberSchema.methods.getFriendsHaveMessage = function () {
   return this.friends.map((friend) => {
+    // console.log(friend.groupMessageId);
     return {
       id: friend._id.id,
       name: friend._id.name,
