@@ -1,6 +1,5 @@
 import moment from 'moment';
 import axios from 'axios';
-// import SimplePeer from 'simple-peer'
 import '../global/chat-utils'
 
 const Messenger = (() => {
@@ -20,6 +19,9 @@ const Messenger = (() => {
   const callMissText = 'Cuộc gọi nhỡ'
   const callTextCaller = 'Cuộc gọi đi'
   const callTextReceiver = 'Cuộc gọi đến'
+  const classCallOut = 'call-msg call-outgoing'
+  const classCallCome = 'call-msg call-incoming'
+  const classCallMissed = 'call-msg call-missed'
 
   // scroll bottom
   chatMain.scrollTop = chatMain.scrollHeight;
@@ -45,7 +47,7 @@ const Messenger = (() => {
         });
 
         // create message obj to show in client
-        createMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), true)
+        createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', true)
 
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
@@ -174,7 +176,7 @@ const Messenger = (() => {
       $(classPoHasCall).addClass('d-none')
       window.isCall = false
       // create msg end call local
-      createMsgLocal(window.callerId, callMissText)
+      createCallMsgLocal(window.callerId, callMissText, classCallMissed)
     })
 
     // close popup miss call
@@ -227,7 +229,7 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createMsgLocal(window.receiverId, callTextReceiver, true)
+          createCallMsgLocal(window.receiverId, callTextReceiver, classCallCome, true)
         } else {
           // connect peer fail
           window.outputErrorMessage(error)
@@ -252,7 +254,7 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createMsgLocal(window.callerId, callTextCaller)
+          createCallMsgLocal(window.callerId, callTextCaller, classCallOut)
         } else {
           window.outputErrorMessage(error)
         }
@@ -348,7 +350,7 @@ const Messenger = (() => {
         })
 
         window.outputInfoMessage('Không trả lời')
-        createMsgLocal(window.receiverId, callTextCaller, true)
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallCome, true)
       }, 5000);
     })
 
@@ -365,7 +367,7 @@ const Messenger = (() => {
         window.outputInfoMessage('Không trả lời')
 
         // create msg end call local
-        createMsgLocal(window.receiverId, callTextCaller, true)
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true)
       }
     })
 
@@ -375,7 +377,7 @@ const Messenger = (() => {
       $popup.find('.wrap-pop-has-call').addClass('miss-call')
       $popup.find(idBtnCallBack).attr('data-callerid', callerId)
 
-      createMsgLocal(callerId, callMissText)
+      createCallMsgLocal(callerId, callMissText, classCallMissed)
     })
 
     // receive signal end call from server (it self end call)
@@ -385,11 +387,11 @@ const Messenger = (() => {
       if (sender === 'caller') {
         // computer of receiver
         window.windowReceive = undefined
-        createMsgLocal(callerId, callTextReceiver)
+        createCallMsgLocal(callerId, callTextReceiver, classCallCome)
       } else if (sender === 'receiver') {
         // computer of caller
         window.windowCall = undefined
-        createMsgLocal(receiverId, callTextCaller, true)
+        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true)
       }
     })
   }
@@ -404,19 +406,20 @@ const Messenger = (() => {
   }
 
   /**
-   * Function create and append message to local
+   * Function create and append call message to local
    * @param {string} friendId friend id
    * @param {string} msg message
    * @param {boolean} me is me
    */
-  function createMsgLocal(friendId, msg = '', me = false) {
+  function createCallMsgLocal(friendId, msg = '', className = '', me = false) {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
     if ($friItem.length) {
       if (me) {
         outputMessage({
           time: moment().format('H:mm'),
           username: 'Me',
-          message: msg
+          message: msg,
+          className
         }, true)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
@@ -427,7 +430,8 @@ const Messenger = (() => {
           time: moment().format('H:mm'),
           username: $friItem.find(classNameFriend).text(),
           message: msg,
-          avatar: $friItem.find('img').attr('src')
+          avatar: $friItem.find('img').attr('src'),
+          className
         })
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
@@ -478,7 +482,7 @@ const Messenger = (() => {
   function outputMessage(msgObj, me = false) {
     const div = document.createElement('div');
     if (me) {
-      div.className = 'message text-right';
+      div.className = `message text-right ${msgObj.className}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
     <div>
       <div class="msg-me">
@@ -486,7 +490,7 @@ const Messenger = (() => {
       </div>
     <div>`;
     } else {
-      div.className = 'message';
+      div.className = `message ${msgObj.className}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
       <div>
         <div class="msg">

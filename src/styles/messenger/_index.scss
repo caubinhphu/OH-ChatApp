@@ -68,6 +68,30 @@
   width: 100%;
   height: max-content;
   padding: 2px;
+  &.call-msg {
+    .message-content::before {
+      font-family: $icomoon;
+      margin-right: 10px;
+    }
+  }
+  &.call-outgoing {
+    .message-content::before {
+      content: "\e92b";
+      color: $color-7f;
+    }
+  }
+  &.call-incoming {
+    .message-content::before {
+      content: "\e92a";
+      color: $color-2f;
+    }
+  }
+  &.call-missed {
+    .message-content::before {
+      content: "\e929";
+      color: $color-c8;
+    }
+  }
 }
 
 .msg {

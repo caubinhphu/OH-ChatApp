@@ -14,7 +14,7 @@ const {
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
 const sendMail = require('../utils/send-mail');
-const { formatMessageList } = require('../utils/messenger');
+const { formatMessageList, formatLatestMsg } = require('../utils/messenger');
 const key = require('../config/key');
 
 const siteMes = 'OH Chat - Messenger'
@@ -284,28 +284,8 @@ module.exports.getChatFriend = async (req, res, next) => {
 
       // format msg latest
       friends.forEach(fr => {
-        fr.latestMessage = {
-          msg: '',
-          timeFromNow: ''
-        }
         if (fr.messages.length) {
-          const latestMsgObj = fr.messages[0]
-          let msg = '';
-          if (member.id === latestMsgObj.memberSendId) {
-            msg += 'Bạn: '
-          }
-
-          if (latestMsgObj.type === 'text') {
-            msg += latestMsgObj.content
-          } else {
-            if (member.id === latestMsgObj.memberSendId) {
-              msg = 'Bạn đã gửi một đính kèm'
-            } else {
-              msg = `${fr.name} đã gửi một đính kèm`
-            }
-          }
-          fr.latestMessage.msg = msg
-          fr.latestMessage.timeFromNow = moment(latestMsgObj.time).fromNow(true)
+          fr.latestMessage = formatLatestMsg(fr.messages[0], member, fr)
         }
       })
 

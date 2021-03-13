@@ -6846,6 +6846,22 @@ background: #ccc;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-phone-off:before {
+  content: "\E928";
+}
+
+.icon-phone-missed:before {
+  content: "\E929";
+}
+
+.icon-phone-incoming:before {
+  content: "\E92A";
+}
+
+.icon-phone-outgoing:before {
+  content: "\E92B";
+}
+
 .icon-telephone:before {
   content: "\E927";
 }
@@ -7304,6 +7320,26 @@ body {
   width: 100%;
   height: max-content;
   padding: 2px;
+}
+
+.message.call-msg .message-content::before {
+  font-family: "icomoon";
+  margin-right: 10px;
+}
+
+.message.call-outgoing .message-content::before {
+  content: "\E92B";
+  color: #7f3074;
+}
+
+.message.call-incoming .message-content::before {
+  content: "\E92A";
+  color: #2f4eea;
+}
+
+.message.call-missed .message-content::before {
+  content: "\E929";
+  color: #c8102e;
 }
 
 .msg {
