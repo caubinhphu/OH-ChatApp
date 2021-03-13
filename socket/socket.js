@@ -92,19 +92,27 @@ const socket = function (io) {
       messengerController.onMessageChat.bind(this, io, data)()
     });
 
+    // receive signal offer call peer of caller => send to receiver
     socket.on('msg-offerStream', function(data) {
       messengerController.onOfferSignal.bind(this, io, data)()
     })
 
+    // receive signal answer call peer of receiver => send to caller
     socket.on('msg-answerStream', function(data) {
       messengerController.onAnswerSignal.bind(this, io, data)()
     })
+
+    // receive signal connect peer fail
     socket.on('msg-connectPeerFail', function(data) {
       messengerController.onConnectPeerFail.bind(this, io, data)()
     })
+
+    // receive signal refuse call from receiver
     socket.on('msg-refuseCall', function(data) {
       messengerController.onRefuseCall.bind(this, io, data)()
     })
+
+    // receive signal call timeout
     socket.on('msg-callTimeout', function(data) {
       messengerController.onCallTimeout.bind(this, io, data)()
     })

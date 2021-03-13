@@ -18,7 +18,8 @@ const Messenger = (() => {
   const classOvCalling = '.overlay-calling'
 
   const callMissText = 'Cuộc gọi nhỡ'
-  const callText = 'Cuộc gọi thoại'
+  const callTextCaller = 'Cuộc gọi đi'
+  const callTextReceiver = 'Cuộc gọi đến'
 
   // scroll bottom
   chatMain.scrollTop = chatMain.scrollHeight;
@@ -226,7 +227,7 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createMsgLocal(window.receiverId, callText, true)
+          createMsgLocal(window.receiverId, callTextReceiver, true)
         } else {
           // connect peer fail
           window.outputErrorMessage(error)
@@ -251,7 +252,7 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createMsgLocal(window.callerId, callText)
+          createMsgLocal(window.callerId, callTextCaller)
         } else {
           window.outputErrorMessage(error)
         }
@@ -347,7 +348,7 @@ const Messenger = (() => {
         })
 
         window.outputInfoMessage('Không trả lời')
-        createMsgLocal(window.receiverId, callText, true)
+        createMsgLocal(window.receiverId, callTextCaller, true)
       }, 5000);
     })
 
@@ -364,7 +365,7 @@ const Messenger = (() => {
         window.outputInfoMessage('Không trả lời')
 
         // create msg end call local
-        createMsgLocal(window.receiverId, callText, true)
+        createMsgLocal(window.receiverId, callTextCaller, true)
       }
     })
 
@@ -380,15 +381,15 @@ const Messenger = (() => {
     // receive signal end call from server (it self end call)
     window.socket.on('msg-endCall', ({ callerId, receiverId, sender }) => {
       window.isCall = false
-      window.outputInfoMessage('Ngắt kết nối')
+      window.outputInfoMessage('Cuộc gọi kết thúc')
       if (sender === 'caller') {
         // computer of receiver
         window.windowReceive = undefined
-        createMsgLocal(callerId, callText)
+        createMsgLocal(callerId, callTextReceiver)
       } else if (sender === 'receiver') {
         // computer of caller
         window.windowCall = undefined
-        createMsgLocal(receiverId, callText, true)
+        createMsgLocal(receiverId, callTextCaller, true)
       }
     })
   }

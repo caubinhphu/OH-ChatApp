@@ -35,6 +35,7 @@ module.exports.onMemberOnline = async function (io, { memberId }) {
   }
 };
 
+// receive msg chat of friend
 module.exports.onMessageChat = async function (io, { message, token }) {
   try {
     // verify token
@@ -89,6 +90,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
   }
 }
 
+// receive signal offer call peer of caller => send to receiver
 module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal }) {
   try {
     // get caller and receiver
@@ -103,11 +105,11 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
       if (friend && friend._id.status === 'online' && friend._id.socketId) {
         if (me.isCalling) {
           this.emit('msg-callError', {
-            msg: 'Bạn không thể thực hiện cuộc gọi vì bạn đang có một cuộc gọi khác'
+            msg: 'Không thể thực hiện cuộc gọi vì bạn đang có một cuộc gọi khác'
           });
         } else if (friend._id.isCalling) {
           this.emit('msg-callError', {
-            msg: 'Bạn không thể thực hiện cuộc gọi vì bạn của bạn đang có một cuộc gọi khác'
+            msg: `${ friend._id.name } đang bận`
           });
         } else {
           me.isCalling = true
@@ -129,7 +131,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
         }
       } else {
         this.emit('msg-callError', {
-          msg: 'Người dùng không online'
+          msg: `${ friend._id.name } đang không online`
         });
       }
     }
@@ -138,6 +140,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
   }
 }
 
+// receive signal answer call peer of receiver => send to caller
 module.exports.onAnswerSignal = async function (io, { signal, callerId }) {
   try {
     const friend = await Member.findById(callerId)
@@ -149,6 +152,7 @@ module.exports.onAnswerSignal = async function (io, { signal, callerId }) {
   }
 }
 
+// receive signal connect peer fail
 module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, code, sender }) {
   try {
     const callerMem = await Member.findById(callerId)
@@ -157,12 +161,8 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
       callerMem.isCalling = false
       await callerMem.save()
     }
-    // if (receiverMem) {
-    //   receiverMem.isCalling = false
 
-    //   await receiverMem.save()
-    // }
-
+    // signal error code is end call => create msg => send to !sender
     if (code === 'ERR_DATA_CHANNEL') {
       const friend = callerMem.friends.find(fr => fr._id.toString() === receiverId)
       if (friend && receiverMem && receiverMem.id === friend._id.toString()) {
@@ -171,6 +171,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
 
         const groupMessage = await GroupMessage.findById(friend.groupMessageId)
         if (groupMessage) {
+          // Create msg => save to db
           const messageObj = await Message.create({
             time: new Date(),
             content: 'Cuộc gọi thoại',
@@ -181,6 +182,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
           groupMessage.messages.push(messageObj)
           await groupMessage.save()
 
+          // send signal end call to !sender
           if (sender === 'caller' && receiverMem.status === 'online' && receiverMem.socketId) {
             io.to(receiverMem.socketId).emit('msg-endCall', {
               callerId,
@@ -202,6 +204,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
   }
 }
 
+// receive signal refuse call from receiver
 module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
   try {
     const callerMem = await Member.findById(callerId)
@@ -218,9 +221,10 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
       if (receiver) {
         const groupMessage = await GroupMessage.findById(receiver.groupMessageId)
         if (groupMessage) {
+          // create msg call refuse => save to db
           const messageObj = await Message.create({
             time: new Date(),
-            content: 'Cuộc gọi kết thúc',
+            content: 'Cuộc gọi thoại',
             memberSendId: callerMem.id,
             type: 'call-audio-refuse'
           })
@@ -228,6 +232,7 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
           groupMessage.messages.push(messageObj)
           await groupMessage.save()
 
+          // send signal to caller
           if (callerMem.status === 'online' && callerMem.socketId) {
             io.to(callerMem.socketId).emit('msg-receiverRefuseCall')
           }
@@ -238,6 +243,8 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
     this.emit('error', error.message);
   }
 }
+
+// receive signal call timeout
 module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
   try {
     console.log(callerId, receiverId);
@@ -255,9 +262,10 @@ module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
       if (receiver && receiverMem.id === receiver._id.toString()) {
         const groupMessage = await GroupMessage.findById(receiver.groupMessageId)
         if (groupMessage) {
+          // create msg call refuse => save to db
           const messageObj = await Message.create({
             time: new Date(),
-            content: 'Cuộc gọi kết thúc',
+            content: 'Cuộc gọi thoại',
             memberSendId: callerMem.id,
             type: 'call-audio-refuse'
           })
@@ -265,6 +273,7 @@ module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
           groupMessage.messages.push(messageObj)
           await groupMessage.save()
 
+          // send to receiver signal call timeout
           if (receiverMem.status === 'online' && receiverMem.socketId) {
             io.to(receiverMem.socketId).emit('msg-missedCall', {
               callerId
