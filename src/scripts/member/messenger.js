@@ -302,8 +302,8 @@ const Messenger = (() => {
       $popup.find('.caller-img').attr('src', callerAvatar)
       $popup.find('.text-name-call').html(`${ callerName } đang gọi cho bạn`)
       $popup.find('.text-miss-call-sub').html(`
-        <p>Bạn đã bõ lỡ cuộc gọi của ${ callerName }</p>
-        <p>Nhấn gọi lại để gọi lại cho  ${ callerName }</p>
+        <h4>Bạn đã bõ lỡ cuộc gọi của ${ callerName }</h4>
+        <p class="text-secondary">Nhấn gọi lại để gọi lại cho  ${ callerName }</p>
       `)
       $popup.removeClass('d-none')
     })
