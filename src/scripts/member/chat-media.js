@@ -25,6 +25,7 @@ const ChatAudio = (() => {
         addTrackAudio(peer)
         // be connected
         window.connectPeer = true
+        $('.mic-ctrl-btn').removeClass('btn-disabled')
       });
 
       peer.on('close', () => {
@@ -131,6 +132,7 @@ const ChatAudio = (() => {
         // be connected
         window.connectPeer = true
         $('.img-load-call').addClass('d-none')
+        $('.mic-ctrl-btn').removeClass('btn-disabled')
       });
 
       peer.on('error', (err) => {
@@ -214,16 +216,32 @@ const ChatAudio = (() => {
     }
 
     function addEventCtrl(peer) {
-      $('.mic-ctrl-btn').on('click', function() {
-        if ($(this).hasClass('ctrl-off')) {
-          // turn off mic
-          removeTrackAudio(peer)
-          $(this).removeClass('ctrl-off')
+      $('.mic-ctrl-btn').on('click', function(e) {
+        if ($(this).hasClass('btn-disabled')) {
+          e.preventDefault()
         } else {
-          // turn on mic
-          addTrackAudio(peer)
-          $(this).addClass('ctrl-off')
+          if ($(this).hasClass('ctrl-off')) {
+            // turn off mic
+            removeTrackAudio(peer)
+            $(this).removeClass('ctrl-off')
+          } else {
+            // turn on mic
+            addTrackAudio(peer)
+            $(this).addClass('ctrl-off')
+          }
         }
+      })
+
+      $('.share-ctrl-btn').on('click', function(e) {
+        if ($(this).hasClass('btn-disabled')) {
+          e.preventDefault()
+        } else {}
+      })
+
+      $('.video-ctrl-btn').on('click', function(e) {
+        if ($(this).hasClass('btn-disabled')) {
+          e.preventDefault()
+        } else {}
       })
 
       $('.end-call-btn').on('click', function() {

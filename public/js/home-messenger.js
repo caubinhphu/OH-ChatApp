@@ -39520,7 +39520,7 @@ var Messenger = function () {
           // peer fail for end call signal
           window.outputInfoMessage(error); // create msg local
 
-          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true);
+          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true, true);
         } else {
           // connect peer fail
           window.outputErrorMessage(error);
@@ -39543,7 +39543,7 @@ var Messenger = function () {
           // peer fail for end call signal
           window.outputInfoMessage(error); // create msg local
 
-          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome);
+          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome, true);
         } else {
           window.outputErrorMessage(error);
         }

@@ -6823,6 +6823,23 @@ background: #ccc;
   box-shadow: inset 0 0 0 45px #c8102e;
 }
 
+.btn-icon.btn-disabled {
+  color: #747474;
+  cursor: no-drop;
+}
+
+.btn-icon.btn-disabled:after {
+  box-shadow: inset 0 0 0 1px #747474;
+}
+
+.btn-icon.btn-disabled:hover {
+  color: #fff;
+}
+
+.btn-icon.btn-disabled:hover::after {
+  box-shadow: inset 0 0 0 45px #747474;
+}
+
 @font-face {
   font-family: 'icomoon';
   src: url("../fonts/icomoon.eot?fttvtl");
