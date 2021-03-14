@@ -39460,7 +39460,7 @@ var Messenger = function () {
 
     $(classCallNotOK).on('click', function () {
       // send signal refuse call to caller
-      console.log(window.callerId, meId);
+      window.isRefuseCall = true;
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
         receiverId: meId
@@ -39550,6 +39550,24 @@ var Messenger = function () {
       }
 
       window.focus();
+    });
+    $(window).on('disconnectCall', function () {
+      clearTimeout(window.timeoutCallId);
+      window.windowCall = undefined;
+      window.isCall = false;
+      window.timeStartCall = undefined;
+      $(classOvCalling).addClass('d-none');
+      window.focus();
+
+      if (window.sendSignalCallDone) {
+        window.sendSignalCallDone = false; // send signal call timeout to server => receiver
+
+        window.socket.emit('msg-callTimeout', {
+          callerId: meId,
+          receiverId: friendIdChatting
+        });
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut);
+      }
     }); // receive msg obj from server
 
     window.socket.on('msg-messenger', function (_ref2) {
@@ -39594,7 +39612,8 @@ var Messenger = function () {
       window.signalOffer = signal; // signal offer
 
       window.callerId = callerId;
-      window.timeStartCall = new Date(); // set IU
+      window.timeStartCall = new Date();
+      window.isRefuseCall = false; // set IU
 
       var $popup = $(classPoHasCall);
       $popup.find('.wrap-pop-has-call').removeClass('miss-call');
@@ -39632,8 +39651,10 @@ var Messenger = function () {
           receiverId = _ref8.receiverId;
       window.timeStartCall = new Date();
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
+      window.sendSignalCallDone = true;
       window.timeoutCallId = setTimeout(function () {
         // call timeout
+        window.sendSignalCallDone = false;
         window.isCall = false;
         window.timeStartCall = undefined;
         window.windowCall.close();
@@ -39653,6 +39674,7 @@ var Messenger = function () {
     window.socket.on('msg-receiverRefuseCall', function () {
       if (window.windowCall) {
         clearTimeout(window.timeoutCallId);
+        window.sendSignalCallDone = false;
         window.isCall = false;
         window.timeStartCall = undefined;
         window.windowCall.close();
@@ -39668,10 +39690,13 @@ var Messenger = function () {
 
     window.socket.on('msg-missedCall', function (_ref9) {
       var callerId = _ref9.callerId;
-      var $popup = $(classPoHasCall);
-      $popup.find('.wrap-pop-has-call').addClass('miss-call');
-      $popup.find(idBtnCallBack).attr('data-callerid', callerId);
-      createCallMsgLocal(callerId, callMissText, classCallMissed);
+
+      if (!window.isRefuseCall) {
+        var $popup = $(classPoHasCall);
+        $popup.find('.wrap-pop-has-call').addClass('miss-call');
+        $popup.find(idBtnCallBack).attr('data-callerid', callerId);
+        createCallMsgLocal(callerId, callMissText, classCallMissed);
+      }
     }); // receive signal end call from server (it self end call)
 
     window.socket.on('msg-endCall', function (_ref10) {
@@ -39684,11 +39709,12 @@ var Messenger = function () {
       if (sender === 'caller') {
         // computer of receiver
         window.windowReceive = undefined;
-        createCallMsgLocal(callerId, callTextReceiver, classCallCome);
+        createCallMsgLocal(callerId, callTextReceiver, classCallCome, true);
       } else if (sender === 'receiver') {
         // computer of caller
+        window.sendSignalCallDone = false;
         window.windowCall = undefined;
-        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true);
+        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true, true);
       }
     });
   } // close sub window when close or refetch browser
@@ -39705,6 +39731,8 @@ var Messenger = function () {
    * Function create and append call message to local
    * @param {string} friendId friend id
    * @param {string} msg message
+   * @param {string} className class name
+   * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
 
@@ -39712,12 +39740,13 @@ var Messenger = function () {
   function createCallMsgLocal(friendId) {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    var me = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
     var timeCall = null;
 
-    if (window.timeStartCall) {
+    if (isCallEnd && window.timeStartCall) {
       time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
       timeCall = "<small class=\"time-call\">".concat(formatDiffTime(window.timeStartCall, new Date()), "</small>");
       window.timeStartCall = undefined;

@@ -27554,7 +27554,13 @@ var ChatAudio = function () {
       $('.img-load-call').addClass('d-none');
       $('.text-calling').removeClass('d-none');
     });
-    addEventCtrl(peer);
+    addEventCtrl(peer); // close sub window when close or refetch browser
+
+    window.onbeforeunload = function () {
+      if (!window.connectPeer) {
+        window.parentWindow.dispatchEvent(new CustomEvent('disconnectCall'));
+      }
+    };
   } else {
     // window of receiver
     // init peer answer

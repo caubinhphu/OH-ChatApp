@@ -265,6 +265,26 @@ const Messenger = (() => {
       window.focus()
     })
 
+    $(window).on('disconnectCall', () => {
+      clearTimeout(window.timeoutCallId)
+      window.windowCall = undefined
+      window.isCall = false
+      window.timeStartCall = undefined
+      $(classOvCalling).addClass('d-none')
+      window.focus()
+
+      if (window.sendSignalCallDone) {
+        window.sendSignalCallDone = false
+        // send signal call timeout to server => receiver
+        window.socket.emit('msg-callTimeout', {
+          callerId: meId,
+          receiverId: friendIdChatting
+        })
+
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut)
+      }
+    })
+
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
       if (friendIdChatting === senderId) {
@@ -341,8 +361,10 @@ const Messenger = (() => {
     window.socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
       window.timeStartCall = new Date()
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'))
+      window.sendSignalCallDone = true
       window.timeoutCallId = setTimeout(() => {
         // call timeout
+        window.sendSignalCallDone = false
         window.isCall = false
         window.timeStartCall = undefined
         window.windowCall.close()
@@ -365,6 +387,7 @@ const Messenger = (() => {
     window.socket.on('msg-receiverRefuseCall', () => {
       if (window.windowCall) {
         clearTimeout(window.timeoutCallId)
+        window.sendSignalCallDone = false
         window.isCall = false
         window.timeStartCall = undefined
         window.windowCall.close()
@@ -401,6 +424,7 @@ const Messenger = (() => {
         createCallMsgLocal(callerId, callTextReceiver, classCallCome, true)
       } else if (sender === 'receiver') {
         // computer of caller
+        window.sendSignalCallDone = false
         window.windowCall = undefined
         createCallMsgLocal(receiverId, callTextCaller, classCallOut, true, true)
       }

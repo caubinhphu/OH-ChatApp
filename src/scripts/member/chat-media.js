@@ -108,10 +108,8 @@ const ChatAudio = (() => {
 
       // close sub window when close or refetch browser
       window.onbeforeunload = function() {
-        if (window.windowCall) {
-          window.windowCall.close()
-        } else if (window.windowReceive) {
-          window.windowReceive.close()
+        if (!window.connectPeer) {
+          window.parentWindow.dispatchEvent(new CustomEvent('disconnectCall'))
         }
       }
     } else {
