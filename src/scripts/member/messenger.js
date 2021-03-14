@@ -142,6 +142,9 @@ const Messenger = (() => {
 
     // accept call from receiver
     $(classCallOK).on('click', () => {
+      if (window.callInComSound) {
+        window.callInComSound.pause()
+      }
       // set is call local is true => focus sub window when click call btn
       window.isCall = true
 
@@ -169,6 +172,9 @@ const Messenger = (() => {
     $(classCallNotOK).on('click', () => {
       // send signal refuse call to caller
       window.isRefuseCall = true
+      if (window.callInComSound) {
+        window.callInComSound.pause()
+      }
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
         receiverId: meId
@@ -267,6 +273,9 @@ const Messenger = (() => {
 
     $(window).on('disconnectCall', () => {
       clearTimeout(window.timeoutCallId)
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause()
+      }
       window.windowCall = undefined
       window.isCall = false
       window.timeStartCall = undefined
@@ -319,6 +328,9 @@ const Messenger = (() => {
 
     // receive signal has call from friend
     window.socket.on('msg-hasCallAudio', ({ signal, callerId, callerName, callerAvatar }) => {
+      window.callInComSound = new Audio('/sounds/call-incoming.ogg');
+      window.callInComSound.loop = true
+      window.callInComSound.play()
       window.signalOffer = signal // signal offer
       window.callerId = callerId
       window.timeStartCall = new Date()
@@ -340,6 +352,9 @@ const Messenger = (() => {
     window.socket.on('msg-answerSignal', ({ signal }) => {
       // send signal answer to sub window
       clearTimeout(window.timeoutCallId)
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause()
+      }
       const event = new CustomEvent('signalAnswer', {
         detail: { signalAnswer: signal }
       });
@@ -349,6 +364,9 @@ const Messenger = (() => {
 
     // receive signal call error
     window.socket.on('msg-callError', ({msg}) => {
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause()
+      }
       window.isCall = false
       window.windowCall.close()
       window.windowCall = undefined
@@ -359,6 +377,9 @@ const Messenger = (() => {
 
     // receive signal send signal call to receiver done
     window.socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
+      window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
+      window.callOutGoSound.loop = true
+      window.callOutGoSound.play()
       window.timeStartCall = new Date()
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'))
       window.sendSignalCallDone = true
@@ -387,6 +408,9 @@ const Messenger = (() => {
     window.socket.on('msg-receiverRefuseCall', () => {
       if (window.windowCall) {
         clearTimeout(window.timeoutCallId)
+        if (window.callOutGoSound) {
+          window.callOutGoSound.pause()
+        }
         window.sendSignalCallDone = false
         window.isCall = false
         window.timeStartCall = undefined
@@ -406,6 +430,9 @@ const Messenger = (() => {
     // receive signal miss call from server (caller)
     window.socket.on('msg-missedCall', ({ callerId }) => {
       if (!window.isRefuseCall) {
+        if (window.callInComSound) {
+          window.callInComSound.pause()
+        }
         const $popup = $(classPoHasCall)
         $popup.find('.wrap-pop-has-call').addClass('miss-call')
         $popup.find(idBtnCallBack).attr('data-callerid', callerId)

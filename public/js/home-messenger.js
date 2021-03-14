@@ -39435,7 +39435,11 @@ var Messenger = function () {
     }); // accept call from receiver
 
     $(classCallOK).on('click', function () {
-      // set is call local is true => focus sub window when click call btn
+      if (window.callInComSound) {
+        window.callInComSound.pause();
+      } // set is call local is true => focus sub window when click call btn
+
+
       window.isCall = true; // open sub window receiver
 
       var h = $(window).height();
@@ -39461,6 +39465,11 @@ var Messenger = function () {
     $(classCallNotOK).on('click', function () {
       // send signal refuse call to caller
       window.isRefuseCall = true;
+
+      if (window.callInComSound) {
+        window.callInComSound.pause();
+      }
+
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
         receiverId: meId
@@ -39553,6 +39562,11 @@ var Messenger = function () {
     });
     $(window).on('disconnectCall', function () {
       clearTimeout(window.timeoutCallId);
+
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause();
+      }
+
       window.windowCall = undefined;
       window.isCall = false;
       window.timeStartCall = undefined;
@@ -39609,6 +39623,9 @@ var Messenger = function () {
           callerId = _ref5.callerId,
           callerName = _ref5.callerName,
           callerAvatar = _ref5.callerAvatar;
+      window.callInComSound = new Audio('/sounds/call-incoming.ogg');
+      window.callInComSound.loop = true;
+      window.callInComSound.play();
       window.signalOffer = signal; // signal offer
 
       window.callerId = callerId;
@@ -39627,6 +39644,11 @@ var Messenger = function () {
       var signal = _ref6.signal;
       // send signal answer to sub window
       clearTimeout(window.timeoutCallId);
+
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause();
+      }
+
       var event = new CustomEvent('signalAnswer', {
         detail: {
           signalAnswer: signal
@@ -39638,6 +39660,11 @@ var Messenger = function () {
 
     window.socket.on('msg-callError', function (_ref7) {
       var msg = _ref7.msg;
+
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause();
+      }
+
       window.isCall = false;
       window.windowCall.close();
       window.windowCall = undefined;
@@ -39649,6 +39676,9 @@ var Messenger = function () {
     window.socket.on('msg-doneSendSignalCall', function (_ref8) {
       var callerId = _ref8.callerId,
           receiverId = _ref8.receiverId;
+      window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
+      window.callOutGoSound.loop = true;
+      window.callOutGoSound.play();
       window.timeStartCall = new Date();
       window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
       window.sendSignalCallDone = true;
@@ -39674,6 +39704,11 @@ var Messenger = function () {
     window.socket.on('msg-receiverRefuseCall', function () {
       if (window.windowCall) {
         clearTimeout(window.timeoutCallId);
+
+        if (window.callOutGoSound) {
+          window.callOutGoSound.pause();
+        }
+
         window.sendSignalCallDone = false;
         window.isCall = false;
         window.timeStartCall = undefined;
@@ -39692,6 +39727,10 @@ var Messenger = function () {
       var callerId = _ref9.callerId;
 
       if (!window.isRefuseCall) {
+        if (window.callInComSound) {
+          window.callInComSound.pause();
+        }
+
         var $popup = $(classPoHasCall);
         $popup.find('.wrap-pop-has-call').addClass('miss-call');
         $popup.find(idBtnCallBack).attr('data-callerid', callerId);
