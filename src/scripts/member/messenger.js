@@ -417,8 +417,10 @@ const Messenger = (() => {
   function createCallMsgLocal(friendId, msg = '', className = '', me = false) {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
+    let timeCall = null
     if (window.timeStartCall) {
       time = moment(window.timeStartCall).format('H:mm')
+      timeCall = `<small class="time-call">${formatDiffTime(window.timeStartCall, new Date())}</small>`
       window.timeStartCall = undefined
     }
     if ($friItem.length) {
@@ -427,7 +429,8 @@ const Messenger = (() => {
           time,
           username: 'Me',
           message: msg,
-          className
+          className,
+          timeCall
         }, true)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
@@ -439,7 +442,8 @@ const Messenger = (() => {
           username: $friItem.find(classNameFriend).text(),
           message: msg,
           avatar: $friItem.find('img').attr('src'),
-          className
+          className,
+          timeCall
         })
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
@@ -495,6 +499,7 @@ const Messenger = (() => {
     <div>
       <div class="msg-me">
         <small class="message-content mx-0">${msgObj.message}</small>
+        ${ msgObj.timeCall || '' }
       </div>
     <div>`;
     } else {
@@ -504,6 +509,7 @@ const Messenger = (() => {
         <div class="msg">
           <img class="message-avatar" src="${msgObj.avatar}" alt="${msgObj.username}" />
           <small class="message-content">${msgObj.message}</small>
+          ${ msgObj.timeCall || '' }
         </div>
       </div>`;
     }
@@ -518,6 +524,22 @@ const Messenger = (() => {
   function scrollBottomChatBox() {
     const $ele = $('#main-right-chat-content');
     $ele.animate({scrollTop: $ele[0].scrollHeight - $ele.innerHeight()}, 350, 'swing');
+  }
+
+  /**
+   * Function format diff time
+   * @param {Date} start Start time
+   * @param {Date} end End time
+   * @returns time diff be format
+   */
+  function formatDiffTime(start, end) {
+    const mPass = moment(start)
+    const mPresent = moment(end)
+    const h = mPresent.diff(mPass, 'hours')
+    const m = mPresent.diff(mPass, 'minutes') - h * 60
+    const s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60
+
+    return `${h ? h + 'h' : ''}${m ? m + 'm' : ''}${(h || m)  && !s ? '' : s + 's'}`
   }
 })()
 

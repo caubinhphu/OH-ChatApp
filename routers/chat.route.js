@@ -1,7 +1,6 @@
 const express = require('express');
 
 const controller = require('../controllers/chat.controller');
-
 const { checkNotAuthenticated } = require('../middlewares/login.middleware');
 
 const router = express.Router();

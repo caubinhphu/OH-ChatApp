@@ -39710,9 +39710,11 @@ var Messenger = function () {
     var me = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
+    var timeCall = null;
 
     if (window.timeStartCall) {
       time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
+      timeCall = "<small class=\"time-call\">".concat(formatDiffTime(window.timeStartCall, new Date()), "</small>");
       window.timeStartCall = undefined;
     }
 
@@ -39722,7 +39724,8 @@ var Messenger = function () {
           time: time,
           username: 'Me',
           message: msg,
-          className: className
+          className: className,
+          timeCall: timeCall
         }, true);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
@@ -39732,7 +39735,8 @@ var Messenger = function () {
           username: $friItem.find(classNameFriend).text(),
           message: msg,
           avatar: $friItem.find('img').attr('src'),
-          className: className
+          className: className,
+          timeCall: timeCall
         });
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
@@ -39785,10 +39789,10 @@ var Messenger = function () {
 
     if (me) {
       div.className = "message text-right ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n    <div>\n      <div class=\"msg-me\">\n        <small class=\"message-content mx-0\">").concat(msgObj.message, "</small>\n      </div>\n    <div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n    <div>\n      <div class=\"msg-me\">\n        <small class=\"message-content mx-0\">").concat(msgObj.message, "</small>\n        ").concat(msgObj.timeCall || '', "\n      </div>\n    <div>");
     } else {
       div.className = "message ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(msgObj.message, "</small>\n        </div>\n      </div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(msgObj.message, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
     } // append message
 
 
@@ -39804,6 +39808,22 @@ var Messenger = function () {
     $ele.animate({
       scrollTop: $ele[0].scrollHeight - $ele.innerHeight()
     }, 350, 'swing');
+  }
+  /**
+   * Function format diff time
+   * @param {Date} start Start time
+   * @param {Date} end End time
+   * @returns time diff be format
+   */
+
+
+  function formatDiffTime(start, end) {
+    var mPass = moment__WEBPACK_IMPORTED_MODULE_0___default()(start);
+    var mPresent = moment__WEBPACK_IMPORTED_MODULE_0___default()(end);
+    var h = mPresent.diff(mPass, 'hours');
+    var m = mPresent.diff(mPass, 'minutes') - h * 60;
+    var s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60;
+    return "".concat(h ? h + 'h' : '').concat(m ? m + 'm' : '').concat((h || m) && !s ? '' : s + 's');
   }
 }();
 

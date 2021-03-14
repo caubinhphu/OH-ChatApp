@@ -15,7 +15,8 @@ const formatMsg = function (msg, me, friend) {
     time: '',
     me: true,
     name: '',
-    class: ''
+    class: '',
+    timeCall: ''
   }
   const timeDate = moment(msg.time).date()
   const nowDate = moment().date()
@@ -34,6 +35,7 @@ const formatMsg = function (msg, me, friend) {
   }
 
   if (msg.type === 'call-audio') {
+    msgFormat.timeCall = formatDiffTime(msg.time, msg.timeEndCall || new Date())
     if (msg.memberSendId.toString() !== me.id) {
       msgFormat.content = 'Cuộc gọi đến'
       msgFormat.class = 'call-msg call-incoming'
@@ -112,7 +114,23 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
   return latestMessage
 }
 
+/**
+ * Function format diff time
+ * @param {Date} start Start time
+ * @param {Date} end End time
+ * @returns time diff be format
+ */
+function formatDiffTime(start, end) {
+  const mPass = moment(start)
+  const mPresent = moment(end)
+  const h = mPresent.diff(mPass, 'hours')
+  const m = mPresent.diff(mPass, 'minutes') - h * 60
+  const s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60
+
+  return `${h ? h + 'h' : ''}${m ? m + 'm' : ''}${(h || m)  && !s ? '' : s + 's'}`
+}
 
 module.exports.formatMessageList = formatMessageList
 module.exports.formatMsg = formatMsg
 module.exports.formatLatestMsg = formatLatestMsg
+module.exports.formatDiffTime = formatDiffTime

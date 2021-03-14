@@ -273,6 +273,16 @@ module.exports.getChatFriend = async (req, res, next) => {
       );
 
       // set local time moment
+      moment.updateLocale('vi', {
+        relativeTime: {
+          m:  "1 phút",
+          h:  "1 giờ",
+          d:  "1 ngày",
+          w:  "1 tuần",
+          M:  "1 tháng",
+          y:  "1 năm",
+        }
+      })
       moment.locale('vi')
 
       // set status text

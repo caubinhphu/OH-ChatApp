@@ -56,6 +56,8 @@ block contentMain
                   div
                     .msg-me
                       small.message-content.mx-0= msg.content
+                      if (msg.timeCall)
+                        small.time-call= msg.timeCall
               else
                 .message(class=msg.class)
                   small.message-time= msg.time
@@ -63,6 +65,8 @@ block contentMain
                     .msg
                       img.message-avatar(src=msg.avatar, alt=msg.name)
                       small.message-content= msg.content
+                      if (msg.timeCall)
+                        small.time-call= msg.timeCall
 
         #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
           form.d-flex(name="sendMsgForm", method="post")

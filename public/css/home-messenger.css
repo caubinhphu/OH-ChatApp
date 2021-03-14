@@ -7342,6 +7342,12 @@ body {
   color: #c8102e;
 }
 
+.message .time-call {
+  display: block;
+  color: #102131;
+  text-align: right;
+}
+
 .msg {
   width: max-content;
   max-width: 100%;
