@@ -45,7 +45,7 @@ const ChatAudio = (() => {
         if (err.code === 'ERR_WEBRTC_SUPPORT') {
           errorText = 'Trình duyệt không hỗ trợ'
         } else if (err.code === 'ERR_DATA_CHANNEL') {
-          errorText = 'Ngắt kết nối'
+          errorText = 'Cuộc gọi kết thúc'
         } else {
           errorText = 'Lỗi kết nối'
         }
@@ -105,6 +105,15 @@ const ChatAudio = (() => {
       })
 
       addEventCtrl(peer)
+
+      // close sub window when close or refetch browser
+      window.onbeforeunload = function() {
+        if (window.windowCall) {
+          window.windowCall.close()
+        } else if (window.windowReceive) {
+          window.windowReceive.close()
+        }
+      }
     } else {
       // window of receiver
       // init peer answer
@@ -131,7 +140,7 @@ const ChatAudio = (() => {
         if (err.code === 'ERR_WEBRTC_SUPPORT') {
           errorText = 'Trình duyệt không hỗ trợ'
         } else if (err.code === 'ERR_DATA_CHANNEL') {
-          errorText = 'Ngắt kết nối'
+          errorText = 'Cuộc gọi kết thúc'
         } else {
           errorText = 'Lỗi kết nối'
         }

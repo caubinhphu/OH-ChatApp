@@ -27500,7 +27500,7 @@ var ChatAudio = function () {
       if (err.code === 'ERR_WEBRTC_SUPPORT') {
         errorText = 'Trình duyệt không hỗ trợ';
       } else if (err.code === 'ERR_DATA_CHANNEL') {
-        errorText = 'Ngắt kết nối';
+        errorText = 'Cuộc gọi kết thúc';
       } else {
         errorText = 'Lỗi kết nối';
       }
@@ -27582,7 +27582,7 @@ var ChatAudio = function () {
       if (err.code === 'ERR_WEBRTC_SUPPORT') {
         errorText = 'Trình duyệt không hỗ trợ';
       } else if (err.code === 'ERR_DATA_CHANNEL') {
-        errorText = 'Ngắt kết nối';
+        errorText = 'Cuộc gọi kết thúc';
       } else {
         errorText = 'Lỗi kết nối';
       }

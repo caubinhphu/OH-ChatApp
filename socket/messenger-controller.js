@@ -288,7 +288,7 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
       if (receiverMem) {
         receiverMem._id.isCalling = false
         await receiverMem._id.save()
-        if (receiverMem.groupMessageId && callerMem.isCalling) {
+        if (receiverMem.groupMessageId) {
           const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
 
           if (groupMessage && groupMessage.messages.length) {

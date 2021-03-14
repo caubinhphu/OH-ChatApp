@@ -39294,7 +39294,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Messenger = function () {
-  var callTimeout = 5000;
+  var callTimeout = 10000;
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
 
@@ -39460,13 +39460,15 @@ var Messenger = function () {
 
     $(classCallNotOK).on('click', function () {
       // send signal refuse call to caller
+      console.log(window.callerId, meId);
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
         receiverId: meId
       }); // set IU
 
       $(classPoHasCall).addClass('d-none');
-      window.isCall = false; // create msg end call local
+      window.isCall = false;
+      window.timeStartCall = undefined; // create msg end call local
 
       createCallMsgLocal(window.callerId, callMissText, classCallMissed);
     }); // close popup miss call
@@ -39633,6 +39635,7 @@ var Messenger = function () {
       window.timeoutCallId = setTimeout(function () {
         // call timeout
         window.isCall = false;
+        window.timeStartCall = undefined;
         window.windowCall.close();
         window.windowCall = undefined;
         window.focus();
@@ -39649,7 +39652,9 @@ var Messenger = function () {
 
     window.socket.on('msg-receiverRefuseCall', function () {
       if (window.windowCall) {
+        clearTimeout(window.timeoutCallId);
         window.isCall = false;
+        window.timeStartCall = undefined;
         window.windowCall.close();
         window.windowCall = undefined;
         window.focus(); // set UI

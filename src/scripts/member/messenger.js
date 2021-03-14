@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../global/chat-utils'
 
 const Messenger = (() => {
-  const callTimeout = 5000
+  const callTimeout = 10000
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
   let hasMessenger = true // has old msg
@@ -168,6 +168,7 @@ const Messenger = (() => {
     // no accept call from receiver
     $(classCallNotOK).on('click', () => {
       // send signal refuse call to caller
+      window.isRefuseCall = true
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
         receiverId: meId
@@ -176,6 +177,7 @@ const Messenger = (() => {
       // set IU
       $(classPoHasCall).addClass('d-none')
       window.isCall = false
+      window.timeStartCall = undefined
       // create msg end call local
       createCallMsgLocal(window.callerId, callMissText, classCallMissed)
     })
@@ -300,6 +302,7 @@ const Messenger = (() => {
       window.signalOffer = signal // signal offer
       window.callerId = callerId
       window.timeStartCall = new Date()
+      window.isRefuseCall = false
 
       // set IU
       const $popup = $(classPoHasCall)
@@ -341,6 +344,7 @@ const Messenger = (() => {
       window.timeoutCallId = setTimeout(() => {
         // call timeout
         window.isCall = false
+        window.timeStartCall = undefined
         window.windowCall.close()
         window.windowCall = undefined
         window.focus()
@@ -360,7 +364,9 @@ const Messenger = (() => {
     // receive signal refuse call
     window.socket.on('msg-receiverRefuseCall', () => {
       if (window.windowCall) {
+        clearTimeout(window.timeoutCallId)
         window.isCall = false
+        window.timeStartCall = undefined
         window.windowCall.close()
         window.windowCall = undefined
         window.focus()
@@ -376,11 +382,13 @@ const Messenger = (() => {
 
     // receive signal miss call from server (caller)
     window.socket.on('msg-missedCall', ({ callerId }) => {
-      const $popup = $(classPoHasCall)
-      $popup.find('.wrap-pop-has-call').addClass('miss-call')
-      $popup.find(idBtnCallBack).attr('data-callerid', callerId)
+      if (!window.isRefuseCall) {
+        const $popup = $(classPoHasCall)
+        $popup.find('.wrap-pop-has-call').addClass('miss-call')
+        $popup.find(idBtnCallBack).attr('data-callerid', callerId)
 
-      createCallMsgLocal(callerId, callMissText, classCallMissed)
+        createCallMsgLocal(callerId, callMissText, classCallMissed)
+      }
     })
 
     // receive signal end call from server (it self end call)
@@ -390,11 +398,11 @@ const Messenger = (() => {
       if (sender === 'caller') {
         // computer of receiver
         window.windowReceive = undefined
-        createCallMsgLocal(callerId, callTextReceiver, classCallCome)
+        createCallMsgLocal(callerId, callTextReceiver, classCallCome, true)
       } else if (sender === 'receiver') {
         // computer of caller
         window.windowCall = undefined
-        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true)
+        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true, true)
       }
     })
   }
@@ -412,13 +420,15 @@ const Messenger = (() => {
    * Function create and append call message to local
    * @param {string} friendId friend id
    * @param {string} msg message
+   * @param {string} className class name
+   * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
-  function createCallMsgLocal(friendId, msg = '', className = '', me = false) {
+  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false) {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
     let timeCall = null
-    if (window.timeStartCall) {
+    if (isCallEnd && window.timeStartCall) {
       time = moment(window.timeStartCall).format('H:mm')
       timeCall = `<small class="time-call">${formatDiffTime(window.timeStartCall, new Date())}</small>`
       window.timeStartCall = undefined
