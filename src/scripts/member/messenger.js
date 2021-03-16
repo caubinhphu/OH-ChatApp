@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../global/chat-utils'
 
 const Messenger = (() => {
-  const callTimeout = 10000
+  const callTimeout = 10000000
   const chatMain = document.getElementById('main-right-chat-content');
   const msgForm = document.sendMsgForm; // form chat
   let hasMessenger = true // has old msg
@@ -133,6 +133,9 @@ const Messenger = (() => {
     // call audio to friend
     $('#call-friend-btn').on('click', () => { callFriend(friendIdChatting) })
 
+    // call audio to friend
+    $('#video-friend-btn').on('click', () => { callFriend(friendIdChatting, 'video') })
+
     $(idBtnCallBack).on('click', function() {
       callFriend($(this).attr('data-callerid'))
 
@@ -158,7 +161,7 @@ const Messenger = (() => {
       if (window.focus) {
         windowReceive.focus();
         windowReceive.typeClient = 'receiver'
-        windowReceive.typeCall = 'audio'
+        windowReceive.typeCall = window.typeCall
         windowReceive.signalOffer = window.signalOffer // signal offer
         windowReceive.parentWindow = window // to dispatch event
       }
@@ -200,7 +203,8 @@ const Messenger = (() => {
       window.socket.emit('msg-offerStream', {
         receiverId: friendIdChatting,
         callerId: meId,
-        signal: signalOffer
+        signal: signalOffer,
+        typeCall: window.windowCall.typeCall
       });
     })
 
@@ -327,12 +331,13 @@ const Messenger = (() => {
     })
 
     // receive signal has call from friend
-    window.socket.on('msg-hasCallAudio', ({ signal, callerId, callerName, callerAvatar }) => {
+    window.socket.on('msg-hasCallMedia', ({ signal, callerId, callerName, callerAvatar, typeCall }) => {
       window.callInComSound = new Audio('/sounds/call-incoming.ogg');
       window.callInComSound.loop = true
       window.callInComSound.play()
       window.signalOffer = signal // signal offer
       window.callerId = callerId
+      window.typeCall = typeCall
       window.timeStartCall = new Date()
       window.isRefuseCall = false
 
@@ -517,11 +522,11 @@ const Messenger = (() => {
   /**
    * function call to friend by friend id
    * @param {string} friendId friend id to call
+   * @param {string} typeCall call type [audio, video]
    */
-  function callFriend(friendId) {
+  function callFriend(friendId, typeCall = 'audio') {
     if (!window.isCall) {
       window.isCall = true
-
       window.receiverId = friendId
 
       $(classOvCalling).removeClass('d-none')
@@ -534,7 +539,7 @@ const Messenger = (() => {
       if (window.focus) {
         windowCall.focus();
         windowCall.typeClient = 'caller'
-        windowCall.typeCall = 'audio'
+        windowCall.typeCall = typeCall
         windowCall.parentWindow = window // to dispatch event
       }
       window.windowCall = windowCall // to dispatch event

@@ -33,3 +33,38 @@
     }
   }
 }
+.wrap-my-video {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 150px;
+  height: 100px;
+  background-color: $color-0c;
+  border-radius: 13px;
+  border: 1px solid $blue;
+  z-index: 3;
+  img {
+    max-width: 60px;
+    border-radius: 20%;
+  }
+  video {
+    width: 100%;
+  }
+}
+.wrap-friend-video {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  left: 5px;
+  bottom: 10px;
+  background-color: $color-0c;
+  border-radius: 13px;
+  z-index: 2;
+  img {
+    max-width: 150px;
+    border-radius: 20%;
+  }
+  video {
+    width: 100%;
+  }
+}

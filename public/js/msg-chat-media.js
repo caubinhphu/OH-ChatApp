@@ -27462,293 +27462,504 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-var ChatAudio = function () {
-  // get media device of user
-  navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
-  window.localStream = new MediaStream();
+var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+  var peer, _peer, outputAudio, addEventCtrl, addTrackAudio, _addTrackAudio, removeTrackAudio, addTrackVideo, _addTrackVideo, removeTrackVideo, outputVideo, outputStopVideo;
 
-  if (window.typeClient === 'caller') {
-    // window of caller
-    // init peer
-    var peer = new simple_peer__WEBPACK_IMPORTED_MODULE_0___default.a({
-      initiator: true,
-      // init -> offer peer
-      trickle: false
-    }); // add events to peer
-    // after connect => add stream audio
+  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          outputStopVideo = function _outputStopVideo() {
+            var me = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-    peer.on('connect', function () {
-      // console.log('call connection')
-      addTrackAudio(peer); // be connected
+            if (me) {
+              var $wrapMyVideo = $('.wrap-my-video');
 
-      window.connectPeer = true;
-      $('.mic-ctrl-btn').removeClass('btn-disabled');
-    });
-    peer.on('close', function () {// console.log('call close');
-    }); // event receive signal offer from parent window from caller
-    // because when caller add stream or track => create new signal offer => signal event => add signal again
+              if ($wrapMyVideo.length) {
+                $wrapMyVideo.find('img').css('display', 'inline');
+                var $video = $wrapMyVideo.find('video');
+                $video.css('display', 'none');
+                $video.each(function (i, vd) {
+                  if ('srcObject' in vd) {
+                    vd.srcObject = null;
+                  } else {
+                    vd.src = null;
+                  }
+                });
+              }
+            } else {
+              var $wrapFriendVideo = $(".wrap-friend-video");
 
-    peer.on('data', function (data) {
-      var dataObj = JSON.parse(data.toString());
+              if ($wrapFriendVideo.length) {
+                $wrapFriendVideo.find('img').css('display', 'inline');
 
-      if (dataObj.type === 'signal-add-stream') {
-        peer.signal(dataObj.signal);
-      }
-    });
-    peer.on('error', function (err) {
-      var errorText = '';
+                var _$video2 = $wrapFriendVideo.find('video');
 
-      if (err.code === 'ERR_WEBRTC_SUPPORT') {
-        errorText = 'Trình duyệt không hỗ trợ';
-      } else if (err.code === 'ERR_DATA_CHANNEL') {
-        errorText = 'Cuộc gọi kết thúc';
-      } else {
-        errorText = 'Lỗi kết nối';
-      }
+                _$video2.css('display', 'none');
 
-      var event = new CustomEvent('connectPeerFail', {
-        detail: {
-          error: errorText,
-          code: err.code
-        }
-      });
-      window.parentWindow.dispatchEvent(event);
-    }); // peer.on('stream', (stream) => {
-    //   console.log('call stream');
-    // });
+                _$video2.each(function (i, vd) {
+                  if ('srcObject' in vd) {
+                    vd.srcObject = null;
+                  } else {
+                    vd.src = null;
+                  }
+                });
+              }
+            }
+          };
 
-    peer.on('track', function (track, stream) {
-      // console.log('call track');
-      if (track.kind === 'audio') {
-        outputAudio(stream);
-      }
-    });
-    peer.on('signal', function (signal) {
-      console.log('call '); // check be connected?
+          outputVideo = function _outputVideo() {
+            var stream = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.localStream;
+            var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-      if (!window.connectPeer) {
-        // not connect => send offer signal
-        // create custom event to send to window parent
-        var event = new CustomEvent('signalOffer', {
-          detail: {
-            // send signal offer
-            signalOffer: JSON.stringify(signal)
+            if (me) {
+              var $wrapMyVideo = $('.wrap-my-video');
+
+              if ($wrapMyVideo.length) {
+                $wrapMyVideo.find('img').css('display', 'none');
+                var $video = $wrapMyVideo.find('video[name="video"]');
+                $video.css('display', 'block');
+                $video.each(function (i, vd) {
+                  if ('srcObject' in vd) {
+                    vd.srcObject = stream;
+                  } else {
+                    vd.src = window.URL.createObjectURL(stream);
+                  }
+                });
+              }
+            } else {
+              var $wrapFriendVideo = $('.wrap-friend-video');
+
+              if ($wrapFriendVideo.length) {
+                $wrapFriendVideo.find('img').css('display', 'none');
+
+                var _$video = $wrapFriendVideo.find('video');
+
+                _$video.css('display', 'block');
+
+                _$video.each(function (i, vd) {
+                  if ('srcObject' in vd) {
+                    vd.srcObject = stream;
+                  } else {
+                    vd.src = window.URL.createObjectURL(stream);
+                  }
+                });
+              }
+            }
+          };
+
+          removeTrackVideo = function _removeTrackVideo(peer) {
+            peer.removeTrack(window.localStream.getVideoTracks()[0], window.localStream); // stop and remove video track of stream in local
+
+            window.localStream.getVideoTracks()[0].stop();
+            window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+          };
+
+          _addTrackVideo = function _addTrackVideo3() {
+            _addTrackVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(peer) {
+              var videoStream;
+              return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                  switch (_context2.prev = _context2.next) {
+                    case 0:
+                      if (!navigator.mediaDevices.getUserMedia) {
+                        _context2.next = 14;
+                        break;
+                      }
+
+                      _context2.prev = 1;
+                      _context2.next = 4;
+                      return navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: false
+                      });
+
+                    case 4:
+                      videoStream = _context2.sent;
+
+                      if (peer) {
+                        // add track audio to peer
+                        peer.addTrack(videoStream.getVideoTracks()[0], window.localStream);
+                      } // add audio track for stream of local stream
+
+
+                      window.localStream.addTrack(videoStream.getVideoTracks()[0]);
+                      outputVideo();
+                      _context2.next = 14;
+                      break;
+
+                    case 10:
+                      _context2.prev = 10;
+                      _context2.t0 = _context2["catch"](1);
+                      $('.video-ctrl-btn').removeClass('ctrl-off');
+                      outputWarnMessage('Bạn đã chặn quyền sử dụng camera');
+
+                    case 14:
+                    case "end":
+                      return _context2.stop();
+                  }
+                }
+              }, _callee2, null, [[1, 10]]);
+            }));
+            return _addTrackVideo.apply(this, arguments);
+          };
+
+          addTrackVideo = function _addTrackVideo2(_x2) {
+            return _addTrackVideo.apply(this, arguments);
+          };
+
+          removeTrackAudio = function _removeTrackAudio(peer) {
+            peer.removeTrack(window.localStream.getAudioTracks()[0], window.localStream); // remove audio track of stream in local stream
+
+            window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
+          };
+
+          _addTrackAudio = function _addTrackAudio3() {
+            _addTrackAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(peer) {
+              var audioStream;
+              return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                  switch (_context.prev = _context.next) {
+                    case 0:
+                      if (!navigator.mediaDevices.getUserMedia) {
+                        _context.next = 13;
+                        break;
+                      }
+
+                      _context.prev = 1;
+                      _context.next = 4;
+                      return navigator.mediaDevices.getUserMedia({
+                        video: false,
+                        audio: true
+                      });
+
+                    case 4:
+                      audioStream = _context.sent;
+                      // add track audio to peer
+                      peer.addTrack(audioStream.getAudioTracks()[0], window.localStream); // add audio track for stream of local stream
+
+                      window.localStream.addTrack(audioStream.getAudioTracks()[0]);
+                      _context.next = 13;
+                      break;
+
+                    case 9:
+                      _context.prev = 9;
+                      _context.t0 = _context["catch"](1);
+                      $('.mic-ctrl-btn').removeClass('ctrl-off');
+                      outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
+
+                    case 13:
+                    case "end":
+                      return _context.stop();
+                  }
+                }
+              }, _callee, null, [[1, 9]]);
+            }));
+            return _addTrackAudio.apply(this, arguments);
+          };
+
+          addTrackAudio = function _addTrackAudio2(_x) {
+            return _addTrackAudio.apply(this, arguments);
+          };
+
+          addEventCtrl = function _addEventCtrl(peer) {
+            $('.mic-ctrl-btn').on('click', function (e) {
+              if ($(this).hasClass('btn-disabled')) {
+                e.preventDefault();
+              } else {
+                if ($(this).hasClass('ctrl-off')) {
+                  // turn off mic
+                  removeTrackAudio(peer);
+                  $(this).removeClass('ctrl-off');
+                } else {
+                  // turn on mic
+                  addTrackAudio(peer);
+                  $(this).addClass('ctrl-off');
+                }
+              }
+            });
+            $('.share-ctrl-btn').on('click', function (e) {
+              if ($(this).hasClass('btn-disabled')) {
+                e.preventDefault();
+              } else {}
+            });
+            $('.video-ctrl-btn').on('click', function (e) {
+              if ($(this).hasClass('btn-disabled')) {
+                e.preventDefault();
+              } else {
+                if ($(this).hasClass('ctrl-off')) {
+                  // turn off mic
+                  removeTrackVideo(peer);
+                  outputStopVideo();
+                  peer.send(JSON.stringify({
+                    type: 'turn-off-video'
+                  }));
+                  $(this).removeClass('ctrl-off');
+                } else {
+                  // turn on mic
+                  addTrackVideo(peer);
+                  $(this).addClass('ctrl-off');
+                }
+              }
+            });
+            $('.end-call-btn').on('click', function () {
+              window.close();
+            });
+          };
+
+          outputAudio = function _outputAudio(stream) {
+            var $video = $('.wrap-avatar-call').find('video');
+            $video.each(function (i, vd) {
+              if ('srcObject' in vd) {
+                vd.srcObject = stream;
+              } else {
+                vd.src = window.URL.createObjectURL(stream);
+              }
+            });
+          };
+
+          // get media device of user
+          navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
+          window.localStream = new MediaStream();
+
+          if (!(window.typeCall === 'video')) {
+            _context3.next = 16;
+            break;
           }
-        }); // dispatch (trigger) event custom
 
-        window.parentWindow.dispatchEvent(event);
-      } else {
-        // be connected => send signal offer (when add stream) through data channel
-        peer.send(JSON.stringify({
-          type: 'signal-add-stream',
-          signal: signal
-        }));
-      }
-    }); // event receive signal answer from parent window (peer answer)
+          $('.wrap-my-video').removeClass('d-none');
+          _context3.next = 16;
+          return addTrackVideo();
 
-    $(window).on('signalAnswer', function (e) {
-      var signalAnswer = e.detail.signalAnswer;
-      peer.signal(JSON.parse(signalAnswer));
-    }); // event is calling
+        case 16:
+          if (window.typeClient === 'caller') {
+            // window of caller
+            // init peer
+            peer = new simple_peer__WEBPACK_IMPORTED_MODULE_0___default.a({
+              initiator: true,
+              // init -> offer peer
+              trickle: false
+            });
+            window.peer = peer; // add events to peer
+            // after connect => add stream audio
 
-    $(window).on('isCalling', function () {
-      $('.img-load-call').addClass('d-none');
-      $('.text-calling').removeClass('d-none');
-    });
-    addEventCtrl(peer); // close sub window when close or refetch browser
+            peer.on('connect', function () {
+              // console.log('call connection')
+              addTrackAudio(peer); // be connected
 
-    window.onbeforeunload = function () {
-      if (!window.connectPeer) {
-        window.parentWindow.dispatchEvent(new CustomEvent('disconnectCall'));
-      }
-    };
-  } else {
-    // window of receiver
-    // init peer answer
-    var _peer = new simple_peer__WEBPACK_IMPORTED_MODULE_0___default.a({
-      initiator: false,
-      trickle: false
-    }); // add signal offer to peer
+              window.connectPeer = true;
+              $('.mic-ctrl-btn').removeClass('btn-disabled');
 
+              if (window.typeCall === 'video') {
+                $('.video-ctrl-btn').removeClass('btn-disabled');
+                $('.share-ctrl-btn').removeClass('btn-disabled');
+                $('.wrap-friend-video').removeClass('d-none');
 
-    _peer.signal(JSON.parse(window.signalOffer)); // add events
-    // conect => add audio stream
+                if (window.localStream.getVideoTracks().length) {
+                  peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+                }
+              }
+            });
+            peer.on('close', function () {// console.log('call close');
+            }); // event receive signal offer from parent window from caller
+            // because when caller add stream or track => create new signal offer => signal event => add signal again
 
+            peer.on('data', function (data) {
+              var dataObj = JSON.parse(data.toString());
 
-    _peer.on('connect', function () {
-      // console.log('answer connection')
-      addTrackAudio(_peer); // be connected
+              if (dataObj.type === 'signal-add-stream') {
+                peer.signal(dataObj.signal);
+              } else if (dataObj.type === 'turn-off-video') {
+                outputStopVideo(false);
+              }
+            });
+            peer.on('error', function (err) {
+              var errorText = '';
 
-      window.connectPeer = true;
-      $('.img-load-call').addClass('d-none');
-      $('.mic-ctrl-btn').removeClass('btn-disabled');
-    });
-
-    _peer.on('error', function (err) {
-      var errorText = '';
-
-      if (err.code === 'ERR_WEBRTC_SUPPORT') {
-        errorText = 'Trình duyệt không hỗ trợ';
-      } else if (err.code === 'ERR_DATA_CHANNEL') {
-        errorText = 'Cuộc gọi kết thúc';
-      } else {
-        errorText = 'Lỗi kết nối';
-      }
-
-      var event = new CustomEvent('connectPeerFail', {
-        detail: {
-          error: errorText,
-          code: err.code
-        }
-      });
-      window.parentWindow.dispatchEvent(event);
-    });
-
-    _peer.on('close', function () {// console.log('call close');
-    }); // event receive signal offer from parent window from caller
-    // because when caller add stream or track => create new signal offer => signal event => add signal again
-
-
-    _peer.on('data', function (data) {
-      var dataObj = JSON.parse(data.toString()); // console.log(dataObj)
-
-      if (dataObj.type === 'signal-add-stream') {
-        _peer.signal(dataObj.signal);
-      }
-    }); // peer.on('stream', (stream) => {
-    //   console.log('call stream');
-    // });
-
-
-    _peer.on('track', function (track, stream) {
-      // console.log('call track');
-      if (track.kind === 'audio') {
-        outputAudio(stream);
-      }
-    }); // run after add signal => create custom event => send signal answer to parent window => caller
-
-
-    _peer.on('signal', function (signal) {
-      // console.log('answer signal')
-      if (!window.connectPeer) {
-        var event = new CustomEvent('signalAnswer', {
-          detail: {
-            // send answer signal
-            signalAnswer: JSON.stringify(signal)
-          }
-        }); // dispatch event
-
-        window.parentWindow.dispatchEvent(event); // window.signal = JSON.stringify(signal)
-      } else {
-        // be connected => send signal offer (when add stream) through data channel
-        _peer.send(JSON.stringify({
-          type: 'signal-add-stream',
-          signal: signal
-        }));
-      }
-    });
-
-    addEventCtrl(_peer);
-  } // function output audio
-
-
-  function outputAudio(stream) {
-    var $video = $('.wrap-avatar-call').find('video');
-    $video.each(function (i, vd) {
-      if ('srcObject' in vd) {
-        vd.srcObject = stream;
-      } else {
-        vd.src = window.URL.createObjectURL(stream);
-      }
-    });
-  }
-
-  function addEventCtrl(peer) {
-    $('.mic-ctrl-btn').on('click', function (e) {
-      if ($(this).hasClass('btn-disabled')) {
-        e.preventDefault();
-      } else {
-        if ($(this).hasClass('ctrl-off')) {
-          // turn off mic
-          removeTrackAudio(peer);
-          $(this).removeClass('ctrl-off');
-        } else {
-          // turn on mic
-          addTrackAudio(peer);
-          $(this).addClass('ctrl-off');
-        }
-      }
-    });
-    $('.share-ctrl-btn').on('click', function (e) {
-      if ($(this).hasClass('btn-disabled')) {
-        e.preventDefault();
-      } else {}
-    });
-    $('.video-ctrl-btn').on('click', function (e) {
-      if ($(this).hasClass('btn-disabled')) {
-        e.preventDefault();
-      } else {}
-    });
-    $('.end-call-btn').on('click', function () {
-      window.close();
-    });
-  } // function add stream track audio to peer
-
-
-  function addTrackAudio(_x) {
-    return _addTrackAudio.apply(this, arguments);
-  } // function remove track audio stream
-
-
-  function _addTrackAudio() {
-    _addTrackAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(peer) {
-      var audioStream;
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              if (!navigator.mediaDevices.getUserMedia) {
-                _context.next = 12;
-                break;
+              if (err.code === 'ERR_WEBRTC_SUPPORT') {
+                errorText = 'Trình duyệt không hỗ trợ';
+              } else if (err.code === 'ERR_DATA_CHANNEL') {
+                errorText = 'Cuộc gọi kết thúc';
+              } else {
+                errorText = 'Lỗi kết nối';
               }
 
-              _context.prev = 1;
-              _context.next = 4;
-              return navigator.mediaDevices.getUserMedia({
-                video: false,
-                audio: true
+              var event = new CustomEvent('connectPeerFail', {
+                detail: {
+                  error: errorText,
+                  code: err.code
+                }
               });
+              window.parentWindow.dispatchEvent(event);
+            }); // peer.on('stream', (stream) => {
+            //   console.log('call stream');
+            // });
 
-            case 4:
-              audioStream = _context.sent;
-              // add track audio to peer
-              peer.addTrack(audioStream.getAudioTracks()[0], window.localStream); // add audio track for stream of local stream
+            peer.on('track', function (track, stream) {
+              console.log('call track');
 
-              window.localStream.addTrack(audioStream.getAudioTracks()[0]);
-              _context.next = 12;
-              break;
+              if (track.kind === 'audio') {
+                outputAudio(stream);
+              } else if (track.kind === 'video') {
+                if (stream.getVideoTracks().length < 2) {
+                  outputVideo(stream, false);
+                }
+              }
+            });
+            peer.on('signal', function (signal) {
+              console.log('call '); // check be connected?
 
-            case 9:
-              _context.prev = 9;
-              _context.t0 = _context["catch"](1);
-              outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
+              if (!window.connectPeer) {
+                // not connect => send offer signal
+                // create custom event to send to window parent
+                var event = new CustomEvent('signalOffer', {
+                  detail: {
+                    // send signal offer
+                    signalOffer: JSON.stringify(signal)
+                  }
+                }); // dispatch (trigger) event custom
 
-            case 12:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, null, [[1, 9]]);
-    }));
-    return _addTrackAudio.apply(this, arguments);
-  }
+                window.parentWindow.dispatchEvent(event);
+              } else {
+                // be connected => send signal offer (when add stream) through data channel
+                peer.send(JSON.stringify({
+                  type: 'signal-add-stream',
+                  signal: signal
+                }));
+              }
+            }); // event receive signal answer from parent window (peer answer)
 
-  function removeTrackAudio(peer) {
-    peer.removeTrack(window.localStream.getAudioTracks()[0], window.localStream); // remove audio track of stream in local stream
+            $(window).on('signalAnswer', function (e) {
+              var signalAnswer = e.detail.signalAnswer;
+              peer.signal(JSON.parse(signalAnswer));
+            }); // event is calling
 
-    window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
-  }
-}();
+            $(window).on('isCalling', function () {
+              $('.img-load-call').addClass('d-none');
+              $('.text-calling').removeClass('d-none');
+            });
+            addEventCtrl(peer); // close sub window when close or refetch browser
+
+            window.onbeforeunload = function () {
+              if (!window.connectPeer) {
+                window.parentWindow.dispatchEvent(new CustomEvent('disconnectCall'));
+              }
+            };
+          } else {
+            // window of receiver
+            // init peer answer
+            _peer = new simple_peer__WEBPACK_IMPORTED_MODULE_0___default.a({
+              initiator: false,
+              trickle: false
+            });
+            window.peer = _peer; // add signal offer to peer
+
+            _peer.signal(JSON.parse(window.signalOffer)); // add events
+            // conect => add audio stream
+
+
+            _peer.on('connect', function () {
+              // console.log('answer connection')
+              addTrackAudio(_peer); // be connected
+
+              window.connectPeer = true;
+              $('.img-load-call').addClass('d-none');
+              $('.mic-ctrl-btn').removeClass('btn-disabled');
+
+              if (window.typeCall === 'video') {
+                $('.video-ctrl-btn').removeClass('btn-disabled');
+                $('.share-ctrl-btn').removeClass('btn-disabled');
+                $('.wrap-friend-video').removeClass('d-none');
+                console.log('connect: ', window.localStream.getVideoTracks().length);
+
+                if (window.localStream.getVideoTracks().length) {
+                  _peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+                }
+              }
+            });
+
+            _peer.on('error', function (err) {
+              var errorText = '';
+
+              if (err.code === 'ERR_WEBRTC_SUPPORT') {
+                errorText = 'Trình duyệt không hỗ trợ';
+              } else if (err.code === 'ERR_DATA_CHANNEL') {
+                errorText = 'Cuộc gọi kết thúc';
+              } else {
+                errorText = 'Lỗi kết nối';
+              }
+
+              var event = new CustomEvent('connectPeerFail', {
+                detail: {
+                  error: errorText,
+                  code: err.code
+                }
+              });
+              window.parentWindow.dispatchEvent(event);
+            });
+
+            _peer.on('close', function () {// console.log('call close');
+            }); // event receive signal offer from parent window from caller
+            // because when caller add stream or track => create new signal offer => signal event => add signal again
+
+
+            _peer.on('data', function (data) {
+              var dataObj = JSON.parse(data.toString()); // console.log(dataObj)
+
+              if (dataObj.type === 'signal-add-stream') {
+                _peer.signal(dataObj.signal);
+              } else if (dataObj.type === 'turn-off-video') {
+                outputStopVideo(false);
+              }
+            }); // peer.on('stream', (stream) => {
+            //   console.log('call stream');
+            // });
+
+
+            _peer.on('track', function (track, stream) {
+              console.log('call track');
+
+              if (track.kind === 'audio') {
+                outputAudio(stream);
+              } else if (track.kind === 'video') {
+                if (stream.getVideoTracks().length < 2) {
+                  outputVideo(stream, false);
+                }
+              }
+            }); // run after add signal => create custom event => send signal answer to parent window => caller
+
+
+            _peer.on('signal', function (signal) {
+              // console.log('answer signal')
+              if (!window.connectPeer) {
+                var event = new CustomEvent('signalAnswer', {
+                  detail: {
+                    // send answer signal
+                    signalAnswer: JSON.stringify(signal)
+                  }
+                }); // dispatch event
+
+                window.parentWindow.dispatchEvent(event); // window.signal = JSON.stringify(signal)
+              } else {
+                // be connected => send signal offer (when add stream) through data channel
+                _peer.send(JSON.stringify({
+                  type: 'signal-add-stream',
+                  signal: signal
+                }));
+              }
+            });
+
+            addEventCtrl(_peer);
+          } // function output audio
+
+
+        case 17:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, _callee3);
+}))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (ChatAudio);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(48)))

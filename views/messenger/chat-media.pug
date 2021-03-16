@@ -6,7 +6,15 @@ append styles
 block main
   .main-chat-audio.d-flex
     .d-flex.flex-column.flex-fill.wrap-chat-audio-box
-      .d-flex.flex-column.flex-fill.justify-content-center
+      .d-flex.flex-column.flex-fill.justify-content-center.ps-rv
+        .wrap-my-video.d-none.over-hidden
+          .over-hidden.d-flex.align-items-center.justify-content-center.h-100
+            img(src=member.avatar, alt=member.name)
+            video(name="video", autoplay, muted, style="display:none")
+        .wrap-friend-video.d-none
+          .over-hidden.d-flex.align-items-center.justify-content-center.h-100
+            img(src=friend.avatar, alt=friend.name)
+            video(name="video", autoplay, muted, style="display:none")
         .text-center.wrap-avatar-call
           img.rounded-circle.img-thumbnail(src=friend.avatar, alt=friend.name)
           video.d-none(autoplay=true)
@@ -21,7 +29,7 @@ block main
           .d-flex.justify-content-center
             button.btn.btn-icon.share-ctrl-btn.btn-disabled
               span.icomoon.icon-screen_share
-            button.btn.btn-icon.ml-3.video-ctrl-btn.btn-disabled
+            button.btn.btn-icon.ml-3.video-ctrl-btn.btn-disabled.ctrl-off
               span.icomoon.icon-videocam
             button.btn.btn-icon.ml-3.mic-ctrl-btn.ctrl-off.btn-disabled
               span.icomoon.icon-mic

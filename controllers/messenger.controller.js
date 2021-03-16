@@ -557,10 +557,12 @@ module.exports.getChatMediaFriend = async (req, res, next) => {
   const { friendId } = req.params
   try {
     const friend = await Member.findById(friendId)
-    if (friend) {
+    const member = await Member.findById(req.user.id)
+    if (friend && member) {
       res.render('messenger/chat-media', {
         titleSide: siteMes,
-        friend
+        friend,
+        member
       })
     } else {
       next(new Error(notMem));

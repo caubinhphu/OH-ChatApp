@@ -149,7 +149,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
 }
 
 // receive signal offer call peer of caller => send to receiver
-module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal }) {
+module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal, typeCall }) {
   try {
     // get caller and receiver
     const callerMem = await getCallerMemAndInfo(callerId, receiverId)
@@ -186,11 +186,12 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
             receiverMem.groupMessageId.messages.push(messageObj)
             await receiverMem.groupMessageId.save()
 
-            io.to(receiverMem._id.socketId).emit('msg-hasCallAudio', {
+            io.to(receiverMem._id.socketId).emit('msg-hasCallMedia', {
               signal,
               callerId,
               callerName: callerMem.name,
-              callerAvatar: callerMem.avatar
+              callerAvatar: callerMem.avatar,
+              typeCall
             })
             this.emit('msg-doneSendSignalCall', { callerId, receiverId })
           }

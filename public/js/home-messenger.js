@@ -39294,7 +39294,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Messenger = function () {
-  var callTimeout = 10000;
+  var callTimeout = 10000000;
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
 
@@ -39427,6 +39427,10 @@ var Messenger = function () {
 
     $('#call-friend-btn').on('click', function () {
       callFriend(friendIdChatting);
+    }); // call audio to friend
+
+    $('#video-friend-btn').on('click', function () {
+      callFriend(friendIdChatting, 'video');
     });
     $(idBtnCallBack).on('click', function () {
       callFriend($(this).attr('data-callerid')); // set IU
@@ -39450,7 +39454,7 @@ var Messenger = function () {
       if (window.focus) {
         windowReceive.focus();
         windowReceive.typeClient = 'receiver';
-        windowReceive.typeCall = 'audio';
+        windowReceive.typeCall = window.typeCall;
         windowReceive.signalOffer = window.signalOffer; // signal offer
 
         windowReceive.parentWindow = window; // to dispatch event
@@ -39492,7 +39496,8 @@ var Messenger = function () {
       window.socket.emit('msg-offerStream', {
         receiverId: friendIdChatting,
         callerId: meId,
-        signal: signalOffer
+        signal: signalOffer,
+        typeCall: window.windowCall.typeCall
       });
     }); // receive signal offer from sub window receiver => send to server => caller
 
@@ -39618,17 +39623,19 @@ var Messenger = function () {
       }
     }); // receive signal has call from friend
 
-    window.socket.on('msg-hasCallAudio', function (_ref5) {
+    window.socket.on('msg-hasCallMedia', function (_ref5) {
       var signal = _ref5.signal,
           callerId = _ref5.callerId,
           callerName = _ref5.callerName,
-          callerAvatar = _ref5.callerAvatar;
+          callerAvatar = _ref5.callerAvatar,
+          typeCall = _ref5.typeCall;
       window.callInComSound = new Audio('/sounds/call-incoming.ogg');
       window.callInComSound.loop = true;
       window.callInComSound.play();
       window.signalOffer = signal; // signal offer
 
       window.callerId = callerId;
+      window.typeCall = typeCall;
       window.timeStartCall = new Date();
       window.isRefuseCall = false; // set IU
 
@@ -39819,10 +39826,13 @@ var Messenger = function () {
   /**
    * function call to friend by friend id
    * @param {string} friendId friend id to call
+   * @param {string} typeCall call type [audio, video]
    */
 
 
   function callFriend(friendId) {
+    var typeCall = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'audio';
+
     if (!window.isCall) {
       window.isCall = true;
       window.receiverId = friendId;
@@ -39836,7 +39846,7 @@ var Messenger = function () {
       if (window.focus) {
         windowCall.focus();
         windowCall.typeClient = 'caller';
-        windowCall.typeCall = 'audio';
+        windowCall.typeCall = typeCall;
         windowCall.parentWindow = window; // to dispatch event
       }
 

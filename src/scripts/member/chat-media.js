@@ -1,6 +1,6 @@
 import SimplePeer from 'simple-peer'
 
-const ChatAudio = (() => {
+const ChatAudio = (async () => {
   // get media device of user
   navigator.mediaDevices.getUserMedia =
     navigator.mediaDevices.getUserMedia ||
@@ -10,6 +10,11 @@ const ChatAudio = (() => {
 
     window.localStream = new MediaStream()
 
+    if (window.typeCall === 'video') {
+      $('.wrap-my-video').removeClass('d-none')
+      await addTrackVideo()
+    }
+
     if (window.typeClient === 'caller') {
       // window of caller
       // init peer
@@ -17,6 +22,7 @@ const ChatAudio = (() => {
         initiator: true, // init -> offer peer
         trickle: false
       });
+      window.peer = peer
 
       // add events to peer
       // after connect => add stream audio
@@ -26,6 +32,15 @@ const ChatAudio = (() => {
         // be connected
         window.connectPeer = true
         $('.mic-ctrl-btn').removeClass('btn-disabled')
+        if (window.typeCall === 'video') {
+          $('.video-ctrl-btn').removeClass('btn-disabled')
+          $('.share-ctrl-btn').removeClass('btn-disabled')
+          $('.wrap-friend-video').removeClass('d-none')
+
+          if (window.localStream.getVideoTracks().length) {
+            peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+          }
+        }
       });
 
       peer.on('close', () => {
@@ -38,6 +53,8 @@ const ChatAudio = (() => {
         const dataObj = JSON.parse(data.toString())
         if (dataObj.type === 'signal-add-stream') {
           peer.signal(dataObj.signal)
+        } else if (dataObj.type === 'turn-off-video') {
+          outputStopVideo(false)
         }
       });
 
@@ -67,11 +84,15 @@ const ChatAudio = (() => {
         // console.log('call track');
         if (track.kind === 'audio') {
           outputAudio(stream);
+        } else if (track.kind === 'video') {
+          if (stream.getVideoTracks().length < 2) {
+            outputVideo(stream, false);
+          }
         }
       });
 
       peer.on('signal', (signal) => {
-        console.log('call ');
+        // console.log('call');
         // check be connected?
         if (!window.connectPeer) {
           // not connect => send offer signal
@@ -121,6 +142,7 @@ const ChatAudio = (() => {
         trickle: false
       });
 
+      window.peer = peer
       // add signal offer to peer
       peer.signal(JSON.parse(window.signalOffer))
 
@@ -133,6 +155,15 @@ const ChatAudio = (() => {
         window.connectPeer = true
         $('.img-load-call').addClass('d-none')
         $('.mic-ctrl-btn').removeClass('btn-disabled')
+        if (window.typeCall === 'video') {
+          $('.video-ctrl-btn').removeClass('btn-disabled')
+          $('.share-ctrl-btn').removeClass('btn-disabled')
+          $('.wrap-friend-video').removeClass('d-none')
+
+          if (window.localStream.getVideoTracks().length) {
+            peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+          }
+        }
       });
 
       peer.on('error', (err) => {
@@ -164,6 +195,8 @@ const ChatAudio = (() => {
         // console.log(dataObj)
         if (dataObj.type === 'signal-add-stream') {
           peer.signal(dataObj.signal)
+        } else if (dataObj.type === 'turn-off-video') {
+          outputStopVideo(false)
         }
       });
 
@@ -175,6 +208,10 @@ const ChatAudio = (() => {
         // console.log('call track');
         if (track.kind === 'audio') {
           outputAudio(stream);
+        } else if (track.kind === 'video') {
+          if (stream.getVideoTracks().length < 2) {
+            outputVideo(stream, false);
+          }
         }
       });
 
@@ -241,7 +278,22 @@ const ChatAudio = (() => {
       $('.video-ctrl-btn').on('click', function(e) {
         if ($(this).hasClass('btn-disabled')) {
           e.preventDefault()
-        } else {}
+        } else {
+          if ($(this).hasClass('ctrl-off')) {
+            // turn off mic
+            removeTrackVideo(peer)
+            outputStopVideo()
+
+            peer.send(JSON.stringify({
+              type: 'turn-off-video'
+            }))
+            $(this).removeClass('ctrl-off')
+          } else {
+            // turn on mic
+            addTrackVideo(peer)
+            $(this).addClass('ctrl-off')
+          }
+        }
       })
 
       $('.end-call-btn').on('click', function() {
@@ -260,13 +312,14 @@ const ChatAudio = (() => {
 
           // add track audio to peer
           peer.addTrack(
-              audioStream.getAudioTracks()[0],
-              window.localStream
+            audioStream.getAudioTracks()[0],
+            window.localStream
           );
 
           // add audio track for stream of local stream
           window.localStream.addTrack(audioStream.getAudioTracks()[0])
         } catch (error) {
+          $('.mic-ctrl-btn').removeClass('ctrl-off')
           outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
         }
       }
@@ -281,6 +334,110 @@ const ChatAudio = (() => {
       // remove audio track of stream in local stream
       window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
     }
+
+    // function add stream track video to peer
+    async function addTrackVideo(peer) {
+      if (navigator.mediaDevices.getUserMedia) {
+        try {
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+
+          if (peer) {
+            // add track audio to peer
+            peer.addTrack(
+              videoStream.getVideoTracks()[0],
+              window.localStream
+            );
+          }
+
+          // add audio track for stream of local stream
+          window.localStream.addTrack(videoStream.getVideoTracks()[0])
+          outputVideo()
+        } catch (error) {
+          $('.video-ctrl-btn').removeClass('ctrl-off')
+          outputWarnMessage('Bạn đã chặn quyền sử dụng camera')
+        }
+      }
+    }
+
+    // function remove track video stream
+    function removeTrackVideo(peer) {
+      peer.removeTrack(
+        window.localStream.getVideoTracks()[0],
+        window.localStream
+      );
+      // stop and remove video track of stream in local
+      window.localStream.getVideoTracks()[0].stop();
+      window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+    }
+
+  // output friend video
+  function outputVideo(stream = window.localStream, me = true) {
+    if (me) {
+      const $wrapMyVideo = $('.wrap-my-video');
+      if ($wrapMyVideo.length) {
+        $wrapMyVideo.find('img').css('display', 'none');
+        const $video = $wrapMyVideo.find('video[name="video"]');
+        $video.css('display', 'block');
+        $video.each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = stream;
+          } else {
+            vd.src = window.URL.createObjectURL(stream);
+          }
+        })
+      }
+    } else {
+      const $wrapFriendVideo = $('.wrap-friend-video');
+      if ($wrapFriendVideo.length) {
+        $wrapFriendVideo.find('img').css('display', 'none');
+        const $video = $wrapFriendVideo.find('video');
+        $video.css('display', 'block');
+        $video.each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = stream;
+          } else {
+            vd.src = window.URL.createObjectURL(stream);
+          }
+        })
+      }
+    }
+  }
+
+  // output stop video
+  function outputStopVideo(me = true) {
+    if (me) {
+      const $wrapMyVideo = $('.wrap-my-video');
+      if ($wrapMyVideo.length) {
+        $wrapMyVideo.find('img').css('display', 'inline');
+        const $video = $wrapMyVideo.find('video');
+        $video.css('display', 'none');
+        $video.each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = null;
+          } else {
+            vd.src = null;
+          }
+        })
+      }
+    } else {
+      const $wrapFriendVideo = $(`.wrap-friend-video`);
+      if ($wrapFriendVideo.length) {
+        $wrapFriendVideo.find('img').css('display', 'inline');
+        const $video = $wrapFriendVideo.find('video');
+        $video.css('display', 'none');
+        $video.each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = null;
+          } else {
+            vd.src = null;
+          }
+        })
+      }
+    }
+  }
 })()
 
 export default ChatAudio
