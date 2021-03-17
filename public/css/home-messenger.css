@@ -7359,6 +7359,14 @@ body {
   color: #c8102e;
 }
 
+.message.call-video .message-content::before {
+  content: "\E919";
+}
+
+.message.call-missed-video .message-content::before {
+  content: "\E918";
+}
+
 .message .time-call {
   display: block;
   color: #102131;

@@ -20,9 +20,11 @@ const Messenger = (() => {
   const callMissText = 'Cuộc gọi nhỡ'
   const callTextCaller = 'Cuộc gọi đi'
   const callTextReceiver = 'Cuộc gọi đến'
-  const classCallOut = 'call-msg call-outgoing'
-  const classCallCome = 'call-msg call-incoming'
-  const classCallMissed = 'call-msg call-missed'
+  const classCallOut = ' call-msg call-outgoing'
+  const classCallCome = ' call-msg call-incoming'
+  const classCallMissed = ' call-msg call-missed'
+  const classCallVideo = ' call-video'
+  const classCallMissedVideo = ' call-missed-video'
 
   // scroll bottom
   chatMain.scrollTop = chatMain.scrollHeight;
@@ -180,7 +182,8 @@ const Messenger = (() => {
       }
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
-        receiverId: meId
+        receiverId: meId,
+        typeCall: window.typeCall
       })
 
       // set IU
@@ -188,7 +191,11 @@ const Messenger = (() => {
       window.isCall = false
       window.timeStartCall = undefined
       // create msg end call local
-      createCallMsgLocal(window.callerId, callMissText, classCallMissed)
+      createCallMsgLocal(
+        window.callerId,
+        callMissText,
+        classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : '')
+      )
     })
 
     // close popup miss call
@@ -204,17 +211,18 @@ const Messenger = (() => {
         receiverId: friendIdChatting,
         callerId: meId,
         signal: signalOffer,
-        typeCall: window.windowCall.typeCall
+        typeCall: window.typeCall
       });
     })
 
-    // receive signal offer from sub window receiver => send to server => caller
+    // receive signal answer from sub window receiver => send to server => caller
     $(window).on('signalAnswer', (e) => {
       const { signalAnswer } = e.detail
       window.socket.emit('msg-answerStream', {
         signal: signalAnswer,
         callerId: window.callerId,
-        receiverId: meId
+        receiverId: meId,
+        typeCall: window.typeCall
       });
     })
 
@@ -234,7 +242,8 @@ const Messenger = (() => {
           callerId: meId,
           receiverId: window.receiverId,
           code,
-          sender: 'caller'
+          sender: 'caller',
+          typeCall: window.typeCall
         });
 
         if (code === 'ERR_DATA_CHANNEL') {
@@ -242,7 +251,13 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true, true)
+          createCallMsgLocal(
+            window.receiverId,
+            callTextCaller,
+            classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+            true,
+            true
+          )
         } else {
           // connect peer fail
           window.outputErrorMessage(error)
@@ -259,7 +274,8 @@ const Messenger = (() => {
           callerId: window.callerId,
           receiverId: meId,
           code,
-          sender: 'receiver'
+          sender: 'receiver',
+          typeCall: window.typeCall
         });
 
         if (code === 'ERR_DATA_CHANNEL') {
@@ -267,7 +283,12 @@ const Messenger = (() => {
           window.outputInfoMessage(error)
 
           // create msg local
-          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome, true)
+          createCallMsgLocal(
+            window.callerId,
+            callTextReceiver,
+            classCallCome + (window.typeCall === 'video' ? classCallVideo : ''),
+            true
+          )
         } else {
           window.outputErrorMessage(error)
         }
@@ -291,10 +312,17 @@ const Messenger = (() => {
         // send signal call timeout to server => receiver
         window.socket.emit('msg-callTimeout', {
           callerId: meId,
-          receiverId: friendIdChatting
+          receiverId: friendIdChatting,
+          typeCall: window.typeCall
         })
 
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut)
+        createCallMsgLocal(
+          window.receiverId,
+          callTextCaller,
+          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true
+        )
       }
     })
 
@@ -345,7 +373,9 @@ const Messenger = (() => {
       const $popup = $(classPoHasCall)
       $popup.find('.wrap-pop-has-call').removeClass('miss-call')
       $popup.find('.caller-img').attr('src', callerAvatar)
-      $popup.find('.text-name-call').html(`${ callerName } đang gọi cho bạn`)
+      $popup.find('.text-name-call')
+        .html(`${ callerName } đang gọi ${typeCall === 'video' ? 'video' : ''}  cho bạn`)
+      $popup.find('.title-call-info').html(`Cuộc gọi ${typeCall === 'video' ? 'video' : ''} đến`)
       $popup.find('.text-miss-call-sub').html(`
         <h4>Bạn đã bõ lỡ cuộc gọi của ${ callerName }</h4>
         <p class="text-secondary">Nhấn gọi lại để gọi lại cho  ${ callerName }</p>
@@ -401,11 +431,18 @@ const Messenger = (() => {
         // send signal call timeout to server => receiver
         window.socket.emit('msg-callTimeout', {
           callerId,
-          receiverId
+          receiverId,
+          typeCall: window.typeCall
         })
 
         window.outputInfoMessage('Không trả lời')
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true)
+        createCallMsgLocal(
+          window.receiverId,
+          callTextCaller,
+          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true
+        )
       }, callTimeout);
     })
 
@@ -428,12 +465,18 @@ const Messenger = (() => {
         window.outputInfoMessage('Không trả lời')
 
         // create msg end call local
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true)
+        createCallMsgLocal(
+          window.receiverId,
+          callTextCaller,
+          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true
+        )
       }
     })
 
     // receive signal miss call from server (caller)
-    window.socket.on('msg-missedCall', ({ callerId }) => {
+    window.socket.on('msg-missedCall', ({ callerId, typeCall }) => {
       if (!window.isRefuseCall) {
         if (window.callInComSound) {
           window.callInComSound.pause()
@@ -442,23 +485,38 @@ const Messenger = (() => {
         $popup.find('.wrap-pop-has-call').addClass('miss-call')
         $popup.find(idBtnCallBack).attr('data-callerid', callerId)
 
-        createCallMsgLocal(callerId, callMissText, classCallMissed)
+        createCallMsgLocal(
+          callerId,
+          callMissText,
+          classCallMissed + (typeCall === 'video' ? classCallMissedVideo : '')
+        )
       }
     })
 
     // receive signal end call from server (it self end call)
-    window.socket.on('msg-endCall', ({ callerId, receiverId, sender }) => {
+    window.socket.on('msg-endCall', ({ callerId, receiverId, sender, typeCall }) => {
       window.isCall = false
       window.outputInfoMessage('Cuộc gọi kết thúc')
       if (sender === 'caller') {
         // computer of receiver
         window.windowReceive = undefined
-        createCallMsgLocal(callerId, callTextReceiver, classCallCome, true)
+        createCallMsgLocal(
+          callerId,
+          callTextReceiver,
+          classCallCome + (typeCall === 'video' ? classCallVideo : ''),
+          true
+        )
       } else if (sender === 'receiver') {
         // computer of caller
         window.sendSignalCallDone = false
         window.windowCall = undefined
-        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true, true)
+        createCallMsgLocal(
+          receiverId,
+          callTextCaller,
+          classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+          true,
+          true
+        )
       }
     })
   }
@@ -528,6 +586,7 @@ const Messenger = (() => {
     if (!window.isCall) {
       window.isCall = true
       window.receiverId = friendId
+      window.typeCall = typeCall
 
       $(classOvCalling).removeClass('d-none')
       // open sub window call

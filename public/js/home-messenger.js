@@ -39312,9 +39312,11 @@ var Messenger = function () {
   var callMissText = 'Cuộc gọi nhỡ';
   var callTextCaller = 'Cuộc gọi đi';
   var callTextReceiver = 'Cuộc gọi đến';
-  var classCallOut = 'call-msg call-outgoing';
-  var classCallCome = 'call-msg call-incoming';
-  var classCallMissed = 'call-msg call-missed'; // scroll bottom
+  var classCallOut = ' call-msg call-outgoing';
+  var classCallCome = ' call-msg call-incoming';
+  var classCallMissed = ' call-msg call-missed';
+  var classCallVideo = ' call-video';
+  var classCallMissedVideo = ' call-missed-video'; // scroll bottom
 
   chatMain.scrollTop = chatMain.scrollHeight;
 
@@ -39476,14 +39478,15 @@ var Messenger = function () {
 
       window.window.socket.emit('msg-refuseCall', {
         callerId: window.callerId,
-        receiverId: meId
+        receiverId: meId,
+        typeCall: window.typeCall
       }); // set IU
 
       $(classPoHasCall).addClass('d-none');
       window.isCall = false;
       window.timeStartCall = undefined; // create msg end call local
 
-      createCallMsgLocal(window.callerId, callMissText, classCallMissed);
+      createCallMsgLocal(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
     }); // close popup miss call
 
     $('.popup-has-call .close-popup').on('click', function () {
@@ -39497,16 +39500,17 @@ var Messenger = function () {
         receiverId: friendIdChatting,
         callerId: meId,
         signal: signalOffer,
-        typeCall: window.windowCall.typeCall
+        typeCall: window.typeCall
       });
-    }); // receive signal offer from sub window receiver => send to server => caller
+    }); // receive signal answer from sub window receiver => send to server => caller
 
     $(window).on('signalAnswer', function (e) {
       var signalAnswer = e.detail.signalAnswer;
       window.socket.emit('msg-answerStream', {
         signal: signalAnswer,
         callerId: window.callerId,
-        receiverId: meId
+        receiverId: meId,
+        typeCall: window.typeCall
       });
     }); // receive signal error from sub window => send to server
 
@@ -39527,14 +39531,15 @@ var Messenger = function () {
           callerId: meId,
           receiverId: window.receiverId,
           code: code,
-          sender: 'caller'
+          sender: 'caller',
+          typeCall: window.typeCall
         });
 
         if (code === 'ERR_DATA_CHANNEL') {
           // peer fail for end call signal
           window.outputInfoMessage(error); // create msg local
 
-          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true, true);
+          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
         } else {
           // connect peer fail
           window.outputErrorMessage(error);
@@ -39550,14 +39555,15 @@ var Messenger = function () {
           callerId: window.callerId,
           receiverId: meId,
           code: code,
-          sender: 'receiver'
+          sender: 'receiver',
+          typeCall: window.typeCall
         });
 
         if (code === 'ERR_DATA_CHANNEL') {
           // peer fail for end call signal
           window.outputInfoMessage(error); // create msg local
 
-          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome, true);
+          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
         } else {
           window.outputErrorMessage(error);
         }
@@ -39583,9 +39589,10 @@ var Messenger = function () {
 
         window.socket.emit('msg-callTimeout', {
           callerId: meId,
-          receiverId: friendIdChatting
+          receiverId: friendIdChatting,
+          typeCall: window.typeCall
         });
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }); // receive msg obj from server
 
@@ -39642,7 +39649,8 @@ var Messenger = function () {
       var $popup = $(classPoHasCall);
       $popup.find('.wrap-pop-has-call').removeClass('miss-call');
       $popup.find('.caller-img').attr('src', callerAvatar);
-      $popup.find('.text-name-call').html("".concat(callerName, " \u0111ang g\u1ECDi cho b\u1EA1n"));
+      $popup.find('.text-name-call').html("".concat(callerName, " \u0111ang g\u1ECDi ").concat(typeCall === 'video' ? 'video' : '', "  cho b\u1EA1n"));
+      $popup.find('.title-call-info').html("Cu\u1ED9c g\u1ECDi ".concat(typeCall === 'video' ? 'video' : '', " \u0111\u1EBFn"));
       $popup.find('.text-miss-call-sub').html("\n        <h4>B\u1EA1n \u0111\xE3 b\xF5 l\u1EE1 cu\u1ED9c g\u1ECDi c\u1EE7a ".concat(callerName, "</h4>\n        <p class=\"text-secondary\">Nh\u1EA5n g\u1ECDi l\u1EA1i \u0111\u1EC3 g\u1ECDi l\u1EA1i cho  ").concat(callerName, "</p>\n      "));
       $popup.removeClass('d-none');
     }); // receive signal answer
@@ -39701,10 +39709,11 @@ var Messenger = function () {
 
         window.socket.emit('msg-callTimeout', {
           callerId: callerId,
-          receiverId: receiverId
+          receiverId: receiverId,
+          typeCall: window.typeCall
         });
         window.outputInfoMessage('Không trả lời');
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }, callTimeout);
     }); // receive signal refuse call
 
@@ -39726,12 +39735,13 @@ var Messenger = function () {
         $(classOvCalling).addClass('d-none');
         window.outputInfoMessage('Không trả lời'); // create msg end call local
 
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut, true);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }); // receive signal miss call from server (caller)
 
     window.socket.on('msg-missedCall', function (_ref9) {
-      var callerId = _ref9.callerId;
+      var callerId = _ref9.callerId,
+          typeCall = _ref9.typeCall;
 
       if (!window.isRefuseCall) {
         if (window.callInComSound) {
@@ -39741,26 +39751,27 @@ var Messenger = function () {
         var $popup = $(classPoHasCall);
         $popup.find('.wrap-pop-has-call').addClass('miss-call');
         $popup.find(idBtnCallBack).attr('data-callerid', callerId);
-        createCallMsgLocal(callerId, callMissText, classCallMissed);
+        createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
       }
     }); // receive signal end call from server (it self end call)
 
     window.socket.on('msg-endCall', function (_ref10) {
       var callerId = _ref10.callerId,
           receiverId = _ref10.receiverId,
-          sender = _ref10.sender;
+          sender = _ref10.sender,
+          typeCall = _ref10.typeCall;
       window.isCall = false;
       window.outputInfoMessage('Cuộc gọi kết thúc');
 
       if (sender === 'caller') {
         // computer of receiver
         window.windowReceive = undefined;
-        createCallMsgLocal(callerId, callTextReceiver, classCallCome, true);
+        createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
       } else if (sender === 'receiver') {
         // computer of caller
         window.sendSignalCallDone = false;
         window.windowCall = undefined;
-        createCallMsgLocal(receiverId, callTextCaller, classCallOut, true, true);
+        createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
       }
     });
   } // close sub window when close or refetch browser
@@ -39836,6 +39847,7 @@ var Messenger = function () {
     if (!window.isCall) {
       window.isCall = true;
       window.receiverId = friendId;
+      window.typeCall = typeCall;
       $(classOvCalling).removeClass('d-none'); // open sub window call
 
       var h = $(window).height();

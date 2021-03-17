@@ -269,11 +269,11 @@ const ChatAudio = (async () => {
         }
       })
 
-      $('.share-ctrl-btn').on('click', function(e) {
-        if ($(this).hasClass('btn-disabled')) {
-          e.preventDefault()
-        } else {}
-      })
+      // $('.share-ctrl-btn').on('click', function(e) {
+      //   if ($(this).hasClass('btn-disabled')) {
+      //     e.preventDefault()
+      //   } else {}
+      // })
 
       $('.video-ctrl-btn').on('click', function(e) {
         if ($(this).hasClass('btn-disabled')) {

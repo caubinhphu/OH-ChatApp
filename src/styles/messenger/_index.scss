@@ -92,6 +92,16 @@
       color: $color-c8;
     }
   }
+  &.call-video {
+    .message-content::before {
+      content: "\e919";
+    }
+  }
+  &.call-missed-video {
+    .message-content::before {
+      content: "\e918";
+    }
+  }
   .time-call {
     display: block;
     color: $color-10;

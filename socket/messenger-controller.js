@@ -41,13 +41,13 @@ function getCallerMemAndInfo(callerId, receiverId) {
  * @param {object | string} groupMessageId group message id
  * @returns group message has latest call audio
  */
-function getGroupHasCallLatest(groupMessageId) {
+function getGroupHasCallLatest(groupMessageId, type = 'call-audio') {
   return new Promise((resolve, reject) => {
     GroupMessage.findById(groupMessageId)
       .populate({
         path: 'messages',
         match: {
-          type: 'call-audio'
+          type
         },
         options: {
           limit: 1,
@@ -178,7 +178,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
               time: new Date(),
               content: 'Cuộc gọi thoại',
               memberSendId: callerMem.id,
-              type: 'call-audio',
+              type: typeCall === 'audio' ? 'call-audio' : 'call-video',
               timeEndCall: new Date()
             })
 
@@ -208,7 +208,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
 }
 
 // receive signal answer call peer of receiver => send to caller
-module.exports.onAnswerSignal = async function (io, { signal, callerId, receiverId }) {
+module.exports.onAnswerSignal = async function (io, { signal, callerId, receiverId, typeCall }) {
   try {
     // get caller and receiver
     const callerMem = await getCallerMemAndInfo(callerId, receiverId)
@@ -216,12 +216,15 @@ module.exports.onAnswerSignal = async function (io, { signal, callerId, receiver
     if(callerMem) {
       const receiverMem = callerMem.friends.find(fr => fr._id)
       if (receiverMem && receiverMem.groupMessageId) {
-        const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+        const groupMessage = await getGroupHasCallLatest(
+          receiverMem.groupMessageId,
+          typeCall === 'audio' ? 'call-audio' : 'call-video'
+        )
         if (groupMessage && groupMessage.messages.length) {
           if (callerMem.isCalling) {
             io.to(callerMem.socketId).emit('msg-answerSignal', { signal })
           } else {
-            groupMessage.messages[0].type = 'call-audio-refuse'
+            groupMessage.messages[0].type = typeCall === 'audio' ? 'call-audio-refuse' : 'call-video-refuse'
             await groupMessage.messages[0].save()
           }
         }
@@ -233,7 +236,7 @@ module.exports.onAnswerSignal = async function (io, { signal, callerId, receiver
 }
 
 // receive signal connect peer fail
-module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, code, sender }) {
+module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, code, sender, typeCall }) {
   try {
     // get caller and receiver
     const callerMem = await getCallerMemAndInfo(callerId, receiverId)
@@ -247,7 +250,10 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
         receiverMem._id.isCalling = false
         await receiverMem._id.save()
 
-        const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+        const groupMessage = await getGroupHasCallLatest(
+          receiverMem.groupMessageId,
+          typeCall === 'audio' ? 'call-audio' : 'call-video'
+        )
 
         if (groupMessage && groupMessage.messages.length) {
           groupMessage.messages[0].timeEndCall = new Date()
@@ -259,13 +265,15 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
           io.to(receiverMem._id.socketId).emit('msg-endCall', {
             callerId,
             receiverId,
-            sender
+            sender,
+            typeCall
           })
         } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId) {
           io.to(callerMem.socketId).emit('msg-endCall', {
             callerId,
             receiverId,
-            sender
+            sender,
+            typeCall
           })
         }
       }
@@ -276,7 +284,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
 }
 
 // receive signal refuse call from receiver
-module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
+module.exports.onRefuseCall = async function (io, { callerId, receiverId, typeCall }) {
   try {
     // get caller and receiver
     const callerMem = await getCallerMemAndInfo(callerId, receiverId)
@@ -290,10 +298,13 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
         receiverMem._id.isCalling = false
         await receiverMem._id.save()
         if (receiverMem.groupMessageId) {
-          const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+          const groupMessage = await getGroupHasCallLatest(
+            receiverMem.groupMessageId,
+            typeCall === 'audio' ? 'call-audio' : 'call-video'
+          )
 
           if (groupMessage && groupMessage.messages.length) {
-            groupMessage.messages[0].type = 'call-audio-refuse'
+            groupMessage.messages[0].type = typeCall === 'audio' ? 'call-audio-refuse' : 'call-video-refuse'
             await groupMessage.messages[0].save()
 
             // send signal to caller
@@ -308,7 +319,7 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId }) {
 }
 
 // receive signal call timeout
-module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
+module.exports.onCallTimeout = async function (io, { callerId, receiverId, typeCall }) {
   try {
     // get caller and receiver
     const callerMem = await getCallerMemAndInfo(callerId, receiverId)
@@ -324,15 +335,19 @@ module.exports.onCallTimeout = async function (io, { callerId, receiverId }) {
         await receiverMem._id.save()
 
         if (receiverMem.groupMessageId) {
-          const groupMessage = await getGroupHasCallLatest(receiverMem.groupMessageId)
+          const groupMessage = await getGroupHasCallLatest(
+            receiverMem.groupMessageId,
+            typeCall === 'audio' ? 'call-audio' : 'call-video'
+          )
 
           if (groupMessage && groupMessage.messages.length) {
-            groupMessage.messages[0].type = 'call-audio-refuse'
+            groupMessage.messages[0].type = typeCall === 'audio' ? 'call-audio-refuse' : 'call-video-refuse'
             await groupMessage.messages[0].save()
 
             // send to receiver signal call timeout
             io.to(receiverMem._id.socketId).emit('msg-missedCall', {
-              callerId
+              callerId,
+              typeCall
             })
           }
         }

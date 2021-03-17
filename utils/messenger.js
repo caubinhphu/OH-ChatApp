@@ -51,6 +51,23 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.content = 'Cuộc gọi đi'
       msgFormat.class = 'call-msg call-outgoing'
     }
+  } else if (msg.type === 'call-video') {
+    msgFormat.timeCall = formatDiffTime(msg.time, msg.timeEndCall || new Date())
+    if (msg.memberSendId.toString() !== me.id) {
+      msgFormat.content = 'Cuộc gọi video đến'
+      msgFormat.class = 'call-msg call-incoming call-video'
+    } else {
+      msgFormat.content = 'Cuộc gọi đi'
+      msgFormat.class = 'call-msg call-outgoing call-video'
+    }
+  } else if (msg.type === 'call-video-refuse') {
+    if (msg.memberSendId.toString() !== me.id) {
+      msgFormat.content = 'Cuộc gọi nhỡ video'
+      msgFormat.class = 'call-msg call-missed call-missed-video'
+    } else {
+      msgFormat.content = 'Cuộc gọi video đi'
+      msgFormat.class = 'call-msg call-outgoing call-video call-video'
+    }
   }
   return msgFormat
 }
@@ -89,13 +106,13 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
 
   if (latestMsgObj.type === 'text') {
     msg += latestMsgObj.content
-  } else if (latestMsgObj.type === 'call-audio') {
+  } else if (latestMsgObj.type === 'call-audio' || latestMsgObj.type === 'call-video') {
     if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = `Bạn đã gọi cho ${friend.name}`
     } else {
       msg = `${friend.name} đã gọi cho bạn`
     }
-  } else if (latestMsgObj.type === 'call-audio-refuse') {
+  } else if (latestMsgObj.type === 'call-audio-refuse' || latestMsgObj.type === 'call-video-refuse') {
     if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = `Bạn đã gọi cho ${friend.name}`
     } else {

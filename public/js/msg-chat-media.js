@@ -27677,12 +27677,12 @@ var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                   $(this).addClass('ctrl-off');
                 }
               }
-            });
-            $('.share-ctrl-btn').on('click', function (e) {
-              if ($(this).hasClass('btn-disabled')) {
-                e.preventDefault();
-              } else {}
-            });
+            }); // $('.share-ctrl-btn').on('click', function(e) {
+            //   if ($(this).hasClass('btn-disabled')) {
+            //     e.preventDefault()
+            //   } else {}
+            // })
+
             $('.video-ctrl-btn').on('click', function (e) {
               if ($(this).hasClass('btn-disabled')) {
                 e.preventDefault();
@@ -27796,8 +27796,7 @@ var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             // });
 
             peer.on('track', function (track, stream) {
-              console.log('call track');
-
+              // console.log('call track');
               if (track.kind === 'audio') {
                 outputAudio(stream);
               } else if (track.kind === 'video') {
@@ -27807,8 +27806,8 @@ var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
               }
             });
             peer.on('signal', function (signal) {
-              console.log('call '); // check be connected?
-
+              // console.log('call');
+              // check be connected?
               if (!window.connectPeer) {
                 // not connect => send offer signal
                 // create custom event to send to window parent
@@ -27870,7 +27869,6 @@ var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                 $('.video-ctrl-btn').removeClass('btn-disabled');
                 $('.share-ctrl-btn').removeClass('btn-disabled');
                 $('.wrap-friend-video').removeClass('d-none');
-                console.log('connect: ', window.localStream.getVideoTracks().length);
 
                 if (window.localStream.getVideoTracks().length) {
                   _peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
@@ -27917,8 +27915,7 @@ var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
 
             _peer.on('track', function (track, stream) {
-              console.log('call track');
-
+              // console.log('call track');
               if (track.kind === 'audio') {
                 outputAudio(stream);
               } else if (track.kind === 'video') {
