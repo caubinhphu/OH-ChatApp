@@ -7123,6 +7123,10 @@ background: #ccc;
   content: "\E905";
 }
 
+.icon-icon-edit:before {
+  content: "\E921";
+}
+
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   -o-transition: background-color 5000s ease-in-out 0s;
@@ -7656,6 +7660,10 @@ body {
 
 .st-col-tab {
   border-bottom: 1px solid;
+}
+
+.text-url {
+  line-break: anywhere;
 }
 
 @media only screen and (min-width: 768px) {

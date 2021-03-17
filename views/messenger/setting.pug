@@ -22,41 +22,52 @@ block contentMain
               tbody
                 tr
                   td Email
-                  td= email
+                  td= member.email
                   td
-                    button.btn(data-toggle="collapse" href="#collapse-email" aria-expanded="false" aria-controls="collapse-email")
-                      span.icomoon.icon-cog.d-md-none
-                      span.d-none.d-md-block Chỉnh sửa
-                tr#collapse-email.collapse(class=`${subTab[0] === 'email' ? 'show' : ''}`, )
-                  td.border-0(colspan="3")
-                    form(action="/messenger/setting/email", method="post", name="formSettingEmail")
-                      input(type="hidden", name="_method" value="PUT")
-                      .form-group.d-flex
-                        label.text-secondary(for="email", style="width: 140px") Email mới
-                        input#email.form-control.form-control-sm(type="email", name="email", required)
-                      div
-                        button.btn(type="submit") Lưu thay đổi
                 tr
-                  td Mật khấu
+                  td Mật khẩu
                   td
-                    strong ..........
-                  td
-                    button.btn(data-toggle="collapse" href="#collapse-password" aria-expanded="false" aria-controls="collapse-password")
-                      span.icomoon.icon-cog.d-md-none
+                    if (member.type === 'local')
+                      strong ..........
+                    else
+                      strong= `Tài khoản đăng nhập bằng ${member.type}`
+                  td.text-right
+                    if (member.type === 'local')
+                      button.btn(data-toggle="collapse" href="#collapse-password" aria-expanded="false" aria-controls="collapse-password")
+                        span.icomoon.icon-edit.d-md-none
+                        span.d-none.d-md-block Chỉnh sửa
+                if (member.type === 'local')
+                  tr#collapse-password.collapse(class=`${subTab[0] === 'password' ? 'show' : ''}`, )
+                    td.border-0(colspan="3")
+                      form(action="/messenger/setting/password", method="post", name="formSettingPassword")
+                        input(type="hidden", name="_method" value="PUT")
+                        .form-group.d-flex
+                          label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
+                          input#password0.form-control.form-control-sm(type="password", name="password0", required)
+                        .form-group.d-flex
+                          label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
+                          input#password.form-control.form-control-sm(type="password", name="password", required)
+                        .form-group.d-flex
+                          label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
+                          input#password2.form-control.form-control-sm(type="password", name="password2", required)
+                        .d-flex.align-items-center.justify-content-between
+                          button.btn(type="submit") Lưu thay đổi
+                          a.btn.btn-link(href="#") Quên mật khẩu
+                tr
+                  td URL
+                  td.text-url= `${key.host}/messenger/member/${member.url || member.id }`
+                  td.text-right
+                    button.btn(data-toggle="collapse" href="#collapse-url" aria-expanded="false" aria-controls="collapse-url")
+                      span.icomoon.icon-edit.d-md-none
                       span.d-none.d-md-block Chỉnh sửa
-                tr#collapse-password.collapse(class=`${subTab[0] === 'password' ? 'show' : ''}`, )
+                tr#collapse-url.collapse(class=`${subTab[0] === 'url' ? 'show' : ''}`, )
                   td.border-0(colspan="3")
-                    form(action="/messenger/setting/password", method="post", name="formSettingPassword")
+                    .text-center !{`/member/<strong class="url-preview">${member.url || member.id }</strong>`}
+                    form(action="/messenger/setting/url", method="post", name="formSettingUrl")
                       input(type="hidden", name="_method" value="PUT")
                       .form-group.d-flex
-                        label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
-                        input#password0.form-control.form-control-sm(type="password", name="password0", required)
-                      .form-group.d-flex
-                        label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
-                        input#password.form-control.form-control-sm(type="password", name="password", required)
-                      .form-group.d-flex
-                        label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
-                        input#password2.form-control.form-control-sm(type="password", name="password2", required)
+                        label.text-secondary(for="url", style="width: 140px") Url
+                        input#url.form-control.form-control-sm(type="text", name="url", required, value=`${member.url || member.id}`)
                       div
                         button.btn(type="submit") Lưu thay đổi
 

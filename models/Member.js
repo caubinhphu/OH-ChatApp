@@ -63,10 +63,10 @@ const memberSchema = mongoose.Schema({
     type: String,
     default: ''
   },
-  newEmail: {
-    type: String,
-    default: '',
-  },
+  // newEmail: {
+  //   type: String,
+  //   default: '',
+  // },
   status: {
     // type: 'online' or time text latest online
     type: String,
@@ -75,6 +75,10 @@ const memberSchema = mongoose.Schema({
   isCalling: {
     type: Boolean,
     default: false
+  },
+  url: {
+    type: String,
+    default: ''
   }
 });
 

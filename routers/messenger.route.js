@@ -16,7 +16,7 @@ router.get('/setting', controller.getSetting)
 
 router.put('/setting/password', controller.putPassword)
 
-router.put('/setting/email', controller.putEmail)
+// router.put('/setting/email', controller.putEmail)
 
 router.put('/profile/avatar', controller.putAvatar)
 

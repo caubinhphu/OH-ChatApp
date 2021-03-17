@@ -1,7 +1,9 @@
 .st-col-tab {
   border-bottom: 1px solid;
 }
-
+.text-url {
+  line-break: anywhere;
+}
 @media only screen and (min-width: 768px) {
   .st-col-tab {
     border-bottom: none;

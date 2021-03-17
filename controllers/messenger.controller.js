@@ -13,7 +13,7 @@ const {
   validateSettingEmail
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
-const sendMail = require('../utils/send-mail');
+// const sendMail = require('../utils/send-mail');
 const { formatMessageList, formatLatestMsg } = require('../utils/messenger');
 const key = require('../config/key');
 
@@ -393,7 +393,8 @@ module.exports.getSetting = async (req, res, next) => {
     if (member) {
       res.render('messenger/setting', {
         titleSite: 'OH Chat - Setting',
-        email: member.email
+        member,
+        key
       });
     } else {
       req.flash('error', notMem);
@@ -454,78 +455,79 @@ module.exports.putPassword = async (req, res, next) => {
   }
 }
 
-// put setting change email
-module.exports.putEmail = async (req, res, next) => {
-  // get info change email
-  const { email } = req.body;
+// // put setting change email
+// module.exports.putEmail = async (req, res, next) => {
+//   // get info change email
+//   const { email } = req.body;
 
-  // validate info change
-  const { error } = validateSettingEmail({ email });
+//   // validate info change
+//   const { error } = validateSettingEmail({ email });
 
-  if (error) {
-    // not pass validate
-    req.flash('error', error.details[0].message);
-    req.flash('tab', 'security');
-    req.flash('sub-tab', 'email');
-    return res.redirect(settingUrl)
-  } else {
-    // check email exists
-    try {
-      const memberOther = await Member.findOne({ email });
-      if (memberOther) {
-        req.flash('error', 'Email đã được sử dụng');
-        req.flash('tab', 'security');
-        req.flash('sub-tab', 'email');
-        return res.redirect(settingUrl)
-      } else {
-        const member = await Member.findById(req.user.id);
-        const verifyToken = await crypto.randomBytes(16);
+//   if (error) {
+//     // not pass validate
+//     req.flash('error', error.details[0].message);
+//     req.flash('tab', 'security');
+//     req.flash('sub-tab', 'email');
+//     return res.redirect(settingUrl)
+//   } else {
+//     // check email exists
+//     try {
+//       const memberOther = await Member.findOne({ email });
+//       if (memberOther) {
+//         req.flash('error', 'Email đã được sử dụng');
+//         req.flash('tab', 'security');
+//         req.flash('sub-tab', 'email');
+//         return res.redirect(settingUrl)
+//       } else {
+//         const member = await Member.findById(req.user.id);
+//         const verifyToken = await crypto.randomBytes(16);
 
-        // send email verify account
-        const html = `<h2>OH chat</h2>
-          <p>Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi</p>
-          <p>Hãy chọn <a href='${key.host}/messenger/verify-email/${verifyToken.toString('hex')}'>
-            vào đây</a> để xác nhận thay đổi email tài khoản của bạn</p>`;
-        const info = await sendMail(email, 'Xác nhận tài khoản', html);
+//         // send email verify account
+//         const html = `<h2>OH chat</h2>
+//           <p>Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi</p>
+//           <p>Hãy chọn <a href='${key.host}/messenger/verify-email/${verifyToken.toString('hex')}'>
+//             vào đây</a> để xác nhận thay đổi email tài khoản của bạn</p>`;
+//         const info = await sendMail(email, 'Xác nhận tài khoản', html);
 
-        member.newEmail = email
-        member.verifyToken = verifyToken.toString('hex'),
-        await member.save()
+//         member.newEmail = email
+//         member.verifyToken = verifyToken.toString('hex'),
+//         await member.save()
 
-        req.flash('success', 'Đổi email thành công, xin hãy vào email mới xác nhận để thực sự đổi');
-        req.flash('tab', 'security');
-        req.flash('sub-tab', 'email');
-        return res.redirect(settingUrl)
-      }
-    } catch (err) {
-      next(err);
-    }
-  }
-}
+//         req.flash('success', 'Đổi email thành công, xin hãy vào email mới xác nhận để thực sự đổi');
+//         req.flash('tab', 'security');
+//         req.flash('sub-tab', 'email');
+//         return res.redirect(settingUrl)
+//       }
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// }
 
-// get verify change email
-module.exports.getVerifyChangeEmail = async (req, res, next) => {
-  const { token } = req.params;
+// // get verify change email
+// module.exports.getVerifyChangeEmail = async (req, res, next) => {
+//   const { token } = req.params;
 
-  try {
-    const member = await Member.findById(req.user.id);
-    if (!member) {
-      req.flash('error', notMem);
-      return res.redirect('/');
-    }
+//   try {
+//     const member = await Member.findById(req.user.id);
+//     if (!member) {
+//       req.flash('error', notMem);
+//       return res.redirect('/');
+//     }
 
-    member.verifyToken = '';
-    member.email = member.newEmail;
-    member.newEmail = '';
+//     member.verifyToken = '';
+//     member.email = member.newEmail;
+//     member.newEmail = '';
 
-    await member.save();
-    req.flash('success', 'Xác nhận thay đổi email thành công');
+//     await member.save();
+//     req.flash('success', 'Xác nhận thay đổi email thành công');
 
-    res.redirect('/');
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.redirect('/');
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 
 // get member info by ID
 module.exports.getMemberInfo = async (req, res, next) => {
