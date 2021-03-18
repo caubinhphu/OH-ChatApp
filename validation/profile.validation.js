@@ -68,13 +68,19 @@ module.exports.validateSettingPassword = (data) => {
   return schema.validate(data);
 };
 
-// validate change email
-module.exports.validateSettingEmail = (data) => {
+// validate change url
+module.exports.validateSettingUrl = (data) => {
   const schema = Joi.object({
-    email: Joi.string().email().required().messages({
-      'string.base': 'Email phải là chuỗi',
-      'string.email': 'Email không hợp lệ',
-      'string.empty': 'Chưa nhập email',
+    url: Joi.string()
+    .max(15)
+    .pattern(/^[^<>/`~!@#$%^&*(){}[\]=;:'"|?+\\]+$/)
+    .required()
+    .messages({
+      'string.base': 'Url phải là chuỗi',
+      'string.max': 'Url không dài quá 15 ký tự',
+      'string.pattern.base':
+        'Url không chứa các ký tự đặc biệt (trừ - và _)',
+      'string.empty': 'Chưa nhập url',
     }),
   });
 

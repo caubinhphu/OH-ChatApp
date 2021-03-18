@@ -25,7 +25,7 @@ block contentMain
                 .last-msg.text-dark.un-read
                   small= friend.latestMessage.msg
                   small= friend.latestMessage.timeFromNow
-            a.ps-as(href=`/messenger/chat/${friend.id}`, title=`${friend.name}`)
+            a.ps-as(href=`/messenger/chat/${friend.url ? friend.url : friend.id}`, title=`${friend.name}`)
               span.sr-only= `Chat with ${friend.name}`
 
     if (friendChat)

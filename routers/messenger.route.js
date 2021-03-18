@@ -16,7 +16,7 @@ router.get('/setting', controller.getSetting)
 
 router.put('/setting/password', controller.putPassword)
 
-// router.put('/setting/email', controller.putEmail)
+router.put('/setting/url', controller.putUrl)
 
 router.put('/profile/avatar', controller.putAvatar)
 
@@ -33,7 +33,5 @@ router.get('/chat-media/:friendId', controller.getChatMediaFriend);
 router.get('/addfriend/:friendId', controller.getAddFriend);
 
 router.get('/member/:memberId', controller.getMemberInfo);
-
-// router.get('/verify-email/:token', controller.getAddFriend)
 
 module.exports = router;

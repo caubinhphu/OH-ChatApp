@@ -50,7 +50,7 @@ const Messenger = (() => {
         });
 
         // create message obj to show in client
-        createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', true)
+        createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true)
 
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;

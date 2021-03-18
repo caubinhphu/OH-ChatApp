@@ -10,7 +10,7 @@ const GroupMessage = require('../models/GroupMessage');
 const {
   validateProfile,
   validateSettingPassword,
-  validateSettingEmail
+  validateSettingUrl
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
 // const sendMail = require('../utils/send-mail');
@@ -66,7 +66,7 @@ module.exports.getIndex = async (req, res, next) => {
     if (member) {
       const friends = member.getFriends();
       if (friends.length > 0) {
-        res.redirect(`/messenger/chat/${friends[0].id}`);
+        res.redirect(`/messenger/chat/${friends[0].url ? friends[0].url : friends[0].id}`);
       } else {
         res.render('messenger', {
           titleSite: siteMes,
@@ -265,7 +265,7 @@ module.exports.getChatFriend = async (req, res, next) => {
       });
     if (member) {
       const friends = member.getFriendsHaveMessage();
-      const friendChat = friends.find(fr => fr.id === req.params.friendId);
+      const friendChat = friends.find(fr => fr.id === req.params.friendId || fr.url === req.params.friendId);
       // generate jwt token
       const token = jwt.sign(
         { data: { memberId: friendChat.id } },
@@ -361,7 +361,12 @@ module.exports.getAddFriend = async (req, res, next) => {
   try {
     const { friendId } = req.params;
     const member = await Member.findById(req.user.id);
-    const friend = await Member.findById(friendId);
+    let friend = null
+    if (friendId.match(/^[0-9a-fA-F]{24}$/)) {
+      friend = await Member.findById(friendId)
+    } else {
+      friend = await Member.findOne({ url: friendId });
+    }
     if (member && friend && friend.active) {
       const groupMessage = await GroupMessage.create({
         messages: []
@@ -455,54 +460,46 @@ module.exports.putPassword = async (req, res, next) => {
   }
 }
 
-// // put setting change email
-// module.exports.putEmail = async (req, res, next) => {
-//   // get info change email
-//   const { email } = req.body;
+// put setting change url
+module.exports.putUrl = async (req, res, next) => {
+  // get info change email
+  const { url } = req.body;
 
-//   // validate info change
-//   const { error } = validateSettingEmail({ email });
+  // validate info change
+  const { error } = validateSettingUrl({ url });
 
-//   if (error) {
-//     // not pass validate
-//     req.flash('error', error.details[0].message);
-//     req.flash('tab', 'security');
-//     req.flash('sub-tab', 'email');
-//     return res.redirect(settingUrl)
-//   } else {
-//     // check email exists
-//     try {
-//       const memberOther = await Member.findOne({ email });
-//       if (memberOther) {
-//         req.flash('error', 'Email đã được sử dụng');
-//         req.flash('tab', 'security');
-//         req.flash('sub-tab', 'email');
-//         return res.redirect(settingUrl)
-//       } else {
-//         const member = await Member.findById(req.user.id);
-//         const verifyToken = await crypto.randomBytes(16);
-
-//         // send email verify account
-//         const html = `<h2>OH chat</h2>
-//           <p>Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi</p>
-//           <p>Hãy chọn <a href='${key.host}/messenger/verify-email/${verifyToken.toString('hex')}'>
-//             vào đây</a> để xác nhận thay đổi email tài khoản của bạn</p>`;
-//         const info = await sendMail(email, 'Xác nhận tài khoản', html);
-
-//         member.newEmail = email
-//         member.verifyToken = verifyToken.toString('hex'),
-//         await member.save()
-
-//         req.flash('success', 'Đổi email thành công, xin hãy vào email mới xác nhận để thực sự đổi');
-//         req.flash('tab', 'security');
-//         req.flash('sub-tab', 'email');
-//         return res.redirect(settingUrl)
-//       }
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// }
+  if (error) {
+    // not pass validate
+    req.flash('error', error.details[0].message);
+    req.flash('tab', 'security');
+    req.flash('sub-tab', 'url');
+    return res.redirect(settingUrl)
+  } else {
+    // check url exists
+    try {
+      const member = await Member.findById(req.user.id);
+      const memberOther = await Member.findOne({ url });
+      if (member) {
+        if (memberOther) {
+          req.flash('error', 'Url đã được sử dụng');
+          req.flash('tab', 'security');
+          req.flash('sub-tab', 'url');
+          return res.redirect(settingUrl)
+        } else {
+          member.url = url
+          await member.save()
+  
+          req.flash('success', 'Đổi url thành công');
+          req.flash('tab', 'security');
+          req.flash('sub-tab', 'url');
+          return res.redirect(settingUrl)
+        }
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+}
 
 // // get verify change email
 // module.exports.getVerifyChangeEmail = async (req, res, next) => {
@@ -533,7 +530,12 @@ module.exports.putPassword = async (req, res, next) => {
 module.exports.getMemberInfo = async (req, res, next) => {
   try {
     const { memberId } = req.params;
-    const member = await Member.findById(memberId);
+    let member = null
+    if (memberId.match(/^[0-9a-fA-F]{24}$/)) {
+      member = await Member.findById(memberId)
+    } else {
+      member = await Member.findOne({ url: memberId });
+    }
 
     const me = await Member.findById(req.user.id);
     if (member && me) {
@@ -558,7 +560,12 @@ module.exports.getMemberInfo = async (req, res, next) => {
 module.exports.getChatMediaFriend = async (req, res, next) => {
   const { friendId } = req.params
   try {
-    const friend = await Member.findById(friendId)
+    let friend = null
+    if (friendId.match(/^[0-9a-fA-F]{24}$/)) {
+      friend = await Member.findById(friendId)
+    } else {
+      friend = await Member.findOne({ url: friendId });
+    }
     const member = await Member.findById(req.user.id)
     if (friend && member) {
       res.render('messenger/chat-media', {

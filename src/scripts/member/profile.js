@@ -22,9 +22,9 @@ const Profile = (() => {
           return `<div class="col-md-6">
           <div class="d-flex align-items-center border p-2 rounded my-2">
             <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" />
-            <a class="flex-fill mx-2" href="/messenger/member/${friend.id}"><strong>${friend.name}</strong></a>
+            <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}"><strong>${friend.name}</strong></a>
             <div class="d-flex flex-column">
-              <a href="/messenger/${friend.id}" class="btn">Chat</a>
+              <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Chat</a>
               <button class="btn btn-red mt-1">Hủy kết bạn</button>
             </div>
           </div>

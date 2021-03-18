@@ -90,6 +90,7 @@ memberSchema.methods.getFriends = function () {
       name: friend._id.name,
       avatar: friend._id.avatar,
       status: friend._id.status,
+      url: friend._id.url,
     }
   });
 };
@@ -100,6 +101,7 @@ memberSchema.methods.getFriendsHaveMessage = function () {
     // console.log(friend.groupMessageId);
     return {
       id: friend._id.id,
+      url: friend._id.url,
       name: friend._id.name,
       avatar: friend._id.avatar,
       status: friend._id.status,
