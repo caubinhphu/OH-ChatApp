@@ -4,7 +4,7 @@ extend ./layout
 //-   link(rel="stylesheet", href="/styles/messenger/profile.css")
 
 block contentMain
-  #info-area.my-2
+  #info-area.my-2.profile-page
     .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center.wrap-info-member
       .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
         img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
@@ -90,4 +90,4 @@ block contentMain
 
 
 append scripts
-  script(src="/js/msg-profile.js")
+  script(src="/js/msg-pagesub.js")

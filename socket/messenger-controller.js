@@ -115,7 +115,7 @@ module.exports.onMessageChat = async function (io, { message, token }) {
       if (friendRelated) {
         // format msg
         const msg = formatMessage(me.name, message, me.avatar)
-
+        msg.url = me.url
         // me save msg
         // find group msg
         if (friendRelated.groupMessageId) {

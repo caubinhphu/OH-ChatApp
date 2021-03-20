@@ -49,6 +49,28 @@ block header
 block main
   #main.ps-rv
     block contentMain
+    .popup-has-call.d-none
+      .d-flex.justify-content-center.align-items-center.h-100
+        .wrap-pop-has-call
+          button.btn.btn-icon.close-popup(type="button")
+            span.icomoon.icon-close
+          h3.title-call-info.text-center Cuộc gọi đến
+          h3.title-call-miss.text-center Cuộc gọi nhỡ
+          .d-flex.align-items-center.mb-3
+            img.caller-img.rounded-circle(src="/images/default-avatar.jpg", alt="OH")
+            .text-call-sub.last-mb-none
+              h4.text-name-call Name đang gọi cho bạn
+              p.text-secondary Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận
+            .text-miss-call-sub.last-mb-none
+              h4 Bạn đã bõ lỡ cuộc gọi của name
+              p.text-secondary Nhấn gọi lại để gọi lại cho name
+          .text-right
+            button.btn.btn-red.mr-3#btn-call-not-ok
+              span.icomoon.icon-phone-off  Từ chối
+            button.btn#btn-call-ok
+              span.icomoon.icon-phone  Chấp nhận
+            button.btn#btn-call-back
+              span.icomoon.icon-phone  Gọi lại
 
 append scripts
   script(src="/socket.io/socket.io.js")

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 513);
+/******/ 	return __webpack_require__(__webpack_require__.s = 518);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -40882,86 +40882,2597 @@ module.exports = function isAxiosError(payload) {
 /* 509 */,
 /* 510 */,
 /* 511 */,
-/* 512 */,
-/* 513 */
+/* 512 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(setImmediate) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*************************
+ * Croppie
+ * Copyright 2019
+ * Foliotek
+ * Version: 2.6.5
+ *************************/
+(function (root, factory) {
+    if (true) {
+        // AMD. Register as an anonymous module.
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else {}
+}(typeof self !== 'undefined' ? self : this, function () {
+
+    /* Polyfills */
+    if (typeof Promise !== 'function') {
+        /*! promise-polyfill 3.1.0 */
+        !function(a){function b(a,b){return function(){a.apply(b,arguments)}}function c(a){if("object"!==typeof this)throw new TypeError("Promises must be constructed via new");if("function"!==typeof a)throw new TypeError("not a function");this._state=null,this._value=null,this._deferreds=[],i(a,b(e,this),b(f,this))}function d(a){var b=this;return null===this._state?void this._deferreds.push(a):void k(function(){var c=b._state?a.onFulfilled:a.onRejected;if(null===c)return void(b._state?a.resolve:a.reject)(b._value);var d;try{d=c(b._value)}catch(e){return void a.reject(e)}a.resolve(d)})}function e(a){try{if(a===this)throw new TypeError("A promise cannot be resolved with itself.");if(a&&("object"===typeof a||"function"===typeof a)){var c=a.then;if("function"===typeof c)return void i(b(c,a),b(e,this),b(f,this))}this._state=!0,this._value=a,g.call(this)}catch(d){f.call(this,d)}}function f(a){this._state=!1,this._value=a,g.call(this)}function g(){for(var a=0,b=this._deferreds.length;b>a;a++)d.call(this,this._deferreds[a]);this._deferreds=null}function h(a,b,c,d){this.onFulfilled="function"===typeof a?a:null,this.onRejected="function"===typeof b?b:null,this.resolve=c,this.reject=d}function i(a,b,c){var d=!1;try{a(function(a){d||(d=!0,b(a))},function(a){d||(d=!0,c(a))})}catch(e){if(d)return;d=!0,c(e)}}var j=setTimeout,k="function"===typeof setImmediate&&setImmediate||function(a){j(a,1)},l=Array.isArray||function(a){return"[object Array]"===Object.prototype.toString.call(a)};c.prototype["catch"]=function(a){return this.then(null,a)},c.prototype.then=function(a,b){var e=this;return new c(function(c,f){d.call(e,new h(a,b,c,f))})},c.all=function(){var a=Array.prototype.slice.call(1===arguments.length&&l(arguments[0])?arguments[0]:arguments);return new c(function(b,c){function d(f,g){try{if(g&&("object"===typeof g||"function"===typeof g)){var h=g.then;if("function"===typeof h)return void h.call(g,function(a){d(f,a)},c)}a[f]=g,0===--e&&b(a)}catch(i){c(i)}}if(0===a.length)return b([]);for(var e=a.length,f=0;f<a.length;f++)d(f,a[f])})},c.resolve=function(a){return a&&"object"===typeof a&&a.constructor===c?a:new c(function(b){b(a)})},c.reject=function(a){return new c(function(b,c){c(a)})},c.race=function(a){return new c(function(b,c){for(var d=0,e=a.length;e>d;d++)a[d].then(b,c)})},c._setImmediateFn=function(a){k=a}, true&&module.exports?module.exports=c:a.Promise||(a.Promise=c)}(this);
+    }
+
+    if (typeof window !== 'undefined' && typeof window.CustomEvent !== "function") {
+        (function(){
+            function CustomEvent ( event, params ) {
+                params = params || { bubbles: false, cancelable: false, detail: undefined };
+                var evt = document.createEvent( 'CustomEvent' );
+                evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+                return evt;
+            }
+            CustomEvent.prototype = window.Event.prototype;
+            window.CustomEvent = CustomEvent;
+        }());
+    }
+
+    if (typeof HTMLCanvasElement !== 'undefined' && !HTMLCanvasElement.prototype.toBlob) {
+        Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+            value: function (callback, type, quality) {
+                var binStr = atob( this.toDataURL(type, quality).split(',')[1] ),
+                len = binStr.length,
+                arr = new Uint8Array(len);
+
+                for (var i=0; i<len; i++ ) {
+                    arr[i] = binStr.charCodeAt(i);
+                }
+
+                callback( new Blob( [arr], {type: type || 'image/png'} ) );
+            }
+        });
+    }
+    /* End Polyfills */
+
+    var cssPrefixes = ['Webkit', 'Moz', 'ms'],
+        emptyStyles = typeof document !== 'undefined' ? document.createElement('div').style : {},
+        EXIF_NORM = [1,8,3,6],
+        EXIF_FLIP = [2,7,4,5],
+        CSS_TRANS_ORG,
+        CSS_TRANSFORM,
+        CSS_USERSELECT;
+
+    function vendorPrefix(prop) {
+        if (prop in emptyStyles) {
+            return prop;
+        }
+
+        var capProp = prop[0].toUpperCase() + prop.slice(1),
+            i = cssPrefixes.length;
+
+        while (i--) {
+            prop = cssPrefixes[i] + capProp;
+            if (prop in emptyStyles) {
+                return prop;
+            }
+        }
+    }
+
+    CSS_TRANSFORM = vendorPrefix('transform');
+    CSS_TRANS_ORG = vendorPrefix('transformOrigin');
+    CSS_USERSELECT = vendorPrefix('userSelect');
+
+    function getExifOffset(ornt, rotate) {
+        var arr = EXIF_NORM.indexOf(ornt) > -1 ? EXIF_NORM : EXIF_FLIP,
+            index = arr.indexOf(ornt),
+            offset = (rotate / 90) % arr.length;// 180 = 2%4 = 2 shift exif by 2 indexes
+
+        return arr[(arr.length + index + (offset % arr.length)) % arr.length];
+    }
+
+    // Credits to : Andrew Dupont - http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+    function deepExtend(destination, source) {
+        destination = destination || {};
+        for (var property in source) {
+            if (source[property] && source[property].constructor && source[property].constructor === Object) {
+                destination[property] = destination[property] || {};
+                deepExtend(destination[property], source[property]);
+            } else {
+                destination[property] = source[property];
+            }
+        }
+        return destination;
+    }
+
+    function clone(object) {
+        return deepExtend({}, object);
+    }
+
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+
+    function dispatchChange(element) {
+        if ("createEvent" in document) {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            element.dispatchEvent(evt);
+        }
+        else {
+            element.fireEvent("onchange");
+        }
+    }
+
+    //http://jsperf.com/vanilla-css
+    function css(el, styles, val) {
+        if (typeof (styles) === 'string') {
+            var tmp = styles;
+            styles = {};
+            styles[tmp] = val;
+        }
+
+        for (var prop in styles) {
+            el.style[prop] = styles[prop];
+        }
+    }
+
+    function addClass(el, c) {
+        if (el.classList) {
+            el.classList.add(c);
+        }
+        else {
+            el.className += ' ' + c;
+        }
+    }
+
+    function removeClass(el, c) {
+        if (el.classList) {
+            el.classList.remove(c);
+        }
+        else {
+            el.className = el.className.replace(c, '');
+        }
+    }
+
+    function setAttributes(el, attrs) {
+        for (var key in attrs) {
+            el.setAttribute(key, attrs[key]);
+        }
+    }
+
+    function num(v) {
+        return parseInt(v, 10);
+    }
+
+    /* Utilities */
+    function loadImage(src, doExif) {
+        if (!src) { throw 'Source image missing'; }
+        
+        var img = new Image();
+        img.style.opacity = '0';
+        return new Promise(function (resolve, reject) {
+            function _resolve() {
+                img.style.opacity = '1';
+                setTimeout(function () {
+                    resolve(img);
+                }, 1);
+            }
+
+            img.removeAttribute('crossOrigin');
+            if (src.match(/^https?:\/\/|^\/\//)) {
+                img.setAttribute('crossOrigin', 'anonymous');
+            }
+
+            img.onload = function () {
+                if (doExif) {
+                    EXIF.getData(img, function () {
+                        _resolve();
+                    });
+                }
+                else {
+                    _resolve();
+                }
+            };
+            img.onerror = function (ev) {
+                img.style.opacity = 1;
+                setTimeout(function () {
+                    reject(ev);
+                }, 1);
+            };
+            img.src = src;
+        });
+    }
+
+    function naturalImageDimensions(img, ornt) {
+        var w = img.naturalWidth;
+        var h = img.naturalHeight;
+        var orient = ornt || getExifOrientation(img);
+        if (orient && orient >= 5) {
+            var x= w;
+            w = h;
+            h = x;
+        }
+        return { width: w, height: h };
+    }
+
+    /* CSS Transform Prototype */
+    var TRANSLATE_OPTS = {
+        'translate3d': {
+            suffix: ', 0px'
+        },
+        'translate': {
+            suffix: ''
+        }
+    };
+    var Transform = function (x, y, scale) {
+        this.x = parseFloat(x);
+        this.y = parseFloat(y);
+        this.scale = parseFloat(scale);
+    };
+
+    Transform.parse = function (v) {
+        if (v.style) {
+            return Transform.parse(v.style[CSS_TRANSFORM]);
+        }
+        else if (v.indexOf('matrix') > -1 || v.indexOf('none') > -1) {
+            return Transform.fromMatrix(v);
+        }
+        else {
+            return Transform.fromString(v);
+        }
+    };
+
+    Transform.fromMatrix = function (v) {
+        var vals = v.substring(7).split(',');
+        if (!vals.length || v === 'none') {
+            vals = [1, 0, 0, 1, 0, 0];
+        }
+
+        return new Transform(num(vals[4]), num(vals[5]), parseFloat(vals[0]));
+    };
+
+    Transform.fromString = function (v) {
+        var values = v.split(') '),
+            translate = values[0].substring(Croppie.globals.translate.length + 1).split(','),
+            scale = values.length > 1 ? values[1].substring(6) : 1,
+            x = translate.length > 1 ? translate[0] : 0,
+            y = translate.length > 1 ? translate[1] : 0;
+
+        return new Transform(x, y, scale);
+    };
+
+    Transform.prototype.toString = function () {
+        var suffix = TRANSLATE_OPTS[Croppie.globals.translate].suffix || '';
+        return Croppie.globals.translate + '(' + this.x + 'px, ' + this.y + 'px' + suffix + ') scale(' + this.scale + ')';
+    };
+
+    var TransformOrigin = function (el) {
+        if (!el || !el.style[CSS_TRANS_ORG]) {
+            this.x = 0;
+            this.y = 0;
+            return;
+        }
+        var css = el.style[CSS_TRANS_ORG].split(' ');
+        this.x = parseFloat(css[0]);
+        this.y = parseFloat(css[1]);
+    };
+
+    TransformOrigin.prototype.toString = function () {
+        return this.x + 'px ' + this.y + 'px';
+    };
+
+    function getExifOrientation (img) {
+        return img.exifdata && img.exifdata.Orientation ? num(img.exifdata.Orientation) : 1;
+    }
+
+    function drawCanvas(canvas, img, orientation) {
+        var width = img.width,
+            height = img.height,
+            ctx = canvas.getContext('2d');
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.save();
+        switch (orientation) {
+          case 2:
+             ctx.translate(width, 0);
+             ctx.scale(-1, 1);
+             break;
+
+          case 3:
+              ctx.translate(width, height);
+              ctx.rotate(180*Math.PI/180);
+              break;
+
+          case 4:
+              ctx.translate(0, height);
+              ctx.scale(1, -1);
+              break;
+
+          case 5:
+              canvas.width = height;
+              canvas.height = width;
+              ctx.rotate(90*Math.PI/180);
+              ctx.scale(1, -1);
+              break;
+
+          case 6:
+              canvas.width = height;
+              canvas.height = width;
+              ctx.rotate(90*Math.PI/180);
+              ctx.translate(0, -height);
+              break;
+
+          case 7:
+              canvas.width = height;
+              canvas.height = width;
+              ctx.rotate(-90*Math.PI/180);
+              ctx.translate(-width, height);
+              ctx.scale(1, -1);
+              break;
+
+          case 8:
+              canvas.width = height;
+              canvas.height = width;
+              ctx.translate(0, width);
+              ctx.rotate(-90*Math.PI/180);
+              break;
+        }
+        ctx.drawImage(img, 0,0, width, height);
+        ctx.restore();
+    }
+
+    /* Private Methods */
+    function _create() {
+        var self = this,
+            contClass = 'croppie-container',
+            customViewportClass = self.options.viewport.type ? 'cr-vp-' + self.options.viewport.type : null,
+            boundary, img, viewport, overlay, bw, bh;
+
+        self.options.useCanvas = self.options.enableOrientation || _hasExif.call(self);
+        // Properties on class
+        self.data = {};
+        self.elements = {};
+
+        boundary = self.elements.boundary = document.createElement('div');
+        viewport = self.elements.viewport = document.createElement('div');
+        img = self.elements.img = document.createElement('img');
+        overlay = self.elements.overlay = document.createElement('div');
+
+        if (self.options.useCanvas) {
+            self.elements.canvas = document.createElement('canvas');
+            self.elements.preview = self.elements.canvas;
+        }
+        else {
+            self.elements.preview = img;
+        }
+
+        addClass(boundary, 'cr-boundary');
+        boundary.setAttribute('aria-dropeffect', 'none');
+        bw = self.options.boundary.width;
+        bh = self.options.boundary.height;
+        css(boundary, {
+            width: (bw + (isNaN(bw) ? '' : 'px')),
+            height: (bh + (isNaN(bh) ? '' : 'px'))
+        });
+
+        addClass(viewport, 'cr-viewport');
+        if (customViewportClass) {
+            addClass(viewport, customViewportClass);
+        }
+        css(viewport, {
+            width: self.options.viewport.width + 'px',
+            height: self.options.viewport.height + 'px'
+        });
+        viewport.setAttribute('tabindex', 0);
+
+        addClass(self.elements.preview, 'cr-image');
+        setAttributes(self.elements.preview, { 'alt': 'preview', 'aria-grabbed': 'false' });
+        addClass(overlay, 'cr-overlay');
+
+        self.element.appendChild(boundary);
+        boundary.appendChild(self.elements.preview);
+        boundary.appendChild(viewport);
+        boundary.appendChild(overlay);
+
+        addClass(self.element, contClass);
+        if (self.options.customClass) {
+            addClass(self.element, self.options.customClass);
+        }
+
+        _initDraggable.call(this);
+
+        if (self.options.enableZoom) {
+            _initializeZoom.call(self);
+        }
+
+        // if (self.options.enableOrientation) {
+        //     _initRotationControls.call(self);
+        // }
+
+        if (self.options.enableResize) {
+            _initializeResize.call(self);
+        }
+    }
+
+    // function _initRotationControls () {
+    //     var self = this,
+    //         wrap, btnLeft, btnRight, iLeft, iRight;
+
+    //     wrap = document.createElement('div');
+    //     self.elements.orientationBtnLeft = btnLeft = document.createElement('button');
+    //     self.elements.orientationBtnRight = btnRight = document.createElement('button');
+
+    //     wrap.appendChild(btnLeft);
+    //     wrap.appendChild(btnRight);
+
+    //     iLeft = document.createElement('i');
+    //     iRight = document.createElement('i');
+    //     btnLeft.appendChild(iLeft);
+    //     btnRight.appendChild(iRight);
+
+    //     addClass(wrap, 'cr-rotate-controls');
+    //     addClass(btnLeft, 'cr-rotate-l');
+    //     addClass(btnRight, 'cr-rotate-r');
+
+    //     self.elements.boundary.appendChild(wrap);
+
+    //     btnLeft.addEventListener('click', function () {
+    //         self.rotate(-90);
+    //     });
+    //     btnRight.addEventListener('click', function () {
+    //         self.rotate(90);
+    //     });
+    // }
+
+    function _hasExif() {
+        return this.options.enableExif && window.EXIF;
+    }
+
+    function _initializeResize () {
+        var self = this;
+        var wrap = document.createElement('div');
+        var isDragging = false;
+        var direction;
+        var originalX;
+        var originalY;
+        var minSize = 50;
+        var maxWidth;
+        var maxHeight;
+        var vr;
+        var hr;
+
+        addClass(wrap, 'cr-resizer');
+        css(wrap, {
+            width: this.options.viewport.width + 'px',
+            height: this.options.viewport.height + 'px'
+        });
+
+        if (this.options.resizeControls.height) {
+            vr = document.createElement('div');
+            addClass(vr, 'cr-resizer-vertical');
+            wrap.appendChild(vr);
+        }
+
+        if (this.options.resizeControls.width) {
+            hr = document.createElement('div');
+            addClass(hr, 'cr-resizer-horisontal');
+            wrap.appendChild(hr);
+        }
+
+        function mouseDown(ev) {
+            if (ev.button !== undefined && ev.button !== 0) return;
+
+            ev.preventDefault();
+            if (isDragging) {
+                return;
+            }
+
+            var overlayRect = self.elements.overlay.getBoundingClientRect();
+
+            isDragging = true;
+            originalX = ev.pageX;
+            originalY = ev.pageY;
+            direction = ev.currentTarget.className.indexOf('vertical') !== -1 ? 'v' : 'h';
+            maxWidth = overlayRect.width;
+            maxHeight = overlayRect.height;
+
+            if (ev.touches) {
+                var touches = ev.touches[0];
+                originalX = touches.pageX;
+                originalY = touches.pageY;
+            }
+
+            window.addEventListener('mousemove', mouseMove);
+            window.addEventListener('touchmove', mouseMove);
+            window.addEventListener('mouseup', mouseUp);
+            window.addEventListener('touchend', mouseUp);
+            document.body.style[CSS_USERSELECT] = 'none';
+        }
+
+        function mouseMove(ev) {
+            var pageX = ev.pageX;
+            var pageY = ev.pageY;
+
+            ev.preventDefault();
+
+            if (ev.touches) {
+                var touches = ev.touches[0];
+                pageX = touches.pageX;
+                pageY = touches.pageY;
+            }
+
+            var deltaX = pageX - originalX;
+            var deltaY = pageY - originalY;
+            var newHeight = self.options.viewport.height + deltaY;
+            var newWidth = self.options.viewport.width + deltaX;
+
+            if (direction === 'v' && newHeight >= minSize && newHeight <= maxHeight) {
+                css(wrap, {
+                    height: newHeight + 'px'
+                });
+
+                self.options.boundary.height += deltaY;
+                css(self.elements.boundary, {
+                    height: self.options.boundary.height + 'px'
+                });
+
+                self.options.viewport.height += deltaY;
+                css(self.elements.viewport, {
+                    height: self.options.viewport.height + 'px'
+                });
+            }
+            else if (direction === 'h' && newWidth >= minSize && newWidth <= maxWidth) {
+                css(wrap, {
+                    width: newWidth + 'px'
+                });
+
+                self.options.boundary.width += deltaX;
+                css(self.elements.boundary, {
+                    width: self.options.boundary.width + 'px'
+                });
+
+                self.options.viewport.width += deltaX;
+                css(self.elements.viewport, {
+                    width: self.options.viewport.width + 'px'
+                });
+            }
+
+            _updateOverlay.call(self);
+            _updateZoomLimits.call(self);
+            _updateCenterPoint.call(self);
+            _triggerUpdate.call(self);
+            originalY = pageY;
+            originalX = pageX;
+        }
+
+        function mouseUp() {
+            isDragging = false;
+            window.removeEventListener('mousemove', mouseMove);
+            window.removeEventListener('touchmove', mouseMove);
+            window.removeEventListener('mouseup', mouseUp);
+            window.removeEventListener('touchend', mouseUp);
+            document.body.style[CSS_USERSELECT] = '';
+        }
+
+        if (vr) {
+            vr.addEventListener('mousedown', mouseDown);
+            vr.addEventListener('touchstart', mouseDown);
+        }
+
+        if (hr) {
+            hr.addEventListener('mousedown', mouseDown);
+            hr.addEventListener('touchstart', mouseDown);
+        }
+
+        this.elements.boundary.appendChild(wrap);
+    }
+
+    function _setZoomerVal(v) {
+        if (this.options.enableZoom) {
+            var z = this.elements.zoomer,
+                val = fix(v, 4);
+
+            z.value = Math.max(parseFloat(z.min), Math.min(parseFloat(z.max), val)).toString();
+        }
+    }
+
+    function _initializeZoom() {
+        var self = this,
+            wrap = self.elements.zoomerWrap = document.createElement('div'),
+            zoomer = self.elements.zoomer = document.createElement('input');
+
+        addClass(wrap, 'cr-slider-wrap');
+        addClass(zoomer, 'cr-slider');
+        zoomer.type = 'range';
+        zoomer.step = '0.0001';
+        zoomer.value = '1';
+        zoomer.style.display = self.options.showZoomer ? '' : 'none';
+        zoomer.setAttribute('aria-label', 'zoom');
+
+        self.element.appendChild(wrap);
+        wrap.appendChild(zoomer);
+
+        self._currentZoom = 1;
+
+        function change() {
+            _onZoom.call(self, {
+                value: parseFloat(zoomer.value),
+                origin: new TransformOrigin(self.elements.preview),
+                viewportRect: self.elements.viewport.getBoundingClientRect(),
+                transform: Transform.parse(self.elements.preview)
+            });
+        }
+
+        function scroll(ev) {
+            var delta, targetZoom;
+
+            if(self.options.mouseWheelZoom === 'ctrl' && ev.ctrlKey !== true){
+              return 0;
+            } else if (ev.wheelDelta) {
+                delta = ev.wheelDelta / 1200; //wheelDelta min: -120 max: 120 // max x 10 x 2
+            } else if (ev.deltaY) {
+                delta = ev.deltaY / 1060; //deltaY min: -53 max: 53 // max x 10 x 2
+            } else if (ev.detail) {
+                delta = ev.detail / -60; //delta min: -3 max: 3 // max x 10 x 2
+            } else {
+                delta = 0;
+            }
+
+            targetZoom = self._currentZoom + (delta * self._currentZoom);
+
+            ev.preventDefault();
+            _setZoomerVal.call(self, targetZoom);
+            change.call(self);
+        }
+
+        self.elements.zoomer.addEventListener('input', change);// this is being fired twice on keypress
+        self.elements.zoomer.addEventListener('change', change);
+
+        if (self.options.mouseWheelZoom) {
+            self.elements.boundary.addEventListener('mousewheel', scroll);
+            self.elements.boundary.addEventListener('DOMMouseScroll', scroll);
+        }
+    }
+
+    function _onZoom(ui) {
+        var self = this,
+            transform = ui ? ui.transform : Transform.parse(self.elements.preview),
+            vpRect = ui ? ui.viewportRect : self.elements.viewport.getBoundingClientRect(),
+            origin = ui ? ui.origin : new TransformOrigin(self.elements.preview);
+
+        function applyCss() {
+            var transCss = {};
+            transCss[CSS_TRANSFORM] = transform.toString();
+            transCss[CSS_TRANS_ORG] = origin.toString();
+            css(self.elements.preview, transCss);
+        }
+
+        self._currentZoom = ui ? ui.value : self._currentZoom;
+        transform.scale = self._currentZoom;
+        self.elements.zoomer.setAttribute('aria-valuenow', self._currentZoom);
+        applyCss();
+
+        if (self.options.enforceBoundary) {
+            var boundaries = _getVirtualBoundaries.call(self, vpRect),
+                transBoundaries = boundaries.translate,
+                oBoundaries = boundaries.origin;
+
+            if (transform.x >= transBoundaries.maxX) {
+                origin.x = oBoundaries.minX;
+                transform.x = transBoundaries.maxX;
+            }
+
+            if (transform.x <= transBoundaries.minX) {
+                origin.x = oBoundaries.maxX;
+                transform.x = transBoundaries.minX;
+            }
+
+            if (transform.y >= transBoundaries.maxY) {
+                origin.y = oBoundaries.minY;
+                transform.y = transBoundaries.maxY;
+            }
+
+            if (transform.y <= transBoundaries.minY) {
+                origin.y = oBoundaries.maxY;
+                transform.y = transBoundaries.minY;
+            }
+        }
+        applyCss();
+        _debouncedOverlay.call(self);
+        _triggerUpdate.call(self);
+    }
+
+    function _getVirtualBoundaries(viewport) {
+        var self = this,
+            scale = self._currentZoom,
+            vpWidth = viewport.width,
+            vpHeight = viewport.height,
+            centerFromBoundaryX = self.elements.boundary.clientWidth / 2,
+            centerFromBoundaryY = self.elements.boundary.clientHeight / 2,
+            imgRect = self.elements.preview.getBoundingClientRect(),
+            curImgWidth = imgRect.width,
+            curImgHeight = imgRect.height,
+            halfWidth = vpWidth / 2,
+            halfHeight = vpHeight / 2;
+
+        var maxX = ((halfWidth / scale) - centerFromBoundaryX) * -1;
+        var minX = maxX - ((curImgWidth * (1 / scale)) - (vpWidth * (1 / scale)));
+
+        var maxY = ((halfHeight / scale) - centerFromBoundaryY) * -1;
+        var minY = maxY - ((curImgHeight * (1 / scale)) - (vpHeight * (1 / scale)));
+
+        var originMinX = (1 / scale) * halfWidth;
+        var originMaxX = (curImgWidth * (1 / scale)) - originMinX;
+
+        var originMinY = (1 / scale) * halfHeight;
+        var originMaxY = (curImgHeight * (1 / scale)) - originMinY;
+
+        return {
+            translate: {
+                maxX: maxX,
+                minX: minX,
+                maxY: maxY,
+                minY: minY
+            },
+            origin: {
+                maxX: originMaxX,
+                minX: originMinX,
+                maxY: originMaxY,
+                minY: originMinY
+            }
+        };
+    }
+
+    function _updateCenterPoint(rotate) {
+        var self = this,
+            scale = self._currentZoom,
+            data = self.elements.preview.getBoundingClientRect(),
+            vpData = self.elements.viewport.getBoundingClientRect(),
+            transform = Transform.parse(self.elements.preview.style[CSS_TRANSFORM]),
+            pc = new TransformOrigin(self.elements.preview),
+            top = (vpData.top - data.top) + (vpData.height / 2),
+            left = (vpData.left - data.left) + (vpData.width / 2),
+            center = {},
+            adj = {};
+
+        if (rotate) {
+            var cx = pc.x;
+            var cy = pc.y;
+            var tx = transform.x;
+            var ty = transform.y;
+
+            center.y = cx;
+            center.x = cy;
+            transform.y = tx;
+            transform.x = ty;
+        }
+        else {
+            center.y = top / scale;
+            center.x = left / scale;
+
+            adj.y = (center.y - pc.y) * (1 - scale);
+            adj.x = (center.x - pc.x) * (1 - scale);
+
+            transform.x -= adj.x;
+            transform.y -= adj.y;
+        }
+
+        var newCss = {};
+        newCss[CSS_TRANS_ORG] = center.x + 'px ' + center.y + 'px';
+        newCss[CSS_TRANSFORM] = transform.toString();
+        css(self.elements.preview, newCss);
+    }
+
+    function _initDraggable() {
+        var self = this,
+            isDragging = false,
+            originalX,
+            originalY,
+            originalDistance,
+            vpRect,
+            transform;
+
+        function assignTransformCoordinates(deltaX, deltaY) {
+            var imgRect = self.elements.preview.getBoundingClientRect(),
+                top = transform.y + deltaY,
+                left = transform.x + deltaX;
+
+            if (self.options.enforceBoundary) {
+                if (vpRect.top > imgRect.top + deltaY && vpRect.bottom < imgRect.bottom + deltaY) {
+                    transform.y = top;
+                }
+
+                if (vpRect.left > imgRect.left + deltaX && vpRect.right < imgRect.right + deltaX) {
+                    transform.x = left;
+                }
+            }
+            else {
+                transform.y = top;
+                transform.x = left;
+            }
+        }
+
+        function toggleGrabState(isDragging) {
+          self.elements.preview.setAttribute('aria-grabbed', isDragging);
+          self.elements.boundary.setAttribute('aria-dropeffect', isDragging? 'move': 'none');
+        }
+
+        function keyDown(ev) {
+            var LEFT_ARROW  = 37,
+                UP_ARROW    = 38,
+                RIGHT_ARROW = 39,
+                DOWN_ARROW  = 40;
+
+            if (ev.shiftKey && (ev.keyCode === UP_ARROW || ev.keyCode === DOWN_ARROW)) {
+                var zoom;
+                if (ev.keyCode === UP_ARROW) {
+                    zoom = parseFloat(self.elements.zoomer.value) + parseFloat(self.elements.zoomer.step)
+                }
+                else {
+                    zoom = parseFloat(self.elements.zoomer.value) - parseFloat(self.elements.zoomer.step)
+                }
+                self.setZoom(zoom);
+            }
+            else if (self.options.enableKeyMovement && (ev.keyCode >= 37 && ev.keyCode <= 40)) {
+                ev.preventDefault();
+                var movement = parseKeyDown(ev.keyCode);
+
+                transform = Transform.parse(self.elements.preview);
+                document.body.style[CSS_USERSELECT] = 'none';
+                vpRect = self.elements.viewport.getBoundingClientRect();
+                keyMove(movement);
+            }
+
+            function parseKeyDown(key) {
+                switch (key) {
+                    case LEFT_ARROW:
+                        return [1, 0];
+                    case UP_ARROW:
+                        return [0, 1];
+                    case RIGHT_ARROW:
+                        return [-1, 0];
+                    case DOWN_ARROW:
+                        return [0, -1];
+                }
+            }
+        }
+
+        function keyMove(movement) {
+            var deltaX = movement[0],
+                deltaY = movement[1],
+                newCss = {};
+
+            assignTransformCoordinates(deltaX, deltaY);
+
+            newCss[CSS_TRANSFORM] = transform.toString();
+            css(self.elements.preview, newCss);
+            _updateOverlay.call(self);
+            document.body.style[CSS_USERSELECT] = '';
+            _updateCenterPoint.call(self);
+            _triggerUpdate.call(self);
+            originalDistance = 0;
+        }
+
+        function mouseDown(ev) {
+            if (ev.button !== undefined && ev.button !== 0) return;
+
+            ev.preventDefault();
+            if (isDragging) return;
+            isDragging = true;
+            originalX = ev.pageX;
+            originalY = ev.pageY;
+
+            if (ev.touches) {
+                var touches = ev.touches[0];
+                originalX = touches.pageX;
+                originalY = touches.pageY;
+            }
+            toggleGrabState(isDragging);
+            transform = Transform.parse(self.elements.preview);
+            window.addEventListener('mousemove', mouseMove);
+            window.addEventListener('touchmove', mouseMove);
+            window.addEventListener('mouseup', mouseUp);
+            window.addEventListener('touchend', mouseUp);
+            document.body.style[CSS_USERSELECT] = 'none';
+            vpRect = self.elements.viewport.getBoundingClientRect();
+        }
+
+        function mouseMove(ev) {
+            ev.preventDefault();
+            var pageX = ev.pageX,
+                pageY = ev.pageY;
+
+            if (ev.touches) {
+                var touches = ev.touches[0];
+                pageX = touches.pageX;
+                pageY = touches.pageY;
+            }
+
+            var deltaX = pageX - originalX,
+                deltaY = pageY - originalY,
+                newCss = {};
+
+            if (ev.type === 'touchmove') {
+                if (ev.touches.length > 1) {
+                    var touch1 = ev.touches[0];
+                    var touch2 = ev.touches[1];
+                    var dist = Math.sqrt((touch1.pageX - touch2.pageX) * (touch1.pageX - touch2.pageX) + (touch1.pageY - touch2.pageY) * (touch1.pageY - touch2.pageY));
+
+                    if (!originalDistance) {
+                        originalDistance = dist / self._currentZoom;
+                    }
+
+                    var scale = dist / originalDistance;
+
+                    _setZoomerVal.call(self, scale);
+                    dispatchChange(self.elements.zoomer);
+                    return;
+                }
+            }
+
+            assignTransformCoordinates(deltaX, deltaY);
+
+            newCss[CSS_TRANSFORM] = transform.toString();
+            css(self.elements.preview, newCss);
+            _updateOverlay.call(self);
+            originalY = pageY;
+            originalX = pageX;
+        }
+
+        function mouseUp() {
+            isDragging = false;
+            toggleGrabState(isDragging);
+            window.removeEventListener('mousemove', mouseMove);
+            window.removeEventListener('touchmove', mouseMove);
+            window.removeEventListener('mouseup', mouseUp);
+            window.removeEventListener('touchend', mouseUp);
+            document.body.style[CSS_USERSELECT] = '';
+            _updateCenterPoint.call(self);
+            _triggerUpdate.call(self);
+            originalDistance = 0;
+        }
+
+        self.elements.overlay.addEventListener('mousedown', mouseDown);
+        self.elements.viewport.addEventListener('keydown', keyDown);
+        self.elements.overlay.addEventListener('touchstart', mouseDown);
+    }
+
+    function _updateOverlay() {
+        if (!this.elements) return; // since this is debounced, it can be fired after destroy
+        var self = this,
+            boundRect = self.elements.boundary.getBoundingClientRect(),
+            imgData = self.elements.preview.getBoundingClientRect();
+
+        css(self.elements.overlay, {
+            width: imgData.width + 'px',
+            height: imgData.height + 'px',
+            top: (imgData.top - boundRect.top) + 'px',
+            left: (imgData.left - boundRect.left) + 'px'
+        });
+    }
+    var _debouncedOverlay = debounce(_updateOverlay, 500);
+
+    function _triggerUpdate() {
+        var self = this,
+            data = self.get();
+
+        if (!_isVisible.call(self)) {
+            return;
+        }
+
+        self.options.update.call(self, data);
+        if (self.$ && typeof Prototype === 'undefined') {
+            self.$(self.element).trigger('update.croppie', data);
+        }
+        else {
+            var ev;
+            if (window.CustomEvent) {
+                ev = new CustomEvent('update', { detail: data });
+            } else {
+                ev = document.createEvent('CustomEvent');
+                ev.initCustomEvent('update', true, true, data);
+            }
+
+            self.element.dispatchEvent(ev);
+        }
+    }
+
+    function _isVisible() {
+        return this.elements.preview.offsetHeight > 0 && this.elements.preview.offsetWidth > 0;
+    }
+
+    function _updatePropertiesFromImage() {
+        var self = this,
+            initialZoom = 1,
+            cssReset = {},
+            img = self.elements.preview,
+            imgData,
+            transformReset = new Transform(0, 0, initialZoom),
+            originReset = new TransformOrigin(),
+            isVisible = _isVisible.call(self);
+
+        if (!isVisible || self.data.bound) {// if the croppie isn't visible or it doesn't need binding
+            return;
+        }
+
+        self.data.bound = true;
+        cssReset[CSS_TRANSFORM] = transformReset.toString();
+        cssReset[CSS_TRANS_ORG] = originReset.toString();
+        cssReset['opacity'] = 1;
+        css(img, cssReset);
+
+        imgData = self.elements.preview.getBoundingClientRect();
+
+        self._originalImageWidth = imgData.width;
+        self._originalImageHeight = imgData.height;
+        self.data.orientation = _hasExif.call(self) ? getExifOrientation(self.elements.img) : self.data.orientation;
+
+        if (self.options.enableZoom) {
+            _updateZoomLimits.call(self, true);
+        }
+        else {
+            self._currentZoom = initialZoom;
+        }
+
+        transformReset.scale = self._currentZoom;
+        cssReset[CSS_TRANSFORM] = transformReset.toString();
+        css(img, cssReset);
+
+        if (self.data.points.length) {
+            _bindPoints.call(self, self.data.points);
+        }
+        else {
+            _centerImage.call(self);
+        }
+
+        _updateCenterPoint.call(self);
+        _updateOverlay.call(self);
+    }
+
+    function _updateZoomLimits (initial) {
+        var self = this,
+            minZoom = Math.max(self.options.minZoom, 0) || 0,
+            maxZoom = self.options.maxZoom || 1.5,
+            initialZoom,
+            defaultInitialZoom,
+            zoomer = self.elements.zoomer,
+            scale = parseFloat(zoomer.value),
+            boundaryData = self.elements.boundary.getBoundingClientRect(),
+            imgData = naturalImageDimensions(self.elements.img, self.data.orientation),
+            vpData = self.elements.viewport.getBoundingClientRect(),
+            minW,
+            minH;
+        if (self.options.enforceBoundary) {
+            minW = vpData.width / imgData.width;
+            minH = vpData.height / imgData.height;
+            minZoom = Math.max(minW, minH);
+        }
+
+        if (minZoom >= maxZoom) {
+            maxZoom = minZoom + 1;
+        }
+
+        zoomer.min = fix(minZoom, 4);
+        zoomer.max = fix(maxZoom, 4);
+
+        if (!initial && (scale < zoomer.min || scale > zoomer.max)) {
+            _setZoomerVal.call(self, scale < zoomer.min ? zoomer.min : zoomer.max);
+        }
+        else if (initial) {
+            defaultInitialZoom = Math.max((boundaryData.width / imgData.width), (boundaryData.height / imgData.height));
+            initialZoom = self.data.boundZoom !== null ? self.data.boundZoom : defaultInitialZoom;
+            _setZoomerVal.call(self, initialZoom);
+        }
+
+        dispatchChange(zoomer);
+    }
+
+    function _bindPoints(points) {
+        if (points.length !== 4) {
+            throw "Croppie - Invalid number of points supplied: " + points;
+        }
+        var self = this,
+            pointsWidth = points[2] - points[0],
+            // pointsHeight = points[3] - points[1],
+            vpData = self.elements.viewport.getBoundingClientRect(),
+            boundRect = self.elements.boundary.getBoundingClientRect(),
+            vpOffset = {
+                left: vpData.left - boundRect.left,
+                top: vpData.top - boundRect.top
+            },
+            scale = vpData.width / pointsWidth,
+            originTop = points[1],
+            originLeft = points[0],
+            transformTop = (-1 * points[1]) + vpOffset.top,
+            transformLeft = (-1 * points[0]) + vpOffset.left,
+            newCss = {};
+
+        newCss[CSS_TRANS_ORG] = originLeft + 'px ' + originTop + 'px';
+        newCss[CSS_TRANSFORM] = new Transform(transformLeft, transformTop, scale).toString();
+        css(self.elements.preview, newCss);
+
+        _setZoomerVal.call(self, scale);
+        self._currentZoom = scale;
+    }
+
+    function _centerImage() {
+        var self = this,
+            imgDim = self.elements.preview.getBoundingClientRect(),
+            vpDim = self.elements.viewport.getBoundingClientRect(),
+            boundDim = self.elements.boundary.getBoundingClientRect(),
+            vpLeft = vpDim.left - boundDim.left,
+            vpTop = vpDim.top - boundDim.top,
+            w = vpLeft - ((imgDim.width - vpDim.width) / 2),
+            h = vpTop - ((imgDim.height - vpDim.height) / 2),
+            transform = new Transform(w, h, self._currentZoom);
+
+        css(self.elements.preview, CSS_TRANSFORM, transform.toString());
+    }
+
+    function _transferImageToCanvas(customOrientation) {
+        var self = this,
+            canvas = self.elements.canvas,
+            img = self.elements.img,
+            ctx = canvas.getContext('2d');
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        var orientation = self.options.enableOrientation && customOrientation || getExifOrientation(img);
+        drawCanvas(canvas, img, orientation);
+    }
+
+    function _getCanvas(data) {
+        var self = this,
+            points = data.points,
+            left = num(points[0]),
+            top = num(points[1]),
+            right = num(points[2]),
+            bottom = num(points[3]),
+            width = right-left,
+            height = bottom-top,
+            circle = data.circle,
+            canvas = document.createElement('canvas'),
+            ctx = canvas.getContext('2d'),
+            startX = 0,
+            startY = 0,
+            canvasWidth = data.outputWidth || width,
+            canvasHeight = data.outputHeight || height;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        if (data.backgroundColor) {
+            ctx.fillStyle = data.backgroundColor;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        }
+
+        // By default assume we're going to draw the entire
+        // source image onto the destination canvas.
+        var sx = left,
+            sy = top,
+            sWidth = width,
+            sHeight = height,
+            dx = 0,
+            dy = 0,
+            dWidth = canvasWidth,
+            dHeight = canvasHeight;
+
+        //
+        // Do not go outside of the original image's bounds along the x-axis.
+        // Handle translations when projecting onto the destination canvas.
+        //
+
+        // The smallest possible source x-position is 0.
+        if (left < 0) {
+            sx = 0;
+            dx = (Math.abs(left) / width) * canvasWidth;
+        }
+
+        // The largest possible source width is the original image's width.
+        if (sWidth + sx > self._originalImageWidth) {
+            sWidth = self._originalImageWidth - sx;
+            dWidth =  (sWidth / width) * canvasWidth;
+        }
+
+        //
+        // Do not go outside of the original image's bounds along the y-axis.
+        //
+
+        // The smallest possible source y-position is 0.
+        if (top < 0) {
+            sy = 0;
+            dy = (Math.abs(top) / height) * canvasHeight;
+        }
+
+        // The largest possible source height is the original image's height.
+        if (sHeight + sy > self._originalImageHeight) {
+            sHeight = self._originalImageHeight - sy;
+            dHeight = (sHeight / height) * canvasHeight;
+        }
+
+        // console.table({ left, right, top, bottom, canvasWidth, canvasHeight, width, height, startX, startY, circle, sx, sy, dx, dy, sWidth, sHeight, dWidth, dHeight });
+
+        ctx.drawImage(this.elements.preview, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        if (circle) {
+            ctx.fillStyle = '#fff';
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+        }
+        return canvas;
+    }
+
+    function _getHtmlResult(data) {
+        var points = data.points,
+            div = document.createElement('div'),
+            img = document.createElement('img'),
+            width = points[2] - points[0],
+            height = points[3] - points[1];
+
+        addClass(div, 'croppie-result');
+        div.appendChild(img);
+        css(img, {
+            left: (-1 * points[0]) + 'px',
+            top: (-1 * points[1]) + 'px'
+        });
+        img.src = data.url;
+        css(div, {
+            width: width + 'px',
+            height: height + 'px'
+        });
+
+        return div;
+    }
+
+    function _getBase64Result(data) {
+        return _getCanvas.call(this, data).toDataURL(data.format, data.quality);
+    }
+
+    function _getBlobResult(data) {
+        var self = this;
+        return new Promise(function (resolve) {
+            _getCanvas.call(self, data).toBlob(function (blob) {
+                resolve(blob);
+            }, data.format, data.quality);
+        });
+    }
+
+    function _replaceImage(img) {
+        if (this.elements.img.parentNode) {
+            Array.prototype.forEach.call(this.elements.img.classList, function(c) { img.classList.add(c); });
+            this.elements.img.parentNode.replaceChild(img, this.elements.img);
+            this.elements.preview = img; // if the img is attached to the DOM, they're not using the canvas
+        }
+        this.elements.img = img;
+    }
+
+    function _bind(options, cb) {
+        var self = this,
+            url,
+            points = [],
+            zoom = null,
+            hasExif = _hasExif.call(self);
+
+        if (typeof (options) === 'string') {
+            url = options;
+            options = {};
+        }
+        else if (Array.isArray(options)) {
+            points = options.slice();
+        }
+        else if (typeof (options) === 'undefined' && self.data.url) { //refreshing
+            _updatePropertiesFromImage.call(self);
+            _triggerUpdate.call(self);
+            return null;
+        }
+        else {
+            url = options.url;
+            points = options.points || [];
+            zoom = typeof(options.zoom) === 'undefined' ? null : options.zoom;
+        }
+
+        self.data.bound = false;
+        self.data.url = url || self.data.url;
+        self.data.boundZoom = zoom;
+
+        return loadImage(url, hasExif).then(function (img) {
+            _replaceImage.call(self, img);
+            if (!points.length) {
+                var natDim = naturalImageDimensions(img);
+                var rect = self.elements.viewport.getBoundingClientRect();
+                var aspectRatio = rect.width / rect.height;
+                var imgAspectRatio = natDim.width / natDim.height;
+                var width, height;
+
+                if (imgAspectRatio > aspectRatio) {
+                    height = natDim.height;
+                    width = height * aspectRatio;
+                }
+                else {
+                    width = natDim.width;
+                    height = natDim.height / aspectRatio;
+                }
+
+                var x0 = (natDim.width - width) / 2;
+                var y0 = (natDim.height - height) / 2;
+                var x1 = x0 + width;
+                var y1 = y0 + height;
+                self.data.points = [x0, y0, x1, y1];
+            }
+            else if (self.options.relative) {
+                points = [
+                    points[0] * img.naturalWidth / 100,
+                    points[1] * img.naturalHeight / 100,
+                    points[2] * img.naturalWidth / 100,
+                    points[3] * img.naturalHeight / 100
+                ];
+            }
+
+            self.data.orientation = options.orientation || 1;
+            self.data.points = points.map(function (p) {
+                return parseFloat(p);
+            });
+            if (self.options.useCanvas) {
+                _transferImageToCanvas.call(self, self.data.orientation);
+            }
+            _updatePropertiesFromImage.call(self);
+            _triggerUpdate.call(self);
+            cb && cb();
+        });
+    }
+
+    function fix(v, decimalPoints) {
+        return parseFloat(v).toFixed(decimalPoints || 0);
+    }
+
+    function _get() {
+        var self = this,
+            imgData = self.elements.preview.getBoundingClientRect(),
+            vpData = self.elements.viewport.getBoundingClientRect(),
+            x1 = vpData.left - imgData.left,
+            y1 = vpData.top - imgData.top,
+            widthDiff = (vpData.width - self.elements.viewport.offsetWidth) / 2, //border
+            heightDiff = (vpData.height - self.elements.viewport.offsetHeight) / 2,
+            x2 = x1 + self.elements.viewport.offsetWidth + widthDiff,
+            y2 = y1 + self.elements.viewport.offsetHeight + heightDiff,
+            scale = self._currentZoom;
+
+        if (scale === Infinity || isNaN(scale)) {
+            scale = 1;
+        }
+
+        var max = self.options.enforceBoundary ? 0 : Number.NEGATIVE_INFINITY;
+        x1 = Math.max(max, x1 / scale);
+        y1 = Math.max(max, y1 / scale);
+        x2 = Math.max(max, x2 / scale);
+        y2 = Math.max(max, y2 / scale);
+
+        return {
+            points: [fix(x1), fix(y1), fix(x2), fix(y2)],
+            zoom: scale,
+            orientation: self.data.orientation
+        };
+    }
+
+    var RESULT_DEFAULTS = {
+            type: 'canvas',
+            format: 'png',
+            quality: 1
+        },
+        RESULT_FORMATS = ['jpeg', 'webp', 'png'];
+
+    function _result(options) {
+        var self = this,
+            data = _get.call(self),
+            opts = deepExtend(clone(RESULT_DEFAULTS), clone(options)),
+            resultType = (typeof (options) === 'string' ? options : (opts.type || 'base64')),
+            size = opts.size || 'viewport',
+            format = opts.format,
+            quality = opts.quality,
+            backgroundColor = opts.backgroundColor,
+            circle = typeof opts.circle === 'boolean' ? opts.circle : (self.options.viewport.type === 'circle'),
+            vpRect = self.elements.viewport.getBoundingClientRect(),
+            ratio = vpRect.width / vpRect.height,
+            prom;
+
+        if (size === 'viewport') {
+            data.outputWidth = vpRect.width;
+            data.outputHeight = vpRect.height;
+        } else if (typeof size === 'object') {
+            if (size.width && size.height) {
+                data.outputWidth = size.width;
+                data.outputHeight = size.height;
+            } else if (size.width) {
+                data.outputWidth = size.width;
+                data.outputHeight = size.width / ratio;
+            } else if (size.height) {
+                data.outputWidth = size.height * ratio;
+                data.outputHeight = size.height;
+            }
+        }
+
+        if (RESULT_FORMATS.indexOf(format) > -1) {
+            data.format = 'image/' + format;
+            data.quality = quality;
+        }
+
+        data.circle = circle;
+        data.url = self.data.url;
+        data.backgroundColor = backgroundColor;
+
+        prom = new Promise(function (resolve) {
+            switch(resultType.toLowerCase())
+            {
+                case 'rawcanvas':
+                    resolve(_getCanvas.call(self, data));
+                    break;
+                case 'canvas':
+                case 'base64':
+                    resolve(_getBase64Result.call(self, data));
+                    break;
+                case 'blob':
+                    _getBlobResult.call(self, data).then(resolve);
+                    break;
+                default:
+                    resolve(_getHtmlResult.call(self, data));
+                    break;
+            }
+        });
+        return prom;
+    }
+
+    function _refresh() {
+        _updatePropertiesFromImage.call(this);
+    }
+
+    function _rotate(deg) {
+        if (!this.options.useCanvas || !this.options.enableOrientation) {
+            throw 'Croppie: Cannot rotate without enableOrientation && EXIF.js included';
+        }
+
+        var self = this,
+            canvas = self.elements.canvas;
+
+        self.data.orientation = getExifOffset(self.data.orientation, deg);
+        drawCanvas(canvas, self.elements.img, self.data.orientation);
+        _updateCenterPoint.call(self, true);
+        _updateZoomLimits.call(self);
+
+        // Reverses image dimensions if the degrees of rotation is not divisible by 180.
+        if ((Math.abs(deg) / 90) % 2 === 1) {
+            var oldHeight = self._originalImageHeight;
+            var oldWidth = self._originalImageWidth;
+            self._originalImageWidth = oldHeight;
+            self._originalImageHeight = oldWidth;
+        }
+    }
+
+    function _destroy() {
+        var self = this;
+        self.element.removeChild(self.elements.boundary);
+        removeClass(self.element, 'croppie-container');
+        if (self.options.enableZoom) {
+            self.element.removeChild(self.elements.zoomerWrap);
+        }
+        delete self.elements;
+    }
+
+    if (typeof window !== 'undefined' && window.jQuery) {
+        var $ = window.jQuery;
+        $.fn.croppie = function (opts) {
+            var ot = typeof opts;
+
+            if (ot === 'string') {
+                var args = Array.prototype.slice.call(arguments, 1);
+                var singleInst = $(this).data('croppie');
+
+                if (opts === 'get') {
+                    return singleInst.get();
+                }
+                else if (opts === 'result') {
+                    return singleInst.result.apply(singleInst, args);
+                }
+                else if (opts === 'bind') {
+                    return singleInst.bind.apply(singleInst, args);
+                }
+
+                return this.each(function () {
+                    var i = $(this).data('croppie');
+                    if (!i) return;
+
+                    var method = i[opts];
+                    if ($.isFunction(method)) {
+                        method.apply(i, args);
+                        if (opts === 'destroy') {
+                            $(this).removeData('croppie');
+                        }
+                    }
+                    else {
+                        throw 'Croppie ' + opts + ' method not found';
+                    }
+                });
+            }
+            else {
+                return this.each(function () {
+                    var i = new Croppie(this, opts);
+                    i.$ = $;
+                    $(this).data('croppie', i);
+                });
+            }
+        };
+    }
+
+    function Croppie(element, opts) {
+        if (element.className.indexOf('croppie-container') > -1) {
+            throw new Error("Croppie: Can't initialize croppie more than once");
+        }
+        this.element = element;
+        this.options = deepExtend(clone(Croppie.defaults), opts);
+
+        if (this.element.tagName.toLowerCase() === 'img') {
+            var origImage = this.element;
+            addClass(origImage, 'cr-original-image');
+            setAttributes(origImage, {'aria-hidden' : 'true', 'alt' : '' });
+            var replacementDiv = document.createElement('div');
+            this.element.parentNode.appendChild(replacementDiv);
+            replacementDiv.appendChild(origImage);
+            this.element = replacementDiv;
+            this.options.url = this.options.url || origImage.src;
+        }
+
+        _create.call(this);
+        if (this.options.url) {
+            var bindOpts = {
+                url: this.options.url,
+                points: this.options.points
+            };
+            delete this.options['url'];
+            delete this.options['points'];
+            _bind.call(this, bindOpts);
+        }
+    }
+
+    Croppie.defaults = {
+        viewport: {
+            width: 100,
+            height: 100,
+            type: 'square'
+        },
+        boundary: { },
+        orientationControls: {
+            enabled: true,
+            leftClass: '',
+            rightClass: ''
+        },
+        resizeControls: {
+            width: true,
+            height: true
+        },
+        customClass: '',
+        showZoomer: true,
+        enableZoom: true,
+        enableResize: false,
+        mouseWheelZoom: true,
+        enableExif: false,
+        enforceBoundary: true,
+        enableOrientation: false,
+        enableKeyMovement: true,
+        update: function () { }
+    };
+
+    Croppie.globals = {
+        translate: 'translate3d'
+    };
+
+    deepExtend(Croppie.prototype, {
+        bind: function (options, cb) {
+            return _bind.call(this, options, cb);
+        },
+        get: function () {
+            var data = _get.call(this);
+            var points = data.points;
+            if (this.options.relative) {
+                points[0] /= this.elements.img.naturalWidth / 100;
+                points[1] /= this.elements.img.naturalHeight / 100;
+                points[2] /= this.elements.img.naturalWidth / 100;
+                points[3] /= this.elements.img.naturalHeight / 100;
+            }
+            return data;
+        },
+        result: function (type) {
+            return _result.call(this, type);
+        },
+        refresh: function () {
+            return _refresh.call(this);
+        },
+        setZoom: function (v) {
+            _setZoomerVal.call(this, v);
+            dispatchChange(this.elements.zoomer);
+        },
+        rotate: function (deg) {
+            _rotate.call(this, deg);
+        },
+        destroy: function () {
+            return _destroy.call(this);
+        }
+    });
+    return Croppie;
+}));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(522).setImmediate))
+
+/***/ }),
+/* 513 */,
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(137);
-__webpack_require__(514);
-module.exports = __webpack_require__(548);
+module.exports = __webpack_require__(547);
 
 
 /***/ }),
-/* 514 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 519 */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(480);
-/* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(340);
-/* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(341);
-/* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(515);
-/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(481);
-/* harmony import */ var _member_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(516);
+/*!
+  * Bootstrap modal.js v4.3.1 (https://getbootstrap.com/)
+  * Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
+(function (global, factory) {
+   true ? module.exports = factory(__webpack_require__(34), __webpack_require__(339)) :
+  undefined;
+}(this, function ($, Util) { 'use strict';
+
+  $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
+  Util = Util && Util.hasOwnProperty('default') ? Util['default'] : Util;
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function _objectSpread(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+      var ownKeys = Object.keys(source);
+
+      if (typeof Object.getOwnPropertySymbols === 'function') {
+        ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+        }));
+      }
+
+      ownKeys.forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    }
+
+    return target;
+  }
+
+  /**
+   * ------------------------------------------------------------------------
+   * Constants
+   * ------------------------------------------------------------------------
+   */
+
+  var NAME = 'modal';
+  var VERSION = '4.3.1';
+  var DATA_KEY = 'bs.modal';
+  var EVENT_KEY = "." + DATA_KEY;
+  var DATA_API_KEY = '.data-api';
+  var JQUERY_NO_CONFLICT = $.fn[NAME];
+  var ESCAPE_KEYCODE = 27; // KeyboardEvent.which value for Escape (Esc) key
+
+  var Default = {
+    backdrop: true,
+    keyboard: true,
+    focus: true,
+    show: true
+  };
+  var DefaultType = {
+    backdrop: '(boolean|string)',
+    keyboard: 'boolean',
+    focus: 'boolean',
+    show: 'boolean'
+  };
+  var Event = {
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    FOCUSIN: "focusin" + EVENT_KEY,
+    RESIZE: "resize" + EVENT_KEY,
+    CLICK_DISMISS: "click.dismiss" + EVENT_KEY,
+    KEYDOWN_DISMISS: "keydown.dismiss" + EVENT_KEY,
+    MOUSEUP_DISMISS: "mouseup.dismiss" + EVENT_KEY,
+    MOUSEDOWN_DISMISS: "mousedown.dismiss" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
+  };
+  var ClassName = {
+    SCROLLABLE: 'modal-dialog-scrollable',
+    SCROLLBAR_MEASURER: 'modal-scrollbar-measure',
+    BACKDROP: 'modal-backdrop',
+    OPEN: 'modal-open',
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+  var Selector = {
+    DIALOG: '.modal-dialog',
+    MODAL_BODY: '.modal-body',
+    DATA_TOGGLE: '[data-toggle="modal"]',
+    DATA_DISMISS: '[data-dismiss="modal"]',
+    FIXED_CONTENT: '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top',
+    STICKY_CONTENT: '.sticky-top'
+    /**
+     * ------------------------------------------------------------------------
+     * Class Definition
+     * ------------------------------------------------------------------------
+     */
+
+  };
+
+  var Modal =
+  /*#__PURE__*/
+  function () {
+    function Modal(element, config) {
+      this._config = this._getConfig(config);
+      this._element = element;
+      this._dialog = element.querySelector(Selector.DIALOG);
+      this._backdrop = null;
+      this._isShown = false;
+      this._isBodyOverflowing = false;
+      this._ignoreBackdropClick = false;
+      this._isTransitioning = false;
+      this._scrollbarWidth = 0;
+    } // Getters
 
 
+    var _proto = Modal.prototype;
+
+    // Public
+    _proto.toggle = function toggle(relatedTarget) {
+      return this._isShown ? this.hide() : this.show(relatedTarget);
+    };
+
+    _proto.show = function show(relatedTarget) {
+      var _this = this;
+
+      if (this._isShown || this._isTransitioning) {
+        return;
+      }
+
+      if ($(this._element).hasClass(ClassName.FADE)) {
+        this._isTransitioning = true;
+      }
+
+      var showEvent = $.Event(Event.SHOW, {
+        relatedTarget: relatedTarget
+      });
+      $(this._element).trigger(showEvent);
+
+      if (this._isShown || showEvent.isDefaultPrevented()) {
+        return;
+      }
+
+      this._isShown = true;
+
+      this._checkScrollbar();
+
+      this._setScrollbar();
+
+      this._adjustDialog();
+
+      this._setEscapeEvent();
+
+      this._setResizeEvent();
+
+      $(this._element).on(Event.CLICK_DISMISS, Selector.DATA_DISMISS, function (event) {
+        return _this.hide(event);
+      });
+      $(this._dialog).on(Event.MOUSEDOWN_DISMISS, function () {
+        $(_this._element).one(Event.MOUSEUP_DISMISS, function (event) {
+          if ($(event.target).is(_this._element)) {
+            _this._ignoreBackdropClick = true;
+          }
+        });
+      });
+
+      this._showBackdrop(function () {
+        return _this._showElement(relatedTarget);
+      });
+    };
+
+    _proto.hide = function hide(event) {
+      var _this2 = this;
+
+      if (event) {
+        event.preventDefault();
+      }
+
+      if (!this._isShown || this._isTransitioning) {
+        return;
+      }
+
+      var hideEvent = $.Event(Event.HIDE);
+      $(this._element).trigger(hideEvent);
+
+      if (!this._isShown || hideEvent.isDefaultPrevented()) {
+        return;
+      }
+
+      this._isShown = false;
+      var transition = $(this._element).hasClass(ClassName.FADE);
+
+      if (transition) {
+        this._isTransitioning = true;
+      }
+
+      this._setEscapeEvent();
+
+      this._setResizeEvent();
+
+      $(document).off(Event.FOCUSIN);
+      $(this._element).removeClass(ClassName.SHOW);
+      $(this._element).off(Event.CLICK_DISMISS);
+      $(this._dialog).off(Event.MOUSEDOWN_DISMISS);
+
+      if (transition) {
+        var transitionDuration = Util.getTransitionDurationFromElement(this._element);
+        $(this._element).one(Util.TRANSITION_END, function (event) {
+          return _this2._hideModal(event);
+        }).emulateTransitionEnd(transitionDuration);
+      } else {
+        this._hideModal();
+      }
+    };
+
+    _proto.dispose = function dispose() {
+      [window, this._element, this._dialog].forEach(function (htmlElement) {
+        return $(htmlElement).off(EVENT_KEY);
+      });
+      /**
+       * `document` has 2 events `Event.FOCUSIN` and `Event.CLICK_DATA_API`
+       * Do not move `document` in `htmlElements` array
+       * It will remove `Event.CLICK_DATA_API` event that should remain
+       */
+
+      $(document).off(Event.FOCUSIN);
+      $.removeData(this._element, DATA_KEY);
+      this._config = null;
+      this._element = null;
+      this._dialog = null;
+      this._backdrop = null;
+      this._isShown = null;
+      this._isBodyOverflowing = null;
+      this._ignoreBackdropClick = null;
+      this._isTransitioning = null;
+      this._scrollbarWidth = null;
+    };
+
+    _proto.handleUpdate = function handleUpdate() {
+      this._adjustDialog();
+    } // Private
+    ;
+
+    _proto._getConfig = function _getConfig(config) {
+      config = _objectSpread({}, Default, config);
+      Util.typeCheckConfig(NAME, config, DefaultType);
+      return config;
+    };
+
+    _proto._showElement = function _showElement(relatedTarget) {
+      var _this3 = this;
+
+      var transition = $(this._element).hasClass(ClassName.FADE);
+
+      if (!this._element.parentNode || this._element.parentNode.nodeType !== Node.ELEMENT_NODE) {
+        // Don't move modal's DOM position
+        document.body.appendChild(this._element);
+      }
+
+      this._element.style.display = 'block';
+
+      this._element.removeAttribute('aria-hidden');
+
+      this._element.setAttribute('aria-modal', true);
+
+      if ($(this._dialog).hasClass(ClassName.SCROLLABLE)) {
+        this._dialog.querySelector(Selector.MODAL_BODY).scrollTop = 0;
+      } else {
+        this._element.scrollTop = 0;
+      }
+
+      if (transition) {
+        Util.reflow(this._element);
+      }
+
+      $(this._element).addClass(ClassName.SHOW);
+
+      if (this._config.focus) {
+        this._enforceFocus();
+      }
+
+      var shownEvent = $.Event(Event.SHOWN, {
+        relatedTarget: relatedTarget
+      });
+
+      var transitionComplete = function transitionComplete() {
+        if (_this3._config.focus) {
+          _this3._element.focus();
+        }
+
+        _this3._isTransitioning = false;
+        $(_this3._element).trigger(shownEvent);
+      };
+
+      if (transition) {
+        var transitionDuration = Util.getTransitionDurationFromElement(this._dialog);
+        $(this._dialog).one(Util.TRANSITION_END, transitionComplete).emulateTransitionEnd(transitionDuration);
+      } else {
+        transitionComplete();
+      }
+    };
+
+    _proto._enforceFocus = function _enforceFocus() {
+      var _this4 = this;
+
+      $(document).off(Event.FOCUSIN) // Guard against infinite focus loop
+      .on(Event.FOCUSIN, function (event) {
+        if (document !== event.target && _this4._element !== event.target && $(_this4._element).has(event.target).length === 0) {
+          _this4._element.focus();
+        }
+      });
+    };
+
+    _proto._setEscapeEvent = function _setEscapeEvent() {
+      var _this5 = this;
+
+      if (this._isShown && this._config.keyboard) {
+        $(this._element).on(Event.KEYDOWN_DISMISS, function (event) {
+          if (event.which === ESCAPE_KEYCODE) {
+            event.preventDefault();
+
+            _this5.hide();
+          }
+        });
+      } else if (!this._isShown) {
+        $(this._element).off(Event.KEYDOWN_DISMISS);
+      }
+    };
+
+    _proto._setResizeEvent = function _setResizeEvent() {
+      var _this6 = this;
+
+      if (this._isShown) {
+        $(window).on(Event.RESIZE, function (event) {
+          return _this6.handleUpdate(event);
+        });
+      } else {
+        $(window).off(Event.RESIZE);
+      }
+    };
+
+    _proto._hideModal = function _hideModal() {
+      var _this7 = this;
+
+      this._element.style.display = 'none';
+
+      this._element.setAttribute('aria-hidden', true);
+
+      this._element.removeAttribute('aria-modal');
+
+      this._isTransitioning = false;
+
+      this._showBackdrop(function () {
+        $(document.body).removeClass(ClassName.OPEN);
+
+        _this7._resetAdjustments();
+
+        _this7._resetScrollbar();
+
+        $(_this7._element).trigger(Event.HIDDEN);
+      });
+    };
+
+    _proto._removeBackdrop = function _removeBackdrop() {
+      if (this._backdrop) {
+        $(this._backdrop).remove();
+        this._backdrop = null;
+      }
+    };
+
+    _proto._showBackdrop = function _showBackdrop(callback) {
+      var _this8 = this;
+
+      var animate = $(this._element).hasClass(ClassName.FADE) ? ClassName.FADE : '';
+
+      if (this._isShown && this._config.backdrop) {
+        this._backdrop = document.createElement('div');
+        this._backdrop.className = ClassName.BACKDROP;
+
+        if (animate) {
+          this._backdrop.classList.add(animate);
+        }
+
+        $(this._backdrop).appendTo(document.body);
+        $(this._element).on(Event.CLICK_DISMISS, function (event) {
+          if (_this8._ignoreBackdropClick) {
+            _this8._ignoreBackdropClick = false;
+            return;
+          }
+
+          if (event.target !== event.currentTarget) {
+            return;
+          }
+
+          if (_this8._config.backdrop === 'static') {
+            _this8._element.focus();
+          } else {
+            _this8.hide();
+          }
+        });
+
+        if (animate) {
+          Util.reflow(this._backdrop);
+        }
+
+        $(this._backdrop).addClass(ClassName.SHOW);
+
+        if (!callback) {
+          return;
+        }
+
+        if (!animate) {
+          callback();
+          return;
+        }
+
+        var backdropTransitionDuration = Util.getTransitionDurationFromElement(this._backdrop);
+        $(this._backdrop).one(Util.TRANSITION_END, callback).emulateTransitionEnd(backdropTransitionDuration);
+      } else if (!this._isShown && this._backdrop) {
+        $(this._backdrop).removeClass(ClassName.SHOW);
+
+        var callbackRemove = function callbackRemove() {
+          _this8._removeBackdrop();
+
+          if (callback) {
+            callback();
+          }
+        };
+
+        if ($(this._element).hasClass(ClassName.FADE)) {
+          var _backdropTransitionDuration = Util.getTransitionDurationFromElement(this._backdrop);
+
+          $(this._backdrop).one(Util.TRANSITION_END, callbackRemove).emulateTransitionEnd(_backdropTransitionDuration);
+        } else {
+          callbackRemove();
+        }
+      } else if (callback) {
+        callback();
+      }
+    } // ----------------------------------------------------------------------
+    // the following methods are used to handle overflowing modals
+    // todo (fat): these should probably be refactored out of modal.js
+    // ----------------------------------------------------------------------
+    ;
+
+    _proto._adjustDialog = function _adjustDialog() {
+      var isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
+
+      if (!this._isBodyOverflowing && isModalOverflowing) {
+        this._element.style.paddingLeft = this._scrollbarWidth + "px";
+      }
+
+      if (this._isBodyOverflowing && !isModalOverflowing) {
+        this._element.style.paddingRight = this._scrollbarWidth + "px";
+      }
+    };
+
+    _proto._resetAdjustments = function _resetAdjustments() {
+      this._element.style.paddingLeft = '';
+      this._element.style.paddingRight = '';
+    };
+
+    _proto._checkScrollbar = function _checkScrollbar() {
+      var rect = document.body.getBoundingClientRect();
+      this._isBodyOverflowing = rect.left + rect.right < window.innerWidth;
+      this._scrollbarWidth = this._getScrollbarWidth();
+    };
+
+    _proto._setScrollbar = function _setScrollbar() {
+      var _this9 = this;
+
+      if (this._isBodyOverflowing) {
+        // Note: DOMNode.style.paddingRight returns the actual value or '' if not set
+        //   while $(DOMNode).css('padding-right') returns the calculated value or 0 if not set
+        var fixedContent = [].slice.call(document.querySelectorAll(Selector.FIXED_CONTENT));
+        var stickyContent = [].slice.call(document.querySelectorAll(Selector.STICKY_CONTENT)); // Adjust fixed content padding
+
+        $(fixedContent).each(function (index, element) {
+          var actualPadding = element.style.paddingRight;
+          var calculatedPadding = $(element).css('padding-right');
+          $(element).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + _this9._scrollbarWidth + "px");
+        }); // Adjust sticky content margin
+
+        $(stickyContent).each(function (index, element) {
+          var actualMargin = element.style.marginRight;
+          var calculatedMargin = $(element).css('margin-right');
+          $(element).data('margin-right', actualMargin).css('margin-right', parseFloat(calculatedMargin) - _this9._scrollbarWidth + "px");
+        }); // Adjust body padding
+
+        var actualPadding = document.body.style.paddingRight;
+        var calculatedPadding = $(document.body).css('padding-right');
+        $(document.body).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + this._scrollbarWidth + "px");
+      }
+
+      $(document.body).addClass(ClassName.OPEN);
+    };
+
+    _proto._resetScrollbar = function _resetScrollbar() {
+      // Restore fixed content padding
+      var fixedContent = [].slice.call(document.querySelectorAll(Selector.FIXED_CONTENT));
+      $(fixedContent).each(function (index, element) {
+        var padding = $(element).data('padding-right');
+        $(element).removeData('padding-right');
+        element.style.paddingRight = padding ? padding : '';
+      }); // Restore sticky content
+
+      var elements = [].slice.call(document.querySelectorAll("" + Selector.STICKY_CONTENT));
+      $(elements).each(function (index, element) {
+        var margin = $(element).data('margin-right');
+
+        if (typeof margin !== 'undefined') {
+          $(element).css('margin-right', margin).removeData('margin-right');
+        }
+      }); // Restore body padding
+
+      var padding = $(document.body).data('padding-right');
+      $(document.body).removeData('padding-right');
+      document.body.style.paddingRight = padding ? padding : '';
+    };
+
+    _proto._getScrollbarWidth = function _getScrollbarWidth() {
+      // thx d.walsh
+      var scrollDiv = document.createElement('div');
+      scrollDiv.className = ClassName.SCROLLBAR_MEASURER;
+      document.body.appendChild(scrollDiv);
+      var scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
+      document.body.removeChild(scrollDiv);
+      return scrollbarWidth;
+    } // Static
+    ;
+
+    Modal._jQueryInterface = function _jQueryInterface(config, relatedTarget) {
+      return this.each(function () {
+        var data = $(this).data(DATA_KEY);
+
+        var _config = _objectSpread({}, Default, $(this).data(), typeof config === 'object' && config ? config : {});
+
+        if (!data) {
+          data = new Modal(this, _config);
+          $(this).data(DATA_KEY, data);
+        }
+
+        if (typeof config === 'string') {
+          if (typeof data[config] === 'undefined') {
+            throw new TypeError("No method named \"" + config + "\"");
+          }
+
+          data[config](relatedTarget);
+        } else if (_config.show) {
+          data.show(relatedTarget);
+        }
+      });
+    };
+
+    _createClass(Modal, null, [{
+      key: "VERSION",
+      get: function get() {
+        return VERSION;
+      }
+    }, {
+      key: "Default",
+      get: function get() {
+        return Default;
+      }
+    }]);
+
+    return Modal;
+  }();
+  /**
+   * ------------------------------------------------------------------------
+   * Data Api implementation
+   * ------------------------------------------------------------------------
+   */
 
 
+  $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
+    var _this10 = this;
 
+    var target;
+    var selector = Util.getSelectorFromElement(this);
 
-console.log('page home messenger');
+    if (selector) {
+      target = document.querySelector(selector);
+    }
 
-/***/ }),
-/* 515 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+    var config = $(target).data(DATA_KEY) ? 'toggle' : _objectSpread({}, $(target).data(), $(this).data());
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {var Emoji = function () {
-  var wrapInputChat = document.querySelector('.wrap-chat-input');
+    if (this.tagName === 'A' || this.tagName === 'AREA') {
+      event.preventDefault();
+    }
 
-  if (wrapInputChat) {
-    var emojiData = '[{"emoji":"👍","dec":128077},{"emoji":"👎","dec":128078},{"emoji":"🤚","dec":129306},{"emoji":"💖","dec":128150},{"emoji":"😀","dec":128512},{"emoji":"😁","dec":128513},{"emoji":"😂","dec":128514},{"emoji":"😃","dec":128515},{"emoji":"😄","dec":128516},{"emoji":"😅","dec":128517},{"emoji":"😆","dec":128518},{"emoji":"😇","dec":128519},{"emoji":"😈","dec":128520},{"emoji":"😉","dec":128521},{"emoji":"😊","dec":128522},{"emoji":"😋","dec":128523},{"emoji":"😌","dec":128524},{"emoji":"😍","dec":128525},{"emoji":"😎","dec":128526},{"emoji":"😏","dec":128527},{"emoji":"😐","dec":128528},{"emoji":"😑","dec":128529},{"emoji":"😒","dec":128530},{"emoji":"😓","dec":128531},{"emoji":"😔","dec":128532},{"emoji":"😕","dec":128533},{"emoji":"😖","dec":128534},{"emoji":"😗","dec":128535},{"emoji":"😘","dec":128536},{"emoji":"😙","dec":128537},{"emoji":"😚","dec":128538},{"emoji":"😛","dec":128539},{"emoji":"😜","dec":128540},{"emoji":"😝","dec":128541},{"emoji":"😞","dec":128542},{"emoji":"😟","dec":128543},{"emoji":"😠","dec":128544},{"emoji":"😡","dec":128545},{"emoji":"😢","dec":128546},{"emoji":"😣","dec":128547},{"emoji":"😤","dec":128548},{"emoji":"😥","dec":128549},{"emoji":"😦","dec":128550},{"emoji":"😧","dec":128551},{"emoji":"😨","dec":128552},{"emoji":"😩","dec":128553},{"emoji":"😪","dec":128554},{"emoji":"😫","dec":128555},{"emoji":"😬","dec":128556},{"emoji":"😭","dec":128557},{"emoji":"😮","dec":128558},{"emoji":"😯","dec":128559},{"emoji":"😰","dec":128560},{"emoji":"😱","dec":128561},{"emoji":"😲","dec":128562},{"emoji":"😳","dec":128563},{"emoji":"😴","dec":128564},{"emoji":"😵","dec":128565},{"emoji":"😶","dec":128566},{"emoji":"😷","dec":128567},{"emoji":"🙁","dec":128577},{"emoji":"🙂","dec":128578},{"emoji":"🙃","dec":128579},{"emoji":"🙄","dec":128580},{"emoji":"🤐","dec":129296},{"emoji":"🤑","dec":129297},{"emoji":"🤒","dec":129298},{"emoji":"🤓","dec":129299},{"emoji":"🤔","dec":129300},{"emoji":"🤕","dec":129301},{"emoji":"🤠","dec":129312},{"emoji":"🤡","dec":129313},{"emoji":"🤢","dec":129314},{"emoji":"🤣","dec":129315},{"emoji":"🤤","dec":129316},{"emoji":"🤥","dec":129317},{"emoji":"🤧","dec":129319},{"emoji":"🤨","dec":129320},{"emoji":"🤩","dec":129321},{"emoji":"🤪","dec":129322},{"emoji":"🤫","dec":129323},{"emoji":"🤬","dec":129324},{"emoji":"🤭","dec":129325},{"emoji":"🤮","dec":129326},{"emoji":"🤯","dec":129327},{"emoji":"🧐","dec":129488}]';
-    var wrapEmoji = document.createElement('div');
-    $(wrapEmoji).addClass('wrap-emojis');
-    wrapEmoji.innerHTML = JSON.parse(emojiData).map(function (emoji) {
-      return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
-    }).join('');
-    wrapInputChat.appendChild(wrapEmoji);
-    document.querySelectorAll('.emoji-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.getElementById('msg').value += this.innerHTML;
-        document.getElementById('msg').focus(); // $('.wrap-emojis').removeClass('is-active');
+    var $target = $(target).one(Event.SHOW, function (showEvent) {
+      if (showEvent.isDefaultPrevented()) {
+        // Only register focus restorer if modal will actually get shown
+        return;
+      }
+
+      $target.one(Event.HIDDEN, function () {
+        if ($(_this10).is(':visible')) {
+          _this10.focus();
+        }
       });
     });
-    $(document).on('click', '.open-emojis', function () {
-      if ($('.wrap-emojis').hasClass('is-active')) {
-        $('.wrap-emojis').removeClass('is-active');
-      } else {
-        $('.wrap-emojis').addClass('is-active');
-      }
-    });
-    $(document).on('click', function (e) {
-      var $target = $(e.target);
 
-      if (!$target.closest('.wrap-emojis').length && !$target.closest('.open-emojis').length && $('.wrap-emojis').hasClass('is-active')) {
-        $('.wrap-emojis').removeClass('is-active');
-      }
-    });
-  }
-}();
+    Modal._jQueryInterface.call($(target), config, this);
+  });
+  /**
+   * ------------------------------------------------------------------------
+   * jQuery
+   * ------------------------------------------------------------------------
+   */
 
-/* unused harmony default export */ var _unused_webpack_default_export = (Emoji);
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
+  $.fn[NAME] = Modal._jQueryInterface;
+  $.fn[NAME].Constructor = Modal;
+
+  $.fn[NAME].noConflict = function () {
+    $.fn[NAME] = JQUERY_NO_CONFLICT;
+    return Modal._jQueryInterface;
+  };
+
+  return Modal;
+
+}));
+//# sourceMappingURL=modal.js.map
+
 
 /***/ }),
-/* 516 */
+/* 520 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+  * Bootstrap tab.js v4.3.1 (https://getbootstrap.com/)
+  * Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
+(function (global, factory) {
+   true ? module.exports = factory(__webpack_require__(34), __webpack_require__(339)) :
+  undefined;
+}(this, function ($, Util) { 'use strict';
+
+  $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
+  Util = Util && Util.hasOwnProperty('default') ? Util['default'] : Util;
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  /**
+   * ------------------------------------------------------------------------
+   * Constants
+   * ------------------------------------------------------------------------
+   */
+
+  var NAME = 'tab';
+  var VERSION = '4.3.1';
+  var DATA_KEY = 'bs.tab';
+  var EVENT_KEY = "." + DATA_KEY;
+  var DATA_API_KEY = '.data-api';
+  var JQUERY_NO_CONFLICT = $.fn[NAME];
+  var Event = {
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
+  };
+  var ClassName = {
+    DROPDOWN_MENU: 'dropdown-menu',
+    ACTIVE: 'active',
+    DISABLED: 'disabled',
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+  var Selector = {
+    DROPDOWN: '.dropdown',
+    NAV_LIST_GROUP: '.nav, .list-group',
+    ACTIVE: '.active',
+    ACTIVE_UL: '> li > .active',
+    DATA_TOGGLE: '[data-toggle="tab"], [data-toggle="pill"], [data-toggle="list"]',
+    DROPDOWN_TOGGLE: '.dropdown-toggle',
+    DROPDOWN_ACTIVE_CHILD: '> .dropdown-menu .active'
+    /**
+     * ------------------------------------------------------------------------
+     * Class Definition
+     * ------------------------------------------------------------------------
+     */
+
+  };
+
+  var Tab =
+  /*#__PURE__*/
+  function () {
+    function Tab(element) {
+      this._element = element;
+    } // Getters
+
+
+    var _proto = Tab.prototype;
+
+    // Public
+    _proto.show = function show() {
+      var _this = this;
+
+      if (this._element.parentNode && this._element.parentNode.nodeType === Node.ELEMENT_NODE && $(this._element).hasClass(ClassName.ACTIVE) || $(this._element).hasClass(ClassName.DISABLED)) {
+        return;
+      }
+
+      var target;
+      var previous;
+      var listElement = $(this._element).closest(Selector.NAV_LIST_GROUP)[0];
+      var selector = Util.getSelectorFromElement(this._element);
+
+      if (listElement) {
+        var itemSelector = listElement.nodeName === 'UL' || listElement.nodeName === 'OL' ? Selector.ACTIVE_UL : Selector.ACTIVE;
+        previous = $.makeArray($(listElement).find(itemSelector));
+        previous = previous[previous.length - 1];
+      }
+
+      var hideEvent = $.Event(Event.HIDE, {
+        relatedTarget: this._element
+      });
+      var showEvent = $.Event(Event.SHOW, {
+        relatedTarget: previous
+      });
+
+      if (previous) {
+        $(previous).trigger(hideEvent);
+      }
+
+      $(this._element).trigger(showEvent);
+
+      if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) {
+        return;
+      }
+
+      if (selector) {
+        target = document.querySelector(selector);
+      }
+
+      this._activate(this._element, listElement);
+
+      var complete = function complete() {
+        var hiddenEvent = $.Event(Event.HIDDEN, {
+          relatedTarget: _this._element
+        });
+        var shownEvent = $.Event(Event.SHOWN, {
+          relatedTarget: previous
+        });
+        $(previous).trigger(hiddenEvent);
+        $(_this._element).trigger(shownEvent);
+      };
+
+      if (target) {
+        this._activate(target, target.parentNode, complete);
+      } else {
+        complete();
+      }
+    };
+
+    _proto.dispose = function dispose() {
+      $.removeData(this._element, DATA_KEY);
+      this._element = null;
+    } // Private
+    ;
+
+    _proto._activate = function _activate(element, container, callback) {
+      var _this2 = this;
+
+      var activeElements = container && (container.nodeName === 'UL' || container.nodeName === 'OL') ? $(container).find(Selector.ACTIVE_UL) : $(container).children(Selector.ACTIVE);
+      var active = activeElements[0];
+      var isTransitioning = callback && active && $(active).hasClass(ClassName.FADE);
+
+      var complete = function complete() {
+        return _this2._transitionComplete(element, active, callback);
+      };
+
+      if (active && isTransitioning) {
+        var transitionDuration = Util.getTransitionDurationFromElement(active);
+        $(active).removeClass(ClassName.SHOW).one(Util.TRANSITION_END, complete).emulateTransitionEnd(transitionDuration);
+      } else {
+        complete();
+      }
+    };
+
+    _proto._transitionComplete = function _transitionComplete(element, active, callback) {
+      if (active) {
+        $(active).removeClass(ClassName.ACTIVE);
+        var dropdownChild = $(active.parentNode).find(Selector.DROPDOWN_ACTIVE_CHILD)[0];
+
+        if (dropdownChild) {
+          $(dropdownChild).removeClass(ClassName.ACTIVE);
+        }
+
+        if (active.getAttribute('role') === 'tab') {
+          active.setAttribute('aria-selected', false);
+        }
+      }
+
+      $(element).addClass(ClassName.ACTIVE);
+
+      if (element.getAttribute('role') === 'tab') {
+        element.setAttribute('aria-selected', true);
+      }
+
+      Util.reflow(element);
+
+      if (element.classList.contains(ClassName.FADE)) {
+        element.classList.add(ClassName.SHOW);
+      }
+
+      if (element.parentNode && $(element.parentNode).hasClass(ClassName.DROPDOWN_MENU)) {
+        var dropdownElement = $(element).closest(Selector.DROPDOWN)[0];
+
+        if (dropdownElement) {
+          var dropdownToggleList = [].slice.call(dropdownElement.querySelectorAll(Selector.DROPDOWN_TOGGLE));
+          $(dropdownToggleList).addClass(ClassName.ACTIVE);
+        }
+
+        element.setAttribute('aria-expanded', true);
+      }
+
+      if (callback) {
+        callback();
+      }
+    } // Static
+    ;
+
+    Tab._jQueryInterface = function _jQueryInterface(config) {
+      return this.each(function () {
+        var $this = $(this);
+        var data = $this.data(DATA_KEY);
+
+        if (!data) {
+          data = new Tab(this);
+          $this.data(DATA_KEY, data);
+        }
+
+        if (typeof config === 'string') {
+          if (typeof data[config] === 'undefined') {
+            throw new TypeError("No method named \"" + config + "\"");
+          }
+
+          data[config]();
+        }
+      });
+    };
+
+    _createClass(Tab, null, [{
+      key: "VERSION",
+      get: function get() {
+        return VERSION;
+      }
+    }]);
+
+    return Tab;
+  }();
+  /**
+   * ------------------------------------------------------------------------
+   * Data Api implementation
+   * ------------------------------------------------------------------------
+   */
+
+
+  $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
+    event.preventDefault();
+
+    Tab._jQueryInterface.call($(this), 'show');
+  });
+  /**
+   * ------------------------------------------------------------------------
+   * jQuery
+   * ------------------------------------------------------------------------
+   */
+
+  $.fn[NAME] = Tab._jQueryInterface;
+  $.fn[NAME].Constructor = Tab;
+
+  $.fn[NAME].noConflict = function () {
+    $.fn[NAME] = JQUERY_NO_CONFLICT;
+    return Tab._jQueryInterface;
+  };
+
+  return Tab;
+
+}));
+//# sourceMappingURL=tab.js.map
+
+
+/***/ }),
+/* 521 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(134);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(517);
+/* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(512);
+/* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(croppie__WEBPACK_IMPORTED_MODULE_1__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -40969,198 +43480,708 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-var Index = function () {
-  var chatMain = document.getElementById('main-right-chat-content');
-  var msgForm = document.sendMsgForm; // form chat
-
-  var hasMessenger = true; // has old msg
-
-  var currentPageChat = 0; // current page load old chat
-
-  var classScBottom = '.scroll-bottom'; // scroll bottom
-
-  chatMain.scrollTop = chatMain.scrollHeight;
-
-  if (msgForm) {
-    var friendIdChatting = $('#main-right').attr('data-id'); // event submit form chat
-
-    msgForm.addEventListener('submit', function (e) {
-      // stop submit form
-      e.preventDefault(); // input message
-
-      var inputMsg = e.target.elements.message;
-
-      if (inputMsg.value !== '') {
-        // send message to server
-        window.window.socket.emit('msg-messageChat', {
-          message: inputMsg.value,
-          token: e.target.elements._token.value
-        }); // create message obj to show in client
-
-        window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
-
-        chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
-
-        inputMsg.value = ''; // focus input message
-
-        inputMsg.focus();
-      }
-    }); // change height form input msg
-
-    $(document).on('keydown', '#msg', function (e) {
-      if (e.which === 13 && !e.shiftKey) {
-        e.preventDefault();
-        $(msgForm).find('button.text-secondary').trigger('click');
-        $(this).css('height', '35px');
-      }
-    }).on('input', '#msg', function () {
-      $(this).css('height', '5px');
-      $(this).css('height', "".concat(this.scrollHeight, "px"));
-    }).on('focus', '#msg', function () {
-      $(this).parents('.wrap-msg-box').addClass('is-focus');
-    }).on('blur', '#msg', function () {
-      $(this).parents('.wrap-msg-box').removeClass('is-focus');
-    }); // handle scroll box chat: load old msg, scroll to bottom
-
-    $('#main-right-chat-content').on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll;
-
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              if (!(this.scrollTop === 0 && hasMessenger === true)) {
-                _context.next = 23;
-                break;
-              }
-
-              $('.wrap-loader-chat').removeClass('d-none');
-              _context.prev = 2;
-              _context.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/chatold/?friendid=".concat(friendIdChatting, "&page=").concat(currentPageChat + 1));
-
-            case 5:
-              responsive = _context.sent;
-              _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg;
-              $('.wrap-loader-chat').addClass('d-none');
-              currentPageChat++;
-              hasMessenger = hasMsg;
-              htmlMsgs = messages.map(function (msg) {
-                if (msg.me) {
-                  return "\n                <div class=\"message text-right\">\n                  <small class=\"message-time\">".concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      <small class=\"message-content mx-0\">").concat(msg.content, "</small>\n                    </div>\n                  </div>\n                </div>");
+var Profile = function () {
+  if ($('#main .profile-page').length) {
+    var loadDataFriend = /*#__PURE__*/function () {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(hash) {
+        var responsive, friends, requests, invitations;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (!(hash === '#friend')) {
+                  _context5.next = 14;
+                  break;
                 }
 
-                return "\n              <div class=\"message\">\n                <small class=\"message-time\">".concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    <small class=\"message-content\">").concat(msg.content, "</small>\n                  </div>\n                </div>\n              </div>");
-              }).join(''); // prepend msg list and hold position scroll top of chat box
+                _context5.prev = 1;
+                _context5.next = 4;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friends');
 
-              curScrollPos = this.scrollTop;
-              oldScroll = this.scrollHeight - this.clientHeight;
-              $(this).prepend(htmlMsgs);
-              newScroll = this.scrollHeight - this.clientHeight;
-              this.scrollTop = curScrollPos + (newScroll - oldScroll);
-              _context.next = 21;
-              break;
+              case 4:
+                responsive = _context5.sent;
+                friends = responsive.data.friends;
+                friendContent.innerHTML = friends.map(function (friend) {
+                  return "<div class=\"col-md-6\">\n            <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n              <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" />\n              <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\"><strong>").concat(friend.name, "</strong></a>\n              <div class=\"d-flex flex-column\">\n                <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                <button class=\"btn btn-red mt-1\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n              </div>\n            </div>\n          </div>");
+                }).join('');
+                _context5.next = 12;
+                break;
 
-            case 18:
-              _context.prev = 18;
-              _context.t0 = _context["catch"](2);
-              window.outputErrorMessage(_context.t0.message);
+              case 9:
+                _context5.prev = 9;
+                _context5.t0 = _context5["catch"](1);
+                console.error(_context5.t0);
 
-            case 21:
-              _context.next = 24;
-              break;
+              case 12:
+                _context5.next = 40;
+                break;
 
-            case 23:
-              if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-                $(classScBottom).addClass('is-show');
-              } else {
-                $(classScBottom).removeClass('is-show');
-              }
+              case 14:
+                if (!(hash === '#friend-request')) {
+                  _context5.next = 27;
+                  break;
+                }
 
-            case 24:
-            case "end":
-              return _context.stop();
+                _context5.prev = 15;
+                _context5.next = 18;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-request');
+
+              case 18:
+                requests = _context5.sent;
+                console.log(requests);
+                _context5.next = 25;
+                break;
+
+              case 22:
+                _context5.prev = 22;
+                _context5.t1 = _context5["catch"](15);
+                console.error(_context5.t1);
+
+              case 25:
+                _context5.next = 40;
+                break;
+
+              case 27:
+                if (!(hash === '#friend-invitation')) {
+                  _context5.next = 40;
+                  break;
+                }
+
+                _context5.prev = 28;
+                _context5.next = 31;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-invitation');
+
+              case 31:
+                invitations = _context5.sent;
+                console.log(invitations);
+                _context5.next = 38;
+                break;
+
+              case 35:
+                _context5.prev = 35;
+                _context5.t2 = _context5["catch"](28);
+                console.error(_context5.t2);
+
+              case 38:
+                _context5.next = 40;
+                break;
+
+              case 40:
+              case "end":
+                return _context5.stop();
+            }
           }
-        }
-      }, _callee, this, [[2, 18]]);
-    }))); // // scroll to bottom chat box
+        }, _callee5, null, [[1, 9], [15, 22], [28, 35]]);
+      }));
 
-    $(classScBottom).on('click', window.scrollBottomChatBox); // receive msg obj from server
+      return function loadDataFriend(_x3) {
+        return _ref5.apply(this, arguments);
+      };
+    }();
 
-    window.socket.on('msg-messenger', function (_ref2) {
-      var senderId = _ref2.senderId,
-          msgObj = _ref2.msg;
+    var reloadPage = function reloadPage() {
+      var hash = location.hash;
 
-      if (friendIdChatting === senderId) {
-        // output message
-        window.outputMessage(msgObj); // scroll bottom
+      if (['#friend', '#friend-invitation', '#friend-request'].includes(hash)) {
+        loadDataFriend(hash);
+        $('#friend-area').find(".tab-pane".concat(hash)).addClass(['show', 'active']);
+        $('#friend-area').find(".nav-link[href=\"".concat(hash, "\"]")).addClass('active');
+      }
+    }; // function sleep
 
-        chatMain.scrollTop = chatMain.scrollHeight;
+
+    // function take a photo and return file type image
+    var takePicture = /*#__PURE__*/function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        var videoStream, $wrapTake, snd, video, canvas, context, dataURL, file;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                if (!navigator.mediaDevices.getUserMedia) {
+                  _context6.next = 36;
+                  break;
+                }
+
+                _context6.prev = 1;
+                _context6.next = 4;
+                return navigator.mediaDevices.getUserMedia({
+                  video: true,
+                  audio: false
+                });
+
+              case 4:
+                videoStream = _context6.sent;
+                // show video stream
+                $wrapTake = $('.wrap-takephoto');
+                $wrapTake.find('video').each(function (i, vd) {
+                  if ('srcObject' in vd) {
+                    vd.srcObject = videoStream;
+                  } else {
+                    vd.src = window.URL.createObjectURL(videoStream);
+                  }
+                });
+                snd = new Audio('/sounds/take-photo.mp3');
+                $wrapTake.removeClass('d-none'); // count down
+
+                $('.count-down').removeClass('d-none'); // sleep 4s
+
+                _context6.next = 12;
+                return sleep(4000);
+
+              case 12:
+                // take photo from video
+                video = $wrapTake.find('video').get(0);
+                canvas = document.createElement('canvas');
+                context = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0);
+                dataURL = canvas.toDataURL('image/jpeg'); // create file image
+
+                file = dataURLtoFile(dataURL, 'capture');
+                canvas.className = 'res-capture ps-as';
+                $wrapTake.append(canvas);
+                _context6.next = 24;
+                return Promise.all([snd.play(), sleep(320)]);
+
+              case 24:
+                // stop video stream after take photo
+                $('.count-down').addClass('d-none');
+                $wrapTake.addClass('d-none');
+                $wrapTake.find('canvas').remove();
+                videoStream.getVideoTracks()[0].stop();
+                $wrapTake.find('video').each(function (i, vd) {
+                  if ('srcObject' in vd) {
+                    vd.srcObject = null;
+                  } else {
+                    vd.src = null;
+                  }
+                }); // return file
+
+                return _context6.abrupt("return", file);
+
+              case 32:
+                _context6.prev = 32;
+                _context6.t0 = _context6["catch"](1);
+                console.error(_context6.t0);
+                window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
+
+              case 36:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[1, 32]]);
+      }));
+
+      return function takePicture() {
+        return _ref6.apply(this, arguments);
+      };
+    }(); // re-init choose file avatar
+
+
+    var reInitChooseFile = function reInitChooseFile() {
+      $(clWrapCrop).addClass('d-none');
+      $(clWrapOpt).removeClass('d-none');
+      $('input#avatar').val('');
+    }; // create file from data base64
+
+
+    var dataURLtoFile = function dataURLtoFile(dataurl, filename) {
+      var arr = dataurl.split(','),
+          mime = arr[0].match(/:(.*?);/)[1],
+          bstr = atob(arr[1]),
+          n = bstr.length,
+          u8arr = new Uint8Array(n);
+
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
       }
 
-      $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
-    }); // receive signal friend is online
+      return new File([u8arr], filename, {
+        type: mime
+      });
+    };
 
-    window.socket.on('msg-friendOnline', function (_ref3) {
-      var memberId = _ref3.memberId;
-      $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
-      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+    var clWrapCrop = '.wrap-crop-img';
+    var clWrapOpt = '.wrap-opt-avatar';
+    navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
+    var friendContent = document.getElementById('friend-content');
+    reloadPage();
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      window.location.hash = e.target.hash;
+      loadDataFriend(e.target.hash);
+    });
+    var imgCrop = document.querySelector('#crop-img'); // init croppie avatar
 
-      if ($mainChat.length) {
-        $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
-      }
-    }); // receive signal friend is offline
-
-    window.socket.on('msg-friendOffline', function (_ref4) {
-      var memberId = _ref4.memberId;
-      $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
-      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-      if ($mainChat.length) {
-        $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
+    var croppie = new croppie__WEBPACK_IMPORTED_MODULE_1___default.a(imgCrop, {
+      enableExif: true,
+      viewport: {
+        width: 100,
+        height: 100,
+        type: 'circle'
+      },
+      boundary: {
+        width: 300,
+        height: 300
       }
     });
+    $('#avatar').on('change', function () {
+      var extTypes = /jpeg|jpg|png|gif/;
+      var extFile = this.files[0].name.split('.').pop().toLowerCase(); // check extname
+
+      var extname = extTypes.test(extFile); // check type file
+
+      var type = extTypes.test(this.files[0].type);
+
+      if (extname && type) {
+        // show modal crop avatar
+        $(clWrapCrop).removeClass('d-none');
+        $(clWrapOpt).addClass('d-none'); // create reader read file from input file avatar
+
+        var reader = new FileReader();
+
+        reader.onload = /*#__PURE__*/function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.next = 2;
+                    return croppie.bind({
+                      url: e.target.result
+                    });
+
+                  case 2:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee);
+          }));
+
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }();
+
+        reader.readAsDataURL(this.files[0]);
+      } else {
+        window.outputErrorMessage('File ảnh không đúng định dạng');
+      }
+    });
+    $('#cancel-crop-btn').on('click', reInitChooseFile); // take photo
+
+    $('#btn-takephoto').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var picture, reader;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              $(clWrapOpt).addClass('d-none'); // get photo
+
+              _context3.next = 3;
+              return takePicture();
+
+            case 3:
+              picture = _context3.sent;
+
+              if (picture) {
+                // create reader read file from input file avatar
+                // crop photo
+                reader = new FileReader();
+
+                reader.onload = /*#__PURE__*/function () {
+                  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            _context2.next = 2;
+                            return croppie.bind({
+                              url: e.target.result
+                            });
+
+                          case 2:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2);
+                  }));
+
+                  return function (_x2) {
+                    return _ref3.apply(this, arguments);
+                  };
+                }();
+
+                reader.readAsDataURL(picture);
+                $(clWrapCrop).removeClass('d-none');
+              }
+
+            case 5:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))); // crop image
+
+    $('#crop-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var dataCrop, blob, formData, xhr;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              $('.wrap-loader').removeClass('d-none');
+              _context4.next = 3;
+              return croppie.result({
+                type: 'base64',
+                size: 'viewport'
+              });
+
+            case 3:
+              dataCrop = _context4.sent;
+              blob = dataURLtoFile(dataCrop, 'avatar.png');
+              formData = new FormData();
+              formData.append('avatar', blob);
+              xhr = new XMLHttpRequest();
+              xhr.open('put', "".concat(location.origin, "/messenger/profile/avatar"), true);
+
+              xhr.onreadystatechange = function () {
+                if (this.readyState === 4) {
+                  $('.wrap-loader').addClass('d-none');
+                  $('#modal-crop-avatar').modal('hide');
+                  reInitChooseFile();
+                  console.log('finish'); // finish
+                  // check status
+
+                  var data = JSON.parse(this.responseText);
+
+                  if (this.status === 200) {
+                    // OK
+                    $('img.avatar').attr('src', data.src);
+                    window.outputSuccessMessage(data.mgs);
+                  } else {
+                    // error
+                    window.outputErrorMessage(data.mgs);
+                  }
+                }
+              };
+
+              xhr.send(formData);
+
+            case 11:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    })));
+
+    var sleep = function sleep(m) {
+      return new Promise(function (r) {
+        return setTimeout(r, m);
+      });
+    };
   }
 }();
 
-/* unused harmony default export */ var _unused_webpack_default_export = (Index);
+/* unused harmony default export */ var _unused_webpack_default_export = (Profile);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
 
 /***/ }),
-/* 517 */
+/* 522 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(523);
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
+
+/***/ }),
+/* 523 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55), __webpack_require__(70)))
+
+/***/ }),
+/* 524 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// option format message client side
-var charReplaces = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '&': '&amp;'
-}; // replace char to format message client side
+/* WEBPACK VAR INJECTION */(function($) {var Setting = function () {
+  if ($('#main .setting-page').length) {
+    if (document.formSettingPassword) {
+      document.formSettingPassword.addEventListener('submit', function () {
+        $('.wrap-loader').removeClass('d-none');
+      });
+    }
 
-var replaceChar = function replaceChar(_char) {
-  return charReplaces[_char] || _char;
-}; // format message client side
-
-
-var escapeHtml = function escapeHtml(html) {
-  return html.replace(/[<>&]/g, replaceChar);
-};
-
-var ChatUtils = function () {
-  window.escapeHtml = escapeHtml;
+    if (document.formSettingUrl) {
+      document.formSettingUrl.addEventListener('submit', function () {
+        $('.wrap-loader').removeClass('d-none');
+      });
+      $('#url').on('input', function () {
+        $('.url-preview').text($(this).val());
+      });
+    }
+  }
 }();
 
-/* unused harmony default export */ var _unused_webpack_default_export = (ChatUtils);
+/* unused harmony default export */ var _unused_webpack_default_export = (Setting);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
 
 /***/ }),
-/* 518 */,
-/* 519 */,
-/* 520 */,
-/* 521 */,
-/* 522 */,
-/* 523 */,
-/* 524 */,
 /* 525 */,
 /* 526 */,
 /* 527 */,
@@ -41183,11 +44204,59 @@ var ChatUtils = function () {
 /* 544 */,
 /* 545 */,
 /* 546 */,
-/* 547 */,
-/* 548 */
-/***/ (function(module, exports) {
+/* 547 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./node_modules/bootstrap/js/dist/modal.js
+var modal = __webpack_require__(519);
+
+// EXTERNAL MODULE: ./node_modules/bootstrap/js/dist/collapse.js
+var collapse = __webpack_require__(480);
+
+// EXTERNAL MODULE: ./node_modules/bootstrap/js/dist/tab.js
+var tab = __webpack_require__(520);
+
+// EXTERNAL MODULE: ./src/scripts/global/loading.js
+var loading = __webpack_require__(340);
+
+// EXTERNAL MODULE: ./src/scripts/global/output-message.js
+var output_message = __webpack_require__(341);
+
+// EXTERNAL MODULE: ./src/scripts/member/profile.js
+var profile = __webpack_require__(521);
+
+// EXTERNAL MODULE: ./src/scripts/member/setting.js
+var setting = __webpack_require__(524);
+
+// EXTERNAL MODULE: ./src/scripts/member/common-chat.js
+var common_chat = __webpack_require__(481);
+
+// CONCATENATED MODULE: ./src/scripts/member/messenger.js
+var Messenger = function () {
+  // receive msg obj from server
+  window.socket.on('msg-messenger', function (_ref) {
+    var senderId = _ref.senderId,
+        msgObj = _ref.msg;
+    console.log(senderId, msgObj);
+  });
+}();
+
+/* harmony default export */ var messenger = (Messenger);
+// CONCATENATED MODULE: ./src/scripts/msg-pagesub.js
+
+
+
+
+
+
+
+
+
+console.log('page sub messenger');
 
 /***/ })
 /******/ ]);

@@ -1,11 +1,8 @@
-// import $ from 'jquery';
 import 'bootstrap/js/dist/collapse'
 import './global/loading'
-// import './global/notify'
 import './global/output-message'
 import './global/emoji'
 import './member/common-chat'
-import './member/messenger'
-
+import './member/index'
 
 console.log('page home messenger');
