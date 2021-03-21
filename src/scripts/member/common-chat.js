@@ -11,7 +11,7 @@ const CommonChat = (() => {
     window.outputErrorMessage(msg);
   });
 
-  const isPageChat = $('#main .chat-page').length > 0
+  const isPageChat = $('#main.chat-page').length > 0
 
   const callTimeout = 20000
   const chatMain = document.getElementById('main-right-chat-content');

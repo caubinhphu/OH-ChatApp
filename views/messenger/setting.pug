@@ -1,75 +1,76 @@
 extend ./layout
 
 block contentMain
-  .container-fluid.setting-page.mt-4
-    .row
-      .col-md-3.mb-3.pb-3.mb-md-0.pb-md-0.st-col-tab
-        h3.text-center.text-dark
-          strong Cài đặt
-        #v-pills-tab.nav.flex-column.nav-pills(role='tablist', aria-orientation='vertical')
-          a#v-pills-general-tab.nav-link(class=`${tab[0] ? tab[0] === 'general' ? 'active' : '' : 'active'}`, data-toggle='pill', href='#v-pills-general', role='tab', aria-controls='v-pills-general')
-            span.icomoon.icon-cog
-            span  Chung
-          a#v-pills-security-tab.nav-link(class=`${tab[0] === 'security' ? 'active' : ''}`, data-toggle='pill', href='#v-pills-security', role='tab', aria-controls='v-pills-security')
-            span.icomoon.icon-security
-            span  Bảo mật
-      .col-md-9.st-col-content
-        #v-pills-tab-content.tab-content
-          #v-pills-general.tab-pane.fade(class=`${tab[0] ? tab[0] === 'general' ? 'show active' : '' : 'show active'}`, role='tabpanel', aria-labelledby='v-pills-general-tab') Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam autem, deleniti atque quae ut consequuntur quisquam consequatur quia, dolores quasi eos distinctio nostrum, sint facilis repudiandae aspernatur sunt neque magnam?
-          #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
-            h4.text-dark Bảo mật và đăng nhập
-            table.table
-              tbody
-                tr
-                  td Email
-                  td= member.email
-                  td
-                tr
-                  td Mật khẩu
-                  td
-                    if (member.type === 'local')
-                      strong ..........
-                    else
-                      strong= `Tài khoản đăng nhập bằng ${member.type}`
-                  td.text-right
-                    if (member.type === 'local')
-                      button.btn(data-toggle="collapse" href="#collapse-password" aria-expanded="false" aria-controls="collapse-password")
+  #main.ps-rv.setting-page
+    .container-fluid.mt-4
+      .row
+        .col-md-3.mb-3.pb-3.mb-md-0.pb-md-0.st-col-tab
+          h3.text-center.text-dark
+            strong Cài đặt
+          #v-pills-tab.nav.flex-column.nav-pills(role='tablist', aria-orientation='vertical')
+            a#v-pills-general-tab.nav-link(class=`${tab[0] ? tab[0] === 'general' ? 'active' : '' : 'active'}`, data-toggle='pill', href='#v-pills-general', role='tab', aria-controls='v-pills-general')
+              span.icomoon.icon-cog
+              span  Chung
+            a#v-pills-security-tab.nav-link(class=`${tab[0] === 'security' ? 'active' : ''}`, data-toggle='pill', href='#v-pills-security', role='tab', aria-controls='v-pills-security')
+              span.icomoon.icon-security
+              span  Bảo mật
+        .col-md-9.st-col-content
+          #v-pills-tab-content.tab-content
+            #v-pills-general.tab-pane.fade(class=`${tab[0] ? tab[0] === 'general' ? 'show active' : '' : 'show active'}`, role='tabpanel', aria-labelledby='v-pills-general-tab') Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam autem, deleniti atque quae ut consequuntur quisquam consequatur quia, dolores quasi eos distinctio nostrum, sint facilis repudiandae aspernatur sunt neque magnam?
+            #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
+              h4.text-dark Bảo mật và đăng nhập
+              table.table
+                tbody
+                  tr
+                    td Email
+                    td= member.email
+                    td
+                  tr
+                    td Mật khẩu
+                    td
+                      if (member.type === 'local')
+                        strong ..........
+                      else
+                        strong= `Tài khoản đăng nhập bằng ${member.type}`
+                    td.text-right
+                      if (member.type === 'local')
+                        button.btn(data-toggle="collapse" href="#collapse-password" aria-expanded="false" aria-controls="collapse-password")
+                          span.icomoon.icon-edit.d-md-none
+                          span.d-none.d-md-block Chỉnh sửa
+                  if (member.type === 'local')
+                    tr#collapse-password.collapse(class=`${subTab[0] === 'password' ? 'show' : ''}`, )
+                      td.border-0(colspan="3")
+                        form(action="/messenger/setting/password", method="post", name="formSettingPassword")
+                          input(type="hidden", name="_method" value="PUT")
+                          .form-group.d-flex
+                            label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
+                            input#password0.form-control.form-control-sm(type="password", name="password0", required)
+                          .form-group.d-flex
+                            label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
+                            input#password.form-control.form-control-sm(type="password", name="password", required)
+                          .form-group.d-flex
+                            label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
+                            input#password2.form-control.form-control-sm(type="password", name="password2", required)
+                          .d-flex.align-items-center.justify-content-between
+                            button.btn(type="submit") Lưu thay đổi
+                            a.btn.btn-link(href="#") Quên mật khẩu
+                  tr
+                    td URL
+                    td.text-url= `${key.host}/messenger/member/${member.url || member.id }`
+                    td.text-right
+                      button.btn(data-toggle="collapse" href="#collapse-url" aria-expanded="false" aria-controls="collapse-url")
                         span.icomoon.icon-edit.d-md-none
                         span.d-none.d-md-block Chỉnh sửa
-                if (member.type === 'local')
-                  tr#collapse-password.collapse(class=`${subTab[0] === 'password' ? 'show' : ''}`, )
+                  tr#collapse-url.collapse(class=`${subTab[0] === 'url' ? 'show' : ''}`, )
                     td.border-0(colspan="3")
-                      form(action="/messenger/setting/password", method="post", name="formSettingPassword")
+                      .text-center !{`/member/<strong class="url-preview">${member.url || member.id }</strong>`}
+                      form(action="/messenger/setting/url", method="post", name="formSettingUrl")
                         input(type="hidden", name="_method" value="PUT")
                         .form-group.d-flex
-                          label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
-                          input#password0.form-control.form-control-sm(type="password", name="password0", required)
-                        .form-group.d-flex
-                          label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
-                          input#password.form-control.form-control-sm(type="password", name="password", required)
-                        .form-group.d-flex
-                          label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
-                          input#password2.form-control.form-control-sm(type="password", name="password2", required)
-                        .d-flex.align-items-center.justify-content-between
+                          label.text-secondary(for="url", style="width: 140px") Url
+                          input#url.form-control.form-control-sm(type="text", name="url", required, value=`${member.url || member.id}`)
+                        div
                           button.btn(type="submit") Lưu thay đổi
-                          a.btn.btn-link(href="#") Quên mật khẩu
-                tr
-                  td URL
-                  td.text-url= `${key.host}/messenger/member/${member.url || member.id }`
-                  td.text-right
-                    button.btn(data-toggle="collapse" href="#collapse-url" aria-expanded="false" aria-controls="collapse-url")
-                      span.icomoon.icon-edit.d-md-none
-                      span.d-none.d-md-block Chỉnh sửa
-                tr#collapse-url.collapse(class=`${subTab[0] === 'url' ? 'show' : ''}`, )
-                  td.border-0(colspan="3")
-                    .text-center !{`/member/<strong class="url-preview">${member.url || member.id }</strong>`}
-                    form(action="/messenger/setting/url", method="post", name="formSettingUrl")
-                      input(type="hidden", name="_method" value="PUT")
-                      .form-group.d-flex
-                        label.text-secondary(for="url", style="width: 140px") Url
-                        input#url.form-control.form-control-sm(type="text", name="url", required, value=`${member.url || member.id}`)
-                      div
-                        button.btn(type="submit") Lưu thay đổi
 
 
 

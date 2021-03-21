@@ -1,84 +1,85 @@
 extend ./layout
 
 block contentMain
-  #main-messenger.d-flex.ps-rv.chat-page
-    #main-left.p-3.d-flex.flex-column
-      #main-left-top.d-flex.justify-content-between.align-items-center
-        h4.mb-0 Chat
-        #room.d-flex.align-items-center.justify-content-center
-          span.text-secondary.mr-3 Phòng chat 
-          a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng")
-            span.icomoon.icon-plus
-          a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
-            span.icomoon.icon-sign-in
-      #main-left-search.mt-2
-        input.form-control(type="text", placeholder="Tìm bạn bè để chat")
-      #main-left-friends.mt-2.flex-fill
-        each friend in friends
-          .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""} ${friend.status === 'online' ? "is-online" : ""}`, data-id=friend.id)
-            .friend-item-main.d-flex
-              .friend-item-img.ps-rv
-                div.dot-status
-                img.rounded-circle(src=friend.avatar, alt=friend.name, width="45px")
-              .friend-item-info.ml-2
-                strong= friend.name
-                .last-msg.text-dark.un-read
-                  small= friend.latestMessage.msg
-                  small= friend.latestMessage.timeFromNow
-            a.ps-as(href=`/messenger/chat/${friend.url ? friend.url : friend.id}`, title=`${friend.name}`)
-              span.sr-only= `Chat with ${friend.name}`
+  #main.ps-rv.chat-page
+    #main-messenger.d-flex.ps-rv
+      #main-left.p-3.d-flex.flex-column
+        #main-left-top.d-flex.justify-content-between.align-items-center
+          h4.mb-0 Chat
+          #room.d-flex.align-items-center.justify-content-center
+            span.text-secondary.mr-3 Phòng chat 
+            a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng")
+              span.icomoon.icon-plus
+            a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
+              span.icomoon.icon-sign-in
+        #main-left-search.mt-2
+          input.form-control(type="text", placeholder="Tìm bạn bè để chat")
+        #main-left-friends.mt-2.flex-fill
+          each friend in friends
+            .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""} ${friend.status === 'online' ? "is-online" : ""}`, data-id=friend.id)
+              .friend-item-main.d-flex
+                .friend-item-img.ps-rv
+                  div.dot-status
+                  img.rounded-circle(src=friend.avatar, alt=friend.name, width="45px")
+                .friend-item-info.ml-2
+                  strong= friend.name
+                  .last-msg.text-dark.un-read
+                    small= friend.latestMessage.msg
+                    small= friend.latestMessage.timeFromNow
+              a.ps-as(href=`/messenger/chat/${friend.url ? friend.url : friend.id}`, title=`${friend.name}`)
+                span.sr-only= `Chat with ${friend.name}`
 
-    if (friendChat)
-      #main-right.flex-fill.d-flex.flex-column(data-id=friendChat.id)
-        #main-right-top.d-flex.justify-content-between.p-2.align-items-center
-          #main-right-top-left.d-flex
-            .friend-img
-              img.rounded-circle(src=friendChat.avatar, alt=friendChat.name, width="45px")
-            .friend-info.ml-2
-              strong= friendChat.name
-              br
-              small.text-status !{statusText}
-          #main-right-top-right.d-flex
-            button#call-friend-btn.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
-              span.icomoon.icon-phone
-            button#video-friend-btn.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
-              span.icomoon.icon-camera
-        .wrap-msg-box.ps-rv.flex-fill
-          .wrap-loader-chat.d-none
-            img(src="/images/loader.svg", alt="loader")
-          .scroll-bottom
-            span.icomoon.icon-circle-down
-          #main-right-chat-content.p-2.h-100
-            each msg in messagesActive
-              if (msg.me)
-                .message.text-right(class=msg.class)
-                  small.message-time= msg.time
-                  div
-                    .msg-me
-                      small.message-content.mx-0= msg.content
-                      if (msg.timeCall)
-                        small.time-call= msg.timeCall
-              else
-                .message(class=msg.class)
-                  small.message-time= msg.time
-                  div
-                    .msg
-                      img.message-avatar(src=msg.avatar, alt=msg.name)
-                      small.message-content= msg.content
-                      if (msg.timeCall)
-                        small.time-call= msg.timeCall
+      if (friendChat)
+        #main-right.flex-fill.d-flex.flex-column(data-id=friendChat.id)
+          #main-right-top.d-flex.justify-content-between.p-2.align-items-center
+            #main-right-top-left.d-flex
+              .friend-img
+                img.rounded-circle(src=friendChat.avatar, alt=friendChat.name, width="45px")
+              .friend-info.ml-2
+                strong= friendChat.name
+                br
+                small.text-status !{statusText}
+            #main-right-top-right.d-flex
+              button#call-friend-btn.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
+                span.icomoon.icon-phone
+              button#video-friend-btn.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
+                span.icomoon.icon-camera
+          .wrap-msg-box.ps-rv.flex-fill
+            .wrap-loader-chat.d-none
+              img(src="/images/loader.svg", alt="loader")
+            .scroll-bottom
+              span.icomoon.icon-circle-down
+            #main-right-chat-content.p-2.h-100
+              each msg in messagesActive
+                if (msg.me)
+                  .message.text-right(class=msg.class)
+                    small.message-time= msg.time
+                    div
+                      .msg-me
+                        small.message-content.mx-0= msg.content
+                        if (msg.timeCall)
+                          small.time-call= msg.timeCall
+                else
+                  .message(class=msg.class)
+                    small.message-time= msg.time
+                    div
+                      .msg
+                        img.message-avatar(src=msg.avatar, alt=msg.name)
+                        small.message-content= msg.content
+                        if (msg.timeCall)
+                          small.time-call= msg.timeCall
 
-        #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
-          form.d-flex(name="sendMsgForm", method="post")
-            button.btn.btn-default.open-emojis(type="button") &#128512;
-            input(type="hidden", name="_token" value=token)
-            .flex-fill.wrap-msg-box.ps-rv
-              //- input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
-              textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
-            button.btn.btn-default.text-secondary
-              span.icomoon.icon-send
+          #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
+            form.d-flex(name="sendMsgForm", method="post")
+              button.btn.btn-default.open-emojis(type="button") &#128512;
+              input(type="hidden", name="_token" value=token)
+              .flex-fill.wrap-msg-box.ps-rv
+                //- input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+                textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+              button.btn.btn-default.text-secondary
+                span.icomoon.icon-send
 
-  .overlay-calling.d-none.ps-as
+    .overlay-calling.d-none.ps-as
 
 
 append scripts

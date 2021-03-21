@@ -47,30 +47,88 @@ block header
     
 
 block main
-  #main.ps-rv
-    block contentMain
-    .popup-has-call.d-none
-      .d-flex.justify-content-center.align-items-center.h-100
-        .wrap-pop-has-call
-          button.btn.btn-icon.close-popup(type="button")
-            span.icomoon.icon-close
-          h3.title-call-info.text-center Cuộc gọi đến
-          h3.title-call-miss.text-center Cuộc gọi nhỡ
-          .d-flex.align-items-center.mb-3
-            img.caller-img.rounded-circle(src="/images/default-avatar.jpg", alt="OH")
-            .text-call-sub.last-mb-none
-              h4.text-name-call Name đang gọi cho bạn
-              p.text-secondary Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận
-            .text-miss-call-sub.last-mb-none
-              h4 Bạn đã bõ lỡ cuộc gọi của name
-              p.text-secondary Nhấn gọi lại để gọi lại cho name
-          .text-right
-            button.btn.btn-red.mr-3#btn-call-not-ok
-              span.icomoon.icon-phone-off  Từ chối
-            button.btn#btn-call-ok
-              span.icomoon.icon-phone  Chấp nhận
-            button.btn#btn-call-back
-              span.icomoon.icon-phone  Gọi lại
+  block contentMain
+  .popup-has-call.d-none
+    .d-flex.justify-content-center.align-items-center.h-100
+      .wrap-pop-has-call
+        button.btn.btn-icon.close-popup(type="button")
+          span.icomoon.icon-close
+        h3.title-call-info.text-center Cuộc gọi đến
+        h3.title-call-miss.text-center Cuộc gọi nhỡ
+        .d-flex.align-items-center.mb-3
+          img.caller-img.rounded-circle(src="/images/default-avatar.jpg", alt="OH")
+          .text-call-sub.last-mb-none
+            h4.text-name-call Name đang gọi cho bạn
+            p.text-secondary Cuộc gọi sẽ bắt đầu ngay sau khi bạn chấp nhận
+          .text-miss-call-sub.last-mb-none
+            h4 Bạn đã bõ lỡ cuộc gọi của name
+            p.text-secondary Nhấn gọi lại để gọi lại cho name
+        .text-right
+          button.btn.btn-red.mr-3#btn-call-not-ok
+            span.icomoon.icon-phone-off  Từ chối
+          button.btn#btn-call-ok
+            span.icomoon.icon-phone  Chấp nhận
+          button.btn#btn-call-back
+            span.icomoon.icon-phone  Gọi lại
+  
+  .wrap-chat-mini
+    .wrap-btn-chat-mini
+      button.btn.btn-icon(type="button")
+        span.icomoon.icon-chat
+    .popup-chat-mini.is-active.d-flex.flex-column
+      img(class="avatar-mini-2", src="http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png", alt="name")
+      .chat-mini-top
+        .d-flex.p-2
+          .flex-fill.d-flex.align-items-center
+            img(class="rounded-circle mr-1 avatar-mini", src="http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png", alt="name")
+            div
+              .mini-name Name
+              .mini-status Dang hoat dong
+          .flex-fill.d-flex.align-items-center.justify-content-end
+            button.call-friend-btn.btn.btn-icon.small-btn.btn-green.mr-1(type="button", title="Gọi")
+              span.icomoon.icon-phone
+            button.video-friend-btn.btn.btn-icon.small-btn.btn-purple.mr-1(type="button", title="Gọi video")
+              span.icomoon.icon-camera
+            button.mini-chat-btn.btn.btn-icon.small-btn.btn-red.mr-1(type="button", title="Ẩn chat")
+              span.icomoon.icon-phone
+            button.close-chat-btn.btn.btn-icon.small-btn.btn-red(type="button", title="Close chat")
+              span.icomoon.icon-close
+             
+      .chat-mini-main.flex-fill.p-2
+      .chat-mini-bottom
+        form.d-flex
+          button.btn.btn-default.open-emojis(type="button") &#128512;
+          .flex-fill.wrap-msg-box.ps-rv
+            textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+          button.btn.btn-default.text-secondary
+            span.icomoon.icon-send
+    .popup-chat-mini.not-active.d-flex.flex-column
+      img(class="avatar-mini-2", src="http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png", alt="name")
+      .chat-mini-top
+        .d-flex.p-2
+          .flex-fill.d-flex.align-items-center
+            img(class="rounded-circle mr-1 avatar-mini", src="http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png", alt="name")
+            div
+              .mini-name Name
+              .mini-status Dang hoat dong
+          .flex-fill.d-flex.align-items-center.justify-content-end
+            button.call-friend-btn.btn.btn-icon.small-btn.btn-green.mr-1(type="button", title="Gọi")
+              span.icomoon.icon-phone
+            button.video-friend-btn.btn.btn-icon.small-btn.btn-purple.mr-1(type="button", title="Gọi video")
+              span.icomoon.icon-camera
+            button.mini-chat-btn.btn.btn-icon.small-btn.btn-red.mr-1(type="button", title="Ẩn chat")
+              span.icomoon.icon-phone
+            button.close-chat-btn.btn.btn-icon.small-btn.btn-red(type="button", title="Close chat")
+              span.icomoon.icon-close
+      .chat-mini-main.flex-fill.p-2
+      .chat-mini-bottom
+        form.d-flex
+          button.btn.btn-default.open-emojis(type="button") &#128512;
+          .flex-fill.wrap-msg-box.ps-rv
+            textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+          button.btn.btn-default.text-secondary
+            span.icomoon.icon-send
+
 
 append scripts
   script(src="/socket.io/socket.io.js")

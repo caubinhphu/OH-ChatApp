@@ -4,89 +4,90 @@ extend ./layout
 //-   link(rel="stylesheet", href="/styles/messenger/profile.css")
 
 block contentMain
-  #info-area.my-2.profile-page
-    .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center.wrap-info-member
-      .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
-        img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
-        .form-group.mt-md-2.ml-2.ml-md-0.mb-0
-          button.btn(data-toggle="modal", data-target="#modal-crop-avatar") Đổi ảnh đại diện
-      .mt-2.mt-md-0.pl-md-5
-        form(method="post", action="/messenger/profile")
-          input(type="hidden", name="_method", value='PUT')
-          input(type="hidden", name="fake-avatar", value=member.avatar)
-          //- input(type="hidden", name="fake-email", value=member.email)
-          .form-group.d-flex
-            label.text-secondary(for="name", style="width: 130px") Họ tên
-            input#name.form-control.form-control-sm(type="text", name="name", value=member.name, required)
-          //- .form-group.d-flex
-          //-   label.text-secondary(for="email", style="width: 130px") Email
-          //-   input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
-          .form-group.d-flex
-            label.text-secondary(for="birthday", style="width: 130px") Ngày sinh
-            input#birthday.form-control.form-control-sm(type="date", name="birthday", value=birthOfDate)
-          .form-group.d-flex
-            label.text-secondary(style="width: 130px") Giới tính
-            .form-check.form-check-inline
-              .custom-control.custom-radio.my-1.ml-3
-                input#male.custom-control-input(type="radio", name="gender", value="1", checked=member.gender)
-                label.custom-control-label(for="male") Nam
-              .custom-control.custom-radio.my-1.ml-3
-                input#female.custom-control-input(type="radio", name="gender", value="0", checked=!member.gender)
-                label.custom-control-label(for="female") Nữ
-          .form-group.d-flex
-            label.text-secondary(for="phone", style="width: 130px") Điện thoại
-            input#phone.form-control.form-control-sm(type="text", name="phone", value=member.phone)
-          .form-group.d-flex
-            label.text-secondary(for="address", style="width: 130px") Địa chỉ
-            input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
-          .text-right
-            button.btn(type="submit") Lưu
-  #friend-area
-    .container
-      ul.nav.nav-tabs.justify-content-center(role='tablist')
-        li.nav-item(role='presentation')
-          a#friend-tab.nav-link(data-toggle='tab', href='#friend', role='tab', aria-controls='friend') Bạn bè
-        li.nav-item(role='presentation')
-          a#friend-request-tab.nav-link(data-toggle='tab', href='#friend-request', role='tab', aria-controls='friend-request', aria-selected='false') Yêu cầu kết bạn
-        li.nav-item(role='presentation')
-          a#friend-invitation-tab.nav-link(data-toggle='tab', href='#friend-invitation', role='tab', aria-controls='friend-invitation', aria-selected='false') Lời mời kết bạn
-      .tab-content
-        #friend.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-tab')
-          #friend-content.row
-        #friend-request.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-request-tab')
-          #friend-request-content.row
-        #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
-          #friend-request-content.row
+  #main.ps-rv.profile-page
+    #info-area.my-2
+      .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center.wrap-info-member
+        .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
+          img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
+          .form-group.mt-md-2.ml-2.ml-md-0.mb-0
+            button.btn(data-toggle="modal", data-target="#modal-crop-avatar") Đổi ảnh đại diện
+        .mt-2.mt-md-0.pl-md-5
+          form(method="post", action="/messenger/profile")
+            input(type="hidden", name="_method", value='PUT')
+            input(type="hidden", name="fake-avatar", value=member.avatar)
+            //- input(type="hidden", name="fake-email", value=member.email)
+            .form-group.d-flex
+              label.text-secondary(for="name", style="width: 130px") Họ tên
+              input#name.form-control.form-control-sm(type="text", name="name", value=member.name, required)
+            //- .form-group.d-flex
+            //-   label.text-secondary(for="email", style="width: 130px") Email
+            //-   input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
+            .form-group.d-flex
+              label.text-secondary(for="birthday", style="width: 130px") Ngày sinh
+              input#birthday.form-control.form-control-sm(type="date", name="birthday", value=birthOfDate)
+            .form-group.d-flex
+              label.text-secondary(style="width: 130px") Giới tính
+              .form-check.form-check-inline
+                .custom-control.custom-radio.my-1.ml-3
+                  input#male.custom-control-input(type="radio", name="gender", value="1", checked=member.gender)
+                  label.custom-control-label(for="male") Nam
+                .custom-control.custom-radio.my-1.ml-3
+                  input#female.custom-control-input(type="radio", name="gender", value="0", checked=!member.gender)
+                  label.custom-control-label(for="female") Nữ
+            .form-group.d-flex
+              label.text-secondary(for="phone", style="width: 130px") Điện thoại
+              input#phone.form-control.form-control-sm(type="text", name="phone", value=member.phone)
+            .form-group.d-flex
+              label.text-secondary(for="address", style="width: 130px") Địa chỉ
+              input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
+            .text-right
+              button.btn(type="submit") Lưu
+    #friend-area
+      .container
+        ul.nav.nav-tabs.justify-content-center(role='tablist')
+          li.nav-item(role='presentation')
+            a#friend-tab.nav-link(data-toggle='tab', href='#friend', role='tab', aria-controls='friend') Bạn bè
+          li.nav-item(role='presentation')
+            a#friend-request-tab.nav-link(data-toggle='tab', href='#friend-request', role='tab', aria-controls='friend-request', aria-selected='false') Yêu cầu kết bạn
+          li.nav-item(role='presentation')
+            a#friend-invitation-tab.nav-link(data-toggle='tab', href='#friend-invitation', role='tab', aria-controls='friend-invitation', aria-selected='false') Lời mời kết bạn
+        .tab-content
+          #friend.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-tab')
+            #friend-content.row
+          #friend-request.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-request-tab')
+            #friend-request-content.row
+          #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
+            #friend-request-content.row
 
-  #modal-crop-avatar.modal.fade(tabindex='-1', aria-labelledby='modal-crop-avatar', aria-hidden='true')
-    .modal-dialog.modal-dialog-centered
-      .modal-content
-        .modal-header.align-items-center
-          h4#exampleModalLabel.modal-title Đổi ảnh đại diện
-          button.close(type='button', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') &times;
-        .modal-body
-          .wrap-opt-avatar
-            .d-flex.justify-content-center.align-items-center
-              label.btn.mb-0(for="avatar")
-                span.icomoon.icon-image
-                span  Chọn avatar
-              input#avatar.d-none(type="file", name="avatar", accept="image/*")
-              button#btn-takephoto.btn.btn-blue.ml-3
-                span.icomoon.icon-camera
-                span  Chụp ảnh
-          .wrap-crop-img.d-none
-            #crop-img.mb-3
-            .text-center
-              button#crop-btn.btn(type="button") Cắt và lưu
-              button#cancel-crop-btn.btn.btn-white.ml-3(type="button") Hủy
-          .wrap-takephoto.d-none
-            .count-down.d-none.ps-as
-              .wrap-num-cd.d-flex.justify-content-center.align-items-center.ps-as
-                -var n = 3
-                  while n > 0 
-                    span(class='cd-num' + n)= n--
-            video(autoplay=true, muted=true, controls=false)
+    #modal-crop-avatar.modal.fade(tabindex='-1', aria-labelledby='modal-crop-avatar', aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header.align-items-center
+            h4#exampleModalLabel.modal-title Đổi ảnh đại diện
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            .wrap-opt-avatar
+              .d-flex.justify-content-center.align-items-center
+                label.btn.mb-0(for="avatar")
+                  span.icomoon.icon-image
+                  span  Chọn avatar
+                input#avatar.d-none(type="file", name="avatar", accept="image/*")
+                button#btn-takephoto.btn.btn-blue.ml-3
+                  span.icomoon.icon-camera
+                  span  Chụp ảnh
+            .wrap-crop-img.d-none
+              #crop-img.mb-3
+              .text-center
+                button#crop-btn.btn(type="button") Cắt và lưu
+                button#cancel-crop-btn.btn.btn-white.ml-3(type="button") Hủy
+            .wrap-takephoto.d-none
+              .count-down.d-none.ps-as
+                .wrap-num-cd.d-flex.justify-content-center.align-items-center.ps-as
+                  -var n = 3
+                    while n > 0 
+                      span(class='cd-num' + n)= n--
+              video(autoplay=true, muted=true, controls=false)
 
 
 append scripts

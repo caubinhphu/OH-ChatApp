@@ -39189,7 +39189,7 @@ var CommonChat = function () {
   socket.on('errorMessage', function (msg) {
     window.outputErrorMessage(msg);
   });
-  var isPageChat = $('#main .chat-page').length > 0;
+  var isPageChat = $('#main.chat-page').length > 0;
   var callTimeout = 20000;
   var chatMain = document.getElementById('main-right-chat-content');
   var msgForm = document.sendMsgForm; // form chat
