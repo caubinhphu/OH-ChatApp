@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 513);
+/******/ 	return __webpack_require__(__webpack_require__.s = 514);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1988,7 +1988,7 @@ module.exports = $export;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(483)("./" + name);
+                __webpack_require__(484)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4739,7 +4739,7 @@ module.exports = $export;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(482)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(483)(module)))
 
 /***/ }),
 /* 2 */
@@ -19984,7 +19984,7 @@ module.exports = Math.scale || function scale(x, inLow, inHigh, outLow, outHigh)
 /* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(484);
+module.exports = __webpack_require__(485);
 
 /***/ }),
 /* 135 */,
@@ -38306,7 +38306,7 @@ module.exports = function isCancel(value) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(30);
-var normalizeHeaderName = __webpack_require__(489);
+var normalizeHeaderName = __webpack_require__(490);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -38412,12 +38412,12 @@ module.exports = defaults;
 
 
 var utils = __webpack_require__(30);
-var settle = __webpack_require__(490);
-var cookies = __webpack_require__(492);
+var settle = __webpack_require__(491);
+var cookies = __webpack_require__(493);
 var buildURL = __webpack_require__(471);
-var buildFullPath = __webpack_require__(493);
-var parseHeaders = __webpack_require__(496);
-var isURLSameOrigin = __webpack_require__(497);
+var buildFullPath = __webpack_require__(494);
+var parseHeaders = __webpack_require__(497);
+var isURLSameOrigin = __webpack_require__(498);
 var createError = __webpack_require__(475);
 
 module.exports = function xhrAdapter(config) {
@@ -38597,7 +38597,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(491);
+var enhanceError = __webpack_require__(492);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -39175,6 +39175,74 @@ module.exports = Cancel;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function($) {var Emoji = function () {
+  var emojiData = '[{"emoji":"👍","dec":128077},{"emoji":"👎","dec":128078},{"emoji":"🤚","dec":129306},{"emoji":"💖","dec":128150},{"emoji":"😀","dec":128512},{"emoji":"😁","dec":128513},{"emoji":"😂","dec":128514},{"emoji":"😃","dec":128515},{"emoji":"😄","dec":128516},{"emoji":"😅","dec":128517},{"emoji":"😆","dec":128518},{"emoji":"😇","dec":128519},{"emoji":"😈","dec":128520},{"emoji":"😉","dec":128521},{"emoji":"😊","dec":128522},{"emoji":"😋","dec":128523},{"emoji":"😌","dec":128524},{"emoji":"😍","dec":128525},{"emoji":"😎","dec":128526},{"emoji":"😏","dec":128527},{"emoji":"😐","dec":128528},{"emoji":"😑","dec":128529},{"emoji":"😒","dec":128530},{"emoji":"😓","dec":128531},{"emoji":"😔","dec":128532},{"emoji":"😕","dec":128533},{"emoji":"😖","dec":128534},{"emoji":"😗","dec":128535},{"emoji":"😘","dec":128536},{"emoji":"😙","dec":128537},{"emoji":"😚","dec":128538},{"emoji":"😛","dec":128539},{"emoji":"😜","dec":128540},{"emoji":"😝","dec":128541},{"emoji":"😞","dec":128542},{"emoji":"😟","dec":128543},{"emoji":"😠","dec":128544},{"emoji":"😡","dec":128545},{"emoji":"😢","dec":128546},{"emoji":"😣","dec":128547},{"emoji":"😤","dec":128548},{"emoji":"😥","dec":128549},{"emoji":"😦","dec":128550},{"emoji":"😧","dec":128551},{"emoji":"😨","dec":128552},{"emoji":"😩","dec":128553},{"emoji":"😪","dec":128554},{"emoji":"😫","dec":128555},{"emoji":"😬","dec":128556},{"emoji":"😭","dec":128557},{"emoji":"😮","dec":128558},{"emoji":"😯","dec":128559},{"emoji":"😰","dec":128560},{"emoji":"😱","dec":128561},{"emoji":"😲","dec":128562},{"emoji":"😳","dec":128563},{"emoji":"😴","dec":128564},{"emoji":"😵","dec":128565},{"emoji":"😶","dec":128566},{"emoji":"😷","dec":128567},{"emoji":"🙁","dec":128577},{"emoji":"🙂","dec":128578},{"emoji":"🙃","dec":128579},{"emoji":"🙄","dec":128580},{"emoji":"🤐","dec":129296},{"emoji":"🤑","dec":129297},{"emoji":"🤒","dec":129298},{"emoji":"🤓","dec":129299},{"emoji":"🤔","dec":129300},{"emoji":"🤕","dec":129301},{"emoji":"🤠","dec":129312},{"emoji":"🤡","dec":129313},{"emoji":"🤢","dec":129314},{"emoji":"🤣","dec":129315},{"emoji":"🤤","dec":129316},{"emoji":"🤥","dec":129317},{"emoji":"🤧","dec":129319},{"emoji":"🤨","dec":129320},{"emoji":"🤩","dec":129321},{"emoji":"🤪","dec":129322},{"emoji":"🤫","dec":129323},{"emoji":"🤬","dec":129324},{"emoji":"🤭","dec":129325},{"emoji":"🤮","dec":129326},{"emoji":"🤯","dec":129327},{"emoji":"🧐","dec":129488}]';
+  var wrapInputChat = document.querySelector('.wrap-chat-input');
+
+  if (wrapInputChat) {
+    var wrapEmoji = document.createElement('div');
+    $(wrapEmoji).addClass('wrap-emojis');
+    wrapEmoji.innerHTML = JSON.parse(emojiData).map(function (emoji) {
+      return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
+    }).join('');
+    wrapInputChat.appendChild(wrapEmoji);
+    document.querySelectorAll('.emoji-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.getElementById('msg').value += this.innerHTML;
+        document.getElementById('msg').focus(); // $('.wrap-emojis').removeClass('is-active');
+      });
+    });
+    $(document).on('click', '.open-emojis', function () {
+      if ($('.wrap-emojis').hasClass('is-active')) {
+        $('.wrap-emojis').removeClass('is-active');
+      } else {
+        $('.wrap-emojis').addClass('is-active');
+      }
+    });
+    $(document).on('click', function (e) {
+      var $target = $(e.target);
+
+      if (!$target.closest('.wrap-emojis').length && !$target.closest('.open-emojis').length && $('.wrap-emojis').hasClass('is-active')) {
+        $('.wrap-emojis').removeClass('is-active');
+      }
+    });
+  }
+
+  function emojisForMiniChat($popup) {
+    $popup.find('.chat-mini-bottom').html("\n        <div class=\"wrap-emojis\">\n          ".concat(JSON.parse(emojiData).map(function (emoji) {
+      return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
+    }).join(''), "\n        </div>\n    "));
+    $popup.find('.emoji-btn').on('click', function () {
+      $popup.find('.msg-mini').val($popup.find('.msg-mini').val() + this.innerHTML);
+      $popup.find('.msg-mini').focus();
+    });
+    $popup.find('.open-emojis').on('click', function () {
+      if ($popup.find('.wrap-emojis').hasClass('is-active')) {
+        $popup.find('.wrap-emojis').removeClass('is-active');
+      } else {
+        $popup.find('.wrap-emojis').addClass('is-active');
+      }
+    });
+    $(document).on('click', function (e) {
+      var $target = $(e.target);
+
+      if (!$target.closest($popup.find('.wrap-emojis')).length && !$target.closest($popup.find('.open-emojis')).length && $popup.find('.wrap-emojis').hasClass('is-active')) {
+        $popup.find('.wrap-emojis').removeClass('is-active');
+      }
+    });
+  }
+
+  window.emojisForMiniChat = emojisForMiniChat;
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Emoji);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
+
+/***/ }),
+/* 482 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -39745,7 +39813,7 @@ var CommonChat = function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
 
 /***/ }),
-/* 482 */
+/* 483 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -39773,7 +39841,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 483 */
+/* 484 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -40051,10 +40119,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 483;
+webpackContext.id = 484;
 
 /***/ }),
-/* 484 */
+/* 485 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40062,7 +40130,7 @@ webpackContext.id = 483;
 
 var utils = __webpack_require__(30);
 var bind = __webpack_require__(470);
-var Axios = __webpack_require__(485);
+var Axios = __webpack_require__(486);
 var mergeConfig = __webpack_require__(476);
 var defaults = __webpack_require__(473);
 
@@ -40098,17 +40166,17 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(477);
-axios.CancelToken = __webpack_require__(498);
+axios.CancelToken = __webpack_require__(499);
 axios.isCancel = __webpack_require__(472);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(499);
+axios.spread = __webpack_require__(500);
 
 // Expose isAxiosError
-axios.isAxiosError = __webpack_require__(500);
+axios.isAxiosError = __webpack_require__(501);
 
 module.exports = axios;
 
@@ -40117,7 +40185,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 485 */
+/* 486 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40125,8 +40193,8 @@ module.exports.default = axios;
 
 var utils = __webpack_require__(30);
 var buildURL = __webpack_require__(471);
-var InterceptorManager = __webpack_require__(486);
-var dispatchRequest = __webpack_require__(487);
+var InterceptorManager = __webpack_require__(487);
+var dispatchRequest = __webpack_require__(488);
 var mergeConfig = __webpack_require__(476);
 
 /**
@@ -40219,7 +40287,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 486 */
+/* 487 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40278,14 +40346,14 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 487 */
+/* 488 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(30);
-var transformData = __webpack_require__(488);
+var transformData = __webpack_require__(489);
 var isCancel = __webpack_require__(472);
 var defaults = __webpack_require__(473);
 
@@ -40364,7 +40432,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 488 */
+/* 489 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40391,7 +40459,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 489 */
+/* 490 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40410,7 +40478,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 490 */
+/* 491 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40442,7 +40510,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 491 */
+/* 492 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40491,7 +40559,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 492 */
+/* 493 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40551,14 +40619,14 @@ module.exports = (
 
 
 /***/ }),
-/* 493 */
+/* 494 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isAbsoluteURL = __webpack_require__(494);
-var combineURLs = __webpack_require__(495);
+var isAbsoluteURL = __webpack_require__(495);
+var combineURLs = __webpack_require__(496);
 
 /**
  * Creates a new URL by combining the baseURL with the requestedURL,
@@ -40578,7 +40646,7 @@ module.exports = function buildFullPath(baseURL, requestedURL) {
 
 
 /***/ }),
-/* 494 */
+/* 495 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40599,7 +40667,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 495 */
+/* 496 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40620,7 +40688,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 496 */
+/* 497 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40680,7 +40748,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 497 */
+/* 498 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40755,7 +40823,7 @@ module.exports = (
 
 
 /***/ }),
-/* 498 */
+/* 499 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40819,7 +40887,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 499 */
+/* 500 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40853,7 +40921,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 500 */
+/* 501 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40871,7 +40939,6 @@ module.exports = function isAxiosError(payload) {
 
 
 /***/ }),
-/* 501 */,
 /* 502 */,
 /* 503 */,
 /* 504 */,
@@ -40883,16 +40950,17 @@ module.exports = function isAxiosError(payload) {
 /* 510 */,
 /* 511 */,
 /* 512 */,
-/* 513 */
+/* 513 */,
+/* 514 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(137);
-__webpack_require__(514);
-module.exports = __webpack_require__(548);
+__webpack_require__(515);
+module.exports = __webpack_require__(549);
 
 
 /***/ }),
-/* 514 */
+/* 515 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40901,8 +40969,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap_js_dist_collapse__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(340);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(341);
-/* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(515);
-/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(481);
+/* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(481);
+/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(482);
 /* harmony import */ var _member_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(516);
 
 
@@ -40911,48 +40979,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 console.log('page home messenger');
-
-/***/ }),
-/* 515 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {var Emoji = function () {
-  var wrapInputChat = document.querySelector('.wrap-chat-input');
-
-  if (wrapInputChat) {
-    var emojiData = '[{"emoji":"👍","dec":128077},{"emoji":"👎","dec":128078},{"emoji":"🤚","dec":129306},{"emoji":"💖","dec":128150},{"emoji":"😀","dec":128512},{"emoji":"😁","dec":128513},{"emoji":"😂","dec":128514},{"emoji":"😃","dec":128515},{"emoji":"😄","dec":128516},{"emoji":"😅","dec":128517},{"emoji":"😆","dec":128518},{"emoji":"😇","dec":128519},{"emoji":"😈","dec":128520},{"emoji":"😉","dec":128521},{"emoji":"😊","dec":128522},{"emoji":"😋","dec":128523},{"emoji":"😌","dec":128524},{"emoji":"😍","dec":128525},{"emoji":"😎","dec":128526},{"emoji":"😏","dec":128527},{"emoji":"😐","dec":128528},{"emoji":"😑","dec":128529},{"emoji":"😒","dec":128530},{"emoji":"😓","dec":128531},{"emoji":"😔","dec":128532},{"emoji":"😕","dec":128533},{"emoji":"😖","dec":128534},{"emoji":"😗","dec":128535},{"emoji":"😘","dec":128536},{"emoji":"😙","dec":128537},{"emoji":"😚","dec":128538},{"emoji":"😛","dec":128539},{"emoji":"😜","dec":128540},{"emoji":"😝","dec":128541},{"emoji":"😞","dec":128542},{"emoji":"😟","dec":128543},{"emoji":"😠","dec":128544},{"emoji":"😡","dec":128545},{"emoji":"😢","dec":128546},{"emoji":"😣","dec":128547},{"emoji":"😤","dec":128548},{"emoji":"😥","dec":128549},{"emoji":"😦","dec":128550},{"emoji":"😧","dec":128551},{"emoji":"😨","dec":128552},{"emoji":"😩","dec":128553},{"emoji":"😪","dec":128554},{"emoji":"😫","dec":128555},{"emoji":"😬","dec":128556},{"emoji":"😭","dec":128557},{"emoji":"😮","dec":128558},{"emoji":"😯","dec":128559},{"emoji":"😰","dec":128560},{"emoji":"😱","dec":128561},{"emoji":"😲","dec":128562},{"emoji":"😳","dec":128563},{"emoji":"😴","dec":128564},{"emoji":"😵","dec":128565},{"emoji":"😶","dec":128566},{"emoji":"😷","dec":128567},{"emoji":"🙁","dec":128577},{"emoji":"🙂","dec":128578},{"emoji":"🙃","dec":128579},{"emoji":"🙄","dec":128580},{"emoji":"🤐","dec":129296},{"emoji":"🤑","dec":129297},{"emoji":"🤒","dec":129298},{"emoji":"🤓","dec":129299},{"emoji":"🤔","dec":129300},{"emoji":"🤕","dec":129301},{"emoji":"🤠","dec":129312},{"emoji":"🤡","dec":129313},{"emoji":"🤢","dec":129314},{"emoji":"🤣","dec":129315},{"emoji":"🤤","dec":129316},{"emoji":"🤥","dec":129317},{"emoji":"🤧","dec":129319},{"emoji":"🤨","dec":129320},{"emoji":"🤩","dec":129321},{"emoji":"🤪","dec":129322},{"emoji":"🤫","dec":129323},{"emoji":"🤬","dec":129324},{"emoji":"🤭","dec":129325},{"emoji":"🤮","dec":129326},{"emoji":"🤯","dec":129327},{"emoji":"🧐","dec":129488}]';
-    var wrapEmoji = document.createElement('div');
-    $(wrapEmoji).addClass('wrap-emojis');
-    wrapEmoji.innerHTML = JSON.parse(emojiData).map(function (emoji) {
-      return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
-    }).join('');
-    wrapInputChat.appendChild(wrapEmoji);
-    document.querySelectorAll('.emoji-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.getElementById('msg').value += this.innerHTML;
-        document.getElementById('msg').focus(); // $('.wrap-emojis').removeClass('is-active');
-      });
-    });
-    $(document).on('click', '.open-emojis', function () {
-      if ($('.wrap-emojis').hasClass('is-active')) {
-        $('.wrap-emojis').removeClass('is-active');
-      } else {
-        $('.wrap-emojis').addClass('is-active');
-      }
-    });
-    $(document).on('click', function (e) {
-      var $target = $(e.target);
-
-      if (!$target.closest('.wrap-emojis').length && !$target.closest('.open-emojis').length && $('.wrap-emojis').hasClass('is-active')) {
-        $('.wrap-emojis').removeClass('is-active');
-      }
-    });
-  }
-}();
-
-/* unused harmony default export */ var _unused_webpack_default_export = (Emoji);
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
 
 /***/ }),
 /* 516 */
@@ -41184,7 +41210,8 @@ var ChatUtils = function () {
 /* 545 */,
 /* 546 */,
 /* 547 */,
-/* 548 */
+/* 548 */,
+/* 549 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

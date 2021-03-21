@@ -76,7 +76,7 @@ module.exports.onMemberOnline = async function (io, { memberId }) {
       member.status = 'online'
       member.socketId = this.id
       member.isCalling = false
-
+      member.markModified('status')
       await member.save()
 
       // send signal online to friends are online
@@ -132,10 +132,18 @@ module.exports.onMessageChat = async function (io, { message, token }) {
           this.emit('error', 'Group chat không tồn tại');
         }
 
+        const tokenMe = jwt.sign(
+          { data: { memberId: me.id } },
+          process.env.JWT_SECRET
+        );
+
         // if friend is online => send msg by socket
         if (friendRelated._id.status === 'online' && friendRelated._id.socketId) {
           // member is online => emit socket
-          io.to(friendRelated._id.socketId).emit('msg-messenger', {senderId: me.id, msg});
+          io.to(friendRelated._id.socketId).emit(
+            'msg-messenger',
+            { senderId: me.id, msg, token: tokenMe }
+          );
         }
       } else {
         this.emit('error', 'Không thể chat với người không phải là bạn của bạn');
