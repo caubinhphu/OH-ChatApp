@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 514);
+/******/ 	return __webpack_require__(__webpack_require__.s = 515);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -39209,9 +39209,9 @@ module.exports = Cancel;
   }
 
   function emojisForMiniChat($popup) {
-    $popup.find('.chat-mini-bottom').html("\n        <div class=\"wrap-emojis\">\n          ".concat(JSON.parse(emojiData).map(function (emoji) {
+    $popup.find('.chat-mini-bottom').append("\n      <div class=\"wrap-emojis\">\n        ".concat(JSON.parse(emojiData).map(function (emoji) {
       return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
-    }).join(''), "\n        </div>\n    "));
+    }).join(''), "\n      </div>\n    "));
     $popup.find('.emoji-btn').on('click', function () {
       $popup.find('.msg-mini').val($popup.find('.msg-mini').val() + this.innerHTML);
       $popup.find('.msg-mini').focus();
@@ -39683,6 +39683,7 @@ var CommonChat = function () {
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var $chatBox = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
     var timeCall = null;
@@ -39701,7 +39702,7 @@ var CommonChat = function () {
           message: msg,
           className: className,
           timeCall: timeCall
-        }, true);
+        }, true, $chatBox);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       } else {
@@ -39712,7 +39713,7 @@ var CommonChat = function () {
           avatar: $friItem.find('img').attr('src'),
           className: className,
           timeCall: timeCall
-        });
+        }, false, $chatBox);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       }
@@ -39765,6 +39766,7 @@ var CommonChat = function () {
 
   function outputMessage(msgObj) {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
 
     if (me) {
@@ -39776,7 +39778,11 @@ var CommonChat = function () {
     } // append message
 
 
-    chatMain.appendChild(div);
+    if (!$chatBox) {
+      chatMain.appendChild(div);
+    } else {
+      $chatBox.append(div);
+    }
   }
 
   window.outputMessage = outputMessage;
@@ -40939,7 +40945,33 @@ module.exports = function isAxiosError(payload) {
 
 
 /***/ }),
-/* 502 */,
+/* 502 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// option format message client side
+var charReplaces = {
+  '<': '&lt;',
+  '>': '&gt;',
+  '&': '&amp;'
+}; // replace char to format message client side
+
+var replaceChar = function replaceChar(_char) {
+  return charReplaces[_char] || _char;
+}; // format message client side
+
+
+var escapeHtml = function escapeHtml(html) {
+  return html.replace(/[<>&]/g, replaceChar);
+};
+
+var ChatUtils = function () {
+  window.escapeHtml = escapeHtml;
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (ChatUtils);
+
+/***/ }),
 /* 503 */,
 /* 504 */,
 /* 505 */,
@@ -40951,16 +40983,17 @@ module.exports = function isAxiosError(payload) {
 /* 511 */,
 /* 512 */,
 /* 513 */,
-/* 514 */
+/* 514 */,
+/* 515 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(137);
-__webpack_require__(515);
+__webpack_require__(516);
 module.exports = __webpack_require__(549);
 
 
 /***/ }),
-/* 515 */
+/* 516 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40971,7 +41004,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(341);
 /* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(481);
 /* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(482);
-/* harmony import */ var _member_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(516);
+/* harmony import */ var _member_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(517);
 
 
 
@@ -40981,13 +41014,13 @@ __webpack_require__.r(__webpack_exports__);
 console.log('page home messenger');
 
 /***/ }),
-/* 516 */
+/* 517 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(134);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(517);
+/* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(502);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -41151,33 +41184,6 @@ var Index = function () {
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(34)))
-
-/***/ }),
-/* 517 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// option format message client side
-var charReplaces = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '&': '&amp;'
-}; // replace char to format message client side
-
-var replaceChar = function replaceChar(_char) {
-  return charReplaces[_char] || _char;
-}; // format message client side
-
-
-var escapeHtml = function escapeHtml(html) {
-  return html.replace(/[<>&]/g, replaceChar);
-};
-
-var ChatUtils = function () {
-  window.escapeHtml = escapeHtml;
-}();
-
-/* unused harmony default export */ var _unused_webpack_default_export = (ChatUtils);
 
 /***/ }),
 /* 518 */,

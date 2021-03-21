@@ -39209,9 +39209,9 @@ module.exports = Cancel;
   }
 
   function emojisForMiniChat($popup) {
-    $popup.find('.chat-mini-bottom').html("\n        <div class=\"wrap-emojis\">\n          ".concat(JSON.parse(emojiData).map(function (emoji) {
+    $popup.find('.chat-mini-bottom').append("\n      <div class=\"wrap-emojis\">\n        ".concat(JSON.parse(emojiData).map(function (emoji) {
       return "<button class=\"emoji-btn\">&#".concat(emoji.dec, ";</button>");
-    }).join(''), "\n        </div>\n    "));
+    }).join(''), "\n      </div>\n    "));
     $popup.find('.emoji-btn').on('click', function () {
       $popup.find('.msg-mini').val($popup.find('.msg-mini').val() + this.innerHTML);
       $popup.find('.msg-mini').focus();
@@ -39683,6 +39683,7 @@ var CommonChat = function () {
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var $chatBox = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
     var timeCall = null;
@@ -39701,7 +39702,7 @@ var CommonChat = function () {
           message: msg,
           className: className,
           timeCall: timeCall
-        }, true);
+        }, true, $chatBox);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       } else {
@@ -39712,7 +39713,7 @@ var CommonChat = function () {
           avatar: $friItem.find('img').attr('src'),
           className: className,
           timeCall: timeCall
-        });
+        }, false, $chatBox);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       }
@@ -39765,6 +39766,7 @@ var CommonChat = function () {
 
   function outputMessage(msgObj) {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
 
     if (me) {
@@ -39776,7 +39778,11 @@ var CommonChat = function () {
     } // append message
 
 
-    chatMain.appendChild(div);
+    if (!$chatBox) {
+      chatMain.appendChild(div);
+    } else {
+      $chatBox.append(div);
+    }
   }
 
   window.outputMessage = outputMessage;
@@ -40939,7 +40945,33 @@ module.exports = function isAxiosError(payload) {
 
 
 /***/ }),
-/* 502 */,
+/* 502 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// option format message client side
+var charReplaces = {
+  '<': '&lt;',
+  '>': '&gt;',
+  '&': '&amp;'
+}; // replace char to format message client side
+
+var replaceChar = function replaceChar(_char) {
+  return charReplaces[_char] || _char;
+}; // format message client side
+
+
+var escapeHtml = function escapeHtml(html) {
+  return html.replace(/[<>&]/g, replaceChar);
+};
+
+var ChatUtils = function () {
+  window.escapeHtml = escapeHtml;
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (ChatUtils);
+
+/***/ }),
 /* 503 */,
 /* 504 */,
 /* 505 */,
@@ -40950,7 +40982,8 @@ module.exports = function isAxiosError(payload) {
 /* 510 */,
 /* 511 */,
 /* 512 */,
-/* 513 */
+/* 513 */,
+/* 514 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(setImmediate) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*************************
@@ -42591,7 +42624,6 @@ module.exports = function isAxiosError(payload) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(523).setImmediate))
 
 /***/ }),
-/* 514 */,
 /* 515 */,
 /* 516 */,
 /* 517 */,
@@ -42617,10 +42649,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(340);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(341);
 /* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(481);
-/* harmony import */ var _member_profile__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(522);
-/* harmony import */ var _member_setting__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(525);
-/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(482);
-/* harmony import */ var _member_messenger__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(526);
+/* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(502);
+/* harmony import */ var _member_profile__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(522);
+/* harmony import */ var _member_setting__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(525);
+/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(482);
+/* harmony import */ var _member_messenger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(526);
+
 
 
 
@@ -43569,7 +43603,7 @@ console.log('page sub messenger');
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(134);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(513);
+/* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(514);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(croppie__WEBPACK_IMPORTED_MODULE_1__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -44290,15 +44324,64 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     var senderId = _ref.senderId,
         msgObj = _ref.msg,
         token = _ref.token;
-    console.log('sadfasdf sadfas dfsa df');
+    console.log(senderId);
     console.log($(".popup-chat-mini[data-id=".concat(senderId, "]")));
 
     if ($(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
-      console.log(senderId, msgObj, token);
+      var $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+      var $chatMain = $popup.find('.chat-mini-main');
+      window.outputMessage(msgObj, false, $chatMain); // scroll bottom
+
+      $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
     } else {
-      var html = "\n      <div class=\"popup-chat-mini is-active d-flex flex-column\" data-id=\"".concat(msgObj.senderId, "\">\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.name, "\" title=\"").concat(msgObj.name, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.name, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.name, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2\"></div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
+      var html = "\n      <div class=\"popup-chat-mini is-active d-flex flex-column\" data-id=\"".concat(senderId, "\">\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2\"></div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
       $('.wrap-chat-mini').append(html);
-      window.emojisForMiniChat($(".popup-chat-mini[data-id=".concat(senderId, "]")));
+
+      var _$popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+
+      var _$chatMain = _$popup.find('.chat-mini-main');
+
+      window.emojisForMiniChat(_$popup); // event submit form chat
+
+      _$popup.find('form').on('submit', function (e) {
+        // stop submit form
+        e.preventDefault(); // input message
+
+        var inputMsg = e.target.elements.message;
+
+        if (inputMsg.value !== '') {
+          // send message to server
+          window.window.socket.emit('msg-messageChat', {
+            message: inputMsg.value,
+            token: e.target.elements._token.value
+          }); // create message obj to show in client
+
+          window.createCallMsgLocal(_$popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true, _$chatMain); // scroll bottom
+
+          _$chatMain.get(0).scrollTop = _$chatMain.get(0).scrollHeight; // set value for input message
+
+          inputMsg.value = ''; // focus input message
+
+          inputMsg.focus();
+        }
+      });
+
+      _$popup.find('.msg-mini').on('keydown', function (e) {
+        if (e.which === 13 && !e.shiftKey) {
+          e.preventDefault();
+
+          _$popup.find('button.text-secondary').trigger('click');
+
+          $(this).css('height', '35px');
+        }
+      }).on('input', function () {
+        $(this).css('height', '5px');
+        $(this).css('height', "".concat(this.scrollHeight, "px"));
+      }).on('focus', function () {
+        $(this).parents('.wrap-msg-box').addClass('is-focus');
+      }).on('blur', function () {
+        $(this).parents('.wrap-msg-box').removeClass('is-focus');
+      });
     }
   });
 }();

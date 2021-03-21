@@ -150,7 +150,8 @@
     font-weight: 800;
   }
 }
-#msg {
+#msg,
+textarea.form-control.msg-mini {
   border: none;
   padding: 5px;
   font-size: 15px;

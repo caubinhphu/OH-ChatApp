@@ -15197,9 +15197,9 @@ var objectKeys = Object.keys || function (obj) {
 
 module.exports = Duplex;
 
-var Readable = __webpack_require__(505);
+var Readable = __webpack_require__(506);
 
-var Writable = __webpack_require__(510);
+var Writable = __webpack_require__(511);
 
 __webpack_require__(479)(Duplex, Readable);
 
@@ -23237,7 +23237,8 @@ if (typeof Object.create === 'function') {
 /* 499 */,
 /* 500 */,
 /* 501 */,
-/* 502 */
+/* 502 */,
+/* 503 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23347,7 +23348,7 @@ function eos(stream, opts, callback) {
 module.exports = eos;
 
 /***/ }),
-/* 503 */
+/* 504 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*! simple-peer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
@@ -24377,7 +24378,7 @@ module.exports = Peer
 
 
 /***/ }),
-/* 504 */
+/* 505 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
@@ -24445,7 +24446,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 
 /***/ }),
-/* 505 */
+/* 506 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24480,7 +24481,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 /*<replacement>*/
 
-var EE = __webpack_require__(506).EventEmitter;
+var EE = __webpack_require__(507).EventEmitter;
 
 var EElistenerCount = function EElistenerCount(emitter, type) {
   return emitter.listeners(type).length;
@@ -24490,7 +24491,7 @@ var EElistenerCount = function EElistenerCount(emitter, type) {
 /*<replacement>*/
 
 
-var Stream = __webpack_require__(507);
+var Stream = __webpack_require__(508);
 /*</replacement>*/
 
 
@@ -24522,9 +24523,9 @@ if (debugUtil && debugUtil.debuglog) {
 
 var BufferList = __webpack_require__(540);
 
-var destroyImpl = __webpack_require__(508);
+var destroyImpl = __webpack_require__(509);
 
-var _require = __webpack_require__(509),
+var _require = __webpack_require__(510),
     getHighWaterMark = _require.getHighWaterMark;
 
 var _require$codes = __webpack_require__(135).codes,
@@ -24611,7 +24612,7 @@ function ReadableState(options, stream, isDuplex) {
   this.encoding = null;
 
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(511).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(512).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -24773,7 +24774,7 @@ Readable.prototype.isPaused = function () {
 
 
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(511).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(512).StringDecoder;
   var decoder = new StringDecoder(enc);
   this._readableState.decoder = decoder; // If setEncoding(null), decoder.encoding equals utf8
 
@@ -25576,7 +25577,7 @@ function indexOf(xs, x) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55), __webpack_require__(70)))
 
 /***/ }),
-/* 506 */
+/* 507 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26059,14 +26060,14 @@ function once(emitter, name) {
 
 
 /***/ }),
-/* 507 */
+/* 508 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(506).EventEmitter;
+module.exports = __webpack_require__(507).EventEmitter;
 
 
 /***/ }),
-/* 508 */
+/* 509 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26178,7 +26179,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(70)))
 
 /***/ }),
-/* 509 */
+/* 510 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26211,7 +26212,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 510 */
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26280,7 +26281,7 @@ var internalUtil = {
 
 /*<replacement>*/
 
-var Stream = __webpack_require__(507);
+var Stream = __webpack_require__(508);
 /*</replacement>*/
 
 
@@ -26296,9 +26297,9 @@ function _isUint8Array(obj) {
   return Buffer.isBuffer(obj) || obj instanceof OurUint8Array;
 }
 
-var destroyImpl = __webpack_require__(508);
+var destroyImpl = __webpack_require__(509);
 
-var _require = __webpack_require__(509),
+var _require = __webpack_require__(510),
     getHighWaterMark = _require.getHighWaterMark;
 
 var _require$codes = __webpack_require__(135).codes,
@@ -26915,7 +26916,7 @@ Writable.prototype._destroy = function (err, cb) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55), __webpack_require__(70)))
 
 /***/ }),
-/* 511 */
+/* 512 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26944,7 +26945,7 @@ Writable.prototype._destroy = function (err, cb) {
 
 /*<replacement>*/
 
-var Buffer = __webpack_require__(504).Buffer;
+var Buffer = __webpack_require__(505).Buffer;
 /*</replacement>*/
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
@@ -27217,7 +27218,7 @@ function simpleEnd(buf) {
 }
 
 /***/ }),
-/* 512 */
+/* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27424,7 +27425,6 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 513 */,
 /* 514 */,
 /* 515 */,
 /* 516 */,
@@ -27464,7 +27464,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(503);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(504);
 /* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(simple_peer__WEBPACK_IMPORTED_MODULE_0__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -28722,7 +28722,7 @@ function oldBrowser () {
   throw new Error('Secure random number generation is not supported by this browser.\nUse Chrome, Firefox or Internet Explorer 11')
 }
 
-var Buffer = __webpack_require__(504).Buffer
+var Buffer = __webpack_require__(505).Buffer
 var crypto = global.crypto || global.msCrypto
 
 if (crypto && crypto.getRandomValues) {
@@ -29024,14 +29024,14 @@ module.exports = Array.isArray || function (arr) {
 /* 538 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(505);
+exports = module.exports = __webpack_require__(506);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(510);
+exports.Writable = __webpack_require__(511);
 exports.Duplex = __webpack_require__(136);
-exports.Transform = __webpack_require__(512);
+exports.Transform = __webpack_require__(513);
 exports.PassThrough = __webpack_require__(545);
-exports.finished = __webpack_require__(502);
+exports.finished = __webpack_require__(503);
 exports.pipeline = __webpack_require__(546);
 
 
@@ -29348,7 +29348,7 @@ var _Object$setPrototypeO;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var finished = __webpack_require__(502);
+var finished = __webpack_require__(503);
 
 var kLastResolve = Symbol('lastResolve');
 var kLastReject = Symbol('lastReject');
@@ -29592,7 +29592,7 @@ module.exports = function () {
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(512);
+var Transform = __webpack_require__(513);
 
 __webpack_require__(479)(PassThrough, Transform);
 
@@ -29644,7 +29644,7 @@ function destroyer(stream, reading, writing, callback) {
   stream.on('close', function () {
     closed = true;
   });
-  if (eos === undefined) eos = __webpack_require__(502);
+  if (eos === undefined) eos = __webpack_require__(503);
   eos(stream, {
     readable: reading,
     writable: writing

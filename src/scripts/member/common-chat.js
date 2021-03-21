@@ -471,7 +471,7 @@ const CommonChat = (() => {
    * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
-  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false) {
+  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false, $chatBox = null) {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
     let timeCall = null
@@ -488,7 +488,7 @@ const CommonChat = (() => {
           message: msg,
           className,
           timeCall
-        }, true)
+        }, true, $chatBox)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
           <small>${ msg }</small><small>1 phút</small>
@@ -501,7 +501,7 @@ const CommonChat = (() => {
           avatar: $friItem.find('img').attr('src'),
           className,
           timeCall
-        })
+        }, false, $chatBox)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
           <small>${ msg }</small><small>1 phút</small>
@@ -550,7 +550,7 @@ const CommonChat = (() => {
    * @param {Object} msgObj message object { time, message, avatar, username }
    * @param {boolean} me is me
    */
-  function outputMessage(msgObj, me = false) {
+  function outputMessage(msgObj, me = false, $chatBox = null) {
     const div = document.createElement('div');
     if (me) {
       div.className = `message text-right ${msgObj.className}`;
@@ -574,7 +574,11 @@ const CommonChat = (() => {
     }
 
     // append message
-    chatMain.appendChild(div);
+    if (!$chatBox) {
+      chatMain.appendChild(div);
+    } else {
+      $chatBox.append(div)
+    }
   }
   window.outputMessage = outputMessage
 

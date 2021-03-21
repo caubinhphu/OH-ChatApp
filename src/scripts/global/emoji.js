@@ -43,10 +43,10 @@ const Emoji = (() => {
   }
 
   function emojisForMiniChat ($popup) {
-    $popup.find('.chat-mini-bottom').html(`
-        <div class="wrap-emojis">
-          ${JSON.parse(emojiData).map((emoji) => `<button class="emoji-btn">&#${emoji.dec};</button>`).join('')}
-        </div>
+    $popup.find('.chat-mini-bottom').append(`
+      <div class="wrap-emojis">
+        ${JSON.parse(emojiData).map((emoji) => `<button class="emoji-btn">&#${emoji.dec};</button>`).join('')}
+      </div>
     `)
 
     $popup.find('.emoji-btn').on('click', function () {
