@@ -25,6 +25,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-minus:before {
+  content: "\e92c";
+}
 .icon-phone-off:before {
   content: "\e928";
 }

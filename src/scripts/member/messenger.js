@@ -1,18 +1,26 @@
+import moment from 'moment';
+import axios from 'axios';
+
 const Messenger = (() => {
+  const classChatMain = '.chat-mini-main'
+
   // receive msg obj from server
-  window.socket.on('msg-messenger', ({senderId, msg: msgObj, token}) => {
-    console.log(senderId);
-    console.log($(`.popup-chat-mini[data-id=${senderId}]`));
+  window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
     if ($(`.popup-chat-mini[data-id=${senderId}]`).length) {
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
-      const $chatMain = $popup.find('.chat-mini-main')
+      const $chatMain = $popup.find(classChatMain)
       window.outputMessage(msgObj, false, $chatMain);
 
       // scroll bottom
-      $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
+      window.scrollBottomChatBox($chatMain)
     } else {
       const html = `
-      <div class="popup-chat-mini is-active d-flex flex-column" data-id="${senderId}">
+      <div class="popup-chat-mini is-active d-flex flex-column" data-id="${senderId}" data-page="0" data-hasMsg="1">
+        <div class="wrap-loader-mini">
+          <div class="d-flex justify-content-center align-items-center h-100">
+            <img src="/images/loader.svg" alt="loader" />
+          </div>
+        </div>
         <img class="avatar-mini-2" src="${msgObj.avatar}" alt="${msgObj.username}" title="${msgObj.username}" />
         <div class="chat-mini-top">
           <div class="d-flex p-2">
@@ -30,7 +38,7 @@ const Messenger = (() => {
               <button class="video-friend-btn btn btn-icon small-btn btn-purple mr-1" type="button" title="Gọi video">
                 <span class="icomoon icon-camera"></span>
               </button><button class="mini-chat-btn btn btn-icon small-btn btn-red mr-1" type="button" title="Ẩn chat">
-                <span class="icomoon icon-phone"></span>
+                <span class="icomoon icon-minus"></span>
               </button>
               <button class="close-chat-btn btn btn-icon small-btn btn-red" type="button" title="Close chat">
                 <span class="icomoon icon-close"></span>
@@ -54,8 +62,12 @@ const Messenger = (() => {
       </div>
       `;
       $('.wrap-chat-mini').append(html)
+
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
-      const $chatMain = $popup.find('.chat-mini-main')
+
+      await loadOldMsg($popup)
+      $popup.find('.wrap-loader-mini').addClass('d-none')
+
       window.emojisForMiniChat($popup)
 
       // event submit form chat
@@ -74,12 +86,10 @@ const Messenger = (() => {
           });
 
           // create message obj to show in client
-          window.createCallMsgLocal(
-            $popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true, $chatMain
-          )
+          createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true)
 
           // scroll bottom
-          $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
+          // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
 
           // set value for input message
           inputMsg.value = '';
@@ -104,6 +114,93 @@ const Messenger = (() => {
       });
       }
     });
+
+    /**
+   * Function create and append call message to local
+   * @param {string} friendId friend id
+   * @param {string} msg message
+   * @param {string} className class name
+   * @param {boolean} isCallEnd isCallEnd
+   * @param {boolean} me is me
+   */
+  function createCallMsgLocalMini(friendId, msg = '', className = '', isCallEnd = false, me = false) {
+    const $chatBox = $(`.popup-chat-mini[data-id="${friendId}"]`);
+    let time = moment().format('H:mm')
+    let timeCall = null
+    if (isCallEnd && window.timeStartCall) {
+      time = moment(window.timeStartCall).format('H:mm')
+      timeCall = `<small class="time-call">${window.formatDiffTime(window.timeStartCall, new Date())}</small>`
+      window.timeStartCall = undefined
+    }
+    if ($chatBox.length) {
+      if (me) {
+        window.outputMessage({
+          time,
+          username: 'Me',
+          message: msg,
+          className,
+          timeCall
+        }, true, $chatBox.find(classChatMain))
+        window.scrollBottomChatBox($chatBox.find(classChatMain))
+      } else {
+        window.outputMessage({
+          time,
+          username: $chatBox.find('.mini-name').text(),
+          message: msg,
+          avatar: $chatBox.find('.avatar-mini').attr('src'),
+          className,
+          timeCall
+        }, false, $chatBox.find(classChatMain))
+        window.scrollBottomChatBox($chatBox.find(classChatMain))
+      }
+    }
+  }
+
+  async function loadOldMsg($popup) {
+    if (+$popup.attr('data-hasMsg')) {
+      const currentPage = $popup.attr('data-page')
+      try {
+        const responsive = await axios.get(`/messenger/chatold/?friendid=${$popup.attr('data-id')}&page=${currentPage}`);
+        const { messages, hasMsg } = responsive.data;
+        // $('.wrap-loader-chat').addClass('d-none')
+        $popup.attr('data-page', currentPage + 1)
+        $popup.attr('data-hasMsg', hasMsg ? '1' : '0')
+        const htmlMsgs = messages.map(msg => {
+          if (msg.me) {
+            return `
+              <div class="message text-right">
+                <small class="message-time">${msg.time}</small>
+                <div>
+                  <div class="msg-me">
+                    <small class="message-content mx-0">${msg.content}</small>
+                  </div>
+                </div>
+              </div>`
+          }
+          return `
+            <div class="message">
+              <small class="message-time">${msg.time}</small>
+              <div>
+                <div class="msg">
+                  <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
+                  <small class="message-content">${msg.content}</small>
+                </div>
+              </div>
+            </div>`
+        }).join('')
+
+        // prepend msg list and hold position scroll top of chat box
+        const chatMain = $popup.find('.chat-mini-main').get(0)
+        const curScrollPos = chatMain.scrollTop;
+        const oldScroll = chatMain.scrollHeight - chatMain.clientHeight;
+        $(chatMain).prepend(htmlMsgs)
+        const newScroll = chatMain.scrollHeight - chatMain.clientHeight;
+        chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
+      } catch (error) {
+        window.outputErrorMessage(error.message)
+      }
+    }
+  }
 })()
 
 export default Messenger

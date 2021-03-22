@@ -6863,6 +6863,10 @@ background: #ccc;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-minus:before {
+  content: "\E92C";
+}
+
 .icon-phone-off:before {
   content: "\E928";
 }
@@ -7307,6 +7311,17 @@ body {
   width: 27px;
   height: 27px;
   font-size: 17px;
+}
+
+.popup-chat-mini .wrap-loader-mini {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #9e9e9e73;
+  z-index: 99;
+  border-radius: 10px 10px 0 0;
 }
 
 .chat-mini-bottom {
