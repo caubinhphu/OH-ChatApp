@@ -41113,11 +41113,13 @@ var Index = function () {
               currentPageChat++;
               hasMessenger = hasMsg;
               htmlMsgs = messages.map(function (msg) {
+                var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
+
                 if (msg.me) {
-                  return "\n                <div class=\"message text-right\">\n                  <small class=\"message-time\">".concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      <small class=\"message-content mx-0\">").concat(msg.content, "</small>\n                    </div>\n                  </div>\n                </div>");
+                  return "\n                <div class=\"message text-right ".concat(msg["class"], "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      <small class=\"message-content mx-0\">").concat(msg.content, "</small>\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
                 }
 
-                return "\n              <div class=\"message\">\n                <small class=\"message-time\">".concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    <small class=\"message-content\">").concat(msg.content, "</small>\n                  </div>\n                </div>\n              </div>");
+                return "\n              <div class=\"message ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    <small class=\"message-content\">").concat(msg.content, "</small>\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
               }).join(''); // prepend msg list and hold position scroll top of chat box
 
               curScrollPos = this.scrollTop;

@@ -7515,6 +7515,7 @@ body {
 .message-content {
   margin-left: 10px;
   color: #102131;
+  line-break: anywhere;
 }
 
 #main-left-top h4 {
@@ -7596,11 +7597,26 @@ textarea.form-control.msg-mini {
   max-width: 45px;
 }
 
+.last-msg {
+  display: flex;
+}
+
 .last-msg small:first-child {
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  max-height: 23px;
+  max-width: 248px;
+  word-break: break-all;
+}
+
+.last-msg small:last-child {
+  margin-left: 1rem;
   position: relative;
 }
 
-.last-msg small:first-child::after {
+.last-msg small:last-child::before {
   content: "";
   position: absolute;
   width: 3px;
@@ -7608,12 +7624,8 @@ textarea.form-control.msg-mini {
   background: #22c0c9;
   top: 50%;
   transform: translateY(-50%);
-  right: -10px;
+  left: -10px;
   border-radius: 50%;
-}
-
-.last-msg small:last-child {
-  margin-left: 1rem;
 }
 
 .last-msg.un-read {

@@ -219,6 +219,7 @@ textarea.form-control.msg-mini {
   }
 }
 .last-msg {
+  display: flex;
   small {
     &:first-child {
       overflow: hidden;

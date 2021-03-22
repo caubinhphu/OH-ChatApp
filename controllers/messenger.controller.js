@@ -336,7 +336,7 @@ module.exports.getChatOld = async (req, res) => {
             sort: { _id: -1},
             skip: msgPerLoad * page
           },
-          perDocumentLimit: msgPerLoad,
+          perDocumentLimit: msgPerLoad + 1,
         }
       })
     if (member) {
@@ -344,7 +344,6 @@ module.exports.getChatOld = async (req, res) => {
       if (friendRelated) {
         const messages = formatMessageList(friendRelated.groupMessageId.messages, member, friendRelated._id)
         let hasMsg = false
-        console.log(messages);
         if (messages.length > msgPerLoad) {
           messages.pop()
           hasMsg = true

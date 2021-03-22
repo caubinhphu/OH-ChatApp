@@ -70,25 +70,30 @@ const Index = (() => {
           $('.wrap-loader-chat').addClass('d-none')
           currentPageChat++
           hasMessenger = hasMsg
+
+
           const htmlMsgs = messages.map(msg => {
+            const timeEndCall = msg.timeCall ? `<small class="time-call">${msg.timeCall}</small>` : ''
             if (msg.me) {
               return `
-                <div class="message text-right">
+                <div class="message text-right ${msg.class}">
                   <small class="message-time">${msg.time}</small>
                   <div>
                     <div class="msg-me">
                       <small class="message-content mx-0">${msg.content}</small>
+                      ${ timeEndCall }
                     </div>
                   </div>
                 </div>`
             }
             return `
-              <div class="message">
+              <div class="message ${msg.class}">
                 <small class="message-time">${msg.time}</small>
                 <div>
                   <div class="msg">
                     <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
                     <small class="message-content">${msg.content}</small>
+                    ${ timeEndCall }
                   </div>
                 </div>
               </div>`
