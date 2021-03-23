@@ -44341,20 +44341,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Messenger = function () {
-  var classChatMain = '.chat-mini-main'; // receive msg obj from server
+  var classChatMain = '.chat-mini-main';
+  var nClassCloseMini = 'close-mini-chat';
+  var classScroll = '.scroll-bottom';
+  var nClassNoAct = 'not-active';
+  var nClassAct = 'is-active'; // receive msg obj from server
 
   window.socket.on('msg-messenger', /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref) {
-      var senderId, msgObj, token, $popup, $chatMain, html, _$popup;
+      var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive, html, _$popup;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               senderId = _ref.senderId, msgObj = _ref.msg, token = _ref.token;
+              activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
 
               if (!$(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
-                _context2.next = 8;
+                _context2.next = 10;
                 break;
               }
 
@@ -44363,17 +44368,36 @@ var Messenger = function () {
               window.outputMessage(msgObj, false, $chatMain); // scroll bottom
 
               window.scrollBottomChatBox($chatMain);
-              _context2.next = 19;
+
+              if ($popup.hasClass(nClassCloseMini)) {
+                $popup.removeClass(nClassCloseMini);
+                classIsActive = activeLength ? nClassNoAct : nClassAct;
+                $popup.addClass(classIsActive);
+
+                if (classIsActive === nClassNoAct) {
+                  console.log(msgObj.content);
+                }
+              } else if ($popup.hasClass('.not-active')) {
+                console.log(msgObj.content);
+              }
+
+              _context2.next = 26;
               break;
 
-            case 8:
-              html = "\n      <div class=\"popup-chat-mini is-active d-flex flex-column ps-rv\" data-id=\"".concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\">\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
+            case 10:
+              _classIsActive = activeLength ? nClassNoAct : nClassAct;
+              html = "\n      <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(_classIsActive, "\" data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\">\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
               $('.wrap-chat-mini').append(html);
               _$popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
-              _context2.next = 13;
+
+              if (_classIsActive === nClassNoAct) {
+                console.log(msgObj.content);
+              }
+
+              _context2.next = 17;
               return loadOldMsg(_$popup);
 
-            case 13:
+            case 17:
               _$popup.find('.wrap-loader-mini').addClass('d-none');
 
               window.emojisForMiniChat(_$popup); // event submit form chat
@@ -44419,7 +44443,7 @@ var Messenger = function () {
               }); // handle scroll box chat: load old msg, scroll to bottom
 
 
-              _$popup.find('.chat-mini-main').on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+              _$popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                   while (1) {
                     switch (_context.prev = _context.next) {
@@ -44442,9 +44466,9 @@ var Messenger = function () {
 
                       case 7:
                         if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-                          _$popup.find('.scroll-bottom').addClass('is-show');
+                          _$popup.find(classScroll).addClass('is-show');
                         } else {
-                          _$popup.find('.scroll-bottom').removeClass('is-show');
+                          _$popup.find(classScroll).removeClass('is-show');
                         }
 
                       case 8:
@@ -44456,11 +44480,36 @@ var Messenger = function () {
               }))); // scroll to bottom chat box
 
 
-              _$popup.find('.scroll-bottom').on('click', function () {
+              _$popup.find(classScroll).on('click', function () {
                 window.scrollBottomChatBox(_$popup.find(classChatMain));
+              }); // minimize chat
+
+
+              _$popup.find('.mini-chat-btn').on('click', function () {
+                _$popup.removeClass(nClassAct);
+
+                _$popup.addClass(nClassNoAct);
+              }); // open mini chat
+
+
+              _$popup.find('.avatar-mini-2').on('click', function () {
+                $('.popup-chat-mini').removeClass(nClassAct);
+                $('.popup-chat-mini').addClass(nClassNoAct);
+                window.scrollBottomChatBox(_$popup.find(classChatMain));
+
+                _$popup.addClass(nClassAct);
+
+                _$popup.removeClass(nClassNoAct);
+              }); // close mini chat
+
+
+              _$popup.find('.close-chat-btn').on('click', function () {
+                _$popup.addClass(nClassCloseMini);
+
+                _$popup.removeClass(nClassAct);
               });
 
-            case 19:
+            case 26:
             case "end":
               return _context2.stop();
           }
@@ -44558,7 +44607,7 @@ var Messenger = function () {
                 return "\n            <div class=\"message ".concat(msg["class"], "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  <small class=\"message-content\">").concat(msg.content, "</small>\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
               }).join(''); // prepend msg list and hold position scroll top of chat box
 
-              chatMain = $popup.find('.chat-mini-main').get(0);
+              chatMain = $popup.find(classChatMain).get(0);
               curScrollPos = chatMain.scrollTop;
               oldScroll = chatMain.scrollHeight - chatMain.clientHeight;
               $(chatMain).prepend(htmlMsgs);

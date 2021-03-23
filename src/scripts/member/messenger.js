@@ -3,19 +3,37 @@ import axios from 'axios';
 
 const Messenger = (() => {
   const classChatMain = '.chat-mini-main'
+  const nClassCloseMini = 'close-mini-chat'
+  const classScroll = '.scroll-bottom'
+  const nClassNoAct = 'not-active'
+  const nClassAct = 'is-active'
 
   // receive msg obj from server
   window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
+    const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
     if ($(`.popup-chat-mini[data-id=${senderId}]`).length) {
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
       const $chatMain = $popup.find(classChatMain)
+
       window.outputMessage(msgObj, false, $chatMain);
 
       // scroll bottom
       window.scrollBottomChatBox($chatMain)
+
+      if ($popup.hasClass(nClassCloseMini)) {
+        $popup.removeClass(nClassCloseMini)
+        const classIsActive = activeLength ? nClassNoAct : nClassAct
+        $popup.addClass(classIsActive)
+        if (classIsActive === nClassNoAct) {
+          console.log(msgObj.content);
+        }
+      } else if ($popup.hasClass('.not-active')) {
+        console.log(msgObj.content);
+      }
     } else {
+      const classIsActive = activeLength ? nClassNoAct : nClassAct
       const html = `
-      <div class="popup-chat-mini is-active d-flex flex-column ps-rv" data-id="${senderId}" data-page="0" data-hasMsg="1">
+      <div class="popup-chat-mini d-flex flex-column ps-rv ${ classIsActive }" data-id="${senderId}" data-page="0" data-hasMsg="1">
         <div class="wrap-loader-mini">
           <div class="d-flex justify-content-center align-items-center h-100">
             <img src="/images/loader.svg" alt="loader" />
@@ -68,6 +86,10 @@ const Messenger = (() => {
 
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
 
+      if (classIsActive === nClassNoAct) {
+        console.log(msgObj.content);
+      }
+
       await loadOldMsg($popup)
       $popup.find('.wrap-loader-mini').addClass('d-none')
 
@@ -118,22 +140,44 @@ const Messenger = (() => {
       });
 
       // handle scroll box chat: load old msg, scroll to bottom
-      $popup.find('.chat-mini-main').on('scroll', async function() {
+      $popup.find(classChatMain).on('scroll', async function() {
         if (this.scrollTop === 0) {
           $popup.find('.wrap-loader-chat').removeClass('d-none')
           await loadOldMsg($popup)
           $popup.find('.wrap-loader-chat').removeClass('d-none')
         } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-          $popup.find('.scroll-bottom').addClass('is-show');
+          $popup.find(classScroll).addClass('is-show');
         } else {
-          $popup.find('.scroll-bottom').removeClass('is-show');
+          $popup.find(classScroll).removeClass('is-show');
         }
       });
 
       // scroll to bottom chat box
-      $popup.find('.scroll-bottom').on('click', function() {
+      $popup.find(classScroll).on('click', function() {
         window.scrollBottomChatBox($popup.find(classChatMain))
       });
+
+      // minimize chat
+      $popup.find('.mini-chat-btn').on('click', function() {
+        $popup.removeClass(nClassAct)
+        $popup.addClass(nClassNoAct)
+      });
+
+      // open mini chat
+      $popup.find('.avatar-mini-2').on('click', function() {
+        $('.popup-chat-mini').removeClass(nClassAct)
+        $('.popup-chat-mini').addClass(nClassNoAct)
+        window.scrollBottomChatBox($popup.find(classChatMain))
+        $popup.addClass(nClassAct)
+        $popup.removeClass(nClassNoAct)
+      });
+
+      // close mini chat
+      $popup.find('.close-chat-btn').on('click', function() {
+        $popup.addClass(nClassCloseMini)
+        $popup.removeClass(nClassAct)
+      });
+
     }
   });
 
@@ -216,7 +260,7 @@ const Messenger = (() => {
         }).join('')
 
         // prepend msg list and hold position scroll top of chat box
-        const chatMain = $popup.find('.chat-mini-main').get(0)
+        const chatMain = $popup.find(classChatMain).get(0)
         const curScrollPos = chatMain.scrollTop;
         const oldScroll = chatMain.scrollHeight - chatMain.clientHeight;
         $(chatMain).prepend(htmlMsgs)

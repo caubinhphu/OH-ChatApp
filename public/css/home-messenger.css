@@ -7274,6 +7274,7 @@ body {
 .popup-chat-mini {
   position: fixed;
   z-index: 99;
+  transition: all .3s;
 }
 
 .popup-chat-mini.not-active {
@@ -7288,8 +7289,13 @@ body {
 
 .popup-chat-mini.not-active .chat-mini-top,
 .popup-chat-mini.not-active .chat-mini-main,
-.popup-chat-mini.not-active .chat-mini-bottom {
+.popup-chat-mini.not-active .chat-mini-bottom,
+.popup-chat-mini.not-active .scroll-bottom {
   display: none;
+}
+
+.popup-chat-mini.not-active .avatar-mini-2 {
+  display: block;
 }
 
 .popup-chat-mini.is-active {
@@ -7302,8 +7308,8 @@ body {
   box-shadow: 0px 0px 4px;
 }
 
-.popup-chat-mini.is-active .avatar-mini-2 {
-  display: none;
+.popup-chat-mini.close-mini-chat {
+  display: none !important;
 }
 
 .popup-chat-mini .btn-icon.small-btn {
@@ -7322,6 +7328,11 @@ body {
   background-color: #9e9e9e73;
   z-index: 99;
   border-radius: 10px 10px 0 0;
+}
+
+.avatar-mini-2 {
+  display: none;
+  border-radius: 50%;
 }
 
 .chat-mini-bottom {

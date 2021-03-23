@@ -41047,6 +41047,7 @@ var Index = function () {
 
   var currentPageChat = 0; // current page load old chat
 
+  var allowLoadOld = true;
   var classScBottom = '.scroll-bottom'; // scroll bottom
 
   chatMain.scrollTop = chatMain.scrollHeight;
@@ -41099,17 +41100,18 @@ var Index = function () {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!(this.scrollTop === 0 && hasMessenger === true)) {
-                _context.next = 23;
+              if (!(this.scrollTop === 0 && hasMessenger === true && allowLoadOld)) {
+                _context.next = 25;
                 break;
               }
 
+              allowLoadOld = false;
               $('.wrap-loader-chat').removeClass('d-none');
-              _context.prev = 2;
-              _context.next = 5;
+              _context.prev = 3;
+              _context.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/chatold/?friendid=".concat(friendIdChatting, "&page=").concat(currentPageChat + 1));
 
-            case 5:
+            case 6:
               responsive = _context.sent;
               _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg;
               $('.wrap-loader-chat').addClass('d-none');
@@ -41130,31 +41132,32 @@ var Index = function () {
               $(this).prepend(htmlMsgs);
               newScroll = this.scrollHeight - this.clientHeight;
               this.scrollTop = curScrollPos + (newScroll - oldScroll);
-              _context.next = 21;
+              allowLoadOld = true;
+              _context.next = 23;
               break;
 
-            case 18:
-              _context.prev = 18;
-              _context.t0 = _context["catch"](2);
+            case 20:
+              _context.prev = 20;
+              _context.t0 = _context["catch"](3);
               window.outputErrorMessage(_context.t0.message);
 
-            case 21:
-              _context.next = 24;
+            case 23:
+              _context.next = 26;
               break;
 
-            case 23:
+            case 25:
               if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
                 $(classScBottom).addClass('is-show');
               } else {
                 $(classScBottom).removeClass('is-show');
               }
 
-            case 24:
+            case 26:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, this, [[2, 18]]);
+      }, _callee, this, [[3, 20]]);
     }))); // scroll to bottom chat box
 
     $(classScBottom).on('click', function () {

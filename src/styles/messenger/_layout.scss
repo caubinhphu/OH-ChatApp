@@ -54,6 +54,7 @@ body {
 .popup-chat-mini {
   position: fixed;
   z-index: 99;
+  transition: all .3s;
   &.not-active {
     bottom: 65px;
     right: 10px;
@@ -64,8 +65,12 @@ body {
     cursor: pointer;
     .chat-mini-top,
     .chat-mini-main,
-    .chat-mini-bottom {
+    .chat-mini-bottom,
+    .scroll-bottom {
       display: none;
+    }
+    .avatar-mini-2 {
+      display: block;
     }
   }
   &.is-active {
@@ -76,9 +81,9 @@ body {
     right: 70px;
     border-radius: 10px 10px 0 0;
     box-shadow: 0px 0px 4px;
-    .avatar-mini-2 {
-      display: none;
-    }
+  }
+  &.close-mini-chat {
+    display: none !important;
   }
   .btn-icon.small-btn {
     padding: 0;
@@ -96,6 +101,10 @@ body {
     z-index: 99;
     border-radius: 10px 10px 0 0;
   }
+}
+.avatar-mini-2 {
+  display: none;
+  border-radius: 50%;
 }
 .chat-mini-bottom {
   position: relative;

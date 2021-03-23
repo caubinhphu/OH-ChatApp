@@ -6,6 +6,7 @@ const Index = (() => {
   const msgForm = document.sendMsgForm; // form chat
   let hasMessenger = true // has old msg
   let currentPageChat = 0 // current page load old chat
+  let allowLoadOld = true
 
   const classScBottom = '.scroll-bottom'
 
@@ -62,7 +63,8 @@ const Index = (() => {
 
     // handle scroll box chat: load old msg, scroll to bottom
     $('#main-right-chat-content').on('scroll', async function() {
-      if (this.scrollTop === 0 && hasMessenger === true) {
+      if (this.scrollTop === 0 && hasMessenger === true && allowLoadOld) {
+        allowLoadOld = false
         $('.wrap-loader-chat').removeClass('d-none')
         try {
           const responsive = await axios.get(`/messenger/chatold/?friendid=${friendIdChatting}&page=${currentPageChat + 1}`);
@@ -105,6 +107,8 @@ const Index = (() => {
           $(this).prepend(htmlMsgs)
           const newScroll = this.scrollHeight - this.clientHeight;
           this.scrollTop = curScrollPos + (newScroll - oldScroll);
+
+          allowLoadOld = true
         } catch (error) {
           window.outputErrorMessage(error.message)
         }
