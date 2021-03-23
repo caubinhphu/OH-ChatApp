@@ -39792,13 +39792,16 @@ var CommonChat = function () {
 
   function scrollBottomChatBox() {
     var $chatBox = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    console.log($chatBox);
 
     if (!$chatBox) {
       var $ele = $('#main-right-chat-content');
+      console.log($ele);
       $ele.animate({
         scrollTop: $ele[0].scrollHeight - $ele.innerHeight()
       }, 350, 'swing');
     } else {
+      console.log('asdfsaf');
       $chatBox.animate({
         scrollTop: $chatBox[0].scrollHeight - $chatBox.innerHeight()
       }, 350, 'swing');
@@ -44360,11 +44363,11 @@ var Messenger = function () {
               window.outputMessage(msgObj, false, $chatMain); // scroll bottom
 
               window.scrollBottomChatBox($chatMain);
-              _context2.next = 18;
+              _context2.next = 19;
               break;
 
             case 8:
-              html = "\n      <div class=\"popup-chat-mini is-active d-flex flex-column\" data-id=\"".concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\">\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
+              html = "\n      <div class=\"popup-chat-mini is-active d-flex flex-column ps-rv\" data-id=\"".concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\">\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
               $('.wrap-chat-mini').append(html);
               _$popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
               _context2.next = 13;
@@ -44438,9 +44441,11 @@ var Messenger = function () {
                         break;
 
                       case 7:
-                        if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {// $(classScBottom).addClass('is-show');
-                        } else {// $(classScBottom).removeClass('is-show');
-                          }
+                        if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+                          _$popup.find('.scroll-bottom').addClass('is-show');
+                        } else {
+                          _$popup.find('.scroll-bottom').removeClass('is-show');
+                        }
 
                       case 8:
                       case "end":
@@ -44448,9 +44453,14 @@ var Messenger = function () {
                     }
                   }
                 }, _callee, this);
-              })));
+              }))); // scroll to bottom chat box
 
-            case 18:
+
+              _$popup.find('.scroll-bottom').on('click', function () {
+                window.scrollBottomChatBox(_$popup.find(classChatMain));
+              });
+
+            case 19:
             case "end":
               return _context2.stop();
           }

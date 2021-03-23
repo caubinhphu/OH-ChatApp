@@ -15,12 +15,13 @@ const Messenger = (() => {
       window.scrollBottomChatBox($chatMain)
     } else {
       const html = `
-      <div class="popup-chat-mini is-active d-flex flex-column" data-id="${senderId}" data-page="0" data-hasMsg="1">
+      <div class="popup-chat-mini is-active d-flex flex-column ps-rv" data-id="${senderId}" data-page="0" data-hasMsg="1">
         <div class="wrap-loader-mini">
           <div class="d-flex justify-content-center align-items-center h-100">
             <img src="/images/loader.svg" alt="loader" />
           </div>
         </div>
+        <div class="scroll-bottom"><span class="icomoon icon-circle-down"></span></div>
         <img class="avatar-mini-2" src="${msgObj.avatar}" alt="${msgObj.username}" title="${msgObj.username}" />
         <div class="chat-mini-top">
           <div class="d-flex p-2">
@@ -47,7 +48,7 @@ const Messenger = (() => {
           </div>
         </div>
         <div class="chat-mini-main flex-fill p-2 ps-rv">
-          <div class="wrap-loader-chat"><img src="/images/loader.svg" alt="loader"></div>
+          <div class="wrap-loader-chat d-none"><img src="/images/loader.svg" alt="loader"></div>
         </div>
         <div class="chat-mini-bottom">
             <form class="d-flex">
@@ -123,10 +124,15 @@ const Messenger = (() => {
           await loadOldMsg($popup)
           $popup.find('.wrap-loader-chat').removeClass('d-none')
         } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-          // $(classScBottom).addClass('is-show');
+          $popup.find('.scroll-bottom').addClass('is-show');
         } else {
-          // $(classScBottom).removeClass('is-show');
+          $popup.find('.scroll-bottom').removeClass('is-show');
         }
+      });
+
+      // scroll to bottom chat box
+      $popup.find('.scroll-bottom').on('click', function() {
+        window.scrollBottomChatBox($popup.find(classChatMain))
       });
     }
   });

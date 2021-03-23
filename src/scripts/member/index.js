@@ -115,8 +115,10 @@ const Index = (() => {
       }
     });
 
-    // // scroll to bottom chat box
-    $(classScBottom).on('click', window.scrollBottomChatBox);
+    // scroll to bottom chat box
+    $(classScBottom).on('click', function() {
+      window.scrollBottomChatBox()
+    });
 
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
