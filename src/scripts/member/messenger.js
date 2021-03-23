@@ -46,7 +46,9 @@ const Messenger = (() => {
             </div>
           </div>
         </div>
-        <div class="chat-mini-main flex-fill p-2"></div>
+        <div class="chat-mini-main flex-fill p-2 ps-rv">
+          <div class="wrap-loader-chat"><img src="/images/loader.svg" alt="loader"></div>
+        </div>
         <div class="chat-mini-bottom">
             <form class="d-flex">
               <button class="btn btn-default open-emojis" type="button">&#128512;</button>
@@ -98,6 +100,7 @@ const Messenger = (() => {
           inputMsg.focus();
         }
       });
+
       $popup.find('.msg-mini').on('keydown', function(e) {
         if (e.which === 13 && ! e.shiftKey) {
           e.preventDefault();
@@ -112,8 +115,21 @@ const Messenger = (() => {
       }).on('blur', function() {
         $(this).parents('.wrap-msg-box').removeClass('is-focus');
       });
-      }
-    });
+
+      // handle scroll box chat: load old msg, scroll to bottom
+      $popup.find('.chat-mini-main').on('scroll', async function() {
+        if (this.scrollTop === 0) {
+          $popup.find('.wrap-loader-chat').removeClass('d-none')
+          await loadOldMsg($popup)
+          $popup.find('.wrap-loader-chat').removeClass('d-none')
+        } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+          // $(classScBottom).addClass('is-show');
+        } else {
+          // $(classScBottom).removeClass('is-show');
+        }
+      });
+    }
+  });
 
     /**
    * Function create and append call message to local
@@ -158,7 +174,7 @@ const Messenger = (() => {
 
   async function loadOldMsg($popup) {
     if (+$popup.attr('data-hasMsg')) {
-      const currentPage = $popup.attr('data-page')
+      const currentPage = +$popup.attr('data-page')
       try {
         const responsive = await axios.get(`/messenger/chatold/?friendid=${$popup.attr('data-id')}&page=${currentPage}`);
         const { messages, hasMsg } = responsive.data;
