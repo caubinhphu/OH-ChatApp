@@ -345,7 +345,7 @@ module.exports.getChatOld = async (req, res) => {
         const messages = formatMessageList(friendRelated.groupMessageId.messages, member, friendRelated._id)
         let hasMsg = false
         if (messages.length > msgPerLoad) {
-          messages.pop()
+          messages.shift()
           hasMsg = true
         }
         return res.status(200).json({ messages, hasMsg })
