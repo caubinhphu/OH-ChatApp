@@ -25,15 +25,19 @@ const Messenger = (() => {
         const classIsActive = activeLength ? nClassNoAct : nClassAct
         $popup.addClass(classIsActive)
         if (classIsActive === nClassNoAct) {
-          console.log(msgObj.content);
+          console.log(msgObj.message);
+        } else {
+          window.scrollBottomChatBox($chatMain)
         }
       } else if ($popup.hasClass('.not-active')) {
-        console.log(msgObj.content);
+        console.log(msgObj.message);
       }
     } else {
       const classIsActive = activeLength ? nClassNoAct : nClassAct
       const html = `
-      <div class="popup-chat-mini d-flex flex-column ps-rv ${ classIsActive }" data-id="${senderId}" data-page="0" data-hasMsg="1">
+      <div class="popup-chat-mini d-flex flex-column ps-rv ${ classIsActive }"
+        data-id="${senderId}" data-page="0" data-hasMsg="1" data-allow-load="1"
+      >
         <div class="wrap-loader-mini">
           <div class="d-flex justify-content-center align-items-center h-100">
             <img src="/images/loader.svg" alt="loader" />
@@ -87,7 +91,7 @@ const Messenger = (() => {
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
 
       if (classIsActive === nClassNoAct) {
-        console.log(msgObj.content);
+        console.log(msgObj.message);
       }
 
       await loadOldMsg($popup)
@@ -144,7 +148,7 @@ const Messenger = (() => {
         if (this.scrollTop === 0) {
           $popup.find('.wrap-loader-chat').removeClass('d-none')
           await loadOldMsg($popup)
-          $popup.find('.wrap-loader-chat').removeClass('d-none')
+          $popup.find('.wrap-loader-chat').addClass('d-none')
         } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
           $popup.find(classScroll).addClass('is-show');
         } else {
@@ -167,9 +171,9 @@ const Messenger = (() => {
       $popup.find('.avatar-mini-2').on('click', function() {
         $('.popup-chat-mini').removeClass(nClassAct)
         $('.popup-chat-mini').addClass(nClassNoAct)
-        window.scrollBottomChatBox($popup.find(classChatMain))
         $popup.addClass(nClassAct)
         $popup.removeClass(nClassNoAct)
+        window.scrollBottomChatBox($popup.find(classChatMain))
       });
 
       // close mini chat
@@ -223,7 +227,8 @@ const Messenger = (() => {
   }
 
   async function loadOldMsg($popup) {
-    if (+$popup.attr('data-hasMsg')) {
+    if (+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load')) {
+      $popup.attr('data-allow-load', '0')
       const currentPage = +$popup.attr('data-page')
       try {
         const responsive = await axios.get(`/messenger/chatold/?friendid=${$popup.attr('data-id')}&page=${currentPage}`);
@@ -266,6 +271,8 @@ const Messenger = (() => {
         $(chatMain).prepend(htmlMsgs)
         const newScroll = chatMain.scrollHeight - chatMain.clientHeight;
         chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
+
+        $popup.attr('data-allow-load', '1')
       } catch (error) {
         window.outputErrorMessage(error.message)
       }

@@ -39792,16 +39792,13 @@ var CommonChat = function () {
 
   function scrollBottomChatBox() {
     var $chatBox = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    console.log($chatBox);
 
     if (!$chatBox) {
       var $ele = $('#main-right-chat-content');
-      console.log($ele);
       $ele.animate({
         scrollTop: $ele[0].scrollHeight - $ele.innerHeight()
       }, 350, 'swing');
     } else {
-      console.log('asdfsaf');
       $chatBox.animate({
         scrollTop: $chatBox[0].scrollHeight - $chatBox.innerHeight()
       }, 350, 'swing');

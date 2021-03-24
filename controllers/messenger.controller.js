@@ -465,7 +465,13 @@ module.exports.putPassword = async (req, res, next) => {
 module.exports.putUrl = async (req, res, next) => {
   // get info change email
   const { url } = req.body;
-
+  if (url.match(/^[0-9a-fA-F]{24}$/)) {
+    // not pass validate
+    req.flash('error', 'Url không hợp lệ');
+    req.flash('tab', 'security');
+    req.flash('sub-tab', 'url');
+    return res.redirect(settingUrl)
+  }
   // validate info change
   const { error } = validateSettingUrl({ url });
 

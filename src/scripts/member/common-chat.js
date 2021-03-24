@@ -586,13 +586,10 @@ const CommonChat = (() => {
    * Function scroll to bottom chat box
    */
   function scrollBottomChatBox($chatBox = null) {
-    console.log($chatBox);
     if (!$chatBox) {
       const $ele = $('#main-right-chat-content');
-      console.log($ele);
       $ele.animate({scrollTop: $ele[0].scrollHeight - $ele.innerHeight()}, 350, 'swing');
     } else {
-      console.log('asdfsaf');
       $chatBox.animate({scrollTop: $chatBox[0].scrollHeight - $chatBox.innerHeight()}, 350, 'swing');
     }
   }
