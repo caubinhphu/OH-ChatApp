@@ -29,13 +29,13 @@ const Messenger = (() => {
         } else {
           window.scrollBottomChatBox($chatMain)
         }
-      } else if ($popup.hasClass('.not-active')) {
+      } else if ($popup.hasClass(nClassNoAct)) {
         console.log(msgObj.message);
       }
     } else {
       const classIsActive = activeLength ? nClassNoAct : nClassAct
       const html = `
-      <div class="popup-chat-mini d-flex flex-column ps-rv ${ classIsActive }"
+      <div class="popup-chat-mini d-flex flex-column ps-rv is-online ${ classIsActive }"
         data-id="${senderId}" data-page="0" data-hasMsg="1" data-allow-load="1"
       >
         <div class="wrap-loader-mini">
@@ -45,9 +45,10 @@ const Messenger = (() => {
         </div>
         <div class="scroll-bottom"><span class="icomoon icon-circle-down"></span></div>
         <img class="avatar-mini-2" src="${msgObj.avatar}" alt="${msgObj.username}" title="${msgObj.username}" />
+        <div class="dot-status-mini"></div>
         <div class="chat-mini-top">
           <div class="d-flex p-2">
-            <div class="flex-fill d-flex align-items-center">
+            <div class="flex-fill d-flex align-items-center pr-1">
               <img class="rounded-circle mr-1 avatar-mini" src="${msgObj.avatar}" alt="${msgObj.username}" />
               <div>
                   <div class="mini-name">${msgObj.username}</div>
@@ -63,7 +64,7 @@ const Messenger = (() => {
               </button><button class="mini-chat-btn btn btn-icon small-btn btn-red mr-1" type="button" title="Ẩn chat">
                 <span class="icomoon icon-minus"></span>
               </button>
-              <button class="close-chat-btn btn btn-icon small-btn btn-red" type="button" title="Close chat">
+              <button class="close-chat-btn btn btn-icon small-btn btn-red" type="button" title="Đóng chat">
                 <span class="icomoon icon-close"></span>
               </button>
             </div>
@@ -157,33 +158,76 @@ const Messenger = (() => {
       });
 
       // scroll to bottom chat box
-      $popup.find(classScroll).on('click', function() {
+      $popup.find(classScroll).on('click', () => {
         window.scrollBottomChatBox($popup.find(classChatMain))
       });
 
       // minimize chat
-      $popup.find('.mini-chat-btn').on('click', function() {
+      $popup.find('.mini-chat-btn').on('click', () => {
         $popup.removeClass(nClassAct)
         $popup.addClass(nClassNoAct)
       });
 
       // open mini chat
-      $popup.find('.avatar-mini-2').on('click', function() {
+      $popup.find('.avatar-mini-2').on('click', () => {
         $('.popup-chat-mini').removeClass(nClassAct)
         $('.popup-chat-mini').addClass(nClassNoAct)
         $popup.addClass(nClassAct)
         $popup.removeClass(nClassNoAct)
-        window.scrollBottomChatBox($popup.find(classChatMain))
+
+        // window.scrollBottomChatBox($popup.find(classChatMain))
+        // scroll bottom
+        const chatMain = $popup.find(classChatMain).get(0)
+        chatMain.scrollTop = chatMain.scrollHeight;
       });
 
       // close mini chat
-      $popup.find('.close-chat-btn').on('click', function() {
+      $popup.find('.close-chat-btn').on('click', () => {
         $popup.addClass(nClassCloseMini)
         $popup.removeClass(nClassAct)
       });
 
+      // call audio
+      $popup.find('.call-friend-btn').on('click', () => {
+        window.callFriend($popup.attr('data-id'))
+      });
+
+      // call video
+      $popup.find('.video-friend-btn').on('click', () => {
+        window.callFriend($popup.attr('data-id'), 'video')
+      });
     }
   });
+
+  // receive signal friend is online
+  window.socket.on('msg-friendOnline', ({ memberId }) => {
+    const $popup = $(`.popup-chat-mini[data-id="${memberId}"]`)
+    if ($popup.length) {
+      $popup.addClass('is-online')
+      $popup.find('.mini-status').html('Đang hoạt động')
+    }
+  })
+
+  // receive signal friend is offline
+  window.socket.on('msg-friendOffline', ({ memberId }) => {
+    const $popup = $(`.popup-chat-mini[data-id="${memberId}"]`)
+    if ($popup.length) {
+      $popup.removeClass('is-online')
+      $popup.find('.mini-status').html('Đang không hoạt động')
+    }
+  })
+
+
+  function createCallMsgLocalMiniChat(friendId, msg = '', className = '', isCallEnd = false, me = false) {
+    const $popup = $(`.popup-chat-mini[data-id=${friendId}]`)
+    if ($popup.length) {
+      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me)
+      if ($popup.hasClass(nClassNoAct)) {
+        console.log(msg);
+      }
+    }
+  }
+  window.createCallMsgLocalMiniChat = createCallMsgLocalMiniChat
 
     /**
    * Function create and append call message to local
@@ -225,6 +269,7 @@ const Messenger = (() => {
       }
     }
   }
+  window.createCallMsgLocalMini = createCallMsgLocalMini
 
   async function loadOldMsg($popup) {
     if (+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load')) {

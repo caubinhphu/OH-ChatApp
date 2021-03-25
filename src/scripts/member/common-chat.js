@@ -112,6 +112,13 @@ const CommonChat = (() => {
         callMissText,
         classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : '')
       )
+    } else {
+      // create msg end call local
+      window.createCallMsgLocalMiniChat(
+        window.callerId,
+        callMissText,
+        classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : '')
+      )
     }
   })
 
@@ -176,6 +183,15 @@ const CommonChat = (() => {
             true,
             true
           )
+        } else {
+          // create msg local
+          window.createCallMsgLocalMiniChat(
+            window.receiverId,
+            callTextCaller,
+            classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+            true,
+            true
+          )
         }
       } else {
         // connect peer fail
@@ -205,6 +221,14 @@ const CommonChat = (() => {
         if (isPageChat) {
           // create msg local
           createCallMsgLocal(
+            window.callerId,
+            callTextReceiver,
+            classCallCome + (window.typeCall === 'video' ? classCallVideo : ''),
+            true
+          )
+        } else {
+          // create msg local
+          window.createCallMsgLocalMiniChat(
             window.callerId,
             callTextReceiver,
             classCallCome + (window.typeCall === 'video' ? classCallVideo : ''),
@@ -246,41 +270,17 @@ const CommonChat = (() => {
           false,
           true
         )
+      } else {
+        window.createCallMsgLocalMiniChat(
+          window.receiverId,
+          callTextCaller,
+          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true
+        )
       }
     }
   })
-
-  // receive msg obj from server
-//  socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
-//     if (friendIdChatting === senderId) {
-//       // output message
-//       outputMessage(msgObj);
-
-//       // scroll bottom
-//       chatMain.scrollTop = chatMain.scrollHeight;
-//     }
-//     $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
-//       `<small>${msgObj.message}</small><small>1 phút</small>`
-//     )
-//   });
-
-  // receive signal friend is online
-  // socket.on('msg-friendOnline', ({ memberId }) => {
-  //   $(`.friend-item[data-id="${memberId}"]`).addClass('is-online')
-  //   const $mainChat = $(`#main-right[data-id="${memberId}"]`)
-  //   if ($mainChat.length) {
-  //     $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>')
-  //   }
-  // })
-
-    // receive signal friend is offline
-//  socket.on('msg-friendOffline', ({ memberId }) => {
-//     $(`.friend-item[data-id="${memberId}"]`).removeClass('is-online')
-//     const $mainChat = $(`#main-right[data-id="${memberId}"]`)
-//     if ($mainChat.length) {
-//       $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>')
-//     }
-//   })
 
   // receive signal has call from friend
  socket.on('msg-hasCallMedia', ({ signal, callerId, callerName, callerAvatar, typeCall }) => {
@@ -308,7 +308,7 @@ const CommonChat = (() => {
   })
 
   // receive signal answer
- socket.on('msg-answerSignal', ({ signal }) => {
+  socket.on('msg-answerSignal', ({ signal }) => {
     // send signal answer to sub window
     clearTimeout(window.timeoutCallId)
     if (window.callOutGoSound) {
@@ -322,7 +322,7 @@ const CommonChat = (() => {
   })
 
   // receive signal call error
- socket.on('msg-callError', ({msg}) => {
+  socket.on('msg-callError', ({msg}) => {
     if (window.callOutGoSound) {
       window.callOutGoSound.pause()
     }
@@ -335,7 +335,7 @@ const CommonChat = (() => {
   })
 
   // receive signal send signal call to receiver done
- socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
+  socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
     window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
     window.callOutGoSound.loop = true
     window.callOutGoSound.play()
@@ -368,12 +368,20 @@ const CommonChat = (() => {
           false,
           true
         )
+      } else {
+        window.createCallMsgLocalMiniChat(
+          window.receiverId,
+          callTextCaller,
+          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true
+        )
       }
     }, callTimeout);
   })
 
   // receive signal refuse call
- socket.on('msg-receiverRefuseCall', () => {
+  socket.on('msg-receiverRefuseCall', () => {
     if (window.windowCall) {
       clearTimeout(window.timeoutCallId)
       if (window.callOutGoSound) {
@@ -399,12 +407,21 @@ const CommonChat = (() => {
           false,
           true
         )
+      } else {
+        // create msg end call local
+        window.createCallMsgLocalMiniChat(
+          window.receiverId,
+          callTextCaller,
+          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true
+        )
       }
     }
   })
 
   // receive signal miss call from server (caller)
- socket.on('msg-missedCall', ({ callerId, typeCall }) => {
+  socket.on('msg-missedCall', ({ callerId, typeCall }) => {
     if (!window.isRefuseCall) {
       if (window.callInComSound) {
         window.callInComSound.pause()
@@ -419,12 +436,18 @@ const CommonChat = (() => {
           callMissText,
           classCallMissed + (typeCall === 'video' ? classCallMissedVideo : '')
         )
+      } else {
+        window.createCallMsgLocalMiniChat(
+          callerId,
+          callMissText,
+          classCallMissed + (typeCall === 'video' ? classCallMissedVideo : '')
+        )
       }
     }
   })
 
   // receive signal end call from server (it self end call)
- socket.on('msg-endCall', ({ callerId, receiverId, sender, typeCall }) => {
+  socket.on('msg-endCall', ({ callerId, receiverId, sender, typeCall }) => {
     window.isCall = false
     window.outputInfoMessage('Cuộc gọi kết thúc')
     if (sender === 'caller') {
@@ -437,6 +460,13 @@ const CommonChat = (() => {
           classCallCome + (typeCall === 'video' ? classCallVideo : ''),
           true
         )
+      } else {
+        window.createCallMsgLocalMiniChat(
+          callerId,
+          callTextReceiver,
+          classCallCome + (typeCall === 'video' ? classCallVideo : ''),
+          true
+        )
       }
     } else if (sender === 'receiver') {
       // computer of caller
@@ -444,6 +474,14 @@ const CommonChat = (() => {
       window.windowCall = undefined
       if (isPageChat) {
         createCallMsgLocal(
+          receiverId,
+          callTextCaller,
+          classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+          true,
+          true
+        )
+      } else {
+        window.createCallMsgLocalMiniChat(
           receiverId,
           callTextCaller,
           classCallOut + (typeCall === 'video' ? classCallVideo : ''),
@@ -471,7 +509,7 @@ const CommonChat = (() => {
    * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
-  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false, $chatBox = null) {
+  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false) {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
     let timeCall = null
@@ -488,7 +526,7 @@ const CommonChat = (() => {
           message: msg,
           className,
           timeCall
-        }, true, $chatBox)
+        }, true)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
           <small>${ msg }</small><small>1 phút</small>
@@ -501,7 +539,7 @@ const CommonChat = (() => {
           avatar: $friItem.find('img').attr('src'),
           className,
           timeCall
-        }, false, $chatBox)
+        }, false)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
           <small>${ msg }</small><small>1 phút</small>
@@ -544,6 +582,7 @@ const CommonChat = (() => {
       }
     }
   }
+  window.callFriend = callFriend
 
   /**
    * Function output message in main chat area
@@ -610,6 +649,7 @@ const CommonChat = (() => {
 
     return `${h ? h + 'h' : ''}${m ? m + 'm' : ''}${(h || m)  && !s ? '' : s + 's'}`
   }
+  window.formatDiffTime = formatDiffTime
 })()
 
 export default CommonChat

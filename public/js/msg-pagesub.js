@@ -39352,6 +39352,9 @@ var CommonChat = function () {
     if (isPageChat) {
       // create msg end call local
       createCallMsgLocal(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
+    } else {
+      // create msg end call local
+      window.createCallMsgLocalMiniChat(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
     }
   }); // close popup miss call
 
@@ -39408,6 +39411,9 @@ var CommonChat = function () {
         if (isPageChat) {
           // create msg local
           createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
+        } else {
+          // create msg local
+          window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
         }
       } else {
         // connect peer fail
@@ -39437,6 +39443,9 @@ var CommonChat = function () {
         if (isPageChat) {
           // create msg local
           createCallMsgLocal(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
+        } else {
+          // create msg local
+          window.createCallMsgLocalMiniChat(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
         }
       } else {
         window.outputErrorMessage(error);
@@ -39469,37 +39478,11 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+      } else {
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }
-  }); // receive msg obj from server
-  //  socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
-  //     if (friendIdChatting === senderId) {
-  //       // output message
-  //       outputMessage(msgObj);
-  //       // scroll bottom
-  //       chatMain.scrollTop = chatMain.scrollHeight;
-  //     }
-  //     $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
-  //       `<small>${msgObj.message}</small><small>1 phút</small>`
-  //     )
-  //   });
-  // receive signal friend is online
-  // socket.on('msg-friendOnline', ({ memberId }) => {
-  //   $(`.friend-item[data-id="${memberId}"]`).addClass('is-online')
-  //   const $mainChat = $(`#main-right[data-id="${memberId}"]`)
-  //   if ($mainChat.length) {
-  //     $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>')
-  //   }
-  // })
-  // receive signal friend is offline
-  //  socket.on('msg-friendOffline', ({ memberId }) => {
-  //     $(`.friend-item[data-id="${memberId}"]`).removeClass('is-online')
-  //     const $mainChat = $(`#main-right[data-id="${memberId}"]`)
-  //     if ($mainChat.length) {
-  //       $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>')
-  //     }
-  //   })
-  // receive signal has call from friend
+  }); // receive signal has call from friend
 
   socket.on('msg-hasCallMedia', function (_ref) {
     var signal = _ref.signal,
@@ -39587,6 +39570,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+      } else {
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }, callTimeout);
   }); // receive signal refuse call
@@ -39612,6 +39597,9 @@ var CommonChat = function () {
       if (isPageChat) {
         // create msg end call local
         createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+      } else {
+        // create msg end call local
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }
   }); // receive signal miss call from server (caller)
@@ -39631,6 +39619,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
+      } else {
+        window.createCallMsgLocalMiniChat(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
       }
     }
   }); // receive signal end call from server (it self end call)
@@ -39649,6 +39639,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
+      } else {
+        window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
       }
     } else if (sender === 'receiver') {
       // computer of caller
@@ -39657,6 +39649,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
+      } else {
+        window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
       }
     }
   }); // close sub window when close or refetch browser
@@ -39683,7 +39677,6 @@ var CommonChat = function () {
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-    var $chatBox = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
     var timeCall = null;
@@ -39702,7 +39695,7 @@ var CommonChat = function () {
           message: msg,
           className: className,
           timeCall: timeCall
-        }, true, $chatBox);
+        }, true);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       } else {
@@ -39713,7 +39706,7 @@ var CommonChat = function () {
           avatar: $friItem.find('img').attr('src'),
           className: className,
           timeCall: timeCall
-        }, false, $chatBox);
+        }, false);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       }
@@ -39757,12 +39750,13 @@ var CommonChat = function () {
       }
     }
   }
+
+  window.callFriend = callFriend;
   /**
    * Function output message in main chat area
    * @param {Object} msgObj message object { time, message, avatar, username }
    * @param {boolean} me is me
    */
-
 
   function outputMessage(msgObj) {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -39821,6 +39815,8 @@ var CommonChat = function () {
     var s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60;
     return "".concat(h ? h + 'h' : '').concat(m ? m + 'm' : '').concat((h || m) && !s ? '' : s + 's');
   }
+
+  window.formatDiffTime = formatDiffTime;
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);
@@ -44372,22 +44368,20 @@ var Messenger = function () {
                 $popup.addClass(classIsActive);
 
                 if (classIsActive === nClassNoAct) {
-                  // setPosForMiniChat()
                   console.log(msgObj.message);
                 } else {
                   window.scrollBottomChatBox($chatMain);
                 }
-              } else if ($popup.hasClass('.not-active')) {
-                // setPosForMiniChat()
+              } else if ($popup.hasClass(nClassNoAct)) {
                 console.log(msgObj.message);
               }
 
-              _context2.next = 26;
+              _context2.next = 28;
               break;
 
             case 10:
               _classIsActive = activeLength ? nClassNoAct : nClassAct;
-              html = "\n      <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(_classIsActive, "\"\n        data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n      >\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"Close chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
+              html = "\n      <div class=\"popup-chat-mini d-flex flex-column ps-rv is-online ".concat(_classIsActive, "\"\n        data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n      >\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"dot-status-mini\"></div>\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center pr-1\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
               $('.wrap-chat-mini').append(html);
               _$popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
 
@@ -44499,9 +44493,13 @@ var Messenger = function () {
 
                 _$popup.addClass(nClassAct);
 
-                _$popup.removeClass(nClassNoAct);
+                _$popup.removeClass(nClassNoAct); // window.scrollBottomChatBox($popup.find(classChatMain))
+                // scroll bottom
 
-                window.scrollBottomChatBox(_$popup.find(classChatMain));
+
+                var chatMain = _$popup.find(classChatMain).get(0);
+
+                chatMain.scrollTop = chatMain.scrollHeight;
               }); // close mini chat
 
 
@@ -44509,9 +44507,19 @@ var Messenger = function () {
                 _$popup.addClass(nClassCloseMini);
 
                 _$popup.removeClass(nClassAct);
+              }); // call audio
+
+
+              _$popup.find('.call-friend-btn').on('click', function () {
+                window.callFriend(_$popup.attr('data-id'));
+              }); // call video
+
+
+              _$popup.find('.video-friend-btn').on('click', function () {
+                window.callFriend(_$popup.attr('data-id'), 'video');
               });
 
-            case 26:
+            case 28:
             case "end":
               return _context2.stop();
           }
@@ -44522,7 +44530,45 @@ var Messenger = function () {
     return function (_x) {
       return _ref2.apply(this, arguments);
     };
-  }());
+  }()); // receive signal friend is online
+
+  window.socket.on('msg-friendOnline', function (_ref4) {
+    var memberId = _ref4.memberId;
+    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
+
+    if ($popup.length) {
+      $popup.addClass('is-online');
+      $popup.find('.mini-status').html('Đang hoạt động');
+    }
+  }); // receive signal friend is offline
+
+  window.socket.on('msg-friendOffline', function (_ref5) {
+    var memberId = _ref5.memberId;
+    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
+
+    if ($popup.length) {
+      $popup.removeClass('is-online');
+      $popup.find('.mini-status').html('Đang không hoạt động');
+    }
+  });
+
+  function createCallMsgLocalMiniChat(friendId) {
+    var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var $popup = $(".popup-chat-mini[data-id=".concat(friendId, "]"));
+
+    if ($popup.length) {
+      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me);
+
+      if ($popup.hasClass(nClassNoAct)) {
+        console.log(msg);
+      }
+    }
+  }
+
+  window.createCallMsgLocalMiniChat = createCallMsgLocalMiniChat;
   /**
   * Function create and append call message to local
   * @param {string} friendId friend id
@@ -44570,6 +44616,8 @@ var Messenger = function () {
       }
     }
   }
+
+  window.createCallMsgLocalMini = createCallMsgLocalMini;
 
   function loadOldMsg(_x2) {
     return _loadOldMsg.apply(this, arguments);
@@ -44633,13 +44681,6 @@ var Messenger = function () {
       }, _callee3, null, [[3, 20]]);
     }));
     return _loadOldMsg.apply(this, arguments);
-  }
-
-  function setPosForMiniChat() {
-    $('.wrap-chat-mini').find('.popup-chat-mini.not-active').each(function (i, ele) {
-      $(ele).removeClass('pos-1 pos-2 pos-3 pos-4');
-      $(ele).addClass("pos-".concat(i));
-    });
   }
 }();
 

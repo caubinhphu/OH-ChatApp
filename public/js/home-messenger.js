@@ -39352,6 +39352,9 @@ var CommonChat = function () {
     if (isPageChat) {
       // create msg end call local
       createCallMsgLocal(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
+    } else {
+      // create msg end call local
+      window.createCallMsgLocalMiniChat(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
     }
   }); // close popup miss call
 
@@ -39408,6 +39411,9 @@ var CommonChat = function () {
         if (isPageChat) {
           // create msg local
           createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
+        } else {
+          // create msg local
+          window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
         }
       } else {
         // connect peer fail
@@ -39437,6 +39443,9 @@ var CommonChat = function () {
         if (isPageChat) {
           // create msg local
           createCallMsgLocal(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
+        } else {
+          // create msg local
+          window.createCallMsgLocalMiniChat(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
         }
       } else {
         window.outputErrorMessage(error);
@@ -39469,37 +39478,11 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+      } else {
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }
-  }); // receive msg obj from server
-  //  socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
-  //     if (friendIdChatting === senderId) {
-  //       // output message
-  //       outputMessage(msgObj);
-  //       // scroll bottom
-  //       chatMain.scrollTop = chatMain.scrollHeight;
-  //     }
-  //     $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
-  //       `<small>${msgObj.message}</small><small>1 phút</small>`
-  //     )
-  //   });
-  // receive signal friend is online
-  // socket.on('msg-friendOnline', ({ memberId }) => {
-  //   $(`.friend-item[data-id="${memberId}"]`).addClass('is-online')
-  //   const $mainChat = $(`#main-right[data-id="${memberId}"]`)
-  //   if ($mainChat.length) {
-  //     $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>')
-  //   }
-  // })
-  // receive signal friend is offline
-  //  socket.on('msg-friendOffline', ({ memberId }) => {
-  //     $(`.friend-item[data-id="${memberId}"]`).removeClass('is-online')
-  //     const $mainChat = $(`#main-right[data-id="${memberId}"]`)
-  //     if ($mainChat.length) {
-  //       $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>')
-  //     }
-  //   })
-  // receive signal has call from friend
+  }); // receive signal has call from friend
 
   socket.on('msg-hasCallMedia', function (_ref) {
     var signal = _ref.signal,
@@ -39587,6 +39570,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+      } else {
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }, callTimeout);
   }); // receive signal refuse call
@@ -39612,6 +39597,9 @@ var CommonChat = function () {
       if (isPageChat) {
         // create msg end call local
         createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+      } else {
+        // create msg end call local
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
       }
     }
   }); // receive signal miss call from server (caller)
@@ -39631,6 +39619,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
+      } else {
+        window.createCallMsgLocalMiniChat(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
       }
     }
   }); // receive signal end call from server (it self end call)
@@ -39649,6 +39639,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
+      } else {
+        window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
       }
     } else if (sender === 'receiver') {
       // computer of caller
@@ -39657,6 +39649,8 @@ var CommonChat = function () {
 
       if (isPageChat) {
         createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
+      } else {
+        window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
       }
     }
   }); // close sub window when close or refetch browser
@@ -39683,7 +39677,6 @@ var CommonChat = function () {
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-    var $chatBox = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
     var timeCall = null;
@@ -39702,7 +39695,7 @@ var CommonChat = function () {
           message: msg,
           className: className,
           timeCall: timeCall
-        }, true, $chatBox);
+        }, true);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       } else {
@@ -39713,7 +39706,7 @@ var CommonChat = function () {
           avatar: $friItem.find('img').attr('src'),
           className: className,
           timeCall: timeCall
-        }, false, $chatBox);
+        }, false);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
       }
@@ -39757,12 +39750,13 @@ var CommonChat = function () {
       }
     }
   }
+
+  window.callFriend = callFriend;
   /**
    * Function output message in main chat area
    * @param {Object} msgObj message object { time, message, avatar, username }
    * @param {boolean} me is me
    */
-
 
   function outputMessage(msgObj) {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -39821,6 +39815,8 @@ var CommonChat = function () {
     var s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60;
     return "".concat(h ? h + 'h' : '').concat(m ? m + 'm' : '').concat((h || m) && !s ? '' : s + 's');
   }
+
+  window.formatDiffTime = formatDiffTime;
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);

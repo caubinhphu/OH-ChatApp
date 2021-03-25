@@ -7273,7 +7273,6 @@ body {
 
 .popup-chat-mini {
   z-index: 99;
-  transition: all .3s;
 }
 
 .popup-chat-mini.not-active {
@@ -7292,28 +7291,9 @@ body {
   display: none;
 }
 
-.popup-chat-mini.not-active .avatar-mini-2 {
+.popup-chat-mini.not-active .avatar-mini-2,
+.popup-chat-mini.not-active .dot-status-mini {
   display: block;
-}
-
-.popup-chat-mini.not-active.pos-1 {
-  bottom: 120px;
-}
-
-.popup-chat-mini.not-active.pos-2 {
-  bottom: 175px;
-}
-
-.popup-chat-mini.not-active.pos-3 {
-  bottom: 230px;
-}
-
-.popup-chat-mini.not-active.pos-4 {
-  bottom: 285px;
-}
-
-.popup-chat-mini.not-active:last-child {
-  margin-bottom: 60px;
 }
 
 .popup-chat-mini.is-active {
@@ -7349,9 +7329,28 @@ body {
   border-radius: 10px 10px 0 0;
 }
 
+.popup-chat-mini.is-online .dot-status-mini {
+  background-color: #14a76c;
+}
+
+.popup-chat-mini.is-online .mini-status {
+  color: #14a76c;
+}
+
 .avatar-mini-2 {
   display: none;
   border-radius: 50%;
+}
+
+.dot-status-mini {
+  display: none;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  right: 4px;
+  bottom: 1px;
+  background-color: #747474;
 }
 
 .chat-mini-bottom {
@@ -7389,6 +7388,7 @@ body {
 
 .chat-mini-top .mini-status {
   font-size: 13px;
+  color: #747474;
 }
 
 .chat-mini-main {
@@ -7398,8 +7398,9 @@ body {
 #main:not(.chat-page) ~ .wrap-chat-mini {
   display: block;
   position: fixed;
-  bottom: 0;
+  bottom: 60px;
   right: 10px;
+  z-index: 99;
 }
 
 @media only screen and (max-width: 850px) {
