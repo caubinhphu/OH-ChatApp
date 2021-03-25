@@ -25,12 +25,12 @@ const Messenger = (() => {
         const classIsActive = activeLength ? nClassNoAct : nClassAct
         $popup.addClass(classIsActive)
         if (classIsActive === nClassNoAct) {
-          console.log(msgObj.message);
+          outputPreviewMsg($popup, msgObj.message);
         } else {
           window.scrollBottomChatBox($chatMain)
         }
       } else if ($popup.hasClass(nClassNoAct)) {
-        console.log(msgObj.message);
+        outputPreviewMsg($popup, msgObj.message);
       }
     } else {
       const classIsActive = activeLength ? nClassNoAct : nClassAct
@@ -45,6 +45,9 @@ const Messenger = (() => {
         </div>
         <div class="scroll-bottom"><span class="icomoon icon-circle-down"></span></div>
         <img class="avatar-mini-2" src="${msgObj.avatar}" alt="${msgObj.username}" title="${msgObj.username}" />
+        <div class="preview-msg">
+          <span></span>
+        </div>
         <div class="dot-status-mini"></div>
         <div class="chat-mini-top">
           <div class="d-flex p-2">
@@ -92,7 +95,7 @@ const Messenger = (() => {
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
 
       if (classIsActive === nClassNoAct) {
-        console.log(msgObj.message);
+        outputPreviewMsg($popup, msgObj.message);
       }
 
       await loadOldMsg($popup)
@@ -223,7 +226,7 @@ const Messenger = (() => {
     if ($popup.length) {
       createCallMsgLocalMini(friendId, msg, className, isCallEnd, me)
       if ($popup.hasClass(nClassNoAct)) {
-        console.log(msg);
+        outputPreviewMsg($popup, msg);
       }
     }
   }
@@ -322,6 +325,14 @@ const Messenger = (() => {
         window.outputErrorMessage(error.message)
       }
     }
+  }
+
+  function outputPreviewMsg($popup, msg) {
+    $popup.find('.preview-msg span').html(msg)
+    $popup.find('.preview-msg').addClass('is-show')
+    setTimeout(() => {
+      $popup.find('.preview-msg').removeClass('is-show')
+    }, 2000);
   }
 })()
 
