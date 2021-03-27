@@ -85,6 +85,7 @@ const memberSchema = mongoose.Schema({
 // get all friends
 memberSchema.methods.getFriends = function () {
   return this.friends.map((friend) => {
+    console.log(friend);
     return {
       id: friend._id.id,
       name: friend._id.name,

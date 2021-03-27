@@ -1,5 +1,5 @@
 const Setting = (() => {
-  if ($('#main .setting-page').length) {
+  if ($('#main.setting-page').length) {
     if (document.formSettingPassword) {
       document.formSettingPassword.addEventListener('submit', () => {
         $('.wrap-loader').removeClass('d-none')

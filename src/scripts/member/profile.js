@@ -2,9 +2,13 @@ import axios from 'axios'
 import Croppie from "croppie";
 
 const Profile = (() => {
-  if ($('#main .profile-page').length) {
+  if ($('#main.profile-page').length) {
     const clWrapCrop = '.wrap-crop-img'
     const clWrapOpt = '.wrap-opt-avatar'
+
+    let isHasFriend = true
+    let allowLoadFriend = true
+    let pageFriend = 0
 
     navigator.mediaDevices.getUserMedia =
       navigator.mediaDevices.getUserMedia ||
@@ -126,25 +130,34 @@ const Profile = (() => {
     });
 
     async function loadDataFriend(hash) {
-      if (hash === '#friend') {
+      $('.wrap-loader-friend').removeClass('d-none')
+      if (hash === '#friend' && isHasFriend && allowLoadFriend) {
+        allowLoadFriend = false
         try {
-          const responsive = await axios.get('/messenger/profile/friends');
-          const friends = responsive.data.friends;
-          friendContent.innerHTML = friends.map(friend => {
-            return `<div class="col-md-6">
-            <div class="d-flex align-items-center border p-2 rounded my-2">
-              <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" />
-              <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}"><strong>${friend.name}</strong></a>
-              <div class="d-flex flex-column">
-                <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Chat</a>
-                <button class="btn btn-red mt-1">Hủy kết bạn</button>
+          const responsive = await axios.get(`/messenger/profile/friends?page=${pageFriend}`);
+          const { friends, hasFriend } = responsive.data;
+          $(friendContent).append(
+            friends.map(friend => {
+              return `<div class="col-md-6">
+              <div class="d-flex align-items-center border p-2 rounded my-2">
+                <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
+                <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
+                  <strong>${friend.name}</strong>
+                </a>
+                <div class="d-flex flex-column fri-item-ctrl">
+                  <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Chat</a>
+                  <button class="btn btn-red mt-1">Hủy kết bạn</button>
+                </div>
               </div>
-            </div>
-          </div>`;
-          }).join('');
+            </div>`;
+            }).join('')
+          )
+          isHasFriend = hasFriend
+          pageFriend++
         } catch (error) {
           console.error(error);
         }
+        allowLoadFriend = true
       } else if (hash === '#friend-request') {
         try {
           const requests = await axios.get('/messenger/profile/friend-request');
@@ -161,9 +174,11 @@ const Profile = (() => {
         } catch (error) {
           console.error(error);
         }
-      } else { /* */ }
+      }
+      $('.wrap-loader-friend').addClass('d-none')
     }
 
+    window.loadDataFriend = loadDataFriend
     function reloadPage() {
       const hash = location.hash
       if (['#friend', '#friend-invitation', '#friend-request'].includes(hash)) {

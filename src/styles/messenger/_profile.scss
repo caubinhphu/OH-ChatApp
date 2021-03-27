@@ -4,6 +4,15 @@
 #friend-area {
   padding: 10px 0 50px 0;
 }
+.wrap-loader-friend {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+}
+.fri-item-ctrl {
+  min-width: 124px;
+}
 .wrap-takephoto {
   position: relative;
   video {

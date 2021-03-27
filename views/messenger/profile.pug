@@ -42,7 +42,9 @@ block contentMain
               input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
             .text-right
               button.btn(type="submit") Lưu
-    #friend-area
+    #friend-area.ps-rv
+      .wrap-loader-friend.d-none
+        img(src="/images/loader.svg", alt="loader")
       .container
         ul.nav.nav-tabs.justify-content-center(role='tablist')
           li.nav-item(role='presentation')

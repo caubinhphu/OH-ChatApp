@@ -43617,97 +43617,103 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Profile = function () {
-  if ($('#main .profile-page').length) {
+  if ($('#main.profile-page').length) {
     var loadDataFriend = /*#__PURE__*/function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(hash) {
-        var responsive, friends, requests, invitations;
+        var responsive, _responsive$data, friends, hasFriend, requests, invitations;
+
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                if (!(hash === '#friend')) {
-                  _context5.next = 14;
+                $('.wrap-loader-friend').removeClass('d-none');
+
+                if (!(hash === '#friend' && isHasFriend && allowLoadFriend)) {
+                  _context5.next = 19;
                   break;
                 }
 
-                _context5.prev = 1;
-                _context5.next = 4;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friends');
+                allowLoadFriend = false;
+                _context5.prev = 3;
+                _context5.next = 6;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friends?page=".concat(pageFriend));
 
-              case 4:
+              case 6:
                 responsive = _context5.sent;
-                friends = responsive.data.friends;
-                friendContent.innerHTML = friends.map(function (friend) {
-                  return "<div class=\"col-md-6\">\n            <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n              <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" />\n              <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\"><strong>").concat(friend.name, "</strong></a>\n              <div class=\"d-flex flex-column\">\n                <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                <button class=\"btn btn-red mt-1\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n              </div>\n            </div>\n          </div>");
-                }).join('');
-                _context5.next = 12;
+                _responsive$data = responsive.data, friends = _responsive$data.friends, hasFriend = _responsive$data.hasFriend;
+                $(friendContent).append(friends.map(function (friend) {
+                  return "<div class=\"col-md-6\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n                </div>\n              </div>\n            </div>");
+                }).join(''));
+                isHasFriend = hasFriend;
+                pageFriend++;
+                _context5.next = 16;
                 break;
 
-              case 9:
-                _context5.prev = 9;
-                _context5.t0 = _context5["catch"](1);
+              case 13:
+                _context5.prev = 13;
+                _context5.t0 = _context5["catch"](3);
                 console.error(_context5.t0);
 
-              case 12:
-                _context5.next = 40;
+              case 16:
+                allowLoadFriend = true;
+                _context5.next = 43;
                 break;
 
-              case 14:
+              case 19:
                 if (!(hash === '#friend-request')) {
-                  _context5.next = 27;
+                  _context5.next = 32;
                   break;
                 }
 
-                _context5.prev = 15;
-                _context5.next = 18;
+                _context5.prev = 20;
+                _context5.next = 23;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-request');
 
-              case 18:
+              case 23:
                 requests = _context5.sent;
                 console.log(requests);
-                _context5.next = 25;
-                break;
-
-              case 22:
-                _context5.prev = 22;
-                _context5.t1 = _context5["catch"](15);
-                console.error(_context5.t1);
-
-              case 25:
-                _context5.next = 40;
+                _context5.next = 30;
                 break;
 
               case 27:
+                _context5.prev = 27;
+                _context5.t1 = _context5["catch"](20);
+                console.error(_context5.t1);
+
+              case 30:
+                _context5.next = 43;
+                break;
+
+              case 32:
                 if (!(hash === '#friend-invitation')) {
-                  _context5.next = 40;
+                  _context5.next = 43;
                   break;
                 }
 
-                _context5.prev = 28;
-                _context5.next = 31;
+                _context5.prev = 33;
+                _context5.next = 36;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-invitation');
 
-              case 31:
+              case 36:
                 invitations = _context5.sent;
                 console.log(invitations);
-                _context5.next = 38;
-                break;
-
-              case 35:
-                _context5.prev = 35;
-                _context5.t2 = _context5["catch"](28);
-                console.error(_context5.t2);
-
-              case 38:
-                _context5.next = 40;
+                _context5.next = 43;
                 break;
 
               case 40:
+                _context5.prev = 40;
+                _context5.t2 = _context5["catch"](33);
+                console.error(_context5.t2);
+
+              case 43:
+                $('.wrap-loader-friend').addClass('d-none');
+
+              case 44:
               case "end":
                 return _context5.stop();
             }
           }
-        }, _callee5, null, [[1, 9], [15, 22], [28, 35]]);
+        }, _callee5, null, [[3, 13], [20, 27], [33, 40]]);
       }));
 
       return function loadDataFriend(_x3) {
@@ -43842,6 +43848,9 @@ var Profile = function () {
 
     var clWrapCrop = '.wrap-crop-img';
     var clWrapOpt = '.wrap-opt-avatar';
+    var isHasFriend = true;
+    var allowLoadFriend = true;
+    var pageFriend = 0;
     navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
     var friendContent = document.getElementById('friend-content');
     reloadPage();
@@ -44015,6 +44024,7 @@ var Profile = function () {
         }
       }, _callee4);
     })));
+    window.loadDataFriend = loadDataFriend;
 
     var sleep = function sleep(m) {
       return new Promise(function (r) {
@@ -44296,7 +44306,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {var Setting = function () {
-  if ($('#main .setting-page').length) {
+  if ($('#main.setting-page').length) {
     if (document.formSettingPassword) {
       document.formSettingPassword.addEventListener('submit', function () {
         $('.wrap-loader').removeClass('d-none');

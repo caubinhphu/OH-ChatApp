@@ -200,16 +200,31 @@ module.exports.putAvatar = async (req, res) => {
 // get my friends
 module.exports.getFriends = async (req, res) => {
   try {
-    const member = await Member.findById(req.user.id).populate('friends._id');
+    const page = req.query.page || 0
+    console.log(page);
+    const member = await Member.findById(req.user.id).populate({
+      path: 'friends._id',
+      options: {
+        skip: +page * 1,
+      },
+      perDocumentLimit: 1
+    });
     if (member) {
+      let hasFriend = false
+      member.friends = member.friends.filter(fr => fr._id)
       const friends = member.getFriends();
+      if (friends.length === 1) {
+        hasFriend = true
+      }
       res.json({
         friends,
+        hasFriend
       });
     } else {
       res.sendStatus(401);
     }
   } catch (error) {
+    console.log(error.message);
     res.sendStatus(403);
   }
 };

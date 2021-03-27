@@ -7271,10 +7271,6 @@ body {
   border-radius: 50%;
 }
 
-.popup-chat-mini {
-  z-index: 99;
-}
-
 .popup-chat-mini.not-active {
   margin-bottom: 5px;
   background: #fff;
@@ -7371,7 +7367,8 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   word-break: break-all;
-  width: 150px;
+  max-width: 150px;
+  width: max-content;
   color: #102131;
 }
 
@@ -7803,6 +7800,17 @@ textarea.form-control.msg-mini {
 
 #friend-area {
   padding: 10px 0 50px 0;
+}
+
+.wrap-loader-friend {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+}
+
+.fri-item-ctrl {
+  min-width: 124px;
 }
 
 .wrap-takephoto {
