@@ -3,6 +3,6 @@
 import './global/loading'
 // import './global/notify'
 import './global/output-message'
-import './user/home'
+import './room/home'
 
 console.log('page home');

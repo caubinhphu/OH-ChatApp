@@ -39260,13 +39260,6 @@ var CommonChat = function () {
   var isPageChat = $('#main.chat-page').length > 0;
   var callTimeout = 20000;
   var chatMain = document.getElementById('main-right-chat-content');
-  var msgForm = document.sendMsgForm; // form chat
-
-  var hasMessenger = true; // has old msg
-
-  var currentPageChat = 0; // current page load old chat
-
-  var classScBottom = '.scroll-bottom';
   var idBtnCallBack = '#btn-call-back';
   var classPoHasCall = '.popup-has-call';
   var classCallOK = '#btn-call-ok';
@@ -39281,9 +39274,10 @@ var CommonChat = function () {
   var classCallMissed = ' call-msg call-missed';
   var classCallVideo = ' call-video';
   var classCallMissedVideo = ' call-missed-video';
+  var msgForm = document.sendMsgForm;
   var meId = $('#member-id').text(); // is page chat
 
-  if (isPageChat) {
+  if (isPageChat && msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
     var friendIdChatting = $('#main-right').attr('data-id'); // call audio to friend
@@ -41007,8 +41001,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(340);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(341);
 /* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(481);
-/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(482);
-/* harmony import */ var _member_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(517);
+/* harmony import */ var _messenger_common_chat__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(482);
+/* harmony import */ var _messenger_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(517);
 
 
 
@@ -41041,11 +41035,11 @@ var Index = function () {
   var currentPageChat = 0; // current page load old chat
 
   var allowLoadOld = true;
-  var classScBottom = '.scroll-bottom'; // scroll bottom
-
-  chatMain.scrollTop = chatMain.scrollHeight;
+  var classScBottom = '.scroll-bottom';
 
   if (msgForm) {
+    // scroll bottom
+    chatMain.scrollTop = chatMain.scrollHeight;
     var friendIdChatting = $('#main-right').attr('data-id'); // event submit form chat
 
     msgForm.addEventListener('submit', function (e) {

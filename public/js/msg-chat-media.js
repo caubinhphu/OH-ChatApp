@@ -27453,7 +27453,7 @@ module.exports = __webpack_require__(528);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(340);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(341);
-/* harmony import */ var _member_chat_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(529);
+/* harmony import */ var _messenger_chat_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(529);
 // import $ from 'jquery';
 
 

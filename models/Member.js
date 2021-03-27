@@ -59,6 +59,18 @@ const memberSchema = mongoose.Schema({
       ref: 'GroupMessage',
     },
   }, ],
+  friendRequests: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Member',
+    }
+  ],
+  friendInvitations: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Member',
+    }
+  ],
   socketId: {
     type: String,
     default: ''
@@ -82,16 +94,40 @@ const memberSchema = mongoose.Schema({
   }
 });
 
-// get all friends
+// get friends
 memberSchema.methods.getFriends = function () {
   return this.friends.map((friend) => {
-    console.log(friend);
     return {
       id: friend._id.id,
       name: friend._id.name,
       avatar: friend._id.avatar,
       status: friend._id.status,
       url: friend._id.url,
+    }
+  });
+};
+
+// get request friends
+memberSchema.methods.getFriendRequests = function () {
+  return this.friendRequests.map((friend) => {
+    return {
+      id: friend.id,
+      name: friend.name,
+      avatar: friend.avatar,
+      url: friend.url
+    }
+  });
+};
+
+// get invitation friends
+memberSchema.methods.getFriendInvitations = function () {
+  return this.friendInvitations.map((friend) => {
+    console.log(friend);
+    return {
+      id: friend.id,
+      name: friend.name,
+      avatar: friend.avatar,
+      url: friend.url
     }
   });
 };

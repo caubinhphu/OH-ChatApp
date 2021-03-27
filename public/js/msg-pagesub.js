@@ -39260,13 +39260,6 @@ var CommonChat = function () {
   var isPageChat = $('#main.chat-page').length > 0;
   var callTimeout = 20000;
   var chatMain = document.getElementById('main-right-chat-content');
-  var msgForm = document.sendMsgForm; // form chat
-
-  var hasMessenger = true; // has old msg
-
-  var currentPageChat = 0; // current page load old chat
-
-  var classScBottom = '.scroll-bottom';
   var idBtnCallBack = '#btn-call-back';
   var classPoHasCall = '.popup-has-call';
   var classCallOK = '#btn-call-ok';
@@ -39281,9 +39274,10 @@ var CommonChat = function () {
   var classCallMissed = ' call-msg call-missed';
   var classCallVideo = ' call-video';
   var classCallMissedVideo = ' call-missed-video';
+  var msgForm = document.sendMsgForm;
   var meId = $('#member-id').text(); // is page chat
 
-  if (isPageChat) {
+  if (isPageChat && msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
     var friendIdChatting = $('#main-right').attr('data-id'); // call audio to friend
@@ -42654,10 +42648,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(341);
 /* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(481);
 /* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(502);
-/* harmony import */ var _member_profile__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(522);
-/* harmony import */ var _member_setting__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(525);
-/* harmony import */ var _member_common_chat__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(482);
-/* harmony import */ var _member_messenger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(526);
+/* harmony import */ var _messenger_profile__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(522);
+/* harmony import */ var _messenger_setting__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(525);
+/* harmony import */ var _messenger_common_chat__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(482);
+/* harmony import */ var _messenger_messenger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(526);
 
 
 
@@ -43620,7 +43614,7 @@ var Profile = function () {
   if ($('#main.profile-page').length) {
     var loadDataFriend = /*#__PURE__*/function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(hash) {
-        var responsive, _responsive$data, friends, hasFriend, requests, invitations;
+        var responsive, _responsive$data, friends, hasFriend, requests, _requests$data, _friends, _hasFriend, invitations, _invitations$data, _friends2, _hasFriend2;
 
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
@@ -43656,64 +43650,76 @@ var Profile = function () {
 
               case 16:
                 allowLoadFriend = true;
-                _context5.next = 43;
+                _context5.next = 51;
                 break;
 
               case 19:
-                if (!(hash === '#friend-request')) {
-                  _context5.next = 32;
+                if (!(hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest)) {
+                  _context5.next = 36;
                   break;
                 }
 
                 _context5.prev = 20;
                 _context5.next = 23;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-request');
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-request?page=".concat(pageFriendRequest));
 
               case 23:
                 requests = _context5.sent;
                 console.log(requests);
-                _context5.next = 30;
+                _requests$data = requests.data, _friends = _requests$data.friends, _hasFriend = _requests$data.hasFriend;
+                $(friendRequest).append(_friends.map(function (friend) {
+                  return "<div class=\"col-md-6\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1\">H\u1EE7y y\xEAu c\u1EA7u</button>\n                </div>\n              </div>\n            </div>");
+                }).join(''));
+                isHasFriendRequest = _hasFriend;
+                pageFriendRequest++;
+                _context5.next = 34;
                 break;
 
-              case 27:
-                _context5.prev = 27;
+              case 31:
+                _context5.prev = 31;
                 _context5.t1 = _context5["catch"](20);
                 console.error(_context5.t1);
 
-              case 30:
-                _context5.next = 43;
+              case 34:
+                _context5.next = 51;
                 break;
 
-              case 32:
-                if (!(hash === '#friend-invitation')) {
-                  _context5.next = 43;
+              case 36:
+                if (!(hash === '#friend-invitation' && isHasFriendInvitation && allowLoadFriendInvitation)) {
+                  _context5.next = 51;
                   break;
                 }
 
-                _context5.prev = 33;
-                _context5.next = 36;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/profile/friend-invitation');
-
-              case 36:
-                invitations = _context5.sent;
-                console.log(invitations);
-                _context5.next = 43;
-                break;
+                _context5.prev = 37;
+                _context5.next = 40;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-invitation?page=".concat(pageFriendInvitation));
 
               case 40:
-                _context5.prev = 40;
-                _context5.t2 = _context5["catch"](33);
+                invitations = _context5.sent;
+                console.log(invitations);
+                _invitations$data = invitations.data, _friends2 = _invitations$data.friends, _hasFriend2 = _invitations$data.hasFriend;
+                $(friendInvitation).append(_friends2.map(function (friend) {
+                  return "<div class=\"col-md-6\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1\">X\xF3a y\xEAu c\u1EA7u</button>\n                </div>\n              </div>\n            </div>");
+                }).join(''));
+                isHasFriendInvitation = _hasFriend2;
+                pageFriendInvitation++;
+                _context5.next = 51;
+                break;
+
+              case 48:
+                _context5.prev = 48;
+                _context5.t2 = _context5["catch"](37);
                 console.error(_context5.t2);
 
-              case 43:
+              case 51:
                 $('.wrap-loader-friend').addClass('d-none');
 
-              case 44:
+              case 52:
               case "end":
                 return _context5.stop();
             }
           }
-        }, _callee5, null, [[3, 13], [20, 27], [33, 40]]);
+        }, _callee5, null, [[3, 13], [20, 31], [37, 48]]);
       }));
 
       return function loadDataFriend(_x3) {
@@ -43851,8 +43857,16 @@ var Profile = function () {
     var isHasFriend = true;
     var allowLoadFriend = true;
     var pageFriend = 0;
+    var isHasFriendRequest = true;
+    var allowLoadFriendRequest = true;
+    var pageFriendRequest = 0;
+    var isHasFriendInvitation = true;
+    var allowLoadFriendInvitation = true;
+    var pageFriendInvitation = 0;
     navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
     var friendContent = document.getElementById('friend-content');
+    var friendRequest = document.getElementById('friend-request');
+    var friendInvitation = document.getElementById('friend-invitation');
     reloadPage();
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
       window.location.hash = e.target.hash;

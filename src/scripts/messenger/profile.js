@@ -9,6 +9,12 @@ const Profile = (() => {
     let isHasFriend = true
     let allowLoadFriend = true
     let pageFriend = 0
+    let isHasFriendRequest = true
+    let allowLoadFriendRequest = true
+    let pageFriendRequest = 0
+    let isHasFriendInvitation = true
+    let allowLoadFriendInvitation = true
+    let pageFriendInvitation = 0
 
     navigator.mediaDevices.getUserMedia =
       navigator.mediaDevices.getUserMedia ||
@@ -17,6 +23,8 @@ const Profile = (() => {
       navigator.mediaDevices.msGetUserMedia;
 
     const friendContent = document.getElementById('friend-content');
+    const friendRequest = document.getElementById('friend-request');
+    const friendInvitation = document.getElementById('friend-invitation');
     reloadPage()
     $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
       window.location.hash = e.target.hash;
@@ -158,19 +166,56 @@ const Profile = (() => {
           console.error(error);
         }
         allowLoadFriend = true
-      } else if (hash === '#friend-request') {
+      } else if (hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest) {
         try {
-          const requests = await axios.get('/messenger/profile/friend-request');
+          const requests = await axios.get(`/messenger/profile/friend-request?page=${pageFriendRequest}`);
           console.log(requests);
+          const { friends, hasFriend } = requests.data;
+          $(friendRequest).append(
+            friends.map(friend => {
+              return `<div class="col-md-6">
+              <div class="d-flex align-items-center border p-2 rounded my-2">
+                <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
+                <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
+                  <strong>${friend.name}</strong>
+                </a>
+                <div class="d-flex flex-column fri-item-ctrl">
+                  <button class="btn btn-red mt-1">Hủy yêu cầu</button>
+                </div>
+              </div>
+            </div>`;
+            }).join('')
+          )
+          isHasFriendRequest = hasFriend
+          pageFriendRequest++
         } catch (error) {
           console.error(error);
         }
-      } else if (hash === '#friend-invitation') {
+      } else if (hash === '#friend-invitation' && isHasFriendInvitation && allowLoadFriendInvitation) {
         try {
           const invitations = await axios.get(
-            '/messenger/profile/friend-invitation'
+            `/messenger/profile/friend-invitation?page=${pageFriendInvitation}`
           );
           console.log(invitations);
+          const { friends, hasFriend } = invitations.data;
+          $(friendInvitation).append(
+            friends.map(friend => {
+              return `<div class="col-md-6">
+              <div class="d-flex align-items-center border p-2 rounded my-2">
+                <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
+                <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
+                  <strong>${friend.name}</strong>
+                </a>
+                <div class="d-flex flex-column fri-item-ctrl">
+                  <button class="btn mt-1">Chấp nhận</button>
+                  <button class="btn btn-red mt-1">Xóa yêu cầu</button>
+                </div>
+              </div>
+            </div>`;
+            }).join('')
+          )
+          isHasFriendInvitation = hasFriend
+          pageFriendInvitation++
         } catch (error) {
           console.error(error);
         }

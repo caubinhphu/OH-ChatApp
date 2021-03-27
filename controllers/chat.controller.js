@@ -1,8 +1,8 @@
 const siteRoom = 'OH Chat - Room'
 
 module.exports.getIndex = (req, res) => {
-  res.render('user/index', {
-    titleSite: 'OH Chat',
+  res.render('room', {
+    titleSite: 'OH Chat'
   });
 };
 
@@ -25,7 +25,7 @@ module.exports.getJoin = (req, res) => {
     memberId = req.user._id;
   }
 
-  res.render('user/join-room', {
+  res.render('room/join-room', {
     titleSite: siteRoom,
     name,
     memberId,
@@ -35,13 +35,13 @@ module.exports.getJoin = (req, res) => {
 };
 
 module.exports.getChat = (req, res) => {
-  res.render('user/chat-room', {
+  res.render('room/chat-room', {
     titleSite: siteRoom,
   });
 };
 
 module.exports.getHostChat = (req, res) => {
-  res.render('user/chat-room-host', {
+  res.render('room/chat-room-host', {
     titleSite: siteRoom,
   });
 };
@@ -64,7 +64,7 @@ module.exports.getCreate = (req, res) => {
     .toString()
     .padStart(4, '0');
 
-  res.render('user/create-room', {
+  res.render('room/create-room', {
     titleSite: siteRoom,
     memberId,
     name,

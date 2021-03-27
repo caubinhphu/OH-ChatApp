@@ -32,6 +32,8 @@ router.get('/chat-media/:friendId', controller.getChatMediaFriend);
 
 router.get('/addfriend/:friendId', controller.getAddFriend);
 
+router.get('/addrequest/:friendId', controller.getAddFriendRequest);
+
 router.get('/member/:memberId', controller.getMemberInfo);
 
 module.exports = router;

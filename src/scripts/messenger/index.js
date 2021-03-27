@@ -10,10 +10,10 @@ const Index = (() => {
 
   const classScBottom = '.scroll-bottom'
 
-  // scroll bottom
-  chatMain.scrollTop = chatMain.scrollHeight;
-
   if (msgForm) {
+    // scroll bottom
+    chatMain.scrollTop = chatMain.scrollHeight;
+
     const friendIdChatting = $('#main-right').attr('data-id')
 
     // event submit form chat

@@ -29,12 +29,16 @@ block contentMain
                   td.text-secondary Địa chỉ
                   td= member.address
         .bg-light.d-flex.justify-content-center.py-3
-          if (isFriend)
-            a.btn(href=`/messenger/${member.id}`) Chat
+          if (statusFriend === 'friend')
+            a.btn(href=`/messenger/${member.url ? member.url : member.id}`) Chat
             button.btn.btn-red.ml-3 Hủy kết bạn
+          else if (statusFriend === 'friendRequest')
+            button.btn.btn-red Hủy yêu cầu
+          else if (statusFriend === 'friendInvitation')
+            button.btn.btn-red Xóa lời mởi
           else
-            a.btn(href=`/messenger/addfriend/${member.id}`) Gửi lời mời kết bạn
+            a.btn(href=`/messenger/addrequest/${member.url ? member.url : member.id}`) Gửi lời mời kết bạn
 
 
 append scripts
-  script(src="/js/msg-setting.js")
+  script(src="/js/msg-pagesub.js")

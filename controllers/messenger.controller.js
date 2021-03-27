@@ -22,7 +22,7 @@ const notMem = 'Thành viên không tồn tại'
 const settingUrl = '/messenger/setting'
 
 // number msg be loaded per a time
-const msgPerLoad = 20
+const msgPerLoad = 1
 
 const storage = multer.diskStorage({
   // destination: './public/images/users/',
@@ -205,15 +205,15 @@ module.exports.getFriends = async (req, res) => {
     const member = await Member.findById(req.user.id).populate({
       path: 'friends._id',
       options: {
-        skip: +page * 1,
+        skip: +page * msgPerLoad
       },
-      perDocumentLimit: 1
+      perDocumentLimit: msgPerLoad
     });
     if (member) {
       let hasFriend = false
       member.friends = member.friends.filter(fr => fr._id)
       const friends = member.getFriends();
-      if (friends.length === 1) {
+      if (friends.length === msgPerLoad) {
         hasFriend = true
       }
       res.json({
@@ -224,7 +224,6 @@ module.exports.getFriends = async (req, res) => {
       res.sendStatus(401);
     }
   } catch (error) {
-    console.log(error.message);
     res.sendStatus(403);
   }
 };
@@ -232,11 +231,25 @@ module.exports.getFriends = async (req, res) => {
 // get my friend requests
 module.exports.getFriendRequests = async (req, res) => {
   try {
-    const member = await Member.findById(req.user.id);
+    const page = req.query.page || 0
+    console.log(page);
+    const member = await Member.findById(req.user.id).populate({
+      path: 'friendRequests',
+      options: {
+        skip: +page * msgPerLoad
+      },
+      perDocumentLimit: msgPerLoad
+    });
     if (member) {
+      let hasFriend = false
+      // member.friends = member.friends.filter(fr => fr._id)
+      const friends = member.getFriendRequests();
+      if (friends.length === msgPerLoad) {
+        hasFriend = true
+      }
       res.json({
-        type: 'friend-request',
-        member,
+        friends,
+        hasFriend
       });
     } else {
       res.sendStatus(401);
@@ -249,11 +262,25 @@ module.exports.getFriendRequests = async (req, res) => {
 // get my friend invitations
 module.exports.getFriendInvitations = async (req, res) => {
   try {
-    const member = await Member.findById(req.user.id);
+    const page = req.query.page || 0
+    console.log(page);
+    const member = await Member.findById(req.user.id).populate({
+      path: 'friendInvitations',
+      options: {
+        skip: +page * msgPerLoad
+      },
+      perDocumentLimit: msgPerLoad
+    });
     if (member) {
+      let hasFriend = false
+      // member.friends = member.friends.filter(fr => fr._id)
+      const friends = member.getFriendInvitations();
+      if (friends.length === msgPerLoad) {
+        hasFriend = true
+      }
       res.json({
-        type: 'friend-invitation',
-        member,
+        friends,
+        hasFriend
       });
     } else {
       res.sendStatus(401);
@@ -398,6 +425,33 @@ module.exports.getAddFriend = async (req, res, next) => {
       await member.save();
       await friend.save();
       res.send('ok');
+    } else {
+      next(new Error(notMem));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// add friend
+module.exports.getAddFriendRequest = async (req, res, next) => {
+  try {
+    const { friendId } = req.params;
+    const member = await Member.findById(req.user.id);
+    let friend = null
+    if (friendId.match(/^[0-9a-fA-F]{24}$/)) {
+      friend = await Member.findById(friendId)
+    } else {
+      friend = await Member.findOne({ url: friendId });
+    }
+    if (member && friend && friend.active) {
+      member.friendRequests.push(friend.id);
+      friend.friendInvitations.push(member.id);
+      await member.save();
+      await friend.save();
+
+      req.flash('success', 'Gửi yêu cầu kết bạn thành công')
+      res.redirect(`/messenger/member/${friendId}`)
     } else {
       next(new Error(notMem));
     }
@@ -561,14 +615,18 @@ module.exports.getMemberInfo = async (req, res, next) => {
 
     const me = await Member.findById(req.user.id);
     if (member && me) {
-      let isFriend = false
+      let statusFriend = ''
       if (me.friends.find(fr => fr.id === member.id)) {
-        isFriend = true
+        statusFriend = 'friend'
+      } else if (me.friendRequests.find(fr => fr.toString() === member.id)) {
+        statusFriend = 'friendRequest'
+      } else if (me.friendInvitations.find(fr => fr.toString() === member.id)) {
+        statusFriend = 'friendInvitation'
       }
       res.render('messenger/member', {
         titleSite: siteMes,
         member,
-        isFriend
+        statusFriend
       })
     } else {
       next(new Error(notMem));

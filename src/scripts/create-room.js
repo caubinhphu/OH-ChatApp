@@ -1,7 +1,7 @@
 import './global/loading'
 // import './global/notify'
 import './global/output-message'
-import './user/create-room'
+import './room/create-room'
 
 
 console.log('page create room');

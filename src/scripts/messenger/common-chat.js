@@ -15,11 +15,6 @@ const CommonChat = (() => {
 
   const callTimeout = 20000
   const chatMain = document.getElementById('main-right-chat-content');
-  const msgForm = document.sendMsgForm; // form chat
-  let hasMessenger = true // has old msg
-  let currentPageChat = 0 // current page load old chat
-
-  const classScBottom = '.scroll-bottom'
   const idBtnCallBack = '#btn-call-back'
   const classPoHasCall = '.popup-has-call'
   const classCallOK = '#btn-call-ok'
@@ -35,11 +30,12 @@ const CommonChat = (() => {
   const classCallMissed = ' call-msg call-missed'
   const classCallVideo = ' call-video'
   const classCallMissedVideo = ' call-missed-video'
+  const msgForm = document.sendMsgForm;
 
   const meId = $('#member-id').text()
 
   // is page chat
-  if (isPageChat) {
+  if (isPageChat && msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
 
@@ -50,7 +46,6 @@ const CommonChat = (() => {
 
     // call audio to friend
     $('#video-friend-btn').on('click', () => { callFriend(friendIdChatting, 'video') })
-
   }
 
   $(idBtnCallBack).on('click', function() {

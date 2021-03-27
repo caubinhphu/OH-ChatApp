@@ -5,9 +5,9 @@ import './global/loading'
 import './global/output-message'
 import './global/emoji'
 import './global/chat-utils'
-import './member/profile'
-import './member/setting'
-import './member/common-chat'
-import './member/messenger'
+import './messenger/profile'
+import './messenger/setting'
+import './messenger/common-chat'
+import './messenger/messenger'
 
 console.log('page sub messenger');
