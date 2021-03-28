@@ -110,7 +110,7 @@ const Index = (() => {
 
           allowLoadOld = true
         } catch (error) {
-          window.outputErrorMessage(error.message)
+          window.outputErrorMessage(error?.response?.data?.msg)
         }
       } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
         $(classScBottom).addClass('is-show');

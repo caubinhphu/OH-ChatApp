@@ -43616,7 +43616,7 @@ var Profile = function () {
   if ($('#main.profile-page').length) {
     var loadDataFriend = /*#__PURE__*/function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(hash) {
-        var responsive, _responsive$data, friends, hasFriend, requests, _requests$data, _friends, _hasFriend, invitations, _invitations$data, _friends2, _hasFriend2;
+        var responsive, _responsive$data, friends, hasFriend, _error$response, _error$response$data, requests, _requests$data, _friends, _hasFriend, _error$response2, _error$response2$data, invitations, _invitations$data, _friends2, _hasFriend2, _error$response3, _error$response3$data;
 
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
@@ -43648,7 +43648,7 @@ var Profile = function () {
               case 13:
                 _context5.prev = 13;
                 _context5.t0 = _context5["catch"](3);
-                console.error(_context5.t0);
+                window.outputErrorMessage(_context5.t0 === null || _context5.t0 === void 0 ? void 0 : (_error$response = _context5.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
 
               case 16:
                 allowLoadFriend = true;
@@ -43680,7 +43680,7 @@ var Profile = function () {
               case 31:
                 _context5.prev = 31;
                 _context5.t1 = _context5["catch"](20);
-                console.error(_context5.t1);
+                window.outputErrorMessage(_context5.t1 === null || _context5.t1 === void 0 ? void 0 : (_error$response2 = _context5.t1.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.msg);
 
               case 34:
                 _context5.next = 51;
@@ -43711,7 +43711,7 @@ var Profile = function () {
               case 48:
                 _context5.prev = 48;
                 _context5.t2 = _context5["catch"](37);
-                console.error(_context5.t2);
+                window.outputErrorMessage(_context5.t2 === null || _context5.t2 === void 0 ? void 0 : (_error$response3 = _context5.t2.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.msg);
 
               case 51:
                 $('.wrap-loader-friend').addClass('d-none');
@@ -44651,7 +44651,7 @@ var Messenger = function () {
 
   function _loadOldMsg() {
     _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3($popup) {
-      var currentPage, responsive, _responsive$data, messages, hasMsg, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll;
+      var currentPage, responsive, _responsive$data, messages, hasMsg, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response, _error$response$data;
 
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
@@ -44697,7 +44697,7 @@ var Messenger = function () {
             case 20:
               _context3.prev = 20;
               _context3.t0 = _context3["catch"](3);
-              window.outputErrorMessage(_context3.t0.message);
+              window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response = _context3.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
 
             case 23:
             case "end":
@@ -44740,7 +44740,8 @@ var Member = function () {
     var $wrapBtn = $('.wrap-btn-ctrl');
     $(document).on('click', '#req-friend', /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-        var memberId, responsive, messages;
+        var memberId, responsive, messages, _error$response, _error$response$data;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -44750,7 +44751,7 @@ var Member = function () {
                 memberId = $(this).attr('data-id');
 
                 if (!memberId) {
-                  _context.next = 16;
+                  _context.next = 14;
                   break;
                 }
 
@@ -44762,26 +44763,32 @@ var Member = function () {
 
               case 7:
                 responsive = _context.sent;
-                messages = responsive.data.messages;
-                window.outputSuccessMessage(messages);
-                $wrapBtn.html("\n            <button class=\"btn btn-red\" id=\"des-req-friend\" data-id=\"".concat($(this).attr('data-id'), "\">\n              H\u1EE7y y\xEAu c\u1EA7u\n            </button>\n          "));
-                _context.next = 16;
+
+                if (responsive.status === 200) {
+                  messages = responsive.data.messages;
+                  window.outputSuccessMessage(messages);
+                  $wrapBtn.html("\n              <button class=\"btn btn-red\" id=\"des-req-friend\" data-id=\"".concat($(this).attr('data-id'), "\">\n                H\u1EE7y y\xEAu c\u1EA7u\n              </button>\n            "));
+                } else if (responsive.status === 205) {
+                  reloadPage();
+                }
+
+                _context.next = 14;
                 break;
 
-              case 13:
-                _context.prev = 13;
+              case 11:
+                _context.prev = 11;
                 _context.t0 = _context["catch"](4);
-                window.outputErrorMessage(_context.t0.message);
+                window.outputErrorMessage(_context.t0 === null || _context.t0 === void 0 ? void 0 : (_error$response = _context.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.messages);
 
-              case 16:
+              case 14:
                 hideLoader();
 
-              case 17:
+              case 15:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[4, 13]]);
+        }, _callee, this, [[4, 11]]);
       }));
 
       return function (_x) {
@@ -44804,7 +44811,8 @@ var Member = function () {
     });
     $(document).on('click', '#accept-inv-friend', /*#__PURE__*/function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-        var memberId, responsive, messages;
+        var memberId, responsive, messages, _error$response2, _error$response2$data;
+
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -44835,7 +44843,7 @@ var Member = function () {
               case 13:
                 _context2.prev = 13;
                 _context2.t0 = _context2["catch"](4);
-                window.outputErrorMessage(_context2.t0.message);
+                window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.messages);
 
               case 16:
                 hideLoader();
@@ -44861,7 +44869,7 @@ var Member = function () {
     });
     $('#btn-confirm').on('click', /*#__PURE__*/function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-        var responsive, messages, _responsive, _messages, _responsive2, _messages2;
+        var responsive, messages, _error$response3, _error$response3$data, _responsive, _messages, _error$response4, _error$response4$data, _responsive2, _messages2, _error$response5, _error$response5$data;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -44899,7 +44907,7 @@ var Member = function () {
               case 13:
                 _context3.prev = 13;
                 _context3.t0 = _context3["catch"](4);
-                window.outputErrorMessage(_context3.t0.message);
+                window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response3 = _context3.t0.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.messages);
 
               case 16:
                 _context3.next = 46;
@@ -44930,7 +44938,7 @@ var Member = function () {
               case 28:
                 _context3.prev = 28;
                 _context3.t1 = _context3["catch"](19);
-                window.outputErrorMessage(_context3.t1.message);
+                window.outputErrorMessage(_context3.t1 === null || _context3.t1 === void 0 ? void 0 : (_error$response4 = _context3.t1.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.messages);
 
               case 31:
                 _context3.next = 46;
@@ -44961,7 +44969,7 @@ var Member = function () {
               case 43:
                 _context3.prev = 43;
                 _context3.t2 = _context3["catch"](34);
-                window.outputErrorMessage(_context3.t2.message);
+                window.outputErrorMessage(_context3.t2 === null || _context3.t2 === void 0 ? void 0 : (_error$response5 = _context3.t2.response) === null || _error$response5 === void 0 ? void 0 : (_error$response5$data = _error$response5.data) === null || _error$response5$data === void 0 ? void 0 : _error$response5$data.messages);
 
               case 46:
                 $popupConfirm.addClass('d-none');
@@ -44996,6 +45004,10 @@ var Member = function () {
 
   function hideLoader() {
     $('.wrap-loader').addClass('d-none');
+  }
+
+  function reloadPage() {
+    location.reload();
   }
 }();
 

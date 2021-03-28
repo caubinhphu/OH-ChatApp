@@ -41081,7 +41081,7 @@ var Index = function () {
     }); // handle scroll box chat: load old msg, scroll to bottom
 
     $('#main-right-chat-content').on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll;
+      var responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll, _error$response, _error$response$data;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -41126,7 +41126,7 @@ var Index = function () {
             case 20:
               _context.prev = 20;
               _context.t0 = _context["catch"](3);
-              window.outputErrorMessage(_context.t0.message);
+              window.outputErrorMessage(_context.t0 === null || _context.t0 === void 0 ? void 0 : (_error$response = _context.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
 
             case 23:
               _context.next = 26;

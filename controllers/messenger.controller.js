@@ -14,12 +14,12 @@ const {
   validateSettingUrl
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
-// const sendMail = require('../utils/send-mail');
 const { formatMessageList, formatLatestMsg } = require('../utils/messenger');
 const key = require('../config/key');
 
 const siteMes = 'OH Chat - Messenger'
 const notMem = 'Thành viên không tồn tại'
+const hasErrMsg = 'Có lỗi xảy ra'
 const settingUrl = '/messenger/setting'
 
 // number msg be loaded per a time
@@ -222,10 +222,10 @@ module.exports.getFriends = async (req, res) => {
         hasFriend
       });
     } else {
-      res.sendStatus(401);
+      res.status(404).json({ msg: notMem });
     }
   } catch (error) {
-    res.sendStatus(403);
+    res.status(500).json({ msg: hasErrMsg });
   }
 };
 
@@ -253,10 +253,10 @@ module.exports.getFriendRequests = async (req, res) => {
         hasFriend
       });
     } else {
-      res.sendStatus(401);
+      res.status(404).json({ msg: notMem });
     }
   } catch (error) {
-    res.sendStatus(403);
+    res.status(500).json({ msg: hasErrMsg });
   }
 };
 
@@ -284,10 +284,10 @@ module.exports.getFriendInvitations = async (req, res) => {
         hasFriend
       });
     } else {
-      res.sendStatus(401);
+      res.status(404).json({ msg: notMem });
     }
   } catch (error) {
-    res.sendStatus(403);
+    res.status(500).json({ msg: hasErrMsg });
   }
 };
 
@@ -399,9 +399,9 @@ module.exports.getChatOld = async (req, res) => {
         return res.status(200).json({ messages, hasMsg })
       }
     }
-    return res.status(400).json({ mgs: 'User không tồn tại' })
+    return res.status(404).json({ mgs: notMem })
   } catch (error) {
-    res.status(400).json({ mgs: 'User không tồn tại' })
+    res.status(500).json({ mgs: hasErrMsg })
   }
 }
 
@@ -437,17 +437,15 @@ module.exports.putAddFriend = async (req, res) => {
 
         await me.save();
         await member.save();
-        res.status(200)
-          .json({ messages: 'Chấp nhận lời mời thành công' });
+        res.status(200).json({ messages: 'Chấp nhận lời mời thành công' });
       } else {
         res.status(400).json({ messages: 'Chấp nhận lời mời thất bại' })
       }
     } else {
-      res.status(400).json({ messages: 'User không tồn tại' })
+      res.status(404).json({ messages: notMem })
     }
   } catch (error) {
-    console.log(error.message);
-    res.status(400).json({ messages: 'User không tồn tại' })
+    res.status(500).json({ messages: hasErrMsg })
   }
 };
 
@@ -463,18 +461,22 @@ module.exports.postFriendRequest = async (req, res) => {
       member = await Member.findOne({ url: memberId });
     }
     if (me && member && member.active) {
-      me.friendRequests.push(member.id);
-      member.friendInvitations.push(me.id);
-      await me.save();
-      await member.save();
+      if (me.friendInvitations.includes(member.id) || me.friendRequests.includes(member.id)) {
+        console.log('asd fas df asd f');
+        res.sendStatus(205);
+      } else {
+        me.friendRequests.push(member.id);
+        member.friendInvitations.push(me.id);
+        await me.save();
+        await member.save();
 
-      res.status(200)
-        .json({ messages: 'Gửi yêu cầu kết bạn thành công' });
+        res.status(200).json({ messages: 'Gửi yêu cầu kết bạn thành công' });
+      }
     } else {
-      res.status(400).json({ messages: 'User không tồn tại' })
+      res.status(404).json({ messages: notMem })
     }
   } catch (error) {
-    res.status(400).json({ messages: 'User không tồn tại' })
+    res.status(500).json({ messages: hasErrMsg })
   }
 };
 
@@ -498,16 +500,15 @@ module.exports.deleteFriendRequest = async (req, res) => {
         await me.save();
         await member.save();
 
-        res.status(200)
-          .json({ messages: 'Xóa yêu cầu kết bạn thành công' });
+        res.status(200).json({ messages: 'Xóa yêu cầu kết bạn thành công' });
       } else {
         res.status(400).json({ messages: 'Xóa yêu cầu kết bạn thất bại' })
       }
     } else {
-      res.status(400).json({ messages: 'User không tồn tại' })
+      res.status(404).json({ messages: notMem })
     }
   } catch (error) {
-    res.status(400).json({ messages: 'User không tồn tại' })
+    res.status(500).json({ messages: hasErrMsg })
   }
 };
 
@@ -531,16 +532,15 @@ module.exports.deleteFriendInvitation = async (req, res) => {
         await me.save();
         await member.save();
 
-        res.status(200)
-          .json({ messages: 'Xóa lời mời kết bạn thành công' });
+        res.status(200).json({ messages: 'Xóa lời mời kết bạn thành công' });
       } else {
         res.status(400).json({ messages: 'Xóa lời mời kết bạn thất bại' })
       }
     } else {
-      res.status(400).json({ messages: 'User không tồn tại' })
+      res.status(404).json({ messages: notMem })
     }
   } catch (error) {
-    res.status(400).json({ messages: 'User không tồn tại' })
+    res.status(500).json({ messages: hasErrMsg })
   }
 };
 
@@ -577,8 +577,7 @@ module.exports.deleteFriend = async (req, res) => {
           await meTmp.save()
           await friendTmp.save()
 
-          res.status(200)
-            .json({ messages: 'Hủy kết bạn thành công' });
+          res.status(200).json({ messages: 'Hủy kết bạn thành công' });
         } else {
           res.status(400).json({ messages: 'Hủy kết bạn thất bại' })
         }
@@ -586,10 +585,10 @@ module.exports.deleteFriend = async (req, res) => {
         res.status(400).json({ messages: 'Hủy kết bạn thất bại' })
       }
     } else {
-      res.status(400).json({ messages: 'User không tồn tại' })
+      res.status(404).json({ messages: notMem })
     }
   } catch (error) {
-    res.status(400).json({ messages: 'User không tồn tại' })
+    res.status(500).json({ messages: hasErrMsg })
   }
 };
 
@@ -699,7 +698,7 @@ module.exports.putUrl = async (req, res, next) => {
         } else {
           member.url = url
           await member.save()
-  
+
           req.flash('success', 'Đổi url thành công');
           req.flash('tab', 'security');
           req.flash('sub-tab', 'url');
@@ -711,31 +710,6 @@ module.exports.putUrl = async (req, res, next) => {
     }
   }
 }
-
-// // get verify change email
-// module.exports.getVerifyChangeEmail = async (req, res, next) => {
-//   const { token } = req.params;
-
-//   try {
-//     const member = await Member.findById(req.user.id);
-//     if (!member) {
-//       req.flash('error', notMem);
-//       return res.redirect('/');
-//     }
-
-//     member.verifyToken = '';
-//     member.email = member.newEmail;
-//     member.newEmail = '';
-
-//     await member.save();
-//     req.flash('success', 'Xác nhận thay đổi email thành công');
-
-//     res.redirect('/');
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 
 // get member info by ID
 module.exports.getMemberInfo = async (req, res, next) => {

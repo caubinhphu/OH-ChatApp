@@ -322,7 +322,7 @@ const Messenger = (() => {
 
         $popup.attr('data-allow-load', '1')
       } catch (error) {
-        window.outputErrorMessage(error.message)
+        window.outputErrorMessage(error?.response?.data?.msg)
       }
     }
   }

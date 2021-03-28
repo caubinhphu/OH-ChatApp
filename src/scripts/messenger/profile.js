@@ -163,7 +163,7 @@ const Profile = (() => {
           isHasFriend = hasFriend
           pageFriend++
         } catch (error) {
-          console.error(error);
+          window.outputErrorMessage(error?.response?.data?.msg)
         }
         allowLoadFriend = true
       } else if (hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest) {
@@ -189,7 +189,7 @@ const Profile = (() => {
           isHasFriendRequest = hasFriend
           pageFriendRequest++
         } catch (error) {
-          console.error(error);
+          window.outputErrorMessage(error?.response?.data?.msg)
         }
       } else if (hash === '#friend-invitation' && isHasFriendInvitation && allowLoadFriendInvitation) {
         try {
@@ -217,7 +217,7 @@ const Profile = (() => {
           isHasFriendInvitation = hasFriend
           pageFriendInvitation++
         } catch (error) {
-          console.error(error);
+          window.outputErrorMessage(error?.response?.data?.msg)
         }
       }
       $('.wrap-loader-friend').addClass('d-none')

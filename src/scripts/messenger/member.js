@@ -16,18 +16,22 @@ const Member = (() => {
           const responsive = await axios.post(`/messenger/add-request`, {
             memberId
           });
-          const { messages } = responsive.data;
 
-          window.outputSuccessMessage(messages)
+          if (responsive.status === 200) {
+            const { messages } = responsive.data;
 
-          $wrapBtn.html(`
-            <button class="btn btn-red" id="des-req-friend" data-id="${$(this).attr('data-id')}">
-              Hủy yêu cầu
-            </button>
-          `)
+            window.outputSuccessMessage(messages)
 
+            $wrapBtn.html(`
+              <button class="btn btn-red" id="des-req-friend" data-id="${$(this).attr('data-id')}">
+                Hủy yêu cầu
+              </button>
+            `)
+          } else if (responsive.status === 205) {
+            reloadPage()
+          }
         } catch (error) {
-          window.outputErrorMessage(error.message)
+          window.outputErrorMessage(error?.response?.data?.messages)
         }
       }
       hideLoader()
@@ -58,6 +62,7 @@ const Member = (() => {
           const responsive = await axios.put(`/messenger/accept-invitation`, {
             memberId
           });
+
           const { messages } = responsive.data;
 
           window.outputSuccessMessage(messages)
@@ -69,7 +74,7 @@ const Member = (() => {
             </button>
           `)
         } catch (error) {
-          window.outputErrorMessage(error.message)
+          window.outputErrorMessage(error?.response?.data?.messages)
         }
       }
       hideLoader()
@@ -104,7 +109,7 @@ const Member = (() => {
               </button>
             `)
           } catch (error) {
-            window.outputErrorMessage(error.message)
+            window.outputErrorMessage(error?.response?.data?.messages)
           }
         } else if (window.typeConfirm === 'delete-invitation-friend') {
           try {
@@ -123,7 +128,7 @@ const Member = (() => {
               </button>
             `)
           } catch (error) {
-            window.outputErrorMessage(error.message)
+            window.outputErrorMessage(error?.response?.data?.messages)
           }
         } else if (window.typeConfirm === 'destroy-friend') {
           try {
@@ -141,7 +146,7 @@ const Member = (() => {
               </button>
             `)
           } catch (error) {
-            window.outputErrorMessage(error.message)
+            window.outputErrorMessage(error?.response?.data?.messages)
           }
         }
 
@@ -165,6 +170,10 @@ const Member = (() => {
 
   function hideLoader() {
     $('.wrap-loader').addClass('d-none')
+  }
+
+  function reloadPage() {
+    location.reload()
   }
 })()
 
