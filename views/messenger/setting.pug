@@ -35,7 +35,7 @@ block contentMain
                     td.text-right
                       if (member.type === 'local')
                         button.btn(data-toggle="collapse" href="#collapse-password" aria-expanded="false" aria-controls="collapse-password")
-                          span.icomoon.icon-edit.d-md-none
+                          span.icomoon.icon-icon-edit.d-md-none
                           span.d-none.d-md-block Chỉnh sửa
                   if (member.type === 'local')
                     tr#collapse-password.collapse(class=`${subTab[0] === 'password' ? 'show' : ''}`, )
@@ -59,7 +59,7 @@ block contentMain
                     td.text-url= `${key.host}/messenger/member/${member.url || member.id }`
                     td.text-right
                       button.btn(data-toggle="collapse" href="#collapse-url" aria-expanded="false" aria-controls="collapse-url")
-                        span.icomoon.icon-edit.d-md-none
+                        span.icomoon.icon-icon-edit.d-md-none
                         span.d-none.d-md-block Chỉnh sửa
                   tr#collapse-url.collapse(class=`${subTab[0] === 'url' ? 'show' : ''}`, )
                     td.border-0(colspan="3")

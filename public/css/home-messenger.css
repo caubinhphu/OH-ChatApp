@@ -7948,3 +7948,31 @@ textarea.form-control.msg-mini {
 .wrap-friend-video video {
   width: 100%;
 }
+
+.close-popup-con {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+}
+
+.wrap-pop-confirm {
+  position: relative;
+  padding: 30px 30px 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 2px 2px 12px #22c0c9;
+}
+
+.wrap-pop-confirm h3 {
+  margin-bottom: 40px;
+}
+
+.popup-confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #9e9e9e73;
+  z-index: 9998;
+}

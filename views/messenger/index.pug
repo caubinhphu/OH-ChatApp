@@ -24,8 +24,9 @@ block contentMain
                 .friend-item-info.ml-2
                   strong= friend.name
                   .last-msg.text-dark.un-read
-                    small= friend.latestMessage.msg
-                    small= friend.latestMessage.timeFromNow
+                    if (friend.latestMessage)
+                      small= friend.latestMessage.msg
+                      small= friend.latestMessage.timeFromNow
               a.ps-as(href=`/messenger/chat/${friend.url ? friend.url : friend.id}`, title=`${friend.name}`)
                 span.sr-only= `Chat with ${friend.name}`
 

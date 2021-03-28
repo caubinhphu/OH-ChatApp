@@ -1,0 +1,24 @@
+.close-popup-con {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+}
+.wrap-pop-confirm {
+  position: relative;
+  padding: 30px 30px 20px;
+  background: $white;
+  border-radius: 10px;
+  box-shadow: 2px 2px 12px $color-22;
+  h3 {
+    margin-bottom: 40px;
+  }
+}
+.popup-confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: $color-ol;
+  z-index: 9998;
+}

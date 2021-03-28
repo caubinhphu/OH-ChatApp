@@ -99,7 +99,11 @@ app.use((err, req, res, next) => {
   if (err) {
     console.log(err);
   }
-  res.send(err.message);
+  // res.send(err.message);
+  res.render('error', {
+    titleSite: 'OH - Chat',
+    messageError: err.message
+  })
 });
 
 server.listen(PORT, () => console.log(`Server is running at port ${PORT}`));

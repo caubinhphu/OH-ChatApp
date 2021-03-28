@@ -28,16 +28,25 @@ block contentMain
                 tr
                   td.text-secondary Địa chỉ
                   td= member.address
-        .bg-light.d-flex.justify-content-center.py-3
+        .bg-light.d-flex.justify-content-center.py-3.wrap-btn-ctrl
           if (statusFriend === 'friend')
             a.btn(href=`/messenger/${member.url ? member.url : member.id}`) Chat
-            button.btn.btn-red.ml-3 Hủy kết bạn
+            button#des-friend.btn.btn-red.ml-3(data-id=member.id) Hủy kết bạn
           else if (statusFriend === 'friendRequest')
-            button.btn.btn-red Hủy yêu cầu
+            button#des-req-friend.btn.btn-red(data-id=member.id) Hủy yêu cầu
           else if (statusFriend === 'friendInvitation')
-            button.btn.btn-red Xóa lời mởi
+            button#accept-inv-friend.btn.mr-3(data-id=member.id) Chấp nhận lời mời
+            button#del-inv-friend.btn.btn-red(data-id=member.id) Xóa lời mời
           else
-            a.btn(href=`/messenger/addrequest/${member.url ? member.url : member.id}`) Gửi lời mời kết bạn
+            button#req-friend.btn(data-id=member.id) Gửi lời mời kết bạn
+  .popup-confirm.d-none
+    .d-flex.justify-content-center.align-items-center.h-100
+      .wrap-pop-confirm
+        button.btn.btn-icon.close-popup-con(type="button")
+          span.icomoon.icon-close
+        h3.title-confirm.text-center Xác nhận
+        .text-right
+          button.btn.btn-red#btn-confirm Xác nhận
 
 
 append scripts

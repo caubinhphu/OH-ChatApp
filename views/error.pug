@@ -1,0 +1,9 @@
+extend ./layout
+
+append styles
+  style
+    | .loadding-page, .wrap-loader { display: none }
+    | h1 { text-align: center }
+
+block main
+  h1= messageError

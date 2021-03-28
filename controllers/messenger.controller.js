@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
+const Message = require('../models/Message');
 const {
   validateProfile,
   validateSettingPassword,
@@ -308,6 +309,11 @@ module.exports.getChatFriend = async (req, res, next) => {
     if (member) {
       const friends = member.getFriendsHaveMessage();
       const friendChat = friends.find(fr => fr.id === req.params.friendId || fr.url === req.params.friendId);
+
+      if (!friendChat) {
+        throw new Error(notMem)
+      }
+
       // generate jwt token
       const token = jwt.sign(
         { data: { memberId: friendChat.id } },
@@ -400,65 +406,194 @@ module.exports.getChatOld = async (req, res) => {
 }
 
 // add friend
-module.exports.getAddFriend = async (req, res, next) => {
+module.exports.putAddFriend = async (req, res) => {
   try {
-    const { friendId } = req.params;
-    const member = await Member.findById(req.user.id);
-    let friend = null
-    if (friendId.match(/^[0-9a-fA-F]{24}$/)) {
-      friend = await Member.findById(friendId)
+    const { memberId } = req.body;
+    const me = await Member.findById(req.user.id);
+    let member = null
+    if (memberId.match(/^[0-9a-fA-F]{24}$/)) {
+      member = await Member.findById(memberId)
     } else {
-      friend = await Member.findOne({ url: friendId });
+      member = await Member.findOne({ url: memberId });
     }
-    if (member && friend && friend.active) {
-      const groupMessage = await GroupMessage.create({
-        messages: []
-      });
-      member.friends.push({
-        _id: friendId,
-        groupMessageId: groupMessage._id
-      });
-      friend.friends.push({
-        _id: member.id,
-        groupMessageId: groupMessage._id
-      });
-      await member.save();
-      await friend.save();
-      res.send('ok');
+    if (me && member && member.active) {
+      const indexReq = member.friendRequests.findIndex(fr => fr.toString() === me.id)
+      const indexInv = me.friendInvitations.findIndex(fr => fr.toString() === memberId)
+      if (indexReq !== -1 && indexInv !== -1) {
+        const groupMessage = await GroupMessage.create({
+          messages: []
+        });
+        me.friends.push({
+          _id: memberId,
+          groupMessageId: groupMessage._id
+        });
+        member.friends.push({
+          _id: me.id,
+          groupMessageId: groupMessage._id
+        });
+
+        member.friendRequests.splice(indexReq, 1)
+        me.friendInvitations.splice(indexInv, 1)
+
+        await me.save();
+        await member.save();
+        res.status(200)
+          .json({ messages: 'Chấp nhận lời mời thành công' });
+      } else {
+        res.status(400).json({ messages: 'Chấp nhận lời mời thất bại' })
+      }
     } else {
-      next(new Error(notMem));
+      res.status(400).json({ messages: 'User không tồn tại' })
     }
   } catch (error) {
-    next(error);
+    console.log(error.message);
+    res.status(400).json({ messages: 'User không tồn tại' })
   }
 };
 
-// add friend
-module.exports.getAddFriendRequest = async (req, res, next) => {
+// add request friend
+module.exports.postFriendRequest = async (req, res) => {
   try {
-    const { friendId } = req.params;
-    const member = await Member.findById(req.user.id);
-    let friend = null
-    if (friendId.match(/^[0-9a-fA-F]{24}$/)) {
-      friend = await Member.findById(friendId)
+    const { memberId } = req.body;
+    const me = await Member.findById(req.user.id);
+    let member = null
+    if (memberId.match(/^[0-9a-fA-F]{24}$/)) {
+      member = await Member.findById(memberId)
     } else {
-      friend = await Member.findOne({ url: friendId });
+      member = await Member.findOne({ url: memberId });
     }
-    if (member && friend && friend.active) {
-      member.friendRequests.push(friend.id);
-      friend.friendInvitations.push(member.id);
+    if (me && member && member.active) {
+      me.friendRequests.push(member.id);
+      member.friendInvitations.push(me.id);
+      await me.save();
       await member.save();
-      await friend.save();
 
-      req.flash('success', 'Gửi yêu cầu kết bạn thành công')
-      res.redirect(`/messenger/member/${friendId}`)
+      res.status(200)
+        .json({ messages: 'Gửi yêu cầu kết bạn thành công' });
     } else {
-      next(new Error(notMem));
+      res.status(400).json({ messages: 'User không tồn tại' })
     }
   } catch (error) {
-    next(error);
+    res.status(400).json({ messages: 'User không tồn tại' })
   }
 };
+
+// delete request friend
+module.exports.deleteFriendRequest = async (req, res) => {
+  try {
+    const { memberId } = req.body;
+    const me = await Member.findById(req.user.id);
+    let member = null
+    if (memberId.match(/^[0-9a-fA-F]{24}$/)) {
+      member = await Member.findById(memberId)
+    } else {
+      member = await Member.findOne({ url: memberId });
+    }
+    if (me && member) {
+      const indexReq = me.friendRequests.findIndex(fr => fr.toString() === memberId)
+      const indexInv = member.friendInvitations.findIndex(fr => fr.toString() === me.id)
+      if (indexReq !== -1 && indexInv !== -1) {
+        me.friendRequests.splice(indexReq, 1);
+        member.friendInvitations.splice(indexInv, 1);
+        await me.save();
+        await member.save();
+
+        res.status(200)
+          .json({ messages: 'Xóa yêu cầu kết bạn thành công' });
+      } else {
+        res.status(400).json({ messages: 'Xóa yêu cầu kết bạn thất bại' })
+      }
+    } else {
+      res.status(400).json({ messages: 'User không tồn tại' })
+    }
+  } catch (error) {
+    res.status(400).json({ messages: 'User không tồn tại' })
+  }
+};
+
+// delete invitation friend
+module.exports.deleteFriendInvitation = async (req, res) => {
+  try {
+    const { memberId } = req.body;
+    const me = await Member.findById(req.user.id);
+    let member = null
+    if (memberId.match(/^[0-9a-fA-F]{24}$/)) {
+      member = await Member.findById(memberId)
+    } else {
+      member = await Member.findOne({ url: memberId });
+    }
+    if (me && member) {
+      const indexReq = member.friendRequests.findIndex(fr => fr.toString() === me.id)
+      const indexInv = me.friendInvitations.findIndex(fr => fr.toString() === memberId)
+      if (indexReq !== -1 && indexInv !== -1) {
+        member.friendRequests.splice(indexReq, 1);
+        me.friendInvitations.splice(indexInv, 1);
+        await me.save();
+        await member.save();
+
+        res.status(200)
+          .json({ messages: 'Xóa lời mời kết bạn thành công' });
+      } else {
+        res.status(400).json({ messages: 'Xóa lời mời kết bạn thất bại' })
+      }
+    } else {
+      res.status(400).json({ messages: 'User không tồn tại' })
+    }
+  } catch (error) {
+    res.status(400).json({ messages: 'User không tồn tại' })
+  }
+};
+
+// delete friend
+module.exports.deleteFriend = async (req, res) => {
+  try {
+    const { memberId } = req.body;
+    const me = await Member.findById(req.user.id)
+      .populate({
+        path: 'friends._id',
+        match: { _id: memberId }
+      })
+      .populate({
+        path: 'friends.groupMessageId'
+      })
+    if (me) {
+      const friend =  me.friends.find(fr => fr._id)
+
+      if (friend) {
+        const meTmp = await Member.findById(req.user.id)
+        const friendTmp = await Member.findById(memberId)
+
+        const indexFriend = meTmp.friends.findIndex(fr => fr._id.toString() === memberId)
+        const indexMe = friendTmp.friends.findIndex(fr => fr._id.toString() === req.user.id)
+
+        if (indexFriend !== -1 && indexMe !== -1) {
+          await Message.deleteMany({ _id: { $in: friend.groupMessageId.messages } })
+
+          await GroupMessage.deleteOne({ _id: friend.groupMessageId.id })
+
+          meTmp.friends.splice(indexFriend, 1)
+          friendTmp.friends.splice(indexMe, 1)
+
+          await meTmp.save()
+          await friendTmp.save()
+
+          res.status(200)
+            .json({ messages: 'Hủy kết bạn thành công' });
+        } else {
+          res.status(400).json({ messages: 'Hủy kết bạn thất bại' })
+        }
+      } else {
+        res.status(400).json({ messages: 'Hủy kết bạn thất bại' })
+      }
+    } else {
+      res.status(400).json({ messages: 'User không tồn tại' })
+    }
+  } catch (error) {
+    res.status(400).json({ messages: 'User không tồn tại' })
+  }
+};
+
+
 
 // get setting messenger page
 module.exports.getSetting = async (req, res, next) => {

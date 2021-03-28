@@ -12,6 +12,16 @@ router.route('/profile')
   .get(controller.getProfile)
   .put(controller.putProfile)
 
+router.put('/accept-invitation', controller.putAddFriend);
+
+router.post('/add-request', controller.postFriendRequest);
+
+router.delete('/destroy-request', controller.deleteFriendRequest);
+
+router.delete('/delete-invitation', controller.deleteFriendInvitation);
+
+router.delete('/destroy-friend', controller.deleteFriend);
+
 router.get('/setting', controller.getSetting)
 
 router.put('/setting/password', controller.putPassword)
@@ -29,10 +39,6 @@ router.get('/profile/friend-invitation', controller.getFriendInvitations);
 router.get('/chat/:friendId', controller.getChatFriend);
 
 router.get('/chat-media/:friendId', controller.getChatMediaFriend);
-
-router.get('/addfriend/:friendId', controller.getAddFriend);
-
-router.get('/addrequest/:friendId', controller.getAddFriendRequest);
 
 router.get('/member/:memberId', controller.getMemberInfo);
 
