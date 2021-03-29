@@ -75,6 +75,11 @@ const Member = (() => {
           `)
         } catch (error) {
           window.outputErrorMessage(error?.response?.data?.messages)
+          setTimeout(() => {
+            if (error?.response?.status === 400) {
+              reloadPage()
+            }
+          }, 500);
         }
       }
       hideLoader()
@@ -110,6 +115,11 @@ const Member = (() => {
             `)
           } catch (error) {
             window.outputErrorMessage(error?.response?.data?.messages)
+            setTimeout(() => {
+              if (error?.response?.status === 400) {
+                reloadPage()
+              }
+            }, 500);
           }
         } else if (window.typeConfirm === 'delete-invitation-friend') {
           try {
@@ -129,6 +139,11 @@ const Member = (() => {
             `)
           } catch (error) {
             window.outputErrorMessage(error?.response?.data?.messages)
+            setTimeout(() => {
+              if (error?.response?.status === 400) {
+                reloadPage()
+              }
+            }, 500);
           }
         } else if (window.typeConfirm === 'destroy-friend') {
           try {
@@ -147,6 +162,11 @@ const Member = (() => {
             `)
           } catch (error) {
             window.outputErrorMessage(error?.response?.data?.messages)
+            setTimeout(() => {
+              if (error?.response?.status === 400) {
+                reloadPage()
+              }
+            }, 500);
           }
         }
 

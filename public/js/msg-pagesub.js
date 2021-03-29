@@ -44822,7 +44822,7 @@ var Member = function () {
                 memberId = $(this).attr('data-id');
 
                 if (!memberId) {
-                  _context2.next = 16;
+                  _context2.next = 17;
                   break;
                 }
 
@@ -44837,18 +44837,25 @@ var Member = function () {
                 messages = responsive.data.messages;
                 window.outputSuccessMessage(messages);
                 $wrapBtn.html("\n            <a class=\"btn\" href=\"/messenger/".concat($(this).attr('data-id'), "\">Chat</a>\n            <button class=\"btn btn-red ml-3\" id=\"des-friend\" data-id=\"").concat($(this).attr('data-id'), "\">\n              H\u1EE7y k\u1EBFt b\u1EA1n\n            </button>\n          "));
-                _context2.next = 16;
+                _context2.next = 17;
                 break;
 
               case 13:
                 _context2.prev = 13;
                 _context2.t0 = _context2["catch"](4);
                 window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.messages);
+                setTimeout(function () {
+                  var _error$response3;
 
-              case 16:
-                hideLoader();
+                  if ((_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response3 = _context2.t0.response) === null || _error$response3 === void 0 ? void 0 : _error$response3.status) === 400) {
+                    reloadPage();
+                  }
+                }, 500);
 
               case 17:
+                hideLoader();
+
+              case 18:
               case "end":
                 return _context2.stop();
             }
@@ -44869,7 +44876,7 @@ var Member = function () {
     });
     $('#btn-confirm').on('click', /*#__PURE__*/function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-        var responsive, messages, _error$response3, _error$response3$data, _responsive, _messages, _error$response4, _error$response4$data, _responsive2, _messages2, _error$response5, _error$response5$data;
+        var responsive, messages, _error$response4, _error$response4$data, _responsive, _messages, _error$response5, _error$response5$data, _responsive2, _messages2, _error$response6, _error$response6$data;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -44907,7 +44914,7 @@ var Member = function () {
               case 13:
                 _context3.prev = 13;
                 _context3.t0 = _context3["catch"](4);
-                window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response3 = _context3.t0.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.messages);
+                window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response4 = _context3.t0.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.messages);
 
               case 16:
                 _context3.next = 46;
@@ -44938,7 +44945,7 @@ var Member = function () {
               case 28:
                 _context3.prev = 28;
                 _context3.t1 = _context3["catch"](19);
-                window.outputErrorMessage(_context3.t1 === null || _context3.t1 === void 0 ? void 0 : (_error$response4 = _context3.t1.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.messages);
+                window.outputErrorMessage(_context3.t1 === null || _context3.t1 === void 0 ? void 0 : (_error$response5 = _context3.t1.response) === null || _error$response5 === void 0 ? void 0 : (_error$response5$data = _error$response5.data) === null || _error$response5$data === void 0 ? void 0 : _error$response5$data.messages);
 
               case 31:
                 _context3.next = 46;
@@ -44969,7 +44976,7 @@ var Member = function () {
               case 43:
                 _context3.prev = 43;
                 _context3.t2 = _context3["catch"](34);
-                window.outputErrorMessage(_context3.t2 === null || _context3.t2 === void 0 ? void 0 : (_error$response5 = _context3.t2.response) === null || _error$response5 === void 0 ? void 0 : (_error$response5$data = _error$response5.data) === null || _error$response5$data === void 0 ? void 0 : _error$response5$data.messages);
+                window.outputErrorMessage(_context3.t2 === null || _context3.t2 === void 0 ? void 0 : (_error$response6 = _context3.t2.response) === null || _error$response6 === void 0 ? void 0 : (_error$response6$data = _error$response6.data) === null || _error$response6$data === void 0 ? void 0 : _error$response6$data.messages);
 
               case 46:
                 $popupConfirm.addClass('d-none');
