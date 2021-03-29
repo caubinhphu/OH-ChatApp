@@ -137,6 +137,152 @@ const Profile = (() => {
       xhr.send(formData);
     });
 
+
+    const $popupConfirm = $('.popup-confirm')
+    const $wrapBtn = $('.wrap-btn-ctrl')
+
+    $(document).on('click', '.des-req-friend', function(e) {
+      e.preventDefault()
+      window.memberIdConfirm = $(this).attr('data-id')
+      window.typeConfirm = 'destroy-request-add-friend'
+      $('.title-confirm').html('Bạn có chắc xóa yêu cầu kết bạn')
+      $popupConfirm.removeClass('d-none')
+    })
+
+    $(document).on('click', '.del-inv-friend', function(e) {
+      e.preventDefault()
+      window.memberIdConfirm = $(this).attr('data-id')
+      window.typeConfirm = 'delete-invitation-friend'
+      $('.title-confirm').html('Bạn có chắc xóa lời mời kết bạn')
+      $popupConfirm.removeClass('d-none')
+    })
+
+    $(document).on('click', '.accept-inv-friend', async function(e) {
+      e.preventDefault()
+      window.showLoader()
+      const memberIdConfirm = $(this).attr('data-id')
+      if (memberIdConfirm) {
+        try {
+          const responsive = await axios.put(`/messenger/accept-invitation`, {
+            memberId: memberIdConfirm
+          });
+
+          const { messages } = responsive.data;
+
+          window.outputSuccessMessage(messages)
+
+          $(this).parents('.wrap-fri-item').remove()
+        } catch (error) {
+          window.outputErrorMessage(error?.response?.data?.messages)
+          // setTimeout(() => {
+          //   if (error?.response?.status === 400) {
+          //     reloadPage()
+          //   }
+          // }, 500);
+        }
+      }
+      window.hideLoader()
+    })
+
+    $(document).on('click', '.des-friend', function(e) {
+      e.preventDefault()
+      window.memberIdConfirm = $(this).attr('data-id')
+      window.typeConfirm = 'destroy-friend'
+      $('.title-confirm').html('Bạn có chắc hủy kết bạn')
+      $popupConfirm.removeClass('d-none')
+    })
+
+    $('#btn-confirm').on('click', async (e) => {
+      e.preventDefault()
+      window.showLoader()
+      if (window.memberIdConfirm && window.typeConfirm) {
+        if (window.typeConfirm === 'destroy-request-add-friend') {
+          try {
+            const responsive = await axios.delete(`/messenger/destroy-request`, {
+              data: {
+                memberId: window.memberIdConfirm
+              }
+            });
+            const { messages } = responsive.data;
+
+            window.outputSuccessMessage(messages)
+
+            $(`.wrap-fri-item[data-id="${window.memberIdConfirm}"]`).remove()
+          } catch (error) {
+            window.outputErrorMessage(error?.response?.data?.messages)
+            // setTimeout(() => {
+            //   if (error?.response?.status === 400) {
+            //     reloadPage()
+            //   }
+            // }, 500);
+          }
+        } else if (window.typeConfirm === 'delete-invitation-friend') {
+          try {
+            const responsive = await axios.delete(`/messenger/delete-invitation`, {
+              data: {
+                memberId: window.memberIdConfirm
+              }
+            });
+            const { messages } = responsive.data;
+
+            window.outputSuccessMessage(messages)
+
+            $(`.wrap-fri-item[data-id="${window.memberIdConfirm}"]`).remove()
+          } catch (error) {
+            window.outputErrorMessage(error?.response?.data?.messages)
+            // setTimeout(() => {
+            //   if (error?.response?.status === 400) {
+            //     reloadPage()
+            //   }
+            // }, 500);
+          }
+        } else if (window.typeConfirm === 'destroy-friend') {
+          try {
+            const responsive = await axios.delete(`/messenger/destroy-friend`, {
+              data: {
+                memberId: window.memberIdConfirm
+              }
+            });
+            const { messages } = responsive.data;
+
+            window.outputSuccessMessage(messages)
+
+            $(`.wrap-fri-item[data-id="${window.memberIdConfirm}"]`).remove()
+          } catch (error) {
+            window.outputErrorMessage(error?.response?.data?.messages)
+            // setTimeout(() => {
+            //   if (error?.response?.status === 400) {
+            //     reloadPage()
+            //   }
+            // }, 500);
+          }
+        }
+
+        $popupConfirm.addClass('d-none')
+        window.memberId = undefined
+        window.typeConfirm = undefined
+      }
+      window.hideLoader()
+    })
+
+    $('.close-popup-con').on('click', () => {
+      $popupConfirm.addClass('d-none')
+      window.memberIdConfirm = undefined
+      window.typeConfirm = undefined
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
     async function loadDataFriend(hash) {
       $('.wrap-loader-friend').removeClass('d-none')
       if (hash === '#friend' && isHasFriend && allowLoadFriend) {
@@ -146,7 +292,7 @@ const Profile = (() => {
           const { friends, hasFriend } = responsive.data;
           $(friendContent).append(
             friends.map(friend => {
-              return `<div class="col-md-6">
+              return `<div class="col-md-6 wrap-fri-item" data-id="${friend.id}">
               <div class="d-flex align-items-center border p-2 rounded my-2">
                 <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
@@ -154,7 +300,9 @@ const Profile = (() => {
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
                   <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Chat</a>
-                  <button class="btn btn-red mt-1">Hủy kết bạn</button>
+                  <button class="btn btn-red mt-1 des-friend" data-id="${friend.id}">
+                    Hủy kết bạn
+                  </button>
                 </div>
               </div>
             </div>`;
@@ -173,14 +321,16 @@ const Profile = (() => {
           const { friends, hasFriend } = requests.data;
           $(friendRequest).append(
             friends.map(friend => {
-              return `<div class="col-md-6">
+              return `<div class="col-md-6 wrap-fri-item" data-id="${friend.id}">
               <div class="d-flex align-items-center border p-2 rounded my-2">
                 <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
                   <strong>${friend.name}</strong>
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
-                  <button class="btn btn-red mt-1">Hủy yêu cầu</button>
+                  <button class="btn btn-red mt-1 des-req-friend" data-id="${friend.id}">
+                    Hủy yêu cầu
+                  </button>
                 </div>
               </div>
             </div>`;
@@ -200,15 +350,17 @@ const Profile = (() => {
           const { friends, hasFriend } = invitations.data;
           $(friendInvitation).append(
             friends.map(friend => {
-              return `<div class="col-md-6">
+              return `<div class="col-md-6 wrap-fri-item" data-id="${friend.id}">
               <div class="d-flex align-items-center border p-2 rounded my-2">
                 <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
                   <strong>${friend.name}</strong>
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
-                  <button class="btn mt-1">Chấp nhận</button>
-                  <button class="btn btn-red mt-1">Xóa yêu cầu</button>
+                  <button class="btn mt-1 accept-inv-friend" data-id="${friend.id}">Chấp nhận</button>
+                  <button class="btn btn-red mt-1 del-inv-friend" data-id="${friend.id}">
+                    Xóa yêu cầu
+                  </button>
                 </div>
               </div>
             </div>`;

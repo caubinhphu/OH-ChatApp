@@ -4790,7 +4790,7 @@ module.exports = function (it) {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(50)('wks');
+var store = __webpack_require__(51)('wks');
 var uid = __webpack_require__(36);
 var Symbol = __webpack_require__(3).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
@@ -4959,7 +4959,7 @@ module.exports = function (it, key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(51);
+var IObject = __webpack_require__(52);
 var defined = __webpack_require__(25);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -4970,7 +4970,7 @@ module.exports = function (it) {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var pIE = __webpack_require__(52);
+var pIE = __webpack_require__(53);
 var createDesc = __webpack_require__(35);
 var toIObject = __webpack_require__(16);
 var toPrimitive = __webpack_require__(24);
@@ -5137,7 +5137,7 @@ module.exports = function (KEY, exec) {
 // 5 -> Array#find
 // 6 -> Array#findIndex
 var ctx = __webpack_require__(20);
-var IObject = __webpack_require__(51);
+var IObject = __webpack_require__(52);
 var toObject = __webpack_require__(10);
 var toLength = __webpack_require__(7);
 var asc = __webpack_require__(90);
@@ -5211,7 +5211,7 @@ if (__webpack_require__(8)) {
   var wks = __webpack_require__(6);
   var createArrayMethod = __webpack_require__(27);
   var createArrayIncludes = __webpack_require__(57);
-  var speciesConstructor = __webpack_require__(54);
+  var speciesConstructor = __webpack_require__(55);
   var ArrayIterators = __webpack_require__(92);
   var Iterators = __webpack_require__(49);
   var $iterDetect = __webpack_require__(62);
@@ -5668,7 +5668,7 @@ if (__webpack_require__(8)) {
 
 var Map = __webpack_require__(122);
 var $export = __webpack_require__(0);
-var shared = __webpack_require__(50)('metadata');
+var shared = __webpack_require__(51)('metadata');
 var store = shared.store || (shared.store = new (__webpack_require__(125))());
 
 var getOrCreateMetadataMap = function (target, targetKey, create) {
@@ -17319,6 +17319,12 @@ module.exports = {};
 /* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(485);
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var core = __webpack_require__(19);
 var global = __webpack_require__(3);
 var SHARED = '__core-js_shared__';
@@ -17334,7 +17340,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
@@ -17346,14 +17352,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 exports.f = {}.propertyIsEnumerable;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17373,7 +17379,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
@@ -17388,7 +17394,7 @@ module.exports = function (O, D) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 var g;
@@ -17412,12 +17418,6 @@ try {
 
 module.exports = g;
 
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(485);
 
 /***/ }),
 /* 57 */
@@ -18090,7 +18090,7 @@ module.exports = function (name) {
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(50)('keys');
+var shared = __webpack_require__(51)('keys');
 var uid = __webpack_require__(36);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
@@ -18468,7 +18468,7 @@ addToUnscopables('entries');
 "use strict";
 
 
-var regexpFlags = __webpack_require__(53);
+var regexpFlags = __webpack_require__(54);
 
 var nativeExec = RegExp.prototype.exec;
 // This always refers to the native implementation, because the
@@ -19107,9 +19107,9 @@ module.exports.f = function getOwnPropertyNames(it) {
 var DESCRIPTORS = __webpack_require__(8);
 var getKeys = __webpack_require__(37);
 var gOPS = __webpack_require__(58);
-var pIE = __webpack_require__(52);
+var pIE = __webpack_require__(53);
 var toObject = __webpack_require__(10);
-var IObject = __webpack_require__(51);
+var IObject = __webpack_require__(52);
 var $assign = Object.assign;
 
 // should work with symbols and should have deterministic property order (V8 bug)
@@ -19322,7 +19322,7 @@ module.exports = function (iterator, fn, value, entries) {
 
 var aFunction = __webpack_require__(11);
 var toObject = __webpack_require__(10);
-var IObject = __webpack_require__(51);
+var IObject = __webpack_require__(52);
 var toLength = __webpack_require__(7);
 
 module.exports = function (that, callbackfn, aLen, memo, isRight) {
@@ -19415,7 +19415,7 @@ __webpack_require__(0)({
 // 21.2.5.3 get RegExp.prototype.flags()
 if (__webpack_require__(8) && /./g.flags != 'g') __webpack_require__(9).f(RegExp.prototype, 'flags', {
   configurable: true,
-  get: __webpack_require__(53)
+  get: __webpack_require__(54)
 });
 
 
@@ -19914,7 +19914,7 @@ module.exports = function (that, maxLength, fillString, left) {
 var DESCRIPTORS = __webpack_require__(8);
 var getKeys = __webpack_require__(37);
 var toIObject = __webpack_require__(16);
-var isEnum = __webpack_require__(52).f;
+var isEnum = __webpack_require__(53).f;
 module.exports = function (isEntries) {
   return function (it) {
     var O = toIObject(it);
@@ -20021,7 +20021,7 @@ define(String.prototype, "padRight", "".padEnd);
 "pop,reverse,shift,keys,values,entries,indexOf,every,some,forEach,map,filter,find,findIndex,includes,join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill".split(",").forEach(function (key) {
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
 
 /***/ }),
 /* 138 */
@@ -20241,7 +20241,7 @@ var $export = __webpack_require__(0);
 var redefine = __webpack_require__(13);
 var META = __webpack_require__(33).KEY;
 var $fails = __webpack_require__(4);
-var shared = __webpack_require__(50);
+var shared = __webpack_require__(51);
 var setToStringTag = __webpack_require__(46);
 var uid = __webpack_require__(36);
 var wks = __webpack_require__(6);
@@ -20384,7 +20384,7 @@ if (!USE_NATIVE) {
   $GOPD.f = $getOwnPropertyDescriptor;
   $DP.f = $defineProperty;
   __webpack_require__(40).f = gOPNExt.f = $getOwnPropertyNames;
-  __webpack_require__(52).f = $propertyIsEnumerable;
+  __webpack_require__(53).f = $propertyIsEnumerable;
   $GOPS.f = $getOwnPropertySymbols;
 
   if (DESCRIPTORS && !__webpack_require__(32)) {
@@ -20484,7 +20484,7 @@ setToStringTag(global.JSON, 'JSON', true);
 /* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(50)('native-function-to-string', Function.toString);
+module.exports = __webpack_require__(51)('native-function-to-string', Function.toString);
 
 
 /***/ }),
@@ -20494,7 +20494,7 @@ module.exports = __webpack_require__(50)('native-function-to-string', Function.t
 // all enumerable object keys, includes symbols
 var getKeys = __webpack_require__(37);
 var gOPS = __webpack_require__(58);
-var pIE = __webpack_require__(52);
+var pIE = __webpack_require__(53);
 module.exports = function (it) {
   var result = getKeys(it);
   var getSymbols = gOPS.f;
@@ -21986,7 +21986,7 @@ var toIObject = __webpack_require__(16);
 var arrayJoin = [].join;
 
 // fallback for not array-like strings
-$export($export.P + $export.F * (__webpack_require__(51) != Object || !__webpack_require__(23)(arrayJoin)), 'Array', {
+$export($export.P + $export.F * (__webpack_require__(52) != Object || !__webpack_require__(23)(arrayJoin)), 'Array', {
   join: function join(separator) {
     return arrayJoin.call(toIObject(this), separator === undefined ? ',' : separator);
   }
@@ -22333,7 +22333,7 @@ var inheritIfRequired = __webpack_require__(79);
 var dP = __webpack_require__(9).f;
 var gOPN = __webpack_require__(40).f;
 var isRegExp = __webpack_require__(61);
-var $flags = __webpack_require__(53);
+var $flags = __webpack_require__(54);
 var $RegExp = global.RegExp;
 var Base = $RegExp;
 var proto = $RegExp.prototype;
@@ -22381,7 +22381,7 @@ __webpack_require__(41)('RegExp');
 
 __webpack_require__(119);
 var anObject = __webpack_require__(2);
-var $flags = __webpack_require__(53);
+var $flags = __webpack_require__(54);
 var DESCRIPTORS = __webpack_require__(8);
 var TO_STRING = 'toString';
 var $toString = /./[TO_STRING];
@@ -22624,7 +22624,7 @@ __webpack_require__(64)('search', 1, function (defined, SEARCH, $search, maybeCa
 
 var isRegExp = __webpack_require__(61);
 var anObject = __webpack_require__(2);
-var speciesConstructor = __webpack_require__(54);
+var speciesConstructor = __webpack_require__(55);
 var advanceStringIndex = __webpack_require__(94);
 var toLength = __webpack_require__(7);
 var callRegExpExec = __webpack_require__(63);
@@ -22771,7 +22771,7 @@ var isObject = __webpack_require__(5);
 var aFunction = __webpack_require__(11);
 var anInstance = __webpack_require__(42);
 var forOf = __webpack_require__(43);
-var speciesConstructor = __webpack_require__(54);
+var speciesConstructor = __webpack_require__(55);
 var task = __webpack_require__(95).set;
 var microtask = __webpack_require__(96)();
 var newPromiseCapabilityModule = __webpack_require__(97);
@@ -23084,7 +23084,7 @@ var toAbsoluteIndex = __webpack_require__(38);
 var toLength = __webpack_require__(7);
 var isObject = __webpack_require__(5);
 var ArrayBuffer = __webpack_require__(3).ArrayBuffer;
-var speciesConstructor = __webpack_require__(54);
+var speciesConstructor = __webpack_require__(55);
 var $ArrayBuffer = buffer.ArrayBuffer;
 var $DataView = buffer.DataView;
 var $isView = $typed.ABV && ArrayBuffer.isView;
@@ -23742,7 +23742,7 @@ var $export = __webpack_require__(0);
 var defined = __webpack_require__(25);
 var toLength = __webpack_require__(7);
 var isRegExp = __webpack_require__(61);
-var getFlags = __webpack_require__(53);
+var getFlags = __webpack_require__(54);
 var RegExpProto = RegExp.prototype;
 
 var $RegExpStringIterator = function (regexp, string) {
@@ -24238,7 +24238,7 @@ $export($export.S, 'Math', { signbit: function signbit(x) {
 var $export = __webpack_require__(0);
 var core = __webpack_require__(19);
 var global = __webpack_require__(3);
-var speciesConstructor = __webpack_require__(54);
+var speciesConstructor = __webpack_require__(55);
 var promiseResolve = __webpack_require__(121);
 
 $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
@@ -25511,7 +25511,7 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
   typeof self === "object" ? self : this
 );
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
 
 /***/ }),
 /* 336 */
@@ -43601,7 +43601,7 @@ console.log('page sub messenger');
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(56);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(50);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(514);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(croppie__WEBPACK_IMPORTED_MODULE_1__);
@@ -43615,117 +43615,117 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var Profile = function () {
   if ($('#main.profile-page').length) {
     var loadDataFriend = /*#__PURE__*/function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(hash) {
-        var responsive, _responsive$data, friends, hasFriend, _error$response, _error$response$data, requests, _requests$data, _friends, _hasFriend, _error$response2, _error$response2$data, invitations, _invitations$data, _friends2, _hasFriend2, _error$response3, _error$response3$data;
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(hash) {
+        var responsive, _responsive$data, friends, hasFriend, _error$response5, _error$response5$data, requests, _requests$data, _friends, _hasFriend, _error$response6, _error$response6$data, invitations, _invitations$data, _friends2, _hasFriend2, _error$response7, _error$response7$data;
 
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
                 $('.wrap-loader-friend').removeClass('d-none');
 
                 if (!(hash === '#friend' && isHasFriend && allowLoadFriend)) {
-                  _context5.next = 19;
+                  _context7.next = 19;
                   break;
                 }
 
                 allowLoadFriend = false;
-                _context5.prev = 3;
-                _context5.next = 6;
+                _context7.prev = 3;
+                _context7.next = 6;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friends?page=".concat(pageFriend));
 
               case 6:
-                responsive = _context5.sent;
+                responsive = _context7.sent;
                 _responsive$data = responsive.data, friends = _responsive$data.friends, hasFriend = _responsive$data.hasFriend;
                 $(friendContent).append(friends.map(function (friend) {
-                  return "<div class=\"col-md-6\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1 des-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y k\u1EBFt b\u1EA1n\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriend = hasFriend;
                 pageFriend++;
-                _context5.next = 16;
+                _context7.next = 16;
                 break;
 
               case 13:
-                _context5.prev = 13;
-                _context5.t0 = _context5["catch"](3);
-                window.outputErrorMessage(_context5.t0 === null || _context5.t0 === void 0 ? void 0 : (_error$response = _context5.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
+                _context7.prev = 13;
+                _context7.t0 = _context7["catch"](3);
+                window.outputErrorMessage(_context7.t0 === null || _context7.t0 === void 0 ? void 0 : (_error$response5 = _context7.t0.response) === null || _error$response5 === void 0 ? void 0 : (_error$response5$data = _error$response5.data) === null || _error$response5$data === void 0 ? void 0 : _error$response5$data.msg);
 
               case 16:
                 allowLoadFriend = true;
-                _context5.next = 51;
+                _context7.next = 51;
                 break;
 
               case 19:
                 if (!(hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest)) {
-                  _context5.next = 36;
+                  _context7.next = 36;
                   break;
                 }
 
-                _context5.prev = 20;
-                _context5.next = 23;
+                _context7.prev = 20;
+                _context7.next = 23;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-request?page=".concat(pageFriendRequest));
 
               case 23:
-                requests = _context5.sent;
+                requests = _context7.sent;
                 console.log(requests);
                 _requests$data = requests.data, _friends = _requests$data.friends, _hasFriend = _requests$data.hasFriend;
                 $(friendRequest).append(_friends.map(function (friend) {
-                  return "<div class=\"col-md-6\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1\">H\u1EE7y y\xEAu c\u1EA7u</button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1 des-req-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendRequest = _hasFriend;
                 pageFriendRequest++;
-                _context5.next = 34;
+                _context7.next = 34;
                 break;
 
               case 31:
-                _context5.prev = 31;
-                _context5.t1 = _context5["catch"](20);
-                window.outputErrorMessage(_context5.t1 === null || _context5.t1 === void 0 ? void 0 : (_error$response2 = _context5.t1.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.msg);
+                _context7.prev = 31;
+                _context7.t1 = _context7["catch"](20);
+                window.outputErrorMessage(_context7.t1 === null || _context7.t1 === void 0 ? void 0 : (_error$response6 = _context7.t1.response) === null || _error$response6 === void 0 ? void 0 : (_error$response6$data = _error$response6.data) === null || _error$response6$data === void 0 ? void 0 : _error$response6$data.msg);
 
               case 34:
-                _context5.next = 51;
+                _context7.next = 51;
                 break;
 
               case 36:
                 if (!(hash === '#friend-invitation' && isHasFriendInvitation && allowLoadFriendInvitation)) {
-                  _context5.next = 51;
+                  _context7.next = 51;
                   break;
                 }
 
-                _context5.prev = 37;
-                _context5.next = 40;
+                _context7.prev = 37;
+                _context7.next = 40;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-invitation?page=".concat(pageFriendInvitation));
 
               case 40:
-                invitations = _context5.sent;
+                invitations = _context7.sent;
                 console.log(invitations);
                 _invitations$data = invitations.data, _friends2 = _invitations$data.friends, _hasFriend2 = _invitations$data.hasFriend;
                 $(friendInvitation).append(_friends2.map(function (friend) {
-                  return "<div class=\"col-md-6\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1\">X\xF3a y\xEAu c\u1EA7u</button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1 accept-inv-friend\" data-id=\"").concat(friend.id, "\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1 del-inv-friend\" data-id=\"").concat(friend.id, "\">\n                    X\xF3a y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendInvitation = _hasFriend2;
                 pageFriendInvitation++;
-                _context5.next = 51;
+                _context7.next = 51;
                 break;
 
               case 48:
-                _context5.prev = 48;
-                _context5.t2 = _context5["catch"](37);
-                window.outputErrorMessage(_context5.t2 === null || _context5.t2 === void 0 ? void 0 : (_error$response3 = _context5.t2.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.msg);
+                _context7.prev = 48;
+                _context7.t2 = _context7["catch"](37);
+                window.outputErrorMessage(_context7.t2 === null || _context7.t2 === void 0 ? void 0 : (_error$response7 = _context7.t2.response) === null || _error$response7 === void 0 ? void 0 : (_error$response7$data = _error$response7.data) === null || _error$response7$data === void 0 ? void 0 : _error$response7$data.msg);
 
               case 51:
                 $('.wrap-loader-friend').addClass('d-none');
 
               case 52:
               case "end":
-                return _context5.stop();
+                return _context7.stop();
             }
           }
-        }, _callee5, null, [[3, 13], [20, 31], [37, 48]]);
+        }, _callee7, null, [[3, 13], [20, 31], [37, 48]]);
       }));
 
-      return function loadDataFriend(_x3) {
-        return _ref5.apply(this, arguments);
+      return function loadDataFriend(_x5) {
+        return _ref7.apply(this, arguments);
       };
     }();
 
@@ -43742,26 +43742,26 @@ var Profile = function () {
 
     // function take a photo and return file type image
     var takePicture = /*#__PURE__*/function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
         var videoStream, $wrapTake, snd, video, canvas, context, dataURL, file;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 if (!navigator.mediaDevices.getUserMedia) {
-                  _context6.next = 36;
+                  _context8.next = 36;
                   break;
                 }
 
-                _context6.prev = 1;
-                _context6.next = 4;
+                _context8.prev = 1;
+                _context8.next = 4;
                 return navigator.mediaDevices.getUserMedia({
                   video: true,
                   audio: false
                 });
 
               case 4:
-                videoStream = _context6.sent;
+                videoStream = _context8.sent;
                 // show video stream
                 $wrapTake = $('.wrap-takephoto');
                 $wrapTake.find('video').each(function (i, vd) {
@@ -43776,7 +43776,7 @@ var Profile = function () {
 
                 $('.count-down').removeClass('d-none'); // sleep 4s
 
-                _context6.next = 12;
+                _context8.next = 12;
                 return sleep(4000);
 
               case 12:
@@ -43792,7 +43792,7 @@ var Profile = function () {
                 file = dataURLtoFile(dataURL, 'capture');
                 canvas.className = 'res-capture ps-as';
                 $wrapTake.append(canvas);
-                _context6.next = 24;
+                _context8.next = 24;
                 return Promise.all([snd.play(), sleep(320)]);
 
               case 24:
@@ -43809,24 +43809,24 @@ var Profile = function () {
                   }
                 }); // return file
 
-                return _context6.abrupt("return", file);
+                return _context8.abrupt("return", file);
 
               case 32:
-                _context6.prev = 32;
-                _context6.t0 = _context6["catch"](1);
-                console.error(_context6.t0);
+                _context8.prev = 32;
+                _context8.t0 = _context8["catch"](1);
+                console.error(_context8.t0);
                 window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
 
               case 36:
               case "end":
-                return _context6.stop();
+                return _context8.stop();
             }
           }
-        }, _callee6, null, [[1, 32]]);
+        }, _callee8, null, [[1, 32]]);
       }));
 
       return function takePicture() {
-        return _ref6.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       };
     }(); // re-init choose file avatar
 
@@ -44040,6 +44040,225 @@ var Profile = function () {
         }
       }, _callee4);
     })));
+    var $popupConfirm = $('.popup-confirm');
+    var $wrapBtn = $('.wrap-btn-ctrl');
+    $(document).on('click', '.des-req-friend', function (e) {
+      e.preventDefault();
+      window.memberIdConfirm = $(this).attr('data-id');
+      window.typeConfirm = 'destroy-request-add-friend';
+      $('.title-confirm').html('Bạn có chắc xóa yêu cầu kết bạn');
+      $popupConfirm.removeClass('d-none');
+    });
+    $(document).on('click', '.del-inv-friend', function (e) {
+      e.preventDefault();
+      window.memberIdConfirm = $(this).attr('data-id');
+      window.typeConfirm = 'delete-invitation-friend';
+      $('.title-confirm').html('Bạn có chắc xóa lời mời kết bạn');
+      $popupConfirm.removeClass('d-none');
+    });
+    $(document).on('click', '.accept-inv-friend', /*#__PURE__*/function () {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(e) {
+        var memberIdConfirm, responsive, messages, _error$response, _error$response$data;
+
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                e.preventDefault();
+                window.showLoader();
+                memberIdConfirm = $(this).attr('data-id');
+
+                if (!memberIdConfirm) {
+                  _context5.next = 16;
+                  break;
+                }
+
+                _context5.prev = 4;
+                _context5.next = 7;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/messenger/accept-invitation", {
+                  memberId: memberIdConfirm
+                });
+
+              case 7:
+                responsive = _context5.sent;
+                messages = responsive.data.messages;
+                window.outputSuccessMessage(messages);
+                $(this).parents('.wrap-fri-item').remove();
+                _context5.next = 16;
+                break;
+
+              case 13:
+                _context5.prev = 13;
+                _context5.t0 = _context5["catch"](4);
+                window.outputErrorMessage(_context5.t0 === null || _context5.t0 === void 0 ? void 0 : (_error$response = _context5.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.messages); // setTimeout(() => {
+                //   if (error?.response?.status === 400) {
+                //     reloadPage()
+                //   }
+                // }, 500);
+
+              case 16:
+                window.hideLoader();
+
+              case 17:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this, [[4, 13]]);
+      }));
+
+      return function (_x3) {
+        return _ref5.apply(this, arguments);
+      };
+    }());
+    $(document).on('click', '.des-friend', function (e) {
+      e.preventDefault();
+      window.memberIdConfirm = $(this).attr('data-id');
+      window.typeConfirm = 'destroy-friend';
+      $('.title-confirm').html('Bạn có chắc hủy kết bạn');
+      $popupConfirm.removeClass('d-none');
+    });
+    $('#btn-confirm').on('click', /*#__PURE__*/function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(e) {
+        var responsive, messages, _error$response2, _error$response2$data, _responsive, _messages, _error$response3, _error$response3$data, _responsive2, _messages2, _error$response4, _error$response4$data;
+
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                e.preventDefault();
+                window.showLoader();
+
+                if (!(window.memberIdConfirm && window.typeConfirm)) {
+                  _context6.next = 49;
+                  break;
+                }
+
+                if (!(window.typeConfirm === 'destroy-request-add-friend')) {
+                  _context6.next = 18;
+                  break;
+                }
+
+                _context6.prev = 4;
+                _context6.next = 7;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/messenger/destroy-request", {
+                  data: {
+                    memberId: window.memberIdConfirm
+                  }
+                });
+
+              case 7:
+                responsive = _context6.sent;
+                messages = responsive.data.messages;
+                window.outputSuccessMessage(messages);
+                $(".wrap-fri-item[data-id=\"".concat(window.memberIdConfirm, "\"]")).remove();
+                _context6.next = 16;
+                break;
+
+              case 13:
+                _context6.prev = 13;
+                _context6.t0 = _context6["catch"](4);
+                window.outputErrorMessage(_context6.t0 === null || _context6.t0 === void 0 ? void 0 : (_error$response2 = _context6.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.messages); // setTimeout(() => {
+                //   if (error?.response?.status === 400) {
+                //     reloadPage()
+                //   }
+                // }, 500);
+
+              case 16:
+                _context6.next = 46;
+                break;
+
+              case 18:
+                if (!(window.typeConfirm === 'delete-invitation-friend')) {
+                  _context6.next = 33;
+                  break;
+                }
+
+                _context6.prev = 19;
+                _context6.next = 22;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/messenger/delete-invitation", {
+                  data: {
+                    memberId: window.memberIdConfirm
+                  }
+                });
+
+              case 22:
+                _responsive = _context6.sent;
+                _messages = _responsive.data.messages;
+                window.outputSuccessMessage(_messages);
+                $(".wrap-fri-item[data-id=\"".concat(window.memberIdConfirm, "\"]")).remove();
+                _context6.next = 31;
+                break;
+
+              case 28:
+                _context6.prev = 28;
+                _context6.t1 = _context6["catch"](19);
+                window.outputErrorMessage(_context6.t1 === null || _context6.t1 === void 0 ? void 0 : (_error$response3 = _context6.t1.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.messages); // setTimeout(() => {
+                //   if (error?.response?.status === 400) {
+                //     reloadPage()
+                //   }
+                // }, 500);
+
+              case 31:
+                _context6.next = 46;
+                break;
+
+              case 33:
+                if (!(window.typeConfirm === 'destroy-friend')) {
+                  _context6.next = 46;
+                  break;
+                }
+
+                _context6.prev = 34;
+                _context6.next = 37;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/messenger/destroy-friend", {
+                  data: {
+                    memberId: window.memberIdConfirm
+                  }
+                });
+
+              case 37:
+                _responsive2 = _context6.sent;
+                _messages2 = _responsive2.data.messages;
+                window.outputSuccessMessage(_messages2);
+                $(".wrap-fri-item[data-id=\"".concat(window.memberIdConfirm, "\"]")).remove();
+                _context6.next = 46;
+                break;
+
+              case 43:
+                _context6.prev = 43;
+                _context6.t2 = _context6["catch"](34);
+                window.outputErrorMessage(_context6.t2 === null || _context6.t2 === void 0 ? void 0 : (_error$response4 = _context6.t2.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.messages); // setTimeout(() => {
+                //   if (error?.response?.status === 400) {
+                //     reloadPage()
+                //   }
+                // }, 500);
+
+              case 46:
+                $popupConfirm.addClass('d-none');
+                window.memberId = undefined;
+                window.typeConfirm = undefined;
+
+              case 49:
+                window.hideLoader();
+
+              case 50:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[4, 13], [19, 28], [34, 43]]);
+      }));
+
+      return function (_x4) {
+        return _ref6.apply(this, arguments);
+      };
+    }());
+    $('.close-popup-con').on('click', function () {
+      $popupConfirm.addClass('d-none');
+      window.memberIdConfirm = undefined;
+      window.typeConfirm = undefined;
+    });
     window.loadDataFriend = loadDataFriend;
 
     var sleep = function sleep(m) {
@@ -44121,7 +44340,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
 
 /***/ }),
 /* 524 */
@@ -44314,7 +44533,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55), __webpack_require__(71)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56), __webpack_require__(71)))
 
 /***/ }),
 /* 525 */
@@ -44325,13 +44544,15 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
   if ($('#main.setting-page').length) {
     if (document.formSettingPassword) {
       document.formSettingPassword.addEventListener('submit', function () {
-        $('.wrap-loader').removeClass('d-none');
+        // $('.wrap-loader').removeClass('d-none')
+        window.showLoader();
       });
     }
 
     if (document.formSettingUrl) {
       document.formSettingUrl.addEventListener('submit', function () {
-        $('.wrap-loader').removeClass('d-none');
+        // $('.wrap-loader').removeClass('d-none')
+        window.showLoader();
       });
       $('#url').on('input', function () {
         $('.url-preview').text($(this).val());
@@ -44350,7 +44571,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(56);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(50);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -44726,7 +44947,7 @@ var Messenger = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(56);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(50);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -44876,7 +45097,7 @@ var Member = function () {
     });
     $('#btn-confirm').on('click', /*#__PURE__*/function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-        var responsive, messages, _error$response4, _error$response4$data, _responsive, _messages, _error$response5, _error$response5$data, _responsive2, _messages2, _error$response6, _error$response6$data;
+        var responsive, messages, _error$response4, _error$response4$data, _responsive, _messages, _error$response6, _error$response6$data, _responsive2, _messages2, _error$response8, _error$response8$data;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -44886,12 +45107,12 @@ var Member = function () {
                 showLoader();
 
                 if (!(window.memberId && window.typeConfirm)) {
-                  _context3.next = 49;
+                  _context3.next = 52;
                   break;
                 }
 
                 if (!(window.typeConfirm === 'destroy-request-add-friend')) {
-                  _context3.next = 18;
+                  _context3.next = 19;
                   break;
                 }
 
@@ -44908,90 +45129,111 @@ var Member = function () {
                 messages = responsive.data.messages;
                 window.outputSuccessMessage(messages);
                 $wrapBtn.html("\n              <button class=\"btn\" id=\"req-friend\" data-id=\"".concat(window.memberId, "\">\n                G\u1EEDi l\u1EDDi m\u1EDDi k\u1EBFt b\u1EA1n\n              </button>\n            "));
-                _context3.next = 16;
+                _context3.next = 17;
                 break;
 
               case 13:
                 _context3.prev = 13;
                 _context3.t0 = _context3["catch"](4);
                 window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response4 = _context3.t0.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.messages);
+                setTimeout(function () {
+                  var _error$response5;
 
-              case 16:
-                _context3.next = 46;
+                  if ((_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response5 = _context3.t0.response) === null || _error$response5 === void 0 ? void 0 : _error$response5.status) === 400) {
+                    reloadPage();
+                  }
+                }, 500);
+
+              case 17:
+                _context3.next = 49;
                 break;
 
-              case 18:
+              case 19:
                 if (!(window.typeConfirm === 'delete-invitation-friend')) {
-                  _context3.next = 33;
+                  _context3.next = 35;
                   break;
                 }
 
-                _context3.prev = 19;
-                _context3.next = 22;
+                _context3.prev = 20;
+                _context3.next = 23;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/messenger/delete-invitation", {
                   data: {
                     memberId: window.memberId
                   }
                 });
 
-              case 22:
+              case 23:
                 _responsive = _context3.sent;
                 _messages = _responsive.data.messages;
                 window.outputSuccessMessage(_messages);
                 $wrapBtn.html("\n              <button class=\"btn\" id=\"req-friend\" data-id=\"".concat(window.memberId, "\">\n                G\u1EEDi l\u1EDDi m\u1EDDi k\u1EBFt b\u1EA1n\n              </button>\n            "));
-                _context3.next = 31;
+                _context3.next = 33;
                 break;
 
-              case 28:
-                _context3.prev = 28;
-                _context3.t1 = _context3["catch"](19);
-                window.outputErrorMessage(_context3.t1 === null || _context3.t1 === void 0 ? void 0 : (_error$response5 = _context3.t1.response) === null || _error$response5 === void 0 ? void 0 : (_error$response5$data = _error$response5.data) === null || _error$response5$data === void 0 ? void 0 : _error$response5$data.messages);
+              case 29:
+                _context3.prev = 29;
+                _context3.t1 = _context3["catch"](20);
+                window.outputErrorMessage(_context3.t1 === null || _context3.t1 === void 0 ? void 0 : (_error$response6 = _context3.t1.response) === null || _error$response6 === void 0 ? void 0 : (_error$response6$data = _error$response6.data) === null || _error$response6$data === void 0 ? void 0 : _error$response6$data.messages);
+                setTimeout(function () {
+                  var _error$response7;
 
-              case 31:
-                _context3.next = 46;
-                break;
+                  if ((_context3.t1 === null || _context3.t1 === void 0 ? void 0 : (_error$response7 = _context3.t1.response) === null || _error$response7 === void 0 ? void 0 : _error$response7.status) === 400) {
+                    reloadPage();
+                  }
+                }, 500);
 
               case 33:
+                _context3.next = 49;
+                break;
+
+              case 35:
                 if (!(window.typeConfirm === 'destroy-friend')) {
-                  _context3.next = 46;
+                  _context3.next = 49;
                   break;
                 }
 
-                _context3.prev = 34;
-                _context3.next = 37;
+                _context3.prev = 36;
+                _context3.next = 39;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/messenger/destroy-friend", {
                   data: {
                     memberId: window.memberId
                   }
                 });
 
-              case 37:
+              case 39:
                 _responsive2 = _context3.sent;
                 _messages2 = _responsive2.data.messages;
                 window.outputSuccessMessage(_messages2);
                 $wrapBtn.html("\n              <button class=\"btn\" id=\"req-friend\" data-id=\"".concat(window.memberId, "\">\n                G\u1EEDi l\u1EDDi m\u1EDDi k\u1EBFt b\u1EA1n\n              </button>\n            "));
-                _context3.next = 46;
+                _context3.next = 49;
                 break;
 
-              case 43:
-                _context3.prev = 43;
-                _context3.t2 = _context3["catch"](34);
-                window.outputErrorMessage(_context3.t2 === null || _context3.t2 === void 0 ? void 0 : (_error$response6 = _context3.t2.response) === null || _error$response6 === void 0 ? void 0 : (_error$response6$data = _error$response6.data) === null || _error$response6$data === void 0 ? void 0 : _error$response6$data.messages);
+              case 45:
+                _context3.prev = 45;
+                _context3.t2 = _context3["catch"](36);
+                window.outputErrorMessage(_context3.t2 === null || _context3.t2 === void 0 ? void 0 : (_error$response8 = _context3.t2.response) === null || _error$response8 === void 0 ? void 0 : (_error$response8$data = _error$response8.data) === null || _error$response8$data === void 0 ? void 0 : _error$response8$data.messages);
+                setTimeout(function () {
+                  var _error$response9;
 
-              case 46:
+                  if ((_context3.t2 === null || _context3.t2 === void 0 ? void 0 : (_error$response9 = _context3.t2.response) === null || _error$response9 === void 0 ? void 0 : _error$response9.status) === 400) {
+                    reloadPage();
+                  }
+                }, 500);
+
+              case 49:
                 $popupConfirm.addClass('d-none');
                 window.memberId = undefined;
                 window.typeConfirm = undefined;
 
-              case 49:
+              case 52:
                 hideLoader();
 
-              case 50:
+              case 53:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, null, [[4, 13], [19, 28], [34, 43]]);
+        }, _callee3, null, [[4, 13], [20, 29], [36, 45]]);
       }));
 
       return function (_x3) {
@@ -45009,13 +45251,19 @@ var Member = function () {
     $('.wrap-loader').removeClass('d-none');
   }
 
+  window.showLoader = showLoader;
+
   function hideLoader() {
     $('.wrap-loader').addClass('d-none');
   }
 
+  window.hideLoader = hideLoader;
+
   function reloadPage() {
     location.reload();
   }
+
+  window.reloadPage = reloadPage;
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Member);

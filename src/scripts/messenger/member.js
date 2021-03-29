@@ -187,14 +187,17 @@ const Member = (() => {
   function showLoader() {
     $('.wrap-loader').removeClass('d-none')
   }
+  window.showLoader = showLoader
 
   function hideLoader() {
     $('.wrap-loader').addClass('d-none')
   }
+  window.hideLoader = hideLoader
 
   function reloadPage() {
     location.reload()
   }
+  window.reloadPage = reloadPage
 })()
 
 export default Member
