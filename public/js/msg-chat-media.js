@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 528);
+/******/ 	return __webpack_require__(__webpack_require__.s = 529);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -21403,9 +21403,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 
-var base64 = __webpack_require__(536)
-var ieee754 = __webpack_require__(537)
-var isArray = __webpack_require__(538)
+var base64 = __webpack_require__(537)
+var ieee754 = __webpack_require__(538)
+var isArray = __webpack_require__(539)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -23352,12 +23352,12 @@ module.exports = eos;
 /***/ (function(module, exports, __webpack_require__) {
 
 /*! simple-peer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
-const debug = __webpack_require__(531)('simple-peer')
-const getBrowserRTC = __webpack_require__(534)
-const randombytes = __webpack_require__(535)
-const stream = __webpack_require__(539)
-const queueMicrotask = __webpack_require__(548) // TODO: remove when Node 10 is not supported
-const errCode = __webpack_require__(549)
+const debug = __webpack_require__(532)('simple-peer')
+const getBrowserRTC = __webpack_require__(535)
+const randombytes = __webpack_require__(536)
+const stream = __webpack_require__(540)
+const queueMicrotask = __webpack_require__(549) // TODO: remove when Node 10 is not supported
+const errCode = __webpack_require__(550)
 const { Buffer } = __webpack_require__(478)
 
 const MAX_BUFFERED_AMOUNT = 64 * 1024
@@ -24509,7 +24509,7 @@ function _isUint8Array(obj) {
 /*<replacement>*/
 
 
-var debugUtil = __webpack_require__(540);
+var debugUtil = __webpack_require__(541);
 
 var debug;
 
@@ -24521,7 +24521,7 @@ if (debugUtil && debugUtil.debuglog) {
 /*</replacement>*/
 
 
-var BufferList = __webpack_require__(541);
+var BufferList = __webpack_require__(542);
 
 var destroyImpl = __webpack_require__(509);
 
@@ -25458,7 +25458,7 @@ Readable.prototype.wrap = function (stream) {
 if (typeof Symbol === 'function') {
   Readable.prototype[Symbol.asyncIterator] = function () {
     if (createReadableStreamAsyncIterator === undefined) {
-      createReadableStreamAsyncIterator = __webpack_require__(544);
+      createReadableStreamAsyncIterator = __webpack_require__(545);
     }
 
     return createReadableStreamAsyncIterator(this);
@@ -25560,7 +25560,7 @@ function endReadableNT(state, stream) {
 if (typeof Symbol === 'function') {
   Readable.from = function (iterable, opts) {
     if (from === undefined) {
-      from = __webpack_require__(545);
+      from = __webpack_require__(546);
     }
 
     return from(Readable, iterable, opts);
@@ -26275,7 +26275,7 @@ Writable.WritableState = WritableState;
 /*<replacement>*/
 
 var internalUtil = {
-  deprecate: __webpack_require__(543)
+  deprecate: __webpack_require__(544)
 };
 /*</replacement>*/
 
@@ -27439,29 +27439,30 @@ function done(stream, er, data) {
 /* 525 */,
 /* 526 */,
 /* 527 */,
-/* 528 */
+/* 528 */,
+/* 529 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(137);
-module.exports = __webpack_require__(529);
+module.exports = __webpack_require__(530);
 
 
 /***/ }),
-/* 529 */
+/* 530 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(340);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(341);
-/* harmony import */ var _messenger_chat_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(530);
+/* harmony import */ var _messenger_chat_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(531);
 // import $ from 'jquery';
 
 
 
 
 /***/ }),
-/* 530 */
+/* 531 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27973,7 +27974,7 @@ var ChatAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
-/* 531 */
+/* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
@@ -28230,7 +28231,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(532)(exports);
+module.exports = __webpack_require__(533)(exports);
 
 const {formatters} = module.exports;
 
@@ -28249,7 +28250,7 @@ formatters.j = function (v) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(71)))
 
 /***/ }),
-/* 532 */
+/* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -28265,7 +28266,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(533);
+	createDebug.humanize = __webpack_require__(534);
 	createDebug.destroy = destroy;
 
 	Object.keys(env).forEach(key => {
@@ -28516,7 +28517,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 533 */
+/* 534 */
 /***/ (function(module, exports) {
 
 /**
@@ -28684,7 +28685,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 534 */
+/* 535 */
 /***/ (function(module, exports) {
 
 // originally pulled out of simple-peer
@@ -28705,7 +28706,7 @@ module.exports = function getBrowserRTC () {
 
 
 /***/ }),
-/* 535 */
+/* 536 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28763,7 +28764,7 @@ function randomBytes (size, cb) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56), __webpack_require__(71)))
 
 /***/ }),
-/* 536 */
+/* 537 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28920,7 +28921,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 537 */
+/* 538 */
 /***/ (function(module, exports) {
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
@@ -29011,7 +29012,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 538 */
+/* 539 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -29022,7 +29023,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 539 */
+/* 540 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(506);
@@ -29031,19 +29032,19 @@ exports.Readable = exports;
 exports.Writable = __webpack_require__(511);
 exports.Duplex = __webpack_require__(136);
 exports.Transform = __webpack_require__(513);
-exports.PassThrough = __webpack_require__(546);
+exports.PassThrough = __webpack_require__(547);
 exports.finished = __webpack_require__(503);
-exports.pipeline = __webpack_require__(547);
+exports.pipeline = __webpack_require__(548);
 
 
 /***/ }),
-/* 540 */
+/* 541 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 541 */
+/* 542 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29064,7 +29065,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var _require = __webpack_require__(478),
     Buffer = _require.Buffer;
 
-var _require2 = __webpack_require__(542),
+var _require2 = __webpack_require__(543),
     inspect = _require2.inspect;
 
 var custom = inspect && inspect.custom || 'inspect';
@@ -29259,13 +29260,13 @@ function () {
 }();
 
 /***/ }),
-/* 542 */
+/* 543 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 543 */
+/* 544 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -29339,7 +29340,7 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
 
 /***/ }),
-/* 544 */
+/* 545 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29553,7 +29554,7 @@ module.exports = createReadableStreamAsyncIterator;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(71)))
 
 /***/ }),
-/* 545 */
+/* 546 */
 /***/ (function(module, exports) {
 
 module.exports = function () {
@@ -29562,7 +29563,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 546 */
+/* 547 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29607,7 +29608,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 547 */
+/* 548 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29710,7 +29711,7 @@ function pipeline() {
 module.exports = pipeline;
 
 /***/ }),
-/* 548 */
+/* 549 */
 /***/ (function(module, exports) {
 
 /*! queue-microtask. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
@@ -29725,7 +29726,7 @@ module.exports = typeof queueMicrotask === 'function'
 
 
 /***/ }),
-/* 549 */
+/* 550 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

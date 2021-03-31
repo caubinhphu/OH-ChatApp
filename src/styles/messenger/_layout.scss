@@ -205,6 +205,64 @@ body {
     }
   }
 }
+.box-search {
+  border-radius: 20px;
+  padding: 5px 32px 5px 16px;
+  line-height: 1;
+  height: 35px;
+  font-size: 16px;
+  & + .icomoon {
+    position: absolute;
+    top: 9px;
+    right: 12px;
+    cursor: pointer;
+  }
+}
+.search-res-box {
+  position: absolute;
+  background: $white;
+  z-index: 2;
+  right: -45px;
+  left: -45px;
+  top: 42px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px #555;
+}
+.wrap-s-res {
+  max-height: 362px;
+  overflow: auto;
+}
+.search-basic {
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  .icomoon {
+    padding: 10px;
+    background-color: $color-2f;
+    border-radius: 50%;
+    margin-right: 10px;
+    color: $white;
+  }
+  &:hover {
+    background-color: $color-de;
+  }
+}
+.pre-search-item {
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  img {
+    max-width: 50px;
+    margin-right: 10px;
+  }
+  &:hover {
+    background-color: $color-de;
+  }
+}
+.wrap-pre-s-right {
+  line-height: 1.2;
+}
 @media only screen and (max-width: 850px) {
   #user {
     display: none;

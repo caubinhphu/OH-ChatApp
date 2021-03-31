@@ -202,7 +202,6 @@ module.exports.putAvatar = async (req, res) => {
 module.exports.getFriends = async (req, res) => {
   try {
     const page = req.query.page || 0
-    console.log(page);
     const member = await Member.findById(req.user.id).populate({
       path: 'friends._id',
       options: {
@@ -233,7 +232,6 @@ module.exports.getFriends = async (req, res) => {
 module.exports.getFriendRequests = async (req, res) => {
   try {
     const page = req.query.page || 0
-    console.log(page);
     const member = await Member.findById(req.user.id).populate({
       path: 'friendRequests',
       options: {
@@ -462,7 +460,6 @@ module.exports.postFriendRequest = async (req, res) => {
     }
     if (me && member && member.active) {
       if (me.friendInvitations.includes(member.id) || me.friendRequests.includes(member.id)) {
-        console.log('asd fas df asd f');
         res.sendStatus(205);
       } else {
         me.friendRequests.push(member.id);
@@ -768,4 +765,11 @@ module.exports.getChatMediaFriend = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+}
+
+// search
+module.exports.getSearch = (req, res, next) => {
+  res.render('messenger/search', {
+    titleSide: siteMes
+  })
 }

@@ -271,18 +271,6 @@ const Profile = (() => {
       window.typeConfirm = undefined
     })
 
-
-
-
-
-
-
-
-
-
-
-
-
     async function loadDataFriend(hash) {
       $('.wrap-loader-friend').removeClass('d-none')
       if (hash === '#friend' && isHasFriend && allowLoadFriend) {
@@ -296,7 +284,7 @@ const Profile = (() => {
               <div class="d-flex align-items-center border p-2 rounded my-2">
                 <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
-                  <strong>${friend.name}</strong>
+                  <strong class="name-member">${friend.name}</strong>
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
                   <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Chat</a>
@@ -325,7 +313,7 @@ const Profile = (() => {
               <div class="d-flex align-items-center border p-2 rounded my-2">
                 <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
-                  <strong>${friend.name}</strong>
+                  <strong class="name-member">${friend.name}</strong>
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
                   <button class="btn btn-red mt-1 des-req-friend" data-id="${friend.id}">
@@ -354,7 +342,7 @@ const Profile = (() => {
               <div class="d-flex align-items-center border p-2 rounded my-2">
                 <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
-                  <strong>${friend.name}</strong>
+                  <strong class="name-member">${friend.name}</strong>
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
                   <button class="btn mt-1 accept-inv-friend" data-id="${friend.id}">Chấp nhận</button>

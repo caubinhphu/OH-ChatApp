@@ -42653,6 +42653,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _messenger_common_chat__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(482);
 /* harmony import */ var _messenger_messenger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(526);
 /* harmony import */ var _messenger_member__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(527);
+/* harmony import */ var _messenger_search__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(528);
+
 
 
 
@@ -43638,7 +43640,7 @@ var Profile = function () {
                 responsive = _context7.sent;
                 _responsive$data = responsive.data, friends = _responsive$data.friends, hasFriend = _responsive$data.hasFriend;
                 $(friendContent).append(friends.map(function (friend) {
-                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1 des-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y k\u1EBFt b\u1EA1n\n                  </button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1 des-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y k\u1EBFt b\u1EA1n\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriend = hasFriend;
                 pageFriend++;
@@ -43670,7 +43672,7 @@ var Profile = function () {
                 console.log(requests);
                 _requests$data = requests.data, _friends = _requests$data.friends, _hasFriend = _requests$data.hasFriend;
                 $(friendRequest).append(_friends.map(function (friend) {
-                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1 des-req-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1 des-req-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendRequest = _hasFriend;
                 pageFriendRequest++;
@@ -43701,7 +43703,7 @@ var Profile = function () {
                 console.log(invitations);
                 _invitations$data = invitations.data, _friends2 = _invitations$data.friends, _hasFriend2 = _invitations$data.hasFriend;
                 $(friendInvitation).append(_friends2.map(function (friend) {
-                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong>").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1 accept-inv-friend\" data-id=\"").concat(friend.id, "\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1 del-inv-friend\" data-id=\"").concat(friend.id, "\">\n                    X\xF3a y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1 accept-inv-friend\" data-id=\"").concat(friend.id, "\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1 del-inv-friend\" data-id=\"").concat(friend.id, "\">\n                    X\xF3a y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendInvitation = _hasFriend2;
                 pageFriendInvitation++;
@@ -45267,6 +45269,18 @@ var Member = function () {
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Member);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
+
+/***/ }),
+/* 528 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {var Search = function () {
+  if ($('#main.search-page').length) {}
+}();
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Search);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ })

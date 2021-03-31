@@ -122,7 +122,6 @@ memberSchema.methods.getFriendRequests = function () {
 // get invitation friends
 memberSchema.methods.getFriendInvitations = function () {
   return this.friendInvitations.map((friend) => {
-    console.log(friend);
     return {
       id: friend.id,
       name: friend.name,
@@ -135,7 +134,6 @@ memberSchema.methods.getFriendInvitations = function () {
 // get all friends have message
 memberSchema.methods.getFriendsHaveMessage = function () {
   return this.friends.map((friend) => {
-    // console.log(friend.groupMessageId);
     return {
       id: friend._id.id,
       url: friend._id.url,

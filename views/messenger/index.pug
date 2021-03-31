@@ -12,8 +12,8 @@ block contentMain
               span.icomoon.icon-plus
             a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
               span.icomoon.icon-sign-in
-        #main-left-search.mt-2
-          input.form-control(type="text", placeholder="Tìm bạn bè để chat")
+        //- #main-left-search.mt-2
+        //-   input.form-control(type="text", placeholder="Tìm bạn bè để chat")
         #main-left-friends.mt-2.flex-fill
           each friend in friends
             .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""} ${friend.status === 'online' ? "is-online" : ""}`, data-id=friend.id)

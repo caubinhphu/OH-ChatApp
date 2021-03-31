@@ -10,5 +10,6 @@ import './messenger/setting'
 import './messenger/common-chat'
 import './messenger/messenger'
 import './messenger/member'
+import './messenger/search'
 
 console.log('page sub messenger');

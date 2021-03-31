@@ -1,0 +1,10 @@
+.search-page {
+  padding: 30px 0;
+}
+.name-member {
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}

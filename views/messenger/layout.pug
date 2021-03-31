@@ -9,8 +9,25 @@ block header
       #logo
         a(href="/messenger", title="OH chat - Messenger")
           img(src="/images/logo-mini.png", alt="oh-chat", width="40px")
-      #search.ml-1
-        input.form-control.form-control-sm(type="text", placeholder="Tìm kiếm bạn bè")
+      #search.ml-1.ps-rv
+        label.sr-only(for="box-search") Search
+        input.form-control.form-control-sm.box-search#box-search(type="text", placeholder="Tìm kiếm bạn bè")
+        span.icomoon.icon-icon-search
+        .search-res-box.d-none
+          .wrap-s-res
+            .pre-search-item
+              .d-flex.align-items-center
+                img.rounded-circle(alt='${friend.name}', src='http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png', title='${friend.name}')
+                .wrap-pre-s-right
+                  .name-member Name
+                  div
+                    small Status
+          .search-basic
+            .d-flex.align-items-center
+              span.icomoon.icon-icon-search
+              .wrap-pre-s-right
+                .name-member Tìm kiếm abc
+          
     #header-right.d-flex.align-items-center
       #user
         a(href="/messenger/profile")

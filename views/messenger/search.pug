@@ -1,0 +1,27 @@
+extend ./layout
+
+block contentMain
+  #main.ps-rv.search-page
+    .container
+      h1.text-center Kết quả tìm kiếm
+      .wrap-search-result
+        .search-res-item(data-id='${friend.id}')
+          .d-flex.align-items-center.border.p-2.rounded.my-2
+            img.rounded-circle(alt='${friend.name}', width='80px', height='80px', src='http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png', title='${friend.name}')
+            a.flex-fill.mx-2(href="#" data-href='/messenger/member/${friend.url ? friend.url : friend.id}', title='${friend.name}')
+              strong.name-member ${friend.name}
+            .d-flex.flex-column.fri-item-ctrl
+              button.btn.mt-1.accept-inv-friend(data-id='${friend.id}') Ch&#x1EA5;p nh&#x1EAD;n
+              button.btn.btn-red.mt-1.del-inv-friend(data-id='${friend.id}')
+                | X&oacute;a y&ecirc;u c&#x1EA7;u
+  .popup-confirm.d-none
+    .d-flex.justify-content-center.align-items-center.h-100
+      .wrap-pop-confirm
+        button.btn.btn-icon.close-popup-con(type="button")
+          span.icomoon.icon-close
+        h3.title-confirm.text-center Xác nhận
+        .text-right
+          button.btn.btn-red#btn-confirm Xác nhận
+
+append scripts
+  script(src="/js/msg-pagesub.js")
