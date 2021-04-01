@@ -4,6 +4,9 @@ append styles
   link(rel="stylesheet", href="/css/home-messenger.css")
 
 block header
+  form(action="/messenger/search-friend", method="get", name="search-fri")
+    input(type="text", name="q")
+    button(type="submit") OK
   #header.p-2.d-flex.justify-content-between
     #header-left.d-flex.align-items-center
       #logo

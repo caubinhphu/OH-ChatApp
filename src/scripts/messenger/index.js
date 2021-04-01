@@ -124,6 +124,33 @@ const Index = (() => {
       window.scrollBottomChatBox()
     });
 
+    document['search-fri'].addEventListener('submit', function(e) {
+      e.preventDefault()
+      this.q.value = ''
+    })
+    document['search-fri'].q.addEventListener('input', function() {
+      console.log(this.value)
+      clearTimeout(window.idTimeOutSearch)
+      window.idTimeOutSearch = setTimeout(async () => {
+        console.log(this.value)
+
+        try {
+          if (this.value) {
+            const response = await axios.get('/messenger/search-friend', {
+              params: {
+                q: this.value
+              }
+            })
+  
+            const { friends } = response.data
+          }
+          console.log(friends);
+        } catch (error) {
+          window.outputErrorMessage(error?.response?.data?.message)
+        }
+      }, 2000)
+    })
+
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
       if (friendIdChatting === senderId) {

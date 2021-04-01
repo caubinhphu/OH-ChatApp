@@ -94,6 +94,8 @@ const memberSchema = mongoose.Schema({
   }
 });
 
+// memberSchema.index({name: 'text'});
+
 // get friends
 memberSchema.methods.getFriends = function () {
   return this.friends.map((friend) => {

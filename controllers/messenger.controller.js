@@ -773,3 +773,31 @@ module.exports.getSearch = (req, res, next) => {
     titleSide: siteMes
   })
 }
+
+// search friend chat
+module.exports.getSearchFriend = async (req, res) => {
+  const { q } = req.query
+
+  try {
+    const me = await Member.findById(req.user.id)
+    if (me) {
+      const friends = await Member.find(
+        {
+          _id: { $in: me.friends },
+          $text: { $search: q }
+        },
+        {
+          name: 1,
+          url: 1,
+          // score: { $meta: 'textScore' }
+        }
+      ).sort({ score: { $meta: 'textScore' } })
+
+      res.status(200).json({ friends })
+    } else {
+      res.status(404).json({ messages: notMem })
+    }
+  } catch (error) {
+    res.status(500).json({ messages: hasErrMsg })
+  }
+}

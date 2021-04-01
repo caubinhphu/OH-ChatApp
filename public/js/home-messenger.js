@@ -41149,11 +41149,56 @@ var Index = function () {
 
     $(classScBottom).on('click', function () {
       window.scrollBottomChatBox();
+    });
+    document['search-fri'].addEventListener('submit', function (e) {
+      e.preventDefault();
+      this.q.value = '';
+    });
+    document['search-fri'].q.addEventListener('input', function () {
+      var _this = this;
+
+      console.log(this.value);
+      clearTimeout(window.idTimeOutSearch);
+      window.idTimeOutSearch = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var response, friends, _error$response2, _error$response2$data;
+
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                console.log(_this.value);
+                _context2.prev = 1;
+                _context2.next = 4;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
+                  params: {
+                    q: _this.value
+                  }
+                });
+
+              case 4:
+                response = _context2.sent;
+                friends = response.data.friends;
+                console.log(friends);
+                _context2.next = 12;
+                break;
+
+              case 9:
+                _context2.prev = 9;
+                _context2.t0 = _context2["catch"](1);
+                window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+
+              case 12:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[1, 9]]);
+      })), 2000);
     }); // receive msg obj from server
 
-    window.socket.on('msg-messenger', function (_ref2) {
-      var senderId = _ref2.senderId,
-          msgObj = _ref2.msg;
+    window.socket.on('msg-messenger', function (_ref3) {
+      var senderId = _ref3.senderId,
+          msgObj = _ref3.msg;
 
       if (friendIdChatting === senderId) {
         // output message
@@ -41165,8 +41210,8 @@ var Index = function () {
       $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
     }); // receive signal friend is online
 
-    window.socket.on('msg-friendOnline', function (_ref3) {
-      var memberId = _ref3.memberId;
+    window.socket.on('msg-friendOnline', function (_ref4) {
+      var memberId = _ref4.memberId;
       $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
       var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
 
@@ -41175,8 +41220,8 @@ var Index = function () {
       }
     }); // receive signal friend is offline
 
-    window.socket.on('msg-friendOffline', function (_ref4) {
-      var memberId = _ref4.memberId;
+    window.socket.on('msg-friendOffline', function (_ref5) {
+      var memberId = _ref5.memberId;
       $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
       var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
 

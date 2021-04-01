@@ -8,6 +8,8 @@ router.get('/', controller.getIndex);
 
 router.get('/search', controller.getSearch)
 
+router.get('/search-friend', controller.getSearchFriend)
+
 router.get('/chatold', controller.getChatOld)
 
 router.route('/profile')
