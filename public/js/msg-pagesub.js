@@ -5199,7 +5199,7 @@ if (__webpack_require__(8)) {
   var toAbsoluteIndex = __webpack_require__(38);
   var toPrimitive = __webpack_require__(24);
   var has = __webpack_require__(15);
-  var classof = __webpack_require__(47);
+  var classof = __webpack_require__(48);
   var isObject = __webpack_require__(5);
   var toObject = __webpack_require__(10);
   var isArrayIter = __webpack_require__(87);
@@ -5213,7 +5213,7 @@ if (__webpack_require__(8)) {
   var createArrayIncludes = __webpack_require__(57);
   var speciesConstructor = __webpack_require__(55);
   var ArrayIterators = __webpack_require__(92);
-  var Iterators = __webpack_require__(49);
+  var Iterators = __webpack_require__(50);
   var $iterDetect = __webpack_require__(62);
   var setSpecies = __webpack_require__(41);
   var arrayFill = __webpack_require__(91);
@@ -17234,6 +17234,12 @@ module.exports = function (it, TYPE) {
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(485);
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var def = __webpack_require__(9).f;
 var has = __webpack_require__(15);
 var TAG = __webpack_require__(6)('toStringTag');
@@ -17244,7 +17250,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -17273,7 +17279,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -17309,17 +17315,11 @@ module.exports = exporter;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(485);
 
 /***/ }),
 /* 51 */
@@ -17538,7 +17538,7 @@ module.exports = function (exec, skipClosing) {
 "use strict";
 
 
-var classof = __webpack_require__(47);
+var classof = __webpack_require__(48);
 var builtinExec = RegExp.prototype.exec;
 
  // `RegExpExec` abstract operation
@@ -17688,7 +17688,7 @@ var anInstance = __webpack_require__(42);
 var isObject = __webpack_require__(5);
 var fails = __webpack_require__(4);
 var $iterDetect = __webpack_require__(62);
-var setToStringTag = __webpack_require__(46);
+var setToStringTag = __webpack_require__(47);
 var inheritIfRequired = __webpack_require__(79);
 
 module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
@@ -18225,9 +18225,9 @@ var LIBRARY = __webpack_require__(32);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(13);
 var hide = __webpack_require__(12);
-var Iterators = __webpack_require__(49);
+var Iterators = __webpack_require__(50);
 var $iterCreate = __webpack_require__(84);
-var setToStringTag = __webpack_require__(46);
+var setToStringTag = __webpack_require__(47);
 var getPrototypeOf = __webpack_require__(18);
 var ITERATOR = __webpack_require__(6)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
@@ -18299,7 +18299,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 var create = __webpack_require__(39);
 var descriptor = __webpack_require__(35);
-var setToStringTag = __webpack_require__(46);
+var setToStringTag = __webpack_require__(47);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
@@ -18348,7 +18348,7 @@ module.exports = function (KEY) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(49);
+var Iterators = __webpack_require__(50);
 var ITERATOR = __webpack_require__(6)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -18376,9 +18376,9 @@ module.exports = function (object, index, value) {
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(47);
+var classof = __webpack_require__(48);
 var ITERATOR = __webpack_require__(6)('iterator');
-var Iterators = __webpack_require__(49);
+var Iterators = __webpack_require__(50);
 module.exports = __webpack_require__(19).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -18428,7 +18428,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 
 var addToUnscopables = __webpack_require__(34);
 var step = __webpack_require__(117);
-var Iterators = __webpack_require__(49);
+var Iterators = __webpack_require__(50);
 var toIObject = __webpack_require__(16);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -18751,7 +18751,7 @@ var toIndex = __webpack_require__(127);
 var gOPN = __webpack_require__(40).f;
 var dP = __webpack_require__(9).f;
 var arrayFill = __webpack_require__(91);
-var setToStringTag = __webpack_require__(46);
+var setToStringTag = __webpack_require__(47);
 var ARRAY_BUFFER = 'ArrayBuffer';
 var DATA_VIEW = 'DataView';
 var PROTOTYPE = 'prototype';
@@ -19212,7 +19212,7 @@ module.exports = function (fn, args, that) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseInt = __webpack_require__(3).parseInt;
-var $trim = __webpack_require__(48).trim;
+var $trim = __webpack_require__(49).trim;
 var ws = __webpack_require__(78);
 var hex = /^[-+]?0[xX]/;
 
@@ -19227,7 +19227,7 @@ module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? f
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseFloat = __webpack_require__(3).parseFloat;
-var $trim = __webpack_require__(48).trim;
+var $trim = __webpack_require__(49).trim;
 
 module.exports = 1 / $parseFloat(__webpack_require__(78) + '-0') !== -Infinity ? function parseFloat(str) {
   var string = $trim(String(str), 3);
@@ -19939,7 +19939,7 @@ module.exports = function (isEntries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
-var classof = __webpack_require__(47);
+var classof = __webpack_require__(48);
 var from = __webpack_require__(133);
 module.exports = function (NAME) {
   return function toJSON() {
@@ -20242,7 +20242,7 @@ var redefine = __webpack_require__(13);
 var META = __webpack_require__(33).KEY;
 var $fails = __webpack_require__(4);
 var shared = __webpack_require__(51);
-var setToStringTag = __webpack_require__(46);
+var setToStringTag = __webpack_require__(47);
 var uid = __webpack_require__(36);
 var wks = __webpack_require__(6);
 var wksExt = __webpack_require__(100);
@@ -20712,7 +20712,7 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(77).set });
 "use strict";
 
 // 19.1.3.6 Object.prototype.toString()
-var classof = __webpack_require__(47);
+var classof = __webpack_require__(48);
 var test = {};
 test[__webpack_require__(6)('toStringTag')] = 'z';
 if (test + '' != '[object z]') {
@@ -20809,7 +20809,7 @@ var fails = __webpack_require__(4);
 var gOPN = __webpack_require__(40).f;
 var gOPD = __webpack_require__(17).f;
 var dP = __webpack_require__(9).f;
-var $trim = __webpack_require__(48).trim;
+var $trim = __webpack_require__(49).trim;
 var NUMBER = 'Number';
 var $Number = global[NUMBER];
 var Base = $Number;
@@ -21458,7 +21458,7 @@ $export($export.S, 'String', {
 "use strict";
 
 // 21.1.3.25 String.prototype.trim()
-__webpack_require__(48)('trim', function ($trim) {
+__webpack_require__(49)('trim', function ($trim) {
   return function trim() {
     return $trim(this, 3);
   };
@@ -22765,7 +22765,7 @@ __webpack_require__(64)('split', 2, function (defined, SPLIT, $split, maybeCallN
 var LIBRARY = __webpack_require__(32);
 var global = __webpack_require__(3);
 var ctx = __webpack_require__(20);
-var classof = __webpack_require__(47);
+var classof = __webpack_require__(48);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(5);
 var aFunction = __webpack_require__(11);
@@ -22983,7 +22983,7 @@ if (!USE_NATIVE) {
 }
 
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
-__webpack_require__(46)($Promise, PROMISE);
+__webpack_require__(47)($Promise, PROMISE);
 __webpack_require__(41)(PROMISE);
 Wrapper = __webpack_require__(19)[PROMISE];
 
@@ -23710,7 +23710,7 @@ $export($export.P + $export.F * WEBKIT_BUG, 'String', {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(48)('trimLeft', function ($trim) {
+__webpack_require__(49)('trimLeft', function ($trim) {
   return function trimLeft() {
     return $trim(this, 1);
   };
@@ -23724,7 +23724,7 @@ __webpack_require__(48)('trimLeft', function ($trim) {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(48)('trimRight', function ($trim) {
+__webpack_require__(49)('trimRight', function ($trim) {
   return function trimRight() {
     return $trim(this, 2);
   };
@@ -24715,7 +24715,7 @@ var getKeys = __webpack_require__(37);
 var redefine = __webpack_require__(13);
 var global = __webpack_require__(3);
 var hide = __webpack_require__(12);
-var Iterators = __webpack_require__(49);
+var Iterators = __webpack_require__(50);
 var wks = __webpack_require__(6);
 var ITERATOR = wks('iterator');
 var TO_STRING_TAG = wks('toStringTag');
@@ -43603,7 +43603,7 @@ console.log('page sub messenger');
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(50);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(46);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(514);
 /* harmony import */ var croppie__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(croppie__WEBPACK_IMPORTED_MODULE_1__);
@@ -44573,7 +44573,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(50);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(46);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -44590,63 +44590,223 @@ var Messenger = function () {
   var nClassAct = 'is-active'; // receive msg obj from server
 
   window.socket.on('msg-messenger', /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref) {
-      var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive, html, _$popup;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref) {
+      var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive;
+
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              senderId = _ref.senderId, msgObj = _ref.msg, token = _ref.token;
+              activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
+
+              if ($(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
+                $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+                $chatMain = $popup.find(classChatMain);
+                window.outputMessage(msgObj, false, $chatMain); // scroll bottom
+
+                window.scrollBottomChatBox($chatMain);
+
+                if ($popup.hasClass(nClassCloseMini)) {
+                  $popup.removeClass(nClassCloseMini);
+                  classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                  $popup.addClass(classIsActive);
+
+                  if (classIsActive === nClassNoAct) {
+                    outputPreviewMsg($popup, msgObj.message);
+                  } else {
+                    window.scrollBottomChatBox($chatMain);
+                  }
+                } else if ($popup.hasClass(nClassNoAct)) {
+                  outputPreviewMsg($popup, msgObj.message);
+                }
+              } else {
+                _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                createMiniPopup(senderId, msgObj, token, _classIsActive);
+              }
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function (_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }()); // receive signal friend is online
+
+  window.socket.on('msg-friendOnline', function (_ref3) {
+    var memberId = _ref3.memberId;
+    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
+
+    if ($popup.length) {
+      $popup.addClass('is-online');
+      $popup.find('.mini-status').html('Đang hoạt động');
+    }
+  }); // receive signal friend is offline
+
+  window.socket.on('msg-friendOffline', function (_ref4) {
+    var memberId = _ref4.memberId;
+    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
+
+    if ($popup.length) {
+      $popup.removeClass('is-online');
+      $popup.find('.mini-status').html('Đang không hoạt động');
+    }
+  }); // open search friend mini
+
+  $('.open-search-mini').on('click', function (e) {
+    e.preventDefault();
+
+    if ($(this).hasClass('is-open')) {
+      // close
+      $('.box-search-mini').addClass('d-none');
+      $(this).removeClass('is-open');
+    } else {
+      // open
+      $(this).addClass('is-open');
+      $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
+      $('.box-search-mini').removeClass('d-none');
+      $('#s-fri-mini').focus();
+    }
+  });
+  $('.close-search-mini').on('click', function () {
+    // close
+    $('.box-search-mini').addClass('d-none');
+    $('.open-search-mini').removeClass('is-open');
+  }); // send query search friend
+
+  $('#s-fri-mini').on('input', function () {
+    var _this = this;
+
+    clearTimeout(window.idTimeOutSearchMini);
+    window.idTimeOutSearchMini = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var response, friends, html, _error$response, _error$response$data;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              senderId = _ref.senderId, msgObj = _ref.msg, token = _ref.token;
-              activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
+              console.log(_this.value);
+              _context2.prev = 1;
 
-              if (!$(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
-                _context2.next = 10;
+              if (!_this.value) {
+                _context2.next = 11;
                 break;
               }
 
-              $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
-              $chatMain = $popup.find(classChatMain);
-              window.outputMessage(msgObj, false, $chatMain); // scroll bottom
-
-              window.scrollBottomChatBox($chatMain);
-
-              if ($popup.hasClass(nClassCloseMini)) {
-                $popup.removeClass(nClassCloseMini);
-                classIsActive = activeLength ? nClassNoAct : nClassAct;
-                $popup.addClass(classIsActive);
-
-                if (classIsActive === nClassNoAct) {
-                  outputPreviewMsg($popup, msgObj.message);
-                } else {
-                  window.scrollBottomChatBox($chatMain);
+              _context2.next = 5;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/messenger/search-friend', {
+                params: {
+                  q: _this.value,
+                  mini: '1'
                 }
-              } else if ($popup.hasClass(nClassNoAct)) {
+              });
+
+            case 5:
+              response = _context2.sent;
+              friends = response.data.friends;
+              console.log(friends);
+              html = friends.map(function (friend) {
+                return "\n            <div class=\"pre-search-item\" data-id=\"".concat(friend._id, "\" data-token=\"").concat(friend.token, "\" data-status=\"").concat(friend.status, "\">\n              <div class=\"d-flex align-items-center\">\n              <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <div class=\"wrap-pre-s-right\">\n                  <div class=\"name-member\">").concat(friend.name, "</div>\n                  <div class=\"text-secondary\">\n                    <small>").concat(friend.status === 'online' ? 'Đang hoạt động' : 'Đang không hoạt động', "</small>\n                  </div>\n                </div>\n              </div>\n            </div>\n          ");
+              }).join('');
+
+              if (html === '') {
+                html = "\n              <div class=\"text-center last-mb-none\">\n                <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n              </div>\n            ";
+              }
+
+              $('.b-s-m-res').html(html); // $('#main-left-search').removeClass('show-loader')
+
+            case 11:
+              _context2.next = 16;
+              break;
+
+            case 13:
+              _context2.prev = 13;
+              _context2.t0 = _context2["catch"](1);
+              window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
+
+            case 16:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[1, 13]]);
+    })), 500);
+  }); // choose friend to chat from search results
+
+  $(document).on('click', '.pre-search-item', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+    var friendId, token, status, $popupMini;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            friendId = $(this).attr('data-id');
+            token = $(this).attr('data-token');
+            status = $(this).attr('data-status');
+            $popupMini = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
+            $('.box-search-mini').addClass('d-none');
+            $('.open-search-mini').removeClass('is-open');
+
+            if (!$popupMini.length) {
+              _context3.next = 11;
+              break;
+            }
+
+            // is chatting
+            $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
+            $popupMini.removeClass(nClassNoAct).removeClass(nClassCloseMini).addClass(nClassAct);
+            _context3.next = 14;
+            break;
+
+          case 11:
+            // isn't chatting
+            $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
+            _context3.next = 14;
+            return createMiniPopup(friendId, {
+              avatar: $(this).find('img').attr('src'),
+              username: $(this).find('.name-member').html()
+            }, token, nClassAct);
+
+          case 14:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }))); // function create new chat box mini
+
+  function createMiniPopup(_x2, _x3, _x4, _x5) {
+    return _createMiniPopup.apply(this, arguments);
+  } // function create call msg local mini chat
+
+
+  function _createMiniPopup() {
+    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(senderId, msgObj, token, classIsActive) {
+      var html, $popup;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv is-online ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">").concat(status === 'online' ? 'Đang hoạt động' : 'Đang không hoạt động', "</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n          <form class=\"d-flex\">\n            <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n            <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n              <div class=\"flex-fill wrap-msg-box ps-rv\">\n                <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n              </div>\n              <button class=\"btn btn-default text-secondary\">\n                <span class=\"icomoon icon-send\"></span>\n              </button>\n          </form>\n      </div>\n    </div>\n    ");
+              $('.wrap-chat-mini').append(html);
+              $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+
+              if (classIsActive === nClassNoAct) {
                 outputPreviewMsg($popup, msgObj.message);
               }
 
-              _context2.next = 28;
-              break;
+              _context5.next = 6;
+              return loadOldMsg($popup);
 
-            case 10:
-              _classIsActive = activeLength ? nClassNoAct : nClassAct;
-              html = "\n      <div class=\"popup-chat-mini d-flex flex-column ps-rv is-online ".concat(_classIsActive, "\"\n        data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n      >\n        <div class=\"wrap-loader-mini\">\n          <div class=\"d-flex justify-content-center align-items-center h-100\">\n            <img src=\"/images/loader.svg\" alt=\"loader\" />\n          </div>\n        </div>\n        <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n        <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n        <div class=\"preview-msg\">\n          <span></span>\n        </div>\n        <div class=\"dot-status-mini\"></div>\n        <div class=\"chat-mini-top\">\n          <div class=\"d-flex p-2\">\n            <div class=\"flex-fill d-flex align-items-center pr-1\">\n              <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n              <div>\n                  <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                  <div class=\"mini-status\">\u0110ang ho\u1EA1t \u0111\u1ED9ng</div>\n              </div>\n            </div>\n            <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n              <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n                <span class=\"icomoon icon-phone\"></span>\n              </button>\n              <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n                <span class=\"icomoon icon-camera\"></span>\n              </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n                <span class=\"icomoon icon-minus\"></span>\n              </button>\n              <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n                <span class=\"icomoon icon-close\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n        <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n          <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n        </div>\n        <div class=\"chat-mini-bottom\">\n            <form class=\"d-flex\">\n              <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n              <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n                <div class=\"flex-fill wrap-msg-box ps-rv\">\n                  <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n                </div>\n                <button class=\"btn btn-default text-secondary\">\n                  <span class=\"icomoon icon-send\"></span>\n                </button>\n            </form>\n        </div>\n      </div>\n      ");
-              $('.wrap-chat-mini').append(html);
-              _$popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+            case 6:
+              $popup.find('.wrap-loader-mini').addClass('d-none');
+              window.emojisForMiniChat($popup); // event submit form chat
 
-              if (_classIsActive === nClassNoAct) {
-                outputPreviewMsg(_$popup, msgObj.message);
-              }
-
-              _context2.next = 17;
-              return loadOldMsg(_$popup);
-
-            case 17:
-              _$popup.find('.wrap-loader-mini').addClass('d-none');
-
-              window.emojisForMiniChat(_$popup); // event submit form chat
-
-              _$popup.find('form').on('submit', function (e) {
+              $popup.find('form').on('submit', function (e) {
                 // stop submit form
                 e.preventDefault(); // input message
 
@@ -44659,7 +44819,7 @@ var Messenger = function () {
                     token: e.target.elements._token.value
                   }); // create message obj to show in client
 
-                  createCallMsgLocalMini(_$popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
+                  createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
                   // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
                   // set value for input message
 
@@ -44668,13 +44828,10 @@ var Messenger = function () {
                   inputMsg.focus();
                 }
               });
-
-              _$popup.find('.msg-mini').on('keydown', function (e) {
+              $popup.find('.msg-mini').on('keydown', function (e) {
                 if (e.which === 13 && !e.shiftKey) {
                   e.preventDefault();
-
-                  _$popup.find('button.text-secondary').trigger('click');
-
+                  $popup.find('button.text-secondary').trigger('click');
                   $(this).css('height', '35px');
                 }
               }).on('input', function () {
@@ -44686,120 +44843,82 @@ var Messenger = function () {
                 $(this).parents('.wrap-msg-box').removeClass('is-focus');
               }); // handle scroll box chat: load old msg, scroll to bottom
 
-
-              _$popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                return regeneratorRuntime.wrap(function _callee$(_context) {
+              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+                return regeneratorRuntime.wrap(function _callee4$(_context4) {
                   while (1) {
-                    switch (_context.prev = _context.next) {
+                    switch (_context4.prev = _context4.next) {
                       case 0:
                         if (!(this.scrollTop === 0)) {
-                          _context.next = 7;
+                          _context4.next = 7;
                           break;
                         }
 
-                        _$popup.find('.wrap-loader-chat').removeClass('d-none');
-
-                        _context.next = 4;
-                        return loadOldMsg(_$popup);
+                        $popup.find('.wrap-loader-chat').removeClass('d-none');
+                        _context4.next = 4;
+                        return loadOldMsg($popup);
 
                       case 4:
-                        _$popup.find('.wrap-loader-chat').addClass('d-none');
-
-                        _context.next = 8;
+                        $popup.find('.wrap-loader-chat').addClass('d-none');
+                        _context4.next = 8;
                         break;
 
                       case 7:
                         if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-                          _$popup.find(classScroll).addClass('is-show');
+                          $popup.find(classScroll).addClass('is-show');
                         } else {
-                          _$popup.find(classScroll).removeClass('is-show');
+                          $popup.find(classScroll).removeClass('is-show');
                         }
 
                       case 8:
                       case "end":
-                        return _context.stop();
+                        return _context4.stop();
                     }
                   }
-                }, _callee, this);
+                }, _callee4, this);
               }))); // scroll to bottom chat box
 
-
-              _$popup.find(classScroll).on('click', function () {
-                window.scrollBottomChatBox(_$popup.find(classChatMain));
+              $popup.find(classScroll).on('click', function () {
+                window.scrollBottomChatBox($popup.find(classChatMain));
               }); // minimize chat
 
-
-              _$popup.find('.mini-chat-btn').on('click', function () {
-                _$popup.removeClass(nClassAct);
-
-                _$popup.addClass(nClassNoAct);
+              $popup.find('.mini-chat-btn').on('click', function () {
+                $popup.removeClass(nClassAct);
+                $popup.addClass(nClassNoAct);
               }); // open mini chat
 
-
-              _$popup.find('.avatar-mini-2').on('click', function () {
+              $popup.find('.avatar-mini-2').on('click', function () {
                 $('.popup-chat-mini').removeClass(nClassAct);
                 $('.popup-chat-mini').addClass(nClassNoAct);
-
-                _$popup.addClass(nClassAct);
-
-                _$popup.removeClass(nClassNoAct); // window.scrollBottomChatBox($popup.find(classChatMain))
+                $popup.addClass(nClassAct);
+                $popup.removeClass(nClassNoAct); // window.scrollBottomChatBox($popup.find(classChatMain))
                 // scroll bottom
 
-
-                var chatMain = _$popup.find(classChatMain).get(0);
-
+                var chatMain = $popup.find(classChatMain).get(0);
                 chatMain.scrollTop = chatMain.scrollHeight;
               }); // close mini chat
 
-
-              _$popup.find('.close-chat-btn').on('click', function () {
-                _$popup.addClass(nClassCloseMini);
-
-                _$popup.removeClass(nClassAct);
+              $popup.find('.close-chat-btn').on('click', function () {
+                $popup.addClass(nClassCloseMini);
+                $popup.removeClass(nClassAct);
               }); // call audio
 
-
-              _$popup.find('.call-friend-btn').on('click', function () {
-                window.callFriend(_$popup.attr('data-id'));
+              $popup.find('.call-friend-btn').on('click', function () {
+                window.callFriend($popup.attr('data-id'));
               }); // call video
 
-
-              _$popup.find('.video-friend-btn').on('click', function () {
-                window.callFriend(_$popup.attr('data-id'), 'video');
+              $popup.find('.video-friend-btn').on('click', function () {
+                window.callFriend($popup.attr('data-id'), 'video');
               });
 
-            case 28:
+            case 17:
             case "end":
-              return _context2.stop();
+              return _context5.stop();
           }
         }
-      }, _callee2);
+      }, _callee5);
     }));
-
-    return function (_x) {
-      return _ref2.apply(this, arguments);
-    };
-  }()); // receive signal friend is online
-
-  window.socket.on('msg-friendOnline', function (_ref4) {
-    var memberId = _ref4.memberId;
-    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
-
-    if ($popup.length) {
-      $popup.addClass('is-online');
-      $popup.find('.mini-status').html('Đang hoạt động');
-    }
-  }); // receive signal friend is offline
-
-  window.socket.on('msg-friendOffline', function (_ref5) {
-    var memberId = _ref5.memberId;
-    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
-
-    if ($popup.length) {
-      $popup.removeClass('is-online');
-      $popup.find('.mini-status').html('Đang không hoạt động');
-    }
-  });
+    return _createMiniPopup.apply(this, arguments);
+  }
 
   function createCallMsgLocalMiniChat(friendId) {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -44868,31 +44987,31 @@ var Messenger = function () {
 
   window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-  function loadOldMsg(_x2) {
+  function loadOldMsg(_x6) {
     return _loadOldMsg.apply(this, arguments);
   }
 
   function _loadOldMsg() {
-    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3($popup) {
-      var currentPage, responsive, _responsive$data, messages, hasMsg, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response, _error$response$data;
+    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6($popup) {
+      var currentPage, responsive, _responsive$data, messages, hasMsg, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response2, _error$response2$data;
 
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               if (!(+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load'))) {
-                _context3.next = 23;
+                _context6.next = 23;
                 break;
               }
 
               $popup.attr('data-allow-load', '0');
               currentPage = +$popup.attr('data-page');
-              _context3.prev = 3;
-              _context3.next = 6;
+              _context6.prev = 3;
+              _context6.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat($popup.attr('data-id'), "&page=").concat(currentPage));
 
             case 6:
-              responsive = _context3.sent;
+              responsive = _context6.sent;
               _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg; // $('.wrap-loader-chat').addClass('d-none')
 
               $popup.attr('data-page', currentPage + 1);
@@ -44914,20 +45033,20 @@ var Messenger = function () {
               newScroll = chatMain.scrollHeight - chatMain.clientHeight;
               chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
               $popup.attr('data-allow-load', '1');
-              _context3.next = 23;
+              _context6.next = 23;
               break;
 
             case 20:
-              _context3.prev = 20;
-              _context3.t0 = _context3["catch"](3);
-              window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response = _context3.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
+              _context6.prev = 20;
+              _context6.t0 = _context6["catch"](3);
+              window.outputErrorMessage(_context6.t0 === null || _context6.t0 === void 0 ? void 0 : (_error$response2 = _context6.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.msg);
 
             case 23:
             case "end":
-              return _context3.stop();
+              return _context6.stop();
           }
         }
-      }, _callee3, null, [[3, 20]]);
+      }, _callee6, null, [[3, 20]]);
     }));
     return _loadOldMsg.apply(this, arguments);
   }
@@ -44949,7 +45068,7 @@ var Messenger = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(50);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(46);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 

@@ -90,8 +90,18 @@ block main
   
   .wrap-chat-mini
     .wrap-btn-chat-mini
-      button.btn.btn-icon(type="button")
+      button.btn.btn-icon.open-search-mini(type="button")
         span.icomoon.icon-chat
+    .box-search-mini.d-none
+      .d-flex.flex-column.w-100.h-100
+        .b-s-m-top.d-flex.justify-content-between.align-items-center
+          h4.mb-0 Tin nhắn mới
+          button.close-search-mini.btn.btn-icon.small-btn.btn-red(type='button', title='Đóng search')
+            span.icomoon.icon-close
+        .b-s-m-input.d-flex.align-items-center
+          label.mb-0.mr-2(for="s-fri-mini") Đến:
+          input#s-fri-mini.form-control(type="text")
+        .b-s-m-res.flex-fill
 
 append scripts
   script(src="/socket.io/socket.io.js")

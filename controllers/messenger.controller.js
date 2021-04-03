@@ -776,24 +776,35 @@ module.exports.getSearch = (req, res, next) => {
 
 // search friend chat
 module.exports.getSearchFriend = async (req, res) => {
-  const { q } = req.query
+  const { q, mini } = req.query
 
   try {
     const me = await Member.findById(req.user.id)
     if (me) {
-      const friends = await Member.find(
+      let friends = await Member.find(
         {
-          // _id: { $in: me.friends },
+          _id: { $in: me.friends },
           $text: { $search: q }
         },
         {
           name: 1,
           url: 1,
-          avatar: 1
+          avatar: 1,
+          status: 1
           // score: { $meta: 'textScore' }
         }
       ).sort({ score: { $meta: 'textScore' } }).limit(10)
 
+      if (mini === '1') {
+        friends = friends.map(fri => {
+          const friend = fri.toObject()
+          friend.token = jwt.sign(
+            { data: { memberId: fri._id.toString() } },
+            process.env.JWT_SECRET
+          );
+          return friend
+        })
+      }
       res.status(200).json({ friends })
     } else {
       res.status(404).json({ messages: notMem })
