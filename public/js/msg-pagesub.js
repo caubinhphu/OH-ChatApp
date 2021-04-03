@@ -44682,6 +44682,7 @@ var Messenger = function () {
   $('#s-fri-mini').on('input', function () {
     var _this = this;
 
+    $('.loader-search').removeClass('d-none');
     clearTimeout(window.idTimeOutSearchMini);
     window.idTimeOutSearchMini = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       var response, friends, html, _error$response, _error$response$data;
@@ -44693,7 +44694,7 @@ var Messenger = function () {
               _context2.prev = 0;
 
               if (!(_this.value && window.oldSearch !== _this.value)) {
-                _context2.next = 10;
+                _context2.next = 13;
                 break;
               }
 
@@ -44717,23 +44718,30 @@ var Messenger = function () {
                 html = "\n              <div class=\"text-center last-mb-none\">\n                <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n              </div>\n            ";
               }
 
-              $('.b-s-m-res').html(html); // $('#main-left-search').removeClass('show-loader')
-
-            case 10:
-              _context2.next = 15;
+              $('.b-s-m-result').html(html);
+              $('.loader-search').addClass('d-none');
+              _context2.next = 14;
               break;
 
-            case 12:
-              _context2.prev = 12;
+            case 13:
+              $('.loader-search').addClass('d-none');
+
+            case 14:
+              _context2.next = 20;
+              break;
+
+            case 16:
+              _context2.prev = 16;
               _context2.t0 = _context2["catch"](0);
               window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
+              $('.loader-search').addClass('d-none');
 
-            case 15:
+            case 20:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 12]]);
+      }, _callee2, null, [[0, 16]]);
     })), 500);
   }); // choose friend to chat from search results
 

@@ -7898,15 +7898,6 @@ textarea.form-control.msg-mini {
   background-color: #dedede;
 }
 
-.loader-search {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 175px;
-  display: none;
-}
-
 #main-left-search.show-loader .search-fri-res-box::after {
   content: "";
   position: absolute;
@@ -7917,8 +7908,8 @@ textarea.form-control.msg-mini {
   background: #9e9e9e73;
 }
 
-#main-left-search.show-loader .loader-search {
-  display: block;
+.loader-search img {
+  max-width: 40px;
 }
 
 @media only screen and (max-width: 850px) {

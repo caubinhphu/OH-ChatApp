@@ -131,19 +131,19 @@ const Index = (() => {
 
     // send query search friend
     $('#search-friend').on('input', function() {
+      $('.loader-search').removeClass('d-none')
       clearTimeout(window.idTimeOutSearch)
       window.idTimeOutSearch = setTimeout(async () => {
-        console.log(this.value)
         try {
-          if (this.value) {
+          if (this.value && this.value !== window.oldSearch) {
             const response = await axios.get('/messenger/search-friend', {
               params: {
                 q: this.value
               }
             })
 
+            window.oldSearch = this.value
             const { friends } = response.data
-            console.log(friends);
             let html = friends.map(friend => `
               <div class="s-fri-item">
                 <div class="d-flex align-items-center ps-rv">
@@ -165,18 +165,21 @@ const Index = (() => {
                 </div>
               `
             }
-            $('.search-fri-res-box').html(html)
-            // $('#main-left-search').removeClass('show-loader')
+            $('.s-fri-res-box').html(html)
+            $('.loader-search').addClass('d-none')
+          } else {
+            $('.loader-search').addClass('d-none')
           }
         } catch (error) {
+          $('.loader-search').addClass('d-none')
           window.outputErrorMessage(error?.response?.data?.message)
         }
       }, 500)
     }).on('focus', () => {
       $('.search-fri-res-box').removeClass('d-none')
-      // $('#main-left-search').addClass('show-loader')
     }).on('blur', () => {
       $('.search-fri-res-box').addClass('d-none')
+      $('.loader-search').addClass('d-none')
     })
 
     // receive msg obj from server

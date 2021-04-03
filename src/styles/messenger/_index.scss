@@ -329,14 +329,6 @@ textarea.form-control.msg-mini {
     background-color: $color-de;
   }
 }
-.loader-search {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 175px;
-  display: none;
-}
 #main-left-search {
   &.show-loader {
     .search-fri-res-box {
@@ -350,9 +342,11 @@ textarea.form-control.msg-mini {
         background: $color-ol;
       }
     }
-    .loader-search {
-      display: block;
-    }
+  }
+}
+.loader-search {
+  img {
+    max-width: 40px;
   }
 }
 @media only screen and (max-width: 850px) {

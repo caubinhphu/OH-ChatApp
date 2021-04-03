@@ -81,6 +81,7 @@ const Messenger = (() => {
 
   // send query search friend
   $('#s-fri-mini').on('input', function() {
+    $('.loader-search').removeClass('d-none')
     clearTimeout(window.idTimeOutSearchMini)
     window.idTimeOutSearchMini = setTimeout(async () => {
       try {
@@ -115,11 +116,14 @@ const Messenger = (() => {
               </div>
             `
           }
-          $('.b-s-m-res').html(html)
-          // $('#main-left-search').removeClass('show-loader')
+          $('.b-s-m-result').html(html)
+          $('.loader-search').addClass('d-none')
+        } else {
+          $('.loader-search').addClass('d-none')
         }
       } catch (error) {
         window.outputErrorMessage(error?.response?.data?.message)
+        $('.loader-search').addClass('d-none')
       }
     }, 500)
   })

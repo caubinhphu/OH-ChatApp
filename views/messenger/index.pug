@@ -18,10 +18,11 @@ block contentMain
             input#search-friend.form-control(type="text", name="q", placeholder="Tìm bạn bè để chat", autocomplete="off")
             span.icomoon.icon-icon-search
             .search-fri-res-box.d-none
-              .text-center.last-mb-none
-                p Kết quả tìm kiếm
-            //- .loader-search
-            //-   img(src="/images/loader.svg" alt="loader")
+              .loader-search.d-none.text-center
+                img(src="/images/loader.svg" alt="loader")
+              .s-fri-res-box
+                .text-center.last-mb-none
+                  p Kết quả tìm kiếm
                 
         #main-left-friends.mt-2.flex-fill
           each friend in friends

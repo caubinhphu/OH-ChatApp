@@ -11,7 +11,7 @@ block header
           img(src="/images/logo-mini.png", alt="oh-chat", width="40px")
       #search.ml-1.ps-rv.show-loader
         label.sr-only(for="box-search") Search
-        input.form-control.form-control-sm.box-search#box-search(type="text", placeholder="Tìm kiếm bạn bè")
+        input.form-control.form-control-sm.box-search#box-search(type="text", placeholder="Tìm kiếm bạn bè", autocomplete="off")
         span.icomoon.icon-icon-search
         .search-res-box.d-none
           .wrap-s-res
@@ -100,8 +100,11 @@ block main
             span.icomoon.icon-close
         .b-s-m-input.d-flex.align-items-center
           label.mb-0.mr-2(for="s-fri-mini") Đến:
-          input#s-fri-mini.form-control(type="text")
+          input#s-fri-mini.form-control(type="text", autocomplete="off")
         .b-s-m-res.flex-fill
+          .loader-search.d-none.text-center
+            img(src="/images/loader.svg" alt="loader")
+          .b-s-m-result
 
 append scripts
   script(src="/socket.io/socket.io.js")

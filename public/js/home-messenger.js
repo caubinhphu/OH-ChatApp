@@ -41158,6 +41158,7 @@ var Index = function () {
     $('#search-friend').on('input', function () {
       var _this = this;
 
+      $('.loader-search').removeClass('d-none');
       clearTimeout(window.idTimeOutSearch);
       window.idTimeOutSearch = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
         var response, friends, html, _error$response2, _error$response2$data;
@@ -41166,25 +41167,24 @@ var Index = function () {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                console.log(_this.value);
-                _context2.prev = 1;
+                _context2.prev = 0;
 
-                if (!_this.value) {
-                  _context2.next = 11;
+                if (!(_this.value && _this.value !== window.oldSearch)) {
+                  _context2.next = 13;
                   break;
                 }
 
-                _context2.next = 5;
+                _context2.next = 4;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
                   params: {
                     q: _this.value
                   }
                 });
 
-              case 5:
+              case 4:
                 response = _context2.sent;
+                window.oldSearch = _this.value;
                 friends = response.data.friends;
-                console.log(friends);
                 html = friends.map(function (friend) {
                   return "\n              <div class=\"s-fri-item\">\n                <div class=\"d-flex align-items-center ps-rv\">\n                  <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                  <div class=\"wrap-pre-s-right\">\n                    <div class=\"name-member\">").concat(friend.name, "</div>\n                  </div>\n                  <a class=\"ps-as\" href=\"/messenger/chat/").concat(friend.url ? friend.url : friend._id, "\">\n                    <span class=\"sr-only\">Chat with ").concat(friend.name, "</span>\n                  </a>\n                </div>\n              </div>\n            ");
                 }).join('');
@@ -41193,28 +41193,36 @@ var Index = function () {
                   html = "\n                <div class=\"text-center last-mb-none\">\n                  <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n                </div>\n              ";
                 }
 
-                $('.search-fri-res-box').html(html); // $('#main-left-search').removeClass('show-loader')
-
-              case 11:
-                _context2.next = 16;
+                $('.s-fri-res-box').html(html);
+                $('.loader-search').addClass('d-none');
+                _context2.next = 14;
                 break;
 
               case 13:
-                _context2.prev = 13;
-                _context2.t0 = _context2["catch"](1);
-                window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+                $('.loader-search').addClass('d-none');
+
+              case 14:
+                _context2.next = 20;
+                break;
 
               case 16:
+                _context2.prev = 16;
+                _context2.t0 = _context2["catch"](0);
+                $('.loader-search').addClass('d-none');
+                window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+
+              case 20:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 13]]);
+        }, _callee2, null, [[0, 16]]);
       })), 500);
     }).on('focus', function () {
-      $('.search-fri-res-box').removeClass('d-none'); // $('#main-left-search').addClass('show-loader')
+      $('.search-fri-res-box').removeClass('d-none');
     }).on('blur', function () {
       $('.search-fri-res-box').addClass('d-none');
+      $('.loader-search').addClass('d-none');
     }); // receive msg obj from server
 
     window.socket.on('msg-messenger', function (_ref3) {
