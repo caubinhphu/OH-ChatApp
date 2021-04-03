@@ -83,9 +83,8 @@ const Messenger = (() => {
   $('#s-fri-mini').on('input', function() {
     clearTimeout(window.idTimeOutSearchMini)
     window.idTimeOutSearchMini = setTimeout(async () => {
-      console.log(this.value)
       try {
-        if (this.value) {
+        if (this.value && window.oldSearch !== this.value) {
           const response = await axios.get('/messenger/search-friend', {
             params: {
               q: this.value,
@@ -93,8 +92,8 @@ const Messenger = (() => {
             }
           })
 
+          window.oldSearch = this.value
           const { friends } = response.data
-          console.log(friends);
           let html = friends.map(friend => `
             <div class="pre-search-item" data-id="${friend._id}" data-token="${friend.token}" data-status="${friend.status}">
               <div class="d-flex align-items-center">
@@ -147,15 +146,16 @@ const Messenger = (() => {
           username: $(this).find('.name-member').html(),
         },
         token,
-        nClassAct
+        nClassAct,
+        status === 'online' ? 'Đang hoạt động' : 'Đang không hoạt động'
       )
     }
   })
 
   // function create new chat box mini
-  async function createMiniPopup(senderId, msgObj, token, classIsActive) {
+  async function createMiniPopup(senderId, msgObj, token, classIsActive, status = 'Đang hoạt động') {
     const html = `
-    <div class="popup-chat-mini d-flex flex-column ps-rv is-online ${ classIsActive }"
+    <div class="popup-chat-mini d-flex flex-column ps-rv ${status === 'Đang hoạt động' ? 'is-online' : ''} ${ classIsActive }"
       data-id="${senderId}" data-page="0" data-hasMsg="1" data-allow-load="1"
     >
       <div class="wrap-loader-mini">
@@ -175,7 +175,7 @@ const Messenger = (() => {
             <img class="rounded-circle mr-1 avatar-mini" src="${msgObj.avatar}" alt="${msgObj.username}" />
             <div>
                 <div class="mini-name">${msgObj.username}</div>
-                <div class="mini-status">${status === 'online' ? 'Đang hoạt động' : 'Đang không hoạt động'}</div>
+                <div class="mini-status">${status}</div>
             </div>
           </div>
           <div class="flex-fill d-flex align-items-center justify-content-end">
