@@ -18,12 +18,12 @@ const formatMsg = function (msg, me, friend) {
     class: '',
     timeCall: ''
   }
-  const timeDate = moment(msg.time).date()
-  const nowDate = moment().date()
 
-  if (nowDate - timeDate <= 0) {
+  const diffDate = moment().diff(moment(msg.time), 'days')
+
+  if (diffDate <= 0) {
     msgFormat.time = moment(msg.time).format('H:mm')
-  } else if (nowDate - timeDate === 1) {
+  } else if (diffDate === 1) {
     msgFormat.time = 'Hôm qua: ' + moment(msg.time).format('H:mm')
   } else {
     msgFormat.time = moment(msg.time).format('DD/MM/YYYY H:mm')

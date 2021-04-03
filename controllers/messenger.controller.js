@@ -23,7 +23,7 @@ const hasErrMsg = 'Có lỗi xảy ra'
 const settingUrl = '/messenger/setting'
 
 // number msg be loaded per a time
-const msgPerLoad = 1
+const msgPerLoad = 20
 
 const storage = multer.diskStorage({
   // destination: './public/images/users/',
