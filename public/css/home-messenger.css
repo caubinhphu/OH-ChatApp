@@ -7438,7 +7438,8 @@ body {
   z-index: 99;
 }
 
-.box-search {
+.box-search,
+#search-friend {
   border-radius: 20px;
   padding: 5px 32px 5px 16px;
   line-height: 1;
@@ -7446,7 +7447,8 @@ body {
   font-size: 16px;
 }
 
-.box-search + .icomoon {
+.box-search + .icomoon,
+#search-friend + .icomoon {
   position: absolute;
   top: 9px;
   right: 12px;
@@ -7834,6 +7836,58 @@ textarea.form-control.msg-mini {
 .wrap-pop-has-call .caller-img {
   max-width: 100px;
   margin-right: 20px;
+}
+
+.search-fri-res-box {
+  position: absolute;
+  background: #fff;
+  z-index: 2;
+  right: 0;
+  left: 0;
+  top: 42px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px #555;
+  max-height: 372px;
+  overflow: auto;
+}
+
+.s-fri-item {
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.s-fri-item img {
+  max-width: 50px;
+  margin-right: 10px;
+}
+
+.s-fri-item:hover {
+  background-color: #dedede;
+}
+
+.loader-search {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 175px;
+  display: none;
+}
+
+#main-left-search.show-loader .search-fri-res-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #9e9e9e73;
+}
+
+#main-left-search.show-loader .loader-search {
+  display: block;
 }
 
 @media only screen and (max-width: 850px) {

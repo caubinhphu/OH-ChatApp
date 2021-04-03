@@ -4,15 +4,12 @@ append styles
   link(rel="stylesheet", href="/css/home-messenger.css")
 
 block header
-  form(action="/messenger/search-friend", method="get", name="search-fri")
-    input(type="text", name="q")
-    button(type="submit") OK
   #header.p-2.d-flex.justify-content-between
     #header-left.d-flex.align-items-center
       #logo
         a(href="/messenger", title="OH chat - Messenger")
           img(src="/images/logo-mini.png", alt="oh-chat", width="40px")
-      #search.ml-1.ps-rv
+      #search.ml-1.ps-rv.show-loader
         label.sr-only(for="box-search") Search
         input.form-control.form-control-sm.box-search#box-search(type="text", placeholder="Tìm kiếm bạn bè")
         span.icomoon.icon-icon-search

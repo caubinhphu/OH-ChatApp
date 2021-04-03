@@ -12,8 +12,17 @@ block contentMain
               span.icomoon.icon-plus
             a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
               span.icomoon.icon-sign-in
-        //- #main-left-search.mt-2
-        //-   input.form-control(type="text", placeholder="Tìm bạn bè để chat")
+        #main-left-search.mt-2
+          form.ps-rv.form-search-friend
+            label.sr-only(for="search-friend")
+            input#search-friend.form-control(type="text", name="q", placeholder="Tìm bạn bè để chat", autocomplete="off")
+            span.icomoon.icon-icon-search
+            .search-fri-res-box.d-none
+              .text-center.last-mb-none
+                p Kết quả tìm kiếm
+            //- .loader-search
+            //-   img(src="/images/loader.svg" alt="loader")
+                
         #main-left-friends.mt-2.flex-fill
           each friend in friends
             .friend-item.mt-1.ps-rv(class=`${friendChat ? friend.id === friendChat.id ? "is-active": "" : ""} ${friend.status === 'online' ? "is-online" : ""}`, data-id=friend.id)
@@ -75,7 +84,6 @@ block contentMain
               button.btn.btn-default.open-emojis(type="button") &#128512;
               input(type="hidden", name="_token" value=token)
               .flex-fill.wrap-msg-box.ps-rv
-                //- input.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
                 textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
               button.btn.btn-default.text-secondary
                 span.icomoon.icon-send

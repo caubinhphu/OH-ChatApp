@@ -124,16 +124,16 @@ const Index = (() => {
       window.scrollBottomChatBox()
     });
 
-    document['search-fri'].addEventListener('submit', function(e) {
+    // preventDefault form search friend
+    $('.form-search-friend').on('submit', function(e) {
       e.preventDefault()
-      this.q.value = ''
     })
-    document['search-fri'].q.addEventListener('input', function() {
-      console.log(this.value)
+
+    // send query search friend
+    $('#search-friend').on('input', function() {
       clearTimeout(window.idTimeOutSearch)
       window.idTimeOutSearch = setTimeout(async () => {
         console.log(this.value)
-
         try {
           if (this.value) {
             const response = await axios.get('/messenger/search-friend', {
@@ -141,14 +141,42 @@ const Index = (() => {
                 q: this.value
               }
             })
-  
+
             const { friends } = response.data
+            console.log(friends);
+            let html = friends.map(friend => `
+              <div class="s-fri-item">
+                <div class="d-flex align-items-center ps-rv">
+                  <img class="rounded-circle" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
+                  <div class="wrap-pre-s-right">
+                    <div class="name-member">${friend.name}</div>
+                  </div>
+                  <a class="ps-as" href="/messenger/chat/${friend.url ? friend.url : friend._id}">
+                    <span class="sr-only">Chat with ${friend.name}</span>
+                  </a>
+                </div>
+              </div>
+            `).join('')
+
+            if (html === '') {
+              html = `
+                <div class="text-center last-mb-none">
+                  <p>Không tìm thấy bạn bè phù hợp</p>
+                </div>
+              `
+            }
+            $('.search-fri-res-box').html(html)
+            // $('#main-left-search').removeClass('show-loader')
           }
-          console.log(friends);
         } catch (error) {
           window.outputErrorMessage(error?.response?.data?.message)
         }
-      }, 2000)
+      }, 500)
+    }).on('focus', () => {
+      $('.search-fri-res-box').removeClass('d-none')
+      // $('#main-left-search').addClass('show-loader')
+    }).on('blur', () => {
+      $('.search-fri-res-box').addClass('d-none')
     })
 
     // receive msg obj from server

@@ -783,15 +783,16 @@ module.exports.getSearchFriend = async (req, res) => {
     if (me) {
       const friends = await Member.find(
         {
-          _id: { $in: me.friends },
+          // _id: { $in: me.friends },
           $text: { $search: q }
         },
         {
           name: 1,
           url: 1,
+          avatar: 1
           // score: { $meta: 'textScore' }
         }
-      ).sort({ score: { $meta: 'textScore' } })
+      ).sort({ score: { $meta: 'textScore' } }).limit(10)
 
       res.status(200).json({ friends })
     } else {

@@ -41149,18 +41149,18 @@ var Index = function () {
 
     $(classScBottom).on('click', function () {
       window.scrollBottomChatBox();
-    });
-    document['search-fri'].addEventListener('submit', function (e) {
+    }); // preventDefault form search friend
+
+    $('.form-search-friend').on('submit', function (e) {
       e.preventDefault();
-      this.q.value = '';
-    });
-    document['search-fri'].q.addEventListener('input', function () {
+    }); // send query search friend
+
+    $('#search-friend').on('input', function () {
       var _this = this;
 
-      console.log(this.value);
       clearTimeout(window.idTimeOutSearch);
       window.idTimeOutSearch = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var response, friends, _error$response2, _error$response2$data;
+        var response, friends, html, _error$response2, _error$response2$data;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -41168,32 +41168,53 @@ var Index = function () {
               case 0:
                 console.log(_this.value);
                 _context2.prev = 1;
-                _context2.next = 4;
+
+                if (!_this.value) {
+                  _context2.next = 11;
+                  break;
+                }
+
+                _context2.next = 5;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
                   params: {
                     q: _this.value
                   }
                 });
 
-              case 4:
+              case 5:
                 response = _context2.sent;
                 friends = response.data.friends;
                 console.log(friends);
-                _context2.next = 12;
+                html = friends.map(function (friend) {
+                  return "\n              <div class=\"s-fri-item\">\n                <div class=\"d-flex align-items-center ps-rv\">\n                  <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                  <div class=\"wrap-pre-s-right\">\n                    <div class=\"name-member\">").concat(friend.name, "</div>\n                  </div>\n                  <a class=\"ps-as\" href=\"/messenger/chat/").concat(friend.url ? friend.url : friend._id, "\">\n                    <span class=\"sr-only\">Chat with ").concat(friend.name, "</span>\n                  </a>\n                </div>\n              </div>\n            ");
+                }).join('');
+
+                if (html === '') {
+                  html = "\n                <div class=\"text-center last-mb-none\">\n                  <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n                </div>\n              ";
+                }
+
+                $('.search-fri-res-box').html(html); // $('#main-left-search').removeClass('show-loader')
+
+              case 11:
+                _context2.next = 16;
                 break;
 
-              case 9:
-                _context2.prev = 9;
+              case 13:
+                _context2.prev = 13;
                 _context2.t0 = _context2["catch"](1);
                 window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
-              case 12:
+              case 16:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 9]]);
-      })), 2000);
+        }, _callee2, null, [[1, 13]]);
+      })), 1000);
+    }).on('focus', function () {
+      $('.search-fri-res-box').removeClass('d-none'); // $('#main-left-search').addClass('show-loader')
+    }).on('blur', function () {
+      $('.search-fri-res-box').addClass('d-none');
     }); // receive msg obj from server
 
     window.socket.on('msg-messenger', function (_ref3) {
