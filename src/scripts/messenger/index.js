@@ -187,10 +187,17 @@ const Index = (() => {
       }, 500)
     }).on('focus', () => {
       $('.search-fri-res-box').removeClass('d-none')
-    }).on('blur', () => {
-      $('.search-fri-res-box').addClass('d-none')
-      $('.loader-search').addClass('d-none')
     })
+
+    // click outside search
+    $(document).on('click', function(e) {
+      const container = $("#main-left-search");
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        $('.search-fri-res-box').addClass('d-none')
+        $('.loader-search').addClass('d-none')
+      }
+    });
 
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {

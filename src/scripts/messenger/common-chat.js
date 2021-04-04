@@ -527,7 +527,7 @@ const CommonChat = (() => {
           // const { members } = response.data
 
           let html = members.map(friend => `
-            <div class="pre-search-item ps-rv">
+            <div class="pre-search-item-box ps-rv">
               <div class="d-flex align-items-center">
               <img class="rounded-circle" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
                 <div class="wrap-pre-s-right">
@@ -560,11 +560,17 @@ const CommonChat = (() => {
     }, 500)
   }).on('focus', () => {
     $('.search-res-box').removeClass('d-none')
-  }).on('blur', () => {
-    $('.search-res-box').addClass('d-none')
-    $('.loader-search-box').addClass('d-none')
   })
 
+  // click outside search
+  $(document).on('click', function(e) {
+    const container = $("#search");
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+      $('.search-res-box').addClass('d-none')
+      $('.loader-search-box').addClass('d-none')
+    }
+  });
 
   /**
    * Function create and append call message to local

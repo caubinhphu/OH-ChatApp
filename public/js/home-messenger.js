@@ -39713,7 +39713,7 @@ var CommonChat = function () {
               window.oldSearchBox = value; // const { members } = response.data
 
               html = members.map(function (friend) {
-                return "\n            <div class=\"pre-search-item ps-rv\">\n              <div class=\"d-flex align-items-center\">\n              <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <div class=\"wrap-pre-s-right\">\n                  <div class=\"name-member\">").concat(friend.name, "</div>\n                  <div><small class=\"text-secondary\">").concat(friend.status ? 'Bạn bè' : '', "</small></div>\n                </div>\n              </div>\n              <a class=\"ps-as\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend._id, "\">\n                <span class=\"sr-only\">View ").concat(friend.name, "</span>\n              </a>\n            </div>\n          ");
+                return "\n            <div class=\"pre-search-item-box ps-rv\">\n              <div class=\"d-flex align-items-center\">\n              <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <div class=\"wrap-pre-s-right\">\n                  <div class=\"name-member\">").concat(friend.name, "</div>\n                  <div><small class=\"text-secondary\">").concat(friend.status ? 'Bạn bè' : '', "</small></div>\n                </div>\n              </div>\n              <a class=\"ps-as\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend._id, "\">\n                <span class=\"sr-only\">View ").concat(friend.name, "</span>\n              </a>\n            </div>\n          ");
               }).join('');
 
               if (html === '') {
@@ -39747,9 +39747,15 @@ var CommonChat = function () {
     })), 500);
   }).on('focus', function () {
     $('.search-res-box').removeClass('d-none');
-  }).on('blur', function () {
-    $('.search-res-box').addClass('d-none');
-    $('.loader-search-box').addClass('d-none');
+  }); // click outside search
+
+  $(document).on('click', function (e) {
+    var container = $("#search"); // if the target of the click isn't the container nor a descendant of the container
+
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+      $('.search-res-box').addClass('d-none');
+      $('.loader-search-box').addClass('d-none');
+    }
   });
   /**
    * Function create and append call message to local
@@ -41264,7 +41270,7 @@ var Index = function () {
                 _context2.prev = 0;
 
                 if (!(value && value !== window.oldSearch)) {
-                  _context2.next = 20;
+                  _context2.next = 19;
                   break;
                 }
 
@@ -41276,24 +41282,23 @@ var Index = function () {
                 }
 
                 friends = oldSearchFriRes[value];
-                _context2.next = 13;
+                _context2.next = 12;
                 break;
 
               case 7:
-                console.log('send');
-                _context2.next = 10;
+                _context2.next = 9;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
                   params: {
                     q: value
                   }
                 });
 
-              case 10:
+              case 9:
                 response = _context2.sent;
                 friends = response.data.friends;
                 oldSearchFriRes[value] = friends;
 
-              case 13:
+              case 12:
                 window.oldSearch = value;
                 html = friends.map(function (friend) {
                   return "\n              <div class=\"s-fri-item\">\n                <div class=\"d-flex align-items-center ps-rv\">\n                  <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                  <div class=\"wrap-pre-s-right\">\n                    <div class=\"name-member\">").concat(friend.name, "</div>\n                  </div>\n                  <a class=\"ps-as\" href=\"/messenger/chat/").concat(friend.url ? friend.url : friend._id, "\">\n                    <span class=\"sr-only\">Chat with ").concat(friend.name, "</span>\n                  </a>\n                </div>\n              </div>\n            ");
@@ -41305,34 +41310,40 @@ var Index = function () {
 
                 $('.s-fri-res-box').html(html);
                 $('.loader-search').addClass('d-none');
-                _context2.next = 21;
+                _context2.next = 20;
                 break;
 
-              case 20:
+              case 19:
                 $('.loader-search').addClass('d-none');
 
-              case 21:
-                _context2.next = 27;
+              case 20:
+                _context2.next = 26;
                 break;
 
-              case 23:
-                _context2.prev = 23;
+              case 22:
+                _context2.prev = 22;
                 _context2.t0 = _context2["catch"](0);
                 $('.loader-search').addClass('d-none');
                 window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
-              case 27:
+              case 26:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 23]]);
+        }, _callee2, null, [[0, 22]]);
       })), 500);
     }).on('focus', function () {
       $('.search-fri-res-box').removeClass('d-none');
-    }).on('blur', function () {
-      $('.search-fri-res-box').addClass('d-none');
-      $('.loader-search').addClass('d-none');
+    }); // click outside search
+
+    $(document).on('click', function (e) {
+      var container = $("#main-left-search"); // if the target of the click isn't the container nor a descendant of the container
+
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        $('.search-fri-res-box').addClass('d-none');
+        $('.loader-search').addClass('d-none');
+      }
     }); // receive msg obj from server
 
     window.socket.on('msg-messenger', function (_ref3) {

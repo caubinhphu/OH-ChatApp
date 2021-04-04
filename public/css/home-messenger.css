@@ -7490,18 +7490,21 @@ body {
   background-color: #dedede;
 }
 
-.pre-search-item {
+.pre-search-item,
+.pre-search-item-box {
   padding: 5px;
   border-radius: 10px;
   cursor: pointer;
 }
 
-.pre-search-item img {
+.pre-search-item img,
+.pre-search-item-box img {
   max-width: 50px;
   margin-right: 10px;
 }
 
-.pre-search-item:hover {
+.pre-search-item:hover,
+.pre-search-item-box:hover {
   background-color: #dedede;
 }
 
