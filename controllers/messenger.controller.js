@@ -262,7 +262,6 @@ module.exports.getFriendRequests = async (req, res) => {
 module.exports.getFriendInvitations = async (req, res) => {
   try {
     const page = req.query.page || 0
-    console.log(page);
     const member = await Member.findById(req.user.id).populate({
       path: 'friendInvitations',
       options: {
@@ -874,7 +873,6 @@ module.exports.getSearchMain = async (req, res, next) => {
 module.exports.getSearchMainMore = async (req, res) => {
   const { q, page } = req.query
 
-  console.log(q);
   try {
     const me = await Member.findById(req.user.id)
     if (me && +page) {
@@ -914,7 +912,6 @@ module.exports.getSearchMainMore = async (req, res) => {
       res.status(404).json({ messages: notMem })
     }
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ messages: hasErrMsg })
   }
 }
