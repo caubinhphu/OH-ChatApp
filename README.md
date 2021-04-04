@@ -82,3 +82,11 @@
   - Chia sẻ màn hình
   - Sử dụng webpack
 </details>
+<details>
+  <summary>Version 3.0.0 (04/04/2021)</summary>
+  Chức năng thêm:
+
+  - Messenger
+    - Chat (message, audio, video)
+    - Các hoạt động liên quan đến kết bạn
+</details>
