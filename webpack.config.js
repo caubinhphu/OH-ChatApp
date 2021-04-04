@@ -54,7 +54,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 url: false,
-                // minimize: false,
+                minimize: true,
               },
             },
             // Compiles Sass to CSS
@@ -68,7 +68,7 @@ module.exports = {
                 sourceMap: true,
                 sourceMapContents: true,
                 url: false,
-                // minimize: false,
+                minimize: true,
               },
             },
           ],
