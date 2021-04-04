@@ -14,19 +14,18 @@ block header
         input.form-control.form-control-sm.box-search#box-search(type="text", placeholder="Tìm kiếm bạn bè", autocomplete="off")
         span.icomoon.icon-icon-search
         .search-res-box.d-none
+          .loader-search-box.d-none.text-center
+            img(src="/images/loader.svg" alt="loader")
           .wrap-s-res
-            .pre-search-item
-              .d-flex.align-items-center
-                img.rounded-circle(alt='${friend.name}', src='http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png', title='${friend.name}')
-                .wrap-pre-s-right
-                  .name-member Name
-                  div
-                    small Status
+            .text-center.last-mb-none
+              p Kết quả tìm kiếm
           .search-basic
             .d-flex.align-items-center
               span.icomoon.icon-icon-search
               .wrap-pre-s-right
-                .name-member Tìm kiếm abc
+                .name-member
+                  span.text-secondary Tìm kiếm 
+                  strong.text-search-box
           
     #header-right.d-flex.align-items-center
       #user

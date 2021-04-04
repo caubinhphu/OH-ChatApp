@@ -768,10 +768,57 @@ module.exports.getChatMediaFriend = async (req, res, next) => {
 }
 
 // search
-module.exports.getSearch = (req, res, next) => {
-  res.render('messenger/search', {
-    titleSide: siteMes
-  })
+module.exports.getSearch = async (req, res) => {
+  const { q } = req.query
+
+  try {
+    const me = await Member.findById(req.user.id)
+    if (me) {
+      const friends = await Member.find(
+        {
+          _id: { $in: me.friends },
+          $text: { $search: q }
+        },
+        {
+          name: 1,
+          url: 1,
+          avatar: 1
+          // score: { $meta: 'textScore' }
+        }
+      ).sort({ score: { $meta: 'textScore' } }).limit(5)
+
+      const members = await Member.find(
+        {
+          _id: { $nin: friends },
+          $text: { $search: q }
+        },
+        {
+          name: 1,
+          url: 1,
+          avatar: 1
+          // score: { $meta: 'textScore' }
+        }
+      ).sort({ score: { $meta: 'textScore' } }).limit(5)
+
+      const merge = friends.map(fri => {
+        const friend = fri.toObject()
+          friend.status = 1
+          return friend
+      })
+
+      merge.push(...members.map(mem => {
+        const member = mem.toObject()
+          member.status = 0
+          return member
+      }))
+
+      res.status(200).json({ members: merge })
+    } else {
+      res.status(404).json({ messages: notMem })
+    }
+  } catch (error) {
+    res.status(500).json({ messages: hasErrMsg })
+  }
 }
 
 // search friend chat

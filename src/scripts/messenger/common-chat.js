@@ -1,4 +1,5 @@
 import moment from 'moment';
+import axios from 'axios';
 
 const CommonChat = (() => {
   const socket = io();
@@ -495,6 +496,62 @@ const CommonChat = (() => {
       window.windowReceive.close()
     }
   }
+
+  // search friend and unfriend
+  $('#box-search').on('input', function() {
+    $('.loader-search-box').removeClass('d-none')
+    $('.text-search-box').html(this.value)
+    clearTimeout(window.idTimeOutSearchBox)
+    window.idTimeOutSearchBox = setTimeout(async () => {
+      try {
+        if (this.value && this.value !== window.oldSearchBox) {
+          const response = await axios.get('/messenger/search', {
+            params: {
+              q: this.value
+            }
+          })
+
+          window.oldSearchBox = this.value
+          const { members } = response.data
+          let html = members.map(friend => `
+            <div class="pre-search-item ps-rv">
+              <div class="d-flex align-items-center">
+              <img class="rounded-circle" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
+                <div class="wrap-pre-s-right">
+                  <div class="name-member">${friend.name}</div>
+                  <div><small class="text-secondary">${friend.status ? 'Bạn bè' : ''}</small></div>
+                </div>
+              </div>
+              <a class="ps-as" href="/messenger/member/${friend.url ? friend.url : friend._id}">
+                <span class="sr-only">View ${friend.name}</span>
+              </a>
+            </div>
+          `).join('')
+
+          if (html === '') {
+            html = `
+              <div class="text-center last-mb-none">
+                <p>Không tìm thấy bạn bè phù hợp</p>
+              </div>
+            `
+          }
+          $('.wrap-s-res').html(html)
+          $('.loader-search-box').addClass('d-none')
+        } else {
+          $('.loader-search-box').addClass('d-none')
+        }
+      } catch (error) {
+        $('.loader-search-box').addClass('d-none')
+        window.outputErrorMessage(error?.response?.data?.message)
+      }
+    }, 500)
+  }).on('focus', () => {
+    $('.search-res-box').removeClass('d-none')
+  }).on('blur', () => {
+    $('.search-res-box').addClass('d-none')
+    $('.loader-search-box').addClass('d-none')
+  })
+
 
   /**
    * Function create and append call message to local
