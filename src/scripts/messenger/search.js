@@ -21,20 +21,20 @@ const Search = (() => {
           if (member.relatedWithMe === 'friend') {
             subHtml = `
               <a class="btn mb-1" href="/messenger/chat/${member.url ? member.url : member._id}">Chat</a>
-              <button class="des-friend btn btn-red data-id="${member._id}">Hủy kết bạn</button>
+              <button class="des-friend btn btn-red" data-id="${member._id}">Hủy kết bạn</button>
             `
           } else if (member.relatedWithMe === 'request') {
             subHtml = `
-              <button class="des-req-friend btn btn-red data-id="${member._id}">Hủy yêu cầu</button>
+              <button class="des-req-friend btn btn-red" data-id="${member._id}">Hủy yêu cầu</button>
             `
           } else if (member.relatedWithMe === 'invitation') {
             subHtml = `
-              <button class="accept-inv-friend btn data-id="${member._id}">Chấp nhận lời mời</button>
-              <button class="del-inv-friend btn btn-red data-id="${member._id}">Xóa lời mời</button>
+              <button class="accept-inv-friend btn" data-id="${member._id}">Chấp nhận lời mời</button>
+              <button class="del-inv-friend btn btn-red" data-id="${member._id}">Xóa lời mời</button>
             `
           } else {
             subHtml = `
-              <button class="req-friend btn data-id="${member._id}">Gửi lời mời kết bạn</button>
+              <button class="req-friend btn" data-id="${member._id}">Gửi lời mời kết bạn</button>
             `
           }
 
@@ -65,6 +65,58 @@ const Search = (() => {
         window.outputErrorMessage(error?.response?.data?.messages)
       }
       $('.loader-more').addClass('d-none')
+    })
+
+    const $popupConfirm = $('.popup-confirm')
+
+    $(document).on('click', '.req-friend', async function(e) {
+      e.preventDefault()
+      const memberId = $(this).attr('data-id')
+      await window.addRequestFriend(memberId, $(this).parents('.fri-item-ctrl'), false)
+    })
+
+    $(document).on('click', '.des-req-friend', function(e) {
+      e.preventDefault()
+      window.memberId = $(this).attr('data-id')
+      window.typeConfirm = 'destroy-request-add-friend'
+      $('.title-confirm').html('Bạn có chắc xóa yêu cầu kết bạn')
+      $popupConfirm.removeClass('d-none')
+    })
+
+    $(document).on('click', '.del-inv-friend', function(e) {
+      e.preventDefault()
+      window.memberId = $(this).attr('data-id')
+      window.typeConfirm = 'delete-invitation-friend'
+      $('.title-confirm').html('Bạn có chắc xóa lời mời kết bạn')
+      $popupConfirm.removeClass('d-none')
+    })
+
+    $(document).on('click', '.accept-inv-friend', async function(e) {
+      e.preventDefault()
+      const memberId = $(this).attr('data-id')
+      await window.acceptAddFriend(memberId, $(this).parents('.fri-item-ctrl'), false, false)
+    })
+
+    $(document).on('click', '.des-friend', function(e) {
+      e.preventDefault()
+      window.memberId = $(this).attr('data-id')
+      window.typeConfirm = 'destroy-friend'
+      $('.title-confirm').html('Bạn có chắc hủy kết bạn')
+      $popupConfirm.removeClass('d-none')
+    })
+
+    $('#btn-confirm').on('click', async (e) => {
+      e.preventDefault()
+      await window.confirmFriendAction(
+        $(`.search-res-item[data-id=${window.memberId}]`).find('.fri-item-ctrl'),
+        false
+      )
+    })
+
+    $('.close-popup-con').on('click', () => {
+      $popupConfirm.addClass('d-none')
+      window.memberId = undefined
+      window.typeConfirm = undefined
     })
   }
 })()

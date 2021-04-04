@@ -8143,6 +8143,10 @@ textarea.form-control.msg-mini {
   transform: translateX(-50%);
 }
 
+.load-more-search {
+  transition: opacity .25s;
+}
+
 .load-more-search.hide {
   opacity: 0;
   pointer-events: none;

@@ -139,11 +139,10 @@ const Profile = (() => {
 
 
     const $popupConfirm = $('.popup-confirm')
-    const $wrapBtn = $('.wrap-btn-ctrl')
 
     $(document).on('click', '.des-req-friend', function(e) {
       e.preventDefault()
-      window.memberIdConfirm = $(this).attr('data-id')
+      window.memberId = $(this).attr('data-id')
       window.typeConfirm = 'destroy-request-add-friend'
       $('.title-confirm').html('Bạn có chắc xóa yêu cầu kết bạn')
       $popupConfirm.removeClass('d-none')
@@ -151,7 +150,7 @@ const Profile = (() => {
 
     $(document).on('click', '.del-inv-friend', function(e) {
       e.preventDefault()
-      window.memberIdConfirm = $(this).attr('data-id')
+      window.memberId = $(this).attr('data-id')
       window.typeConfirm = 'delete-invitation-friend'
       $('.title-confirm').html('Bạn có chắc xóa lời mời kết bạn')
       $popupConfirm.removeClass('d-none')
@@ -159,34 +158,21 @@ const Profile = (() => {
 
     $(document).on('click', '.accept-inv-friend', async function(e) {
       e.preventDefault()
-      window.showLoader()
-      const memberIdConfirm = $(this).attr('data-id')
-      if (memberIdConfirm) {
-        try {
-          const responsive = await axios.put(`/messenger/accept-invitation`, {
-            memberId: memberIdConfirm
-          });
-
-          const { messages } = responsive.data;
-
-          window.outputSuccessMessage(messages)
-
+      const memberId = $(this).attr('data-id')
+      await window.acceptAddFriend(
+        memberId,
+        $(this).parents('.fri-item-ctrl'),
+        false,
+        false,
+        () => {
           $(this).parents('.wrap-fri-item').remove()
-        } catch (error) {
-          window.outputErrorMessage(error?.response?.data?.messages)
-          // setTimeout(() => {
-          //   if (error?.response?.status === 400) {
-          //     reloadPage()
-          //   }
-          // }, 500);
         }
-      }
-      window.hideLoader()
+      )
     })
 
     $(document).on('click', '.des-friend', function(e) {
       e.preventDefault()
-      window.memberIdConfirm = $(this).attr('data-id')
+      window.memberId = $(this).attr('data-id')
       window.typeConfirm = 'destroy-friend'
       $('.title-confirm').html('Bạn có chắc hủy kết bạn')
       $popupConfirm.removeClass('d-none')
@@ -194,80 +180,18 @@ const Profile = (() => {
 
     $('#btn-confirm').on('click', async (e) => {
       e.preventDefault()
-      window.showLoader()
-      if (window.memberIdConfirm && window.typeConfirm) {
-        if (window.typeConfirm === 'destroy-request-add-friend') {
-          try {
-            const responsive = await axios.delete(`/messenger/destroy-request`, {
-              data: {
-                memberId: window.memberIdConfirm
-              }
-            });
-            const { messages } = responsive.data;
-
-            window.outputSuccessMessage(messages)
-
-            $(`.wrap-fri-item[data-id="${window.memberIdConfirm}"]`).remove()
-          } catch (error) {
-            window.outputErrorMessage(error?.response?.data?.messages)
-            // setTimeout(() => {
-            //   if (error?.response?.status === 400) {
-            //     reloadPage()
-            //   }
-            // }, 500);
-          }
-        } else if (window.typeConfirm === 'delete-invitation-friend') {
-          try {
-            const responsive = await axios.delete(`/messenger/delete-invitation`, {
-              data: {
-                memberId: window.memberIdConfirm
-              }
-            });
-            const { messages } = responsive.data;
-
-            window.outputSuccessMessage(messages)
-
-            $(`.wrap-fri-item[data-id="${window.memberIdConfirm}"]`).remove()
-          } catch (error) {
-            window.outputErrorMessage(error?.response?.data?.messages)
-            // setTimeout(() => {
-            //   if (error?.response?.status === 400) {
-            //     reloadPage()
-            //   }
-            // }, 500);
-          }
-        } else if (window.typeConfirm === 'destroy-friend') {
-          try {
-            const responsive = await axios.delete(`/messenger/destroy-friend`, {
-              data: {
-                memberId: window.memberIdConfirm
-              }
-            });
-            const { messages } = responsive.data;
-
-            window.outputSuccessMessage(messages)
-
-            $(`.wrap-fri-item[data-id="${window.memberIdConfirm}"]`).remove()
-          } catch (error) {
-            window.outputErrorMessage(error?.response?.data?.messages)
-            // setTimeout(() => {
-            //   if (error?.response?.status === 400) {
-            //     reloadPage()
-            //   }
-            // }, 500);
-          }
+      await window.confirmFriendAction(
+        $(`.wrap-fri-item[data-id=${window.memberId}]`).find('.fri-item-ctrl'),
+        false,
+        () => {
+          $(`.wrap-fri-item[data-id="${window.memberId}"]`).remove()
         }
-
-        $popupConfirm.addClass('d-none')
-        window.memberId = undefined
-        window.typeConfirm = undefined
-      }
-      window.hideLoader()
+      )
     })
 
     $('.close-popup-con').on('click', () => {
       $popupConfirm.addClass('d-none')
-      window.memberIdConfirm = undefined
+      window.memberId = undefined
       window.typeConfirm = undefined
     })
 
@@ -305,7 +229,6 @@ const Profile = (() => {
       } else if (hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest) {
         try {
           const requests = await axios.get(`/messenger/profile/friend-request?page=${pageFriendRequest}`);
-          console.log(requests);
           const { friends, hasFriend } = requests.data;
           $(friendRequest).append(
             friends.map(friend => {
@@ -334,7 +257,6 @@ const Profile = (() => {
           const invitations = await axios.get(
             `/messenger/profile/friend-invitation?page=${pageFriendInvitation}`
           );
-          console.log(invitations);
           const { friends, hasFriend } = invitations.data;
           $(friendInvitation).append(
             friends.map(friend => {

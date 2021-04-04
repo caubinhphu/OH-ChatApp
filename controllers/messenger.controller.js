@@ -789,7 +789,7 @@ module.exports.getSearch = async (req, res) => {
 
       const members = await Member.find(
         {
-          _id: { $nin: friends },
+          _id: { $nin: friends, $ne: me._id },
           $text: { $search: q }
         },
         {
@@ -830,7 +830,7 @@ module.exports.getSearchMain = async (req, res, next) => {
     if (me) {
       let members = await Member.find(
         {
-          // _id: { $in: me.friends },
+          _id: { $ne: me._id },
           $text: { $search: q }
         },
         {
@@ -880,6 +880,7 @@ module.exports.getSearchMainMore = async (req, res) => {
     if (me && +page) {
       let members = await Member.find(
         {
+          _id: { $ne: me._id },
           $text: { $search: q }
         },
         {

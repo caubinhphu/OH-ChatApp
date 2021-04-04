@@ -31,14 +31,14 @@ block contentMain
         .bg-light.d-flex.justify-content-center.py-3.wrap-btn-ctrl
           if (statusFriend === 'friend')
             a.btn(href=`/messenger/chat/${member.url ? member.url : member.id}`) Chat
-            button#des-friend.btn.btn-red.ml-3(data-id=member.id) Hủy kết bạn
+            button.des-friend.btn.btn-red.ml-3(data-id=member.id) Hủy kết bạn
           else if (statusFriend === 'friendRequest')
-            button#des-req-friend.btn.btn-red(data-id=member.id) Hủy yêu cầu
+            button.des-req-friend.btn.btn-red(data-id=member.id) Hủy yêu cầu
           else if (statusFriend === 'friendInvitation')
-            button#accept-inv-friend.btn.mr-3(data-id=member.id) Chấp nhận lời mời
-            button#del-inv-friend.btn.btn-red(data-id=member.id) Xóa lời mời
+            button.accept-inv-friend.btn.mr-3(data-id=member.id) Chấp nhận lời mời
+            button.del-inv-friend.btn.btn-red(data-id=member.id) Xóa lời mời
           else
-            button#req-friend.btn(data-id=member.id) Gửi lời mời kết bạn
+            button.req-friend.btn(data-id=member.id) Gửi lời mời kết bạn
   .popup-confirm.d-none
     .d-flex.justify-content-center.align-items-center.h-100
       .wrap-pop-confirm
