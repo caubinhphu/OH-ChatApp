@@ -5,6 +5,9 @@ const CommonChat = (() => {
   const socket = io();
   window.socket = socket
 
+
+  const oldSearchRes = {}
+
   socket.emit('msg-memberOnline', { memberId: $('#member-id').text() })
 
   // receive error message from server when has error
@@ -500,19 +503,29 @@ const CommonChat = (() => {
   // search friend and unfriend
   $('#box-search').on('input', function() {
     $('.loader-search-box').removeClass('d-none')
-    $('.text-search-box').html(this.value)
+    const value = this.value.replace(/\s+/g, ' ').trim()
+    $('.text-search-box').html(value)
     clearTimeout(window.idTimeOutSearchBox)
     window.idTimeOutSearchBox = setTimeout(async () => {
       try {
-        if (this.value && this.value !== window.oldSearchBox) {
-          const response = await axios.get('/messenger/search', {
-            params: {
-              q: this.value
-            }
-          })
+        if (value && value !== window.oldSearchBox) {
+          let members = []
+          if (oldSearchRes[value]) {
+            members = oldSearchRes[value]
+          } else {
+            const response = await axios.get('/messenger/search', {
+              params: {
+                q: value
+              }
+            })
 
-          window.oldSearchBox = this.value
-          const { members } = response.data
+            members = response.data.members
+            oldSearchRes[value] = members
+          }
+          window.oldSearchBox = value
+          
+          // const { members } = response.data
+
           let html = members.map(friend => `
             <div class="pre-search-item ps-rv">
               <div class="d-flex align-items-center">

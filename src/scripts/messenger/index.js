@@ -8,6 +8,8 @@ const Index = (() => {
   let currentPageChat = 0 // current page load old chat
   let allowLoadOld = true
 
+  const oldSearchFriRes = {}
+
   const classScBottom = '.scroll-bottom'
 
   if (msgForm) {
@@ -132,18 +134,26 @@ const Index = (() => {
     // send query search friend
     $('#search-friend').on('input', function() {
       $('.loader-search').removeClass('d-none')
+      const value = this.value.replace(/\s+/g, ' ').trim()
       clearTimeout(window.idTimeOutSearch)
       window.idTimeOutSearch = setTimeout(async () => {
         try {
-          if (this.value && this.value !== window.oldSearch) {
-            const response = await axios.get('/messenger/search-friend', {
-              params: {
-                q: this.value
-              }
-            })
-
-            window.oldSearch = this.value
-            const { friends } = response.data
+          if (value && value !== window.oldSearch) {
+            let friends = []
+            if (oldSearchFriRes[value]) {
+              friends = oldSearchFriRes[value]
+            } else {
+              const response = await axios.get('/messenger/search-friend', {
+                params: {
+                  q: value
+                }
+              })
+  
+              friends = response.data.friends
+              oldSearchFriRes[value] = friends
+            }
+            window.oldSearch = value
+            
             let html = friends.map(friend => `
               <div class="s-fri-item">
                 <div class="d-flex align-items-center ps-rv">

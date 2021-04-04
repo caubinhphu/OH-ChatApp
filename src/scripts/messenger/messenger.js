@@ -8,6 +8,8 @@ const Messenger = (() => {
   const nClassNoAct = 'not-active'
   const nClassAct = 'is-active'
 
+  const oldSearchMiniRes = {}
+
   // receive msg obj from server
   window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
     const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
@@ -82,28 +84,33 @@ const Messenger = (() => {
   // send query search friend
   $('#s-fri-mini').on('input', function() {
     $('.loader-search').removeClass('d-none')
+    const value = this.value.replace(/\s+/g, ' ').trim()
     clearTimeout(window.idTimeOutSearchMini)
     window.idTimeOutSearchMini = setTimeout(async () => {
       try {
-        if (this.value && window.oldSearch !== this.value) {
-          const response = await axios.get('/messenger/search-friend', {
-            params: {
-              q: this.value,
-              mini: '1'
-            }
-          })
+        if (value && window.oldSearch !== value) {
+          let friends = []
+          if (oldSearchMiniRes[value]) {
+            friends = oldSearchMiniRes[value]
+          } else {
+            const response = await axios.get('/messenger/search-friend', {
+              params: {
+                q: value,
+                mini: '1'
+              }
+            })
 
-          window.oldSearch = this.value
-          const { friends } = response.data
+            friends = response.data.friends
+            oldSearchMiniRes[value] = friends
+          }
+          window.oldSearch = value
+
           let html = friends.map(friend => `
-            <div class="pre-search-item" data-id="${friend._id}" data-token="${friend.token}" data-status="${friend.status}">
+            <div class="pre-search-item" data-id="${friend._id}" data-token="${friend.token}">
               <div class="d-flex align-items-center">
               <img class="rounded-circle" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
                 <div class="wrap-pre-s-right">
                   <div class="name-member">${friend.name}</div>
-                  <div class="text-secondary">
-                    <small>${friend.status === 'online' ? 'Đang hoạt động' : 'Đang không hoạt động'}</small>
-                  </div>
                 </div>
               </div>
             </div>
@@ -132,7 +139,6 @@ const Messenger = (() => {
   $(document).on('click', '.pre-search-item', async function() {
     const friendId = $(this).attr('data-id')
     const token = $(this).attr('data-token')
-    const status = $(this).attr('data-status')
     const $popupMini = $(`.popup-chat-mini[data-id="${friendId}"]`)
     $('.box-search-mini').addClass('d-none')
     $('.open-search-mini').removeClass('is-open')
@@ -151,15 +157,14 @@ const Messenger = (() => {
         },
         token,
         nClassAct,
-        status === 'online' ? 'Đang hoạt động' : 'Đang không hoạt động'
       )
     }
   })
 
   // function create new chat box mini
-  async function createMiniPopup(senderId, msgObj, token, classIsActive, status = 'Đang hoạt động') {
+  async function createMiniPopup(senderId, msgObj, token, classIsActive) {
     const html = `
-    <div class="popup-chat-mini d-flex flex-column ps-rv ${status === 'Đang hoạt động' ? 'is-online' : ''} ${ classIsActive }"
+    <div class="popup-chat-mini d-flex flex-column ps-rv ${ classIsActive }"
       data-id="${senderId}" data-page="0" data-hasMsg="1" data-allow-load="1"
     >
       <div class="wrap-loader-mini">
@@ -179,7 +184,7 @@ const Messenger = (() => {
             <img class="rounded-circle mr-1 avatar-mini" src="${msgObj.avatar}" alt="${msgObj.username}" />
             <div>
                 <div class="mini-name">${msgObj.username}</div>
-                <div class="mini-status">${status}</div>
+                <div class="mini-status">Đang không hoạt động</div>
             </div>
           </div>
           <div class="flex-fill d-flex align-items-center justify-content-end">
@@ -385,10 +390,18 @@ const Messenger = (() => {
       const currentPage = +$popup.attr('data-page')
       try {
         const responsive = await axios.get(`/messenger/chatold/?friendid=${$popup.attr('data-id')}&page=${currentPage}`);
-        const { messages, hasMsg } = responsive.data;
+        const { messages, hasMsg, friendStatus } = responsive.data;
         // $('.wrap-loader-chat').addClass('d-none')
         $popup.attr('data-page', currentPage + 1)
         $popup.attr('data-hasMsg', hasMsg ? '1' : '0')
+
+        if (friendStatus === 'online') {
+          $popup.addClass('is-online')
+          $popup.find('.mini-status').html('Đang hoạt động')
+        } else {
+          $popup.removeClass('is-online')
+          $popup.find('.mini-status').html('Đang không hoạt động')
+        }
 
         const htmlMsgs = messages.map(msg => {
           const timeEndCall = msg.timeCall ? `<small class="time-call">${msg.timeCall}</small>` : ''

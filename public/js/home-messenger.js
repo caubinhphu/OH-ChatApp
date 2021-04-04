@@ -39257,6 +39257,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var CommonChat = function () {
   var socket = io();
   window.socket = socket;
+  var oldSearchRes = {};
   socket.emit('msg-memberOnline', {
     memberId: $('#member-id').text()
   }); // receive error message from server when has error
@@ -39666,36 +39667,51 @@ var CommonChat = function () {
 
 
   $('#box-search').on('input', function () {
-    var _this = this;
-
     $('.loader-search-box').removeClass('d-none');
-    $('.text-search-box').html(this.value);
+    var value = this.value.replace(/\s+/g, ' ').trim();
+    $('.text-search-box').html(value);
     clearTimeout(window.idTimeOutSearchBox);
     window.idTimeOutSearchBox = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var response, members, html;
+      var members, response, html, _error$response, _error$response$data;
+
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
 
-              if (!(_this.value && _this.value !== window.oldSearchBox)) {
-                _context.next = 14;
+              if (!(value && value !== window.oldSearchBox)) {
+                _context.next = 19;
                 break;
               }
 
-              _context.next = 4;
+              members = [];
+
+              if (!oldSearchRes[value]) {
+                _context.next = 7;
+                break;
+              }
+
+              members = oldSearchRes[value];
+              _context.next = 12;
+              break;
+
+            case 7:
+              _context.next = 9;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/messenger/search', {
                 params: {
-                  q: _this.value
+                  q: value
                 }
               });
 
-            case 4:
+            case 9:
               response = _context.sent;
-              window.oldSearchBox = _this.value;
               members = response.data.members;
-              console.log(members);
+              oldSearchRes[value] = members;
+
+            case 12:
+              window.oldSearchBox = value; // const { members } = response.data
+
               html = members.map(function (friend) {
                 return "\n            <div class=\"pre-search-item ps-rv\">\n              <div class=\"d-flex align-items-center\">\n              <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <div class=\"wrap-pre-s-right\">\n                  <div class=\"name-member\">").concat(friend.name, "</div>\n                  <div><small class=\"text-secondary\">").concat(friend.status ? 'Bạn bè' : '', "</small></div>\n                </div>\n              </div>\n              <a class=\"ps-as\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend._id, "\">\n                <span class=\"sr-only\">View ").concat(friend.name, "</span>\n              </a>\n            </div>\n          ");
               }).join('');
@@ -39706,29 +39722,28 @@ var CommonChat = function () {
 
               $('.wrap-s-res').html(html);
               $('.loader-search-box').addClass('d-none');
-              _context.next = 15;
+              _context.next = 20;
               break;
 
-            case 14:
+            case 19:
               $('.loader-search-box').addClass('d-none');
 
-            case 15:
-              _context.next = 21;
+            case 20:
+              _context.next = 26;
               break;
 
-            case 17:
-              _context.prev = 17;
+            case 22:
+              _context.prev = 22;
               _context.t0 = _context["catch"](0);
-              $('.loader-search-box').addClass('d-none'); // window.outputErrorMessage(error?.response?.data?.message)
+              $('.loader-search-box').addClass('d-none');
+              window.outputErrorMessage(_context.t0 === null || _context.t0 === void 0 ? void 0 : (_error$response = _context.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
 
-              console.log(_context.t0);
-
-            case 21:
+            case 26:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 17]]);
+      }, _callee, null, [[0, 22]]);
     })), 500);
   }).on('focus', function () {
     $('.search-res-box').removeClass('d-none');
@@ -41114,6 +41129,7 @@ var Index = function () {
   var currentPageChat = 0; // current page load old chat
 
   var allowLoadOld = true;
+  var oldSearchFriRes = {};
   var classScBottom = '.scroll-bottom';
 
   if (msgForm) {
@@ -41235,12 +41251,11 @@ var Index = function () {
     }); // send query search friend
 
     $('#search-friend').on('input', function () {
-      var _this = this;
-
       $('.loader-search').removeClass('d-none');
+      var value = this.value.replace(/\s+/g, ' ').trim();
       clearTimeout(window.idTimeOutSearch);
       window.idTimeOutSearch = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var response, friends, html, _error$response2, _error$response2$data;
+        var friends, response, html, _error$response2, _error$response2$data;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -41248,22 +41263,38 @@ var Index = function () {
               case 0:
                 _context2.prev = 0;
 
-                if (!(_this.value && _this.value !== window.oldSearch)) {
-                  _context2.next = 13;
+                if (!(value && value !== window.oldSearch)) {
+                  _context2.next = 20;
                   break;
                 }
 
-                _context2.next = 4;
+                friends = [];
+
+                if (!oldSearchFriRes[value]) {
+                  _context2.next = 7;
+                  break;
+                }
+
+                friends = oldSearchFriRes[value];
+                _context2.next = 13;
+                break;
+
+              case 7:
+                console.log('send');
+                _context2.next = 10;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
                   params: {
-                    q: _this.value
+                    q: value
                   }
                 });
 
-              case 4:
+              case 10:
                 response = _context2.sent;
-                window.oldSearch = _this.value;
                 friends = response.data.friends;
+                oldSearchFriRes[value] = friends;
+
+              case 13:
+                window.oldSearch = value;
                 html = friends.map(function (friend) {
                   return "\n              <div class=\"s-fri-item\">\n                <div class=\"d-flex align-items-center ps-rv\">\n                  <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                  <div class=\"wrap-pre-s-right\">\n                    <div class=\"name-member\">").concat(friend.name, "</div>\n                  </div>\n                  <a class=\"ps-as\" href=\"/messenger/chat/").concat(friend.url ? friend.url : friend._id, "\">\n                    <span class=\"sr-only\">Chat with ").concat(friend.name, "</span>\n                  </a>\n                </div>\n              </div>\n            ");
                 }).join('');
@@ -41274,28 +41305,28 @@ var Index = function () {
 
                 $('.s-fri-res-box').html(html);
                 $('.loader-search').addClass('d-none');
-                _context2.next = 14;
+                _context2.next = 21;
                 break;
 
-              case 13:
+              case 20:
                 $('.loader-search').addClass('d-none');
 
-              case 14:
-                _context2.next = 20;
+              case 21:
+                _context2.next = 27;
                 break;
 
-              case 16:
-                _context2.prev = 16;
+              case 23:
+                _context2.prev = 23;
                 _context2.t0 = _context2["catch"](0);
                 $('.loader-search').addClass('d-none');
                 window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
-              case 20:
+              case 27:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 16]]);
+        }, _callee2, null, [[0, 23]]);
       })), 500);
     }).on('focus', function () {
       $('.search-fri-res-box').removeClass('d-none');

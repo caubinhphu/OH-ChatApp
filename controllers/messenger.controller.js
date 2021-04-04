@@ -394,7 +394,7 @@ module.exports.getChatOld = async (req, res) => {
           messages.shift()
           hasMsg = true
         }
-        return res.status(200).json({ messages, hasMsg })
+        return res.status(200).json({ messages, hasMsg, friendStatus: friendRelated._id.status })
       }
     }
     return res.status(404).json({ mgs: notMem })
