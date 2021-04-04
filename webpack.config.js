@@ -11,15 +11,15 @@ const babelPolyfill = 'babel-polyfill'
 
 module.exports = {
   entry: {
-    // home: [
-    //   babelPolyfill,
-    //   './src/scripts/home.js',
-    //   './src/styles/app-meeting.scss',
-    // ],
-    // 'create-room': [babelPolyfill, './src/scripts/create-room.js'],
-    // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
-    // 'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
-    // 'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
+    home: [
+      babelPolyfill,
+      './src/scripts/home.js',
+      './src/styles/app-meeting.scss',
+    ],
+    'create-room': [babelPolyfill, './src/scripts/create-room.js'],
+    'join-room': [babelPolyfill, './src/scripts/join-room.js'],
+    'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
+    'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
     'home-messenger': [
       babelPolyfill,
       './src/scripts/home-messenger.js',
@@ -54,7 +54,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 url: false,
-                minimize: false,
+                // minimize: false,
               },
             },
             // Compiles Sass to CSS
@@ -68,7 +68,7 @@ module.exports = {
                 sourceMap: true,
                 sourceMapContents: true,
                 url: false,
-                minimize: false,
+                // minimize: false,
               },
             },
           ],
@@ -91,14 +91,14 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
     }),
-    // new webpack.LoaderOptionsPlugin({
-    //   optimization: {
-    //     // minimizer: [new UglifyJSPlugin()],
-    //     minimizer: false,
-    //   },
-    // }),
+    new webpack.LoaderOptionsPlugin({
+      optimization: {
+        minimizer: [new UglifyJSPlugin()],
+        // minimizer: false,
+      },
+    }),
   ],
-  optimization: {
-    minimize: false,
-  },
+  // optimization: {
+  //   minimize: false,
+  // },
 };
