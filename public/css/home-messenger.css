@@ -7441,7 +7441,7 @@ body {
 .box-search,
 #search-friend {
   border-radius: 20px;
-  padding: 5px 32px 5px 16px;
+  padding: 5px 16px;
   line-height: 1;
   height: 35px;
   font-size: 16px;
@@ -7452,7 +7452,13 @@ body {
   position: absolute;
   top: 9px;
   right: 12px;
-  cursor: pointer;
+  transition: opacity .25s;
+}
+
+.box-search:focus + .icomoon,
+#search-friend:focus + .icomoon {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .search-res-box {
