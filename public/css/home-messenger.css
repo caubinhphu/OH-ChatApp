@@ -8133,7 +8133,19 @@ textarea.form-control.msg-mini {
 }
 
 .search-page {
-  padding: 30px 0;
+  padding: 30px 0 50px;
+}
+
+.loader-more {
+  position: fixed;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.load-more-search.hide {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .name-member {

@@ -1,5 +1,18 @@
 .search-page {
-  padding: 30px 0;
+  padding: 30px 0 50px;
+}
+.loader-more {
+  position: fixed;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.load-more-search {
+  transition: opacity .25s;
+  &.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 .name-member {
   overflow: hidden;

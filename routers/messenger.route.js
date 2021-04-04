@@ -6,7 +6,11 @@ const controller = require('../controllers/messenger.controller');
 
 router.get('/', controller.getIndex);
 
-router.get('/search', controller.getSearch)
+router.get('/search', controller.getSearchMain)
+
+router.get('/search-more', controller.getSearchMainMore)
+
+router.get('/s', controller.getSearch)
 
 router.get('/search-friend', controller.getSearchFriend)
 

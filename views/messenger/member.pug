@@ -30,7 +30,7 @@ block contentMain
                   td= member.address
         .bg-light.d-flex.justify-content-center.py-3.wrap-btn-ctrl
           if (statusFriend === 'friend')
-            a.btn(href=`/messenger/${member.url ? member.url : member.id}`) Chat
+            a.btn(href=`/messenger/chat/${member.url ? member.url : member.id}`) Chat
             button#des-friend.btn.btn-red.ml-3(data-id=member.id) Hủy kết bạn
           else if (statusFriend === 'friendRequest')
             button#des-req-friend.btn.btn-red(data-id=member.id) Hủy yêu cầu

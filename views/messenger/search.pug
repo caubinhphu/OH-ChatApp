@@ -1,19 +1,31 @@
 extend ./layout
 
 block contentMain
-  #main.ps-rv.search-page
+  #main.ps-rv.search-page(data-query=query)
     .container
       h1.text-center Kết quả tìm kiếm
       .wrap-search-result
-        .search-res-item(data-id='${friend.id}')
-          .d-flex.align-items-center.border.p-2.rounded.my-2
-            img.rounded-circle(alt='${friend.name}', width='80px', height='80px', src='http://res.cloudinary.com/haitrando/image/upload/v1614476109/ohchat/avatar/avatar-1614476108359-108497011.png', title='${friend.name}')
-            a.flex-fill.mx-2(href="#" data-href='/messenger/member/${friend.url ? friend.url : friend.id}', title='${friend.name}')
-              strong.name-member ${friend.name}
-            .d-flex.flex-column.fri-item-ctrl
-              button.btn.mt-1.accept-inv-friend(data-id='${friend.id}') Ch&#x1EA5;p nh&#x1EAD;n
-              button.btn.btn-red.mt-1.del-inv-friend(data-id='${friend.id}')
-                | X&oacute;a y&ecirc;u c&#x1EA7;u
+        each member in members
+          .search-res-item(data-id=member._id)
+            .d-flex.align-items-center.border.p-2.rounded.my-2
+              img.rounded-circle(alt=member.name, width='80', height='80', src=member.avatar, title=member.name)
+              a.flex-fill.mx-2(href=`/messenger/member/${member.url ? member.url : member._id}`, title=`${member.name}`)
+                strong.name-member= member.name
+              .d-flex.flex-column.fri-item-ctrl.align-items-stretch
+                if (member.relatedWithMe === 'friend')
+                  a.btn.mb-1(href=`/messenger/chat/${member.url ? member.url : member._id}`) Chat
+                  button.des-friend.btn.btn-red(data-id=member._id) Hủy kết bạn
+                else if (member.relatedWithMe === 'request')
+                  button.des-req-friend.btn.btn-red(data-id=member._id) Hủy yêu cầu
+                else if (member.relatedWithMe === 'invitation')
+                  button.accept-inv-friend.btn.mb-1(data-id=member._id) Chấp nhận lời mời
+                  button.del-inv-friend.btn.btn-red(data-id=member._id) Xóa lời mời
+                else
+                  button.req-friend.btn(data-id=member._id) Gửi lời mời kết bạn
+      .text-center.load-more-search
+        button.btn.btn-link Xem tiếp
+      .loader-more.d-none
+        img(src="/images/loader.svg" alt="loader")
   .popup-confirm.d-none
     .d-flex.justify-content-center.align-items-center.h-100
       .wrap-pop-confirm

@@ -500,6 +500,13 @@ const CommonChat = (() => {
     }
   }
 
+  // stop submit form search when value search is empty
+  $('.form-search-box').on('submit', function(e) {
+    if ($(this).find('#box-search').val() === '') {
+      e.preventDefault()
+    }
+  })
+
   // search friend and unfriend
   $('#box-search').on('input', function() {
     $('.loader-search-box').removeClass('d-none')
@@ -513,7 +520,7 @@ const CommonChat = (() => {
           if (oldSearchRes[value]) {
             members = oldSearchRes[value]
           } else {
-            const response = await axios.get('/messenger/search', {
+            const response = await axios.get('/messenger/s', {
               params: {
                 q: value
               }

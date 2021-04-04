@@ -821,6 +821,103 @@ module.exports.getSearch = async (req, res) => {
   }
 }
 
+// search page
+module.exports.getSearchMain = async (req, res, next) => {
+  const { q } = req.query
+
+  try {
+    const me = await Member.findById(req.user.id)
+    if (me) {
+      let members = await Member.find(
+        {
+          // _id: { $in: me.friends },
+          $text: { $search: q }
+        },
+        {
+          name: 1,
+          url: 1,
+          avatar: 1
+          // score: { $meta: 'textScore' }
+        }
+      ).sort({ score: { $meta: 'textScore' } }).limit(5)
+
+
+      members = members.map(mem => {
+        const member = mem.toObject()
+        if (me.friends.find(fr => fr._id.toString() === mem._id.toString())) {
+          member.relatedWithMe = 'friend'
+        } else if (me.friendRequests.find(fr => fr.toString() === mem._id.toString())) {
+          member.relatedWithMe = 'request'
+        } else if (me.friendInvitations.find(fr => fr.toString() === mem._id.toString())) {
+          member.relatedWithMe = 'invitation'
+        } else {
+          member.relatedWithMe = 'none'
+        }
+        return member
+      })
+
+      // res.status(200).json({ members: merge })
+      res.render('messenger/search', {
+        titleSide: siteMes,
+        members,
+        query: q
+      })
+    } else {
+      next(new Error(notMem));
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+// search page more
+module.exports.getSearchMainMore = async (req, res) => {
+  const { q, page } = req.query
+
+  console.log(q);
+  try {
+    const me = await Member.findById(req.user.id)
+    if (me && +page) {
+      let members = await Member.find(
+        {
+          $text: { $search: q }
+        },
+        {
+          name: 1,
+          url: 1,
+          avatar: 1
+        }
+      ).sort({ score: { $meta: 'textScore' }, _id: -1 }).limit(5 + 1).skip(5 * +page)
+
+
+      members = members.map(mem => {
+        const member = mem.toObject()
+        if (me.friends.find(fr => fr._id.toString() === mem._id.toString())) {
+          member.relatedWithMe = 'friend'
+        } else if (me.friendRequests.find(fr => fr.toString() === mem._id.toString())) {
+          member.relatedWithMe = 'request'
+        } else if (me.friendInvitations.find(fr => fr.toString() === mem._id.toString())) {
+          member.relatedWithMe = 'invitation'
+        } else {
+          member.relatedWithMe = 'none'
+        }
+        return member
+      })
+      let hasSearchRes = false
+      if (members.length > 5) {
+        members.pop()
+        hasSearchRes = true
+      }
+      res.status(200).json({ members, hasSearchRes })
+    } else {
+      res.status(404).json({ messages: notMem })
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ messages: hasErrMsg })
+  }
+}
+
 // search friend chat
 module.exports.getSearchFriend = async (req, res) => {
   const { q, mini } = req.query

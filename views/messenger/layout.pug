@@ -10,22 +10,24 @@ block header
         a(href="/messenger", title="OH chat - Messenger")
           img(src="/images/logo-mini.png", alt="oh-chat", width="40px")
       #search.ml-1.ps-rv.show-loader
-        label.sr-only(for="box-search") Search
-        input.form-control.form-control-sm.box-search#box-search(type="text", placeholder="Tìm kiếm bạn bè", autocomplete="off")
-        span.icomoon.icon-icon-search
-        .search-res-box.d-none
-          .loader-search-box.d-none.text-center
-            img(src="/images/loader.svg" alt="loader")
-          .wrap-s-res
-            .text-center.last-mb-none
-              p Kết quả tìm kiếm
-          .search-basic
-            .d-flex.align-items-center
-              span.icomoon.icon-icon-search
-              .wrap-pre-s-right
-                .name-member
-                  span.text-secondary Tìm kiếm 
-                  strong.text-search-box
+        form.form-search-box(action="/messenger/search", method="get") 
+          label.sr-only(for="box-search") Search
+          input.form-control.form-control-sm.box-search#box-search(name="q", type="text", placeholder="Tìm kiếm bạn bè", autocomplete="off")
+          span.icomoon.icon-icon-search
+          .search-res-box.d-none
+            label(for="submit-search").search-basic.d-block.mb-0
+              .d-flex.align-items-center
+                span.icomoon.icon-icon-search
+                .wrap-pre-s-right
+                  .name-member
+                    span.text-secondary Tìm kiếm 
+                    strong.text-search-box
+            .loader-search-box.d-none.text-center
+              img(src="/images/loader.svg" alt="loader")
+            button#submit-search.d-none(type="submit") Search
+            .wrap-s-res
+              .text-center.last-mb-none
+                p Kết quả tìm kiếm
           
     #header-right.d-flex.align-items-center
       #user
