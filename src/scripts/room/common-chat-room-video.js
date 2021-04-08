@@ -9,10 +9,12 @@ const CommonChatRoomVideo = (() => {
   const btnAudio = document.getElementById('btn-audio-connect');
   const meetingShow = document.getElementById('meeting-show');
   const btnShare = document.getElementById('btn-share-screen');
+  const btnRec = document.getElementById('btn-rec-screen');
 
   let canClickAudioBtn = true;
   let canClickVideoBtn = true;
   let canClickShareBtn = true;
+  let canClickRecBtn = true;
 
   // my avatar
   let myAvatar = '/images/default-avatar.jpg';
@@ -26,6 +28,13 @@ const CommonChatRoomVideo = (() => {
 
   window.localStream = new MediaStream();
   window.localShare = new MediaStream();
+
+  let localRECStream = null
+  let voiceRECStream = null
+  let desktopRECStream = null
+  let localREC = null
+
+
 
   // when user join the room -> create a list peer to connect to the rest user in the room
   // receive room info (exclude self) to set
@@ -166,6 +175,15 @@ const CommonChatRoomVideo = (() => {
   document.addEventListener('keydown', function (e) {
     if ((e.key === 's' || e.key === 'S') && e.altKey === true) {
       handleShareScreen.bind(btnShare)();
+    }
+  });
+
+  // rec btn click
+  btnRec.addEventListener('click', handleRecordingScreen);
+  // shortcut key
+  document.addEventListener('keydown', function (e) {
+    if ((e.key === 'r' || e.key === 'R') && e.altKey === true) {
+      handleRecordingScreen.bind(btnRec)();
     }
   });
 
@@ -590,6 +608,81 @@ const CommonChatRoomVideo = (() => {
     }
   }
 
+  // handle recorder screen
+  async function handleRecordingScreen() {
+    if (canClickRecBtn) {
+      canClickRecBtn = false;
+      $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
+
+      if (this.dataset.state === 'off') {
+        // get stream video from camera of user and set in the window
+        if (navigator.mediaDevices.getDisplayMedia) {
+          try {
+            desktopRECStream = await navigator.mediaDevices.getDisplayMedia({
+              video:true,
+              audio: true
+            });
+            voiceRECStream = await navigator.mediaDevices.getUserMedia({
+              video: false,
+              audio: true
+            });
+
+            this.dataset.state = 'on';
+            const tracks = [
+              ...desktopRECStream.getVideoTracks(),
+              ...mergeAudioStreams(desktopRECStream, voiceRECStream)
+            ];
+
+            localRECStream = new MediaStream(tracks);
+
+            const blobs = [];
+
+            localREC = new MediaRecorder(localRECStream, {mimeType: 'video/webm; codecs=vp8,opus'});
+            localREC.ondataavailable = (e) => blobs.push(e.data);
+            localREC.onstop = async () => {
+              const blob = new Blob(blobs, {type: 'video/webm'});
+              const url = window.URL.createObjectURL(blob);
+              const download = document.querySelector('#xx')
+              download.href = url;
+              download.download = 'test.webm';
+            }
+            localREC.start();
+          } catch (error) {
+            console.log(error);
+            outputWarnMessage('Không thể quay màn hình!')
+          }
+        }
+      } else {
+        // output stop my video share screen
+        if (localREC) {
+          localREC.stop();
+          localREC = null
+        }
+        if (localRECStream) {
+          localRECStream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+        }
+        if (voiceRECStream) {
+          voiceRECStream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+        }
+        if (desktopRECStream) {
+          desktopRECStream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+        }
+
+
+        localRECStream = null;
+        this.dataset.state = 'off';
+      }
+      canClickRecBtn = true;
+      $(this).find('.control-no-show-pop').css('cursor', 'pointer');
+    }
+  }
+
   socket.on('isCanShareScreen', async ({
     isShareScreen
   }) => {
@@ -667,6 +760,31 @@ const CommonChatRoomVideo = (() => {
     $('.wrap-meet-pin').html('');
     $('#meeting-show').removeClass('mt-0')
   }
+
+  function mergeAudioStreams(desktopStream, voiceStream) {
+    const context = new AudioContext();
+    const destination = context.createMediaStreamDestination();
+    let hasDesktop = false;
+    let hasVoice = false;
+    if (desktopStream && desktopStream.getAudioTracks().length > 0) {
+      // If you don't want to share Audio from the desktop it should still work with just the voice.
+      const source1 = context.createMediaStreamSource(desktopStream);
+      const desktopGain = context.createGain();
+      desktopGain.gain.value = 0.7;
+      source1.connect(desktopGain).connect(destination);
+      hasDesktop = true;
+    }
+
+    if (voiceStream && voiceStream.getAudioTracks().length > 0) {
+      const source2 = context.createMediaStreamSource(voiceStream);
+      const voiceGain = context.createGain();
+      voiceGain.gain.value = 0.7;
+      source2.connect(voiceGain).connect(destination);
+      hasVoice = true;
+    }
+
+    return (hasDesktop || hasVoice) ? destination.stream.getAudioTracks() : [];
+  };
 
   // pin meeting
   $(document).on('click', '.pin-btn', function (e) {

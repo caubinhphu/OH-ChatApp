@@ -6,6 +6,7 @@ extends ./layout
   block chatStyle
 
 block contentMain
+  a#xx(href="#") sadfasdf
   #meeting-area
     #main-meeting-area.p-1.d-flex
       #main-meeting.p-1.flex-fill
@@ -44,7 +45,7 @@ block contentMain
             .control-no-show-pop
               span.icomoon.icon-videocam_off.text-danger
           #btn-share-screen.meeting-control-item.ps-rv(data-state="off")
-            .popup Share Screen (Alt + S)
+            .popup Chia sẽ màn hình (Alt + S)
             .control-no-show-pop
               span.icomoon.icon-stop_screen_share.text-danger
           block subMeetingControl
@@ -58,6 +59,10 @@ block contentMain
             .control-show-pop(data-control="chat")
               span.icomoon.icon-chat
               sup.amount-msg-unread
+          #btn-rec-screen.meeting-control-item.ps-rv(data-state="off")
+            .popup Quay màn hình (Alt + S)
+            .control-no-show-pop
+              span.icomoon.icon-stop_screen_share.text-danger
           .meeting-control-item.d-none.d-md-block.ps-rv
             .popup Thông tin phòng
             .control-show-pop.text-info(data-control="info")
