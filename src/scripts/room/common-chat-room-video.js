@@ -26,8 +26,8 @@ const CommonChatRoomVideo = (() => {
     navigator.mediaDevices.mozGetUserMedia ||
     navigator.mediaDevices.msGetUserMedia;
 
-  window.localStream = new MediaStream();
-  window.localShare = new MediaStream();
+  let localStream = new MediaStream();
+  let localShare = new MediaStream();
 
   let localRECStream = null
   let voiceRECStream = null
@@ -39,9 +39,9 @@ const CommonChatRoomVideo = (() => {
   // when user join the room -> create a list peer to connect to the rest user in the room
   // receive room info (exclude self) to set
   // each socketId is a answer peer (each rest user)
-  socket.on('roomInfoForStream', (roomInfo) => {
+  window.socket.on('roomInfoForStream', (roomInfo) => {
     // outputShowMeeting();
-    const me = roomInfo.users.find((user) => user.id === socket.id);
+    const me = roomInfo.users.find((user) => user.id === window.socket.id);
     if (me) {
       myAvatar = me.avatar;
     }
@@ -50,16 +50,16 @@ const CommonChatRoomVideo = (() => {
       avatar,
       name
     }) => {
-      if (socketId !== socket.id) {
+      if (socketId !== window.socket.id) {
         outputShowMeeting(socketId, avatar, name);
         // create a new peer
-        const peer = createPeer(socketId, socket.id, me.name);
+        const peer = createPeer(socketId, window.socket.id, me.name);
 
-        // peer.addStream(window.localStream);
+        // peer.addStream(localStream);
 
         // push to the peers
         peers.push({
-          offerId: socket.id,
+          offerId: window.socket.id,
           answerId: socketId,
           peer
         });
@@ -70,7 +70,7 @@ const CommonChatRoomVideo = (() => {
   });
 
   // receive userId who leave room
-  socket.on('infoLeaveRoomForStream', ({
+  window.socket.on('infoLeaveRoomForStream', ({
     userId
   }) => {
     // remove peer of this user
@@ -87,7 +87,7 @@ const CommonChatRoomVideo = (() => {
   });
 
   // receive offer signal of caller (new user join the room)
-  socket.on('offerSignal', ({
+  window.socket.on('offerSignal', ({
     signal,
     callerId,
     avatarCaller,
@@ -109,27 +109,27 @@ const CommonChatRoomVideo = (() => {
       const peer = addPeer(signal, callerId, avatarCaller, callerName);
 
       // if this user (rest user) is turning on video -> set stream track for peer
-      if (window.localStream.getAudioTracks()[0]) {
-        peer.addTrack(window.localStream.getAudioTracks()[0], window.localStream);
+      if (localStream.getAudioTracks()[0]) {
+        peer.addTrack(localStream.getAudioTracks()[0], localStream);
       }
-      if (window.localStream.getVideoTracks()[0]) {
-        peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+      if (localStream.getVideoTracks()[0]) {
+        peer.addTrack(localStream.getVideoTracks()[0], localStream);
       }
-      if (window.localShare.getVideoTracks()[0]) {
-        peer.addStream(window.localShare);
+      if (localShare.getVideoTracks()[0]) {
+        peer.addStream(localShare);
       }
 
       // push to the peers
       peers.push({
         offerId: callerId,
-        answerId: socket.id,
+        answerId: window.socket.id,
         peer
       });
     }
   });
 
   // receive answer signal from rest user
-  socket.on('answerSignal', ({
+  window.socket.on('answerSignal', ({
     answerId,
     signal
   }) => {
@@ -146,10 +146,10 @@ const CommonChatRoomVideo = (() => {
   });
 
   // receive signal stop video from a client in the room
-  socket.on('stopVideo', outputStopVideo);
+  window.socket.on('stopVideo', outputStopVideo);
 
   // receive signal stop share screen from a client in the room
-  socket.on('stopShareScreen', outputStopShareScreen);
+  window.socket.on('stopShareScreen', outputStopShareScreen);
 
   // audio btn click
   btnAudio.addEventListener('click', handleAudio);
@@ -318,7 +318,7 @@ const CommonChatRoomVideo = (() => {
   }
 
   // output video
-  function outputVideo(stream = window.localStream, id = 'my_video') {
+  function outputVideo(stream = localStream, id = 'my_video') {
     if (id === 'my_video') {
       const $wrapMyVideo = $('.wrap-my-video');
       if ($wrapMyVideo.length) {
@@ -351,7 +351,7 @@ const CommonChatRoomVideo = (() => {
   }
 
   // output share screen
-  function outputShare(stream = window.localShare, id = 'my_video') {
+  function outputShare(stream = localShare, id = 'my_video') {
     unPinAll($('.meeting-part.is-pin'))
     $('#meeting-show').removeClass('offset')
     $('#main-meeting').addClass('has-share')
@@ -372,7 +372,7 @@ const CommonChatRoomVideo = (() => {
   }
 
   // output audio
-  function outputAudio(stream = window.localStream, id = 'my_video') {
+  function outputAudio(stream = localStream, id = 'my_video') {
     if (id !== 'my_video') {
       const $meetingItem = $(`.meeting-part[data-id="${id}"]`);
       if ($meetingItem.length) {
@@ -485,12 +485,12 @@ const CommonChatRoomVideo = (() => {
             peers.forEach((peer) => {
               peer.peer.addTrack(
                 audioStream.getAudioTracks()[0],
-                window.localStream
+                localStream
               );
             });
 
             // add audio track for stream of local stream
-            window.localStream.addTrack(audioStream.getAudioTracks()[0]);
+            localStream.addTrack(audioStream.getAudioTracks()[0]);
           } catch (error) {
             outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
           }
@@ -505,13 +505,13 @@ const CommonChatRoomVideo = (() => {
         // remove audio track of stream each peer
         peers.forEach((peer) => {
           peer.peer.removeTrack(
-            window.localStream.getAudioTracks()[0],
-            window.localStream
+            localStream.getAudioTracks()[0],
+            localStream
           );
         });
 
         // remove audio track of stream in local stream
-        window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
+        localStream.removeTrack(localStream.getAudioTracks()[0]);
 
         // output stop my video
         socket.emit('stopAudioStream');
@@ -547,12 +547,12 @@ const CommonChatRoomVideo = (() => {
             peers.forEach((peer) => {
               peer.peer.addTrack(
                 videoStream.getVideoTracks()[0],
-                window.localStream
+                localStream
               );
             });
 
             // add video track for stream in local
-            window.localStream.addTrack(videoStream.getVideoTracks()[0]);
+            localStream.addTrack(videoStream.getVideoTracks()[0]);
 
             // output my video
             outputVideo();
@@ -570,14 +570,14 @@ const CommonChatRoomVideo = (() => {
         // remove video track of stream each peer
         peers.forEach((peer) => {
           peer.peer.removeTrack(
-            window.localStream.getVideoTracks()[0],
-            window.localStream
+            localStream.getVideoTracks()[0],
+            localStream
           );
         });
 
         // stop and remove video track of stream in local
-        window.localStream.getVideoTracks()[0].stop();
-        window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+        localStream.getVideoTracks()[0].stop();
+        localStream.removeTrack(localStream.getVideoTracks()[0]);
 
         // output stop my video
         socket.emit('stopVideoStream');
@@ -683,7 +683,7 @@ const CommonChatRoomVideo = (() => {
     }
   }
 
-  socket.on('isCanShareScreen', async ({
+  window.socket.on('isCanShareScreen', async ({
     isShareScreen
   }) => {
     if (!isShareScreen) {
@@ -718,7 +718,7 @@ const CommonChatRoomVideo = (() => {
         });
 
         // add video track for stream in local
-        window.localShare = shareStream
+        localShare = shareStream
 
         // output my share
         outputShare();
@@ -741,12 +741,12 @@ const CommonChatRoomVideo = (() => {
 
     // remove video share screen track of stream each peer
     peers.forEach((peer) => {
-      peer.peer.removeStream(window.localShare);
+      peer.peer.removeStream(localShare);
     });
 
     // // stop and remove video share screen track of stream in local
-    window.localShare.getVideoTracks().forEach(track => track.stop());
-    window.localShare = new MediaStream();
+    localShare.getVideoTracks().forEach(track => track.stop());
+    localShare = new MediaStream();
 
     socket.emit('stopShareScreenStream');
     outputStopShareScreen();
