@@ -8,7 +8,9 @@ const ChatAudio = (async () => {
     navigator.mediaDevices.mozGetUserMedia ||
     navigator.mediaDevices.msGetUserMedia;
 
-    window.localStream = new MediaStream()
+    let localStream = new MediaStream()
+
+    let connectPeer = false
 
     if (window.typeCall === 'video') {
       $('.wrap-my-video').removeClass('d-none')
@@ -22,7 +24,7 @@ const ChatAudio = (async () => {
         initiator: true, // init -> offer peer
         trickle: false
       });
-      window.peer = peer
+      // window.peer = peer
 
       // add events to peer
       // after connect => add stream audio
@@ -30,15 +32,15 @@ const ChatAudio = (async () => {
         // console.log('call connection')
         addTrackAudio(peer)
         // be connected
-        window.connectPeer = true
+        connectPeer = true
         $('.mic-ctrl-btn').removeClass('btn-disabled')
         if (window.typeCall === 'video') {
           $('.video-ctrl-btn').removeClass('btn-disabled')
           $('.share-ctrl-btn').removeClass('btn-disabled')
           $('.wrap-friend-video').removeClass('d-none')
 
-          if (window.localStream.getVideoTracks().length) {
-            peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+          if (localStream.getVideoTracks().length) {
+            peer.addTrack(localStream.getVideoTracks()[0], localStream);
           }
         }
       });
@@ -94,7 +96,7 @@ const ChatAudio = (async () => {
       peer.on('signal', (signal) => {
         // console.log('call');
         // check be connected?
-        if (!window.connectPeer) {
+        if (!connectPeer) {
           // not connect => send offer signal
           // create custom event to send to window parent
           const event = new CustomEvent('signalOffer', {
@@ -130,7 +132,7 @@ const ChatAudio = (async () => {
 
       // close sub window when close or refetch browser
       window.onbeforeunload = function() {
-        if (!window.connectPeer) {
+        if (!connectPeer) {
           window.parentWindow.dispatchEvent(new CustomEvent('disconnectCall'))
         }
       }
@@ -142,7 +144,7 @@ const ChatAudio = (async () => {
         trickle: false
       });
 
-      window.peer = peer
+      // window.peer = peer
       // add signal offer to peer
       peer.signal(JSON.parse(window.signalOffer))
 
@@ -152,7 +154,7 @@ const ChatAudio = (async () => {
         // console.log('answer connection')
         addTrackAudio(peer)
         // be connected
-        window.connectPeer = true
+        connectPeer = true
         $('.img-load-call').addClass('d-none')
         $('.mic-ctrl-btn').removeClass('btn-disabled')
         if (window.typeCall === 'video') {
@@ -160,8 +162,8 @@ const ChatAudio = (async () => {
           $('.share-ctrl-btn').removeClass('btn-disabled')
           $('.wrap-friend-video').removeClass('d-none')
 
-          if (window.localStream.getVideoTracks().length) {
-            peer.addTrack(window.localStream.getVideoTracks()[0], window.localStream);
+          if (localStream.getVideoTracks().length) {
+            peer.addTrack(localStream.getVideoTracks()[0], localStream);
           }
         }
       });
@@ -218,7 +220,7 @@ const ChatAudio = (async () => {
       // run after add signal => create custom event => send signal answer to parent window => caller
       peer.on('signal', (signal) => {
         // console.log('answer signal')
-        if (!window.connectPeer) {
+        if (!connectPeer) {
           const event = new CustomEvent('signalAnswer', {
             detail: {
               // send answer signal
@@ -313,11 +315,11 @@ const ChatAudio = (async () => {
           // add track audio to peer
           peer.addTrack(
             audioStream.getAudioTracks()[0],
-            window.localStream
+            localStream
           );
 
           // add audio track for stream of local stream
-          window.localStream.addTrack(audioStream.getAudioTracks()[0])
+          localStream.addTrack(audioStream.getAudioTracks()[0])
         } catch (error) {
           $('.mic-ctrl-btn').removeClass('ctrl-off')
           outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
@@ -328,11 +330,11 @@ const ChatAudio = (async () => {
     // function remove track audio stream
     function removeTrackAudio(peer) {
       peer.removeTrack(
-        window.localStream.getAudioTracks()[0],
-        window.localStream
+        localStream.getAudioTracks()[0],
+        localStream
       );
       // remove audio track of stream in local stream
-      window.localStream.removeTrack(window.localStream.getAudioTracks()[0]);
+      localStream.removeTrack(localStream.getAudioTracks()[0]);
     }
 
     // function add stream track video to peer
@@ -348,12 +350,12 @@ const ChatAudio = (async () => {
             // add track audio to peer
             peer.addTrack(
               videoStream.getVideoTracks()[0],
-              window.localStream
+              localStream
             );
           }
 
           // add audio track for stream of local stream
-          window.localStream.addTrack(videoStream.getVideoTracks()[0])
+          localStream.addTrack(videoStream.getVideoTracks()[0])
           outputVideo()
         } catch (error) {
           $('.video-ctrl-btn').removeClass('ctrl-off')
@@ -365,16 +367,16 @@ const ChatAudio = (async () => {
     // function remove track video stream
     function removeTrackVideo(peer) {
       peer.removeTrack(
-        window.localStream.getVideoTracks()[0],
-        window.localStream
+        localStream.getVideoTracks()[0],
+        localStream
       );
       // stop and remove video track of stream in local
-      window.localStream.getVideoTracks()[0].stop();
-      window.localStream.removeTrack(window.localStream.getVideoTracks()[0]);
+      localStream.getVideoTracks()[0].stop();
+      localStream.removeTrack(localStream.getVideoTracks()[0]);
     }
 
   // output friend video
-  function outputVideo(stream = window.localStream, me = true) {
+  function outputVideo(stream = localStream, me = true) {
     if (me) {
       const $wrapMyVideo = $('.wrap-my-video');
       if ($wrapMyVideo.length) {
