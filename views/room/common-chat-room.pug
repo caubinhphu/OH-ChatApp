@@ -1,13 +1,10 @@
 extends ./layout
 
-//- append styles
-  //- link(rel="stylesheet", href="/styles/user/common-chat-room.css")
-  //- link(rel="stylesheet", href="/styles/emoji.css")
-  block chatStyle
-
 block contentMain
-  a#xx(href="#") sadfasdf
   #meeting-area
+    .rec.text-danger.d-none
+      .rec-icon.d-inline
+      strong REC
     #main-meeting-area.p-1.d-flex
       #main-meeting.p-1.flex-fill
         .wrap-meeting-show.d-flex.ps-rv
@@ -59,10 +56,10 @@ block contentMain
             .control-show-pop(data-control="chat")
               span.icomoon.icon-chat
               sup.amount-msg-unread
-          #btn-rec-screen.meeting-control-item.ps-rv(data-state="off")
-            .popup Quay màn hình (Alt + S)
+          .btn-rec-screen.meeting-control-item.d-none.d-md-block.ps-rv.state-off
+            .popup Quay màn hình (Alt + R)
             .control-no-show-pop
-              span.icomoon.icon-stop_screen_share.text-danger
+              span.icomoon.icon-controller-record.text-danger
           .meeting-control-item.d-none.d-md-block.ps-rv
             .popup Thông tin phòng
             .control-show-pop.text-info(data-control="info")
@@ -81,6 +78,9 @@ block contentMain
                   .control-show-pop(data-control="chat")
                     span.icomoon.icon-chat
                     sup.amount-msg-unread
+                .btn-rec-screen.meeting-control-item.ps-rv.state-off
+                  .control-no-show-pop
+                    span.icomoon.icon-controller-record.text-danger
                 .meeting-control-item.ps-rv
                   .control-show-pop.text-info(data-control="info")
                     span.icomoon.icon-information
@@ -140,10 +140,4 @@ block contentMain
   
 append scripts
   script(src="/socket.io/socket.io.js")
-  //- script(src="/scripts/simple-peer.min.js")
-  //- script(src="/scripts/moment.min.js")
-  //- script(src="/scripts/common-chat.js")
-  //- script(src="/scripts/user/common-chat-room.js")
-  //- script(src="/scripts/user/common-chat-room-video.js")
-  //- script(src="/scripts/emoji.js")
   block chatScript

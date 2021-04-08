@@ -45466,7 +45466,6 @@ var CommonChatRoomVideo = function () {
   var btnAudio = document.getElementById('btn-audio-connect');
   var meetingShow = document.getElementById('meeting-show');
   var btnShare = document.getElementById('btn-share-screen');
-  var btnRec = document.getElementById('btn-rec-screen');
   var canClickAudioBtn = true;
   var canClickVideoBtn = true;
   var canClickShareBtn = true;
@@ -45519,7 +45518,7 @@ var CommonChatRoomVideo = function () {
   window.socket.on('infoLeaveRoomForStream', function (_ref2) {
     var userId = _ref2.userId;
     // remove peer of this user
-    console.log(userId);
+    // console.log(userId);
     var peerIndex = peers.findIndex(function (p) {
       return p.offerId === userId || p.answerId === userId;
     });
@@ -45618,11 +45617,11 @@ var CommonChatRoomVideo = function () {
     }
   }); // rec btn click
 
-  btnRec.addEventListener('click', handleRecordingScreen); // shortcut key
+  $('.btn-rec-screen').on('click', handleRecordingScreen); // shortcut key
 
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'r' || e.key === 'R') && e.altKey === true) {
-      handleRecordingScreen.bind(btnRec)();
+      handleRecordingScreen();
     }
   }); // create area meeting item
 
@@ -45652,27 +45651,23 @@ var CommonChatRoomVideo = function () {
       // init -> offer peer
       trickle: false
     }); // add events
-
-    peer.on('connect', function () {
-      return console.log('call connection');
-    });
-    peer.on('close', function () {
-      console.log('call close');
-    }); // peer.on('data', (data) => console.log(data.toString()));
+    // peer.on('connect', () => console.log('call connection'));
+    // peer.on('close', () => {
+    //   console.log('call close');
+    // });
+    // peer.on('data', (data) => console.log(data.toString()));
 
     peer.on('stream', function (stream) {
-      console.log('call stream');
-
+      // console.log('call stream');
       if (stream.getVideoTracks().length >= 2) {
         outputShare(stream, socketId);
       }
     });
     peer.on('track', function (track, stream) {
-      console.log('call track');
-
+      // console.log('call track');
       if (track.kind === 'video') {
         if (stream.getVideoTracks().length < 2) {
-          console.log(stream, socketId);
+          // console.log(stream, socketId);
           outputVideo(stream, socketId);
         }
       } else if (track.kind === 'audio') {
@@ -45680,7 +45675,7 @@ var CommonChatRoomVideo = function () {
       }
     });
     peer.on('signal', function (signal) {
-      console.log('call signal');
+      // console.log('call signal');
       socket.emit('offerStream', {
         receiveId: socketId,
         callerId: callerId,
@@ -45702,15 +45697,13 @@ var CommonChatRoomVideo = function () {
     }); // add offer signal (signal receive from caller (new user join)) for peer
 
     peer.signal(signal); // add events
+    // peer.on('connect', () => console.log('answer connect'));
+    // peer.on('close', () => {
+    //   console.log('answer close');
+    // });
 
-    peer.on('connect', function () {
-      return console.log('answer connect');
-    });
-    peer.on('close', function () {
-      console.log('answer close');
-    });
     peer.on('signal', function (signal) {
-      console.log('answer signal');
+      // console.log('answer signal');
       socket.emit('answerStream', {
         signal: JSON.stringify(signal),
         callerId: callerId
@@ -45718,15 +45711,13 @@ var CommonChatRoomVideo = function () {
     }); // peer.on('data', (data) => console.log(data.toString()));
 
     peer.on('stream', function (stream) {
-      console.log('answer stream');
-
+      // console.log('answer stream');
       if (stream.getVideoTracks().length >= 2) {
         outputShare(stream, callerId);
       }
     });
     peer.on('track', function (track, stream) {
-      console.log('answer track');
-
+      // console.log('answer track');
       if (track.kind === 'video') {
         if (stream.getVideoTracks().length < 2) {
           outputVideo(stream, callerId);
@@ -46142,47 +46133,49 @@ var CommonChatRoomVideo = function () {
 
   function _handleRecordingScreen() {
     _handleRecordingScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-      var tracks, blobs;
+      var $recBtn, tracks, blobs;
       return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
               if (!canClickRecBtn) {
-                _context6.next = 36;
+                _context6.next = 40;
                 break;
               }
 
+              $recBtn = $('.btn-rec-screen');
               canClickRecBtn = false;
-              $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
+              $recBtn.find('.control-no-show-pop').css('cursor', 'no-drop');
 
-              if (!(this.dataset.state === 'off')) {
-                _context6.next = 28;
+              if (!$recBtn.hasClass('state-off')) {
+                _context6.next = 30;
                 break;
               }
 
               if (!navigator.mediaDevices.getDisplayMedia) {
-                _context6.next = 26;
+                _context6.next = 28;
                 break;
               }
 
-              _context6.prev = 5;
-              _context6.next = 8;
+              _context6.prev = 6;
+              _context6.next = 9;
               return navigator.mediaDevices.getDisplayMedia({
                 video: true,
                 audio: true
               });
 
-            case 8:
+            case 9:
               desktopRECStream = _context6.sent;
-              _context6.next = 11;
+              _context6.next = 12;
               return navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
               });
 
-            case 11:
+            case 12:
               voiceRECStream = _context6.sent;
-              this.dataset.state = 'on';
+              $recBtn.removeClass('state-off');
+              $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
               tracks = [].concat(_toConsumableArray(desktopRECStream.getVideoTracks()), _toConsumableArray(mergeAudioStreams(desktopRECStream, voiceRECStream)));
               localRECStream = new MediaStream(tracks);
               blobs = [];
@@ -46204,11 +46197,15 @@ var CommonChatRoomVideo = function () {
                           type: 'video/webm'
                         });
                         url = window.URL.createObjectURL(blob);
-                        download = document.querySelector('#xx');
+                        download = document.createElement('a');
+                        $(download).addClass('download-rec');
                         download.href = url;
-                        download.download = 'test.webm';
+                        download.download = "".concat($('#room-info-name-room').text(), "_").concat(new Date().toLocaleDateString().replace(/[-\/]/g, '-'), ".webm");
+                        $('#main').append(download);
+                        download.click();
+                        download.remove();
 
-                      case 5:
+                      case 9:
                       case "end":
                         return _context5.stop();
                     }
@@ -46216,20 +46213,21 @@ var CommonChatRoomVideo = function () {
                 }, _callee5);
               }));
               localREC.start();
-              _context6.next = 26;
+              $('.rec').removeClass('d-none');
+              _context6.next = 28;
               break;
 
-            case 22:
-              _context6.prev = 22;
-              _context6.t0 = _context6["catch"](5);
-              console.log(_context6.t0);
+            case 25:
+              _context6.prev = 25;
+              _context6.t0 = _context6["catch"](6);
+              // console.log(error);
               outputWarnMessage('Không thể quay màn hình!');
 
-            case 26:
-              _context6.next = 34;
+            case 28:
+              _context6.next = 38;
               break;
 
-            case 28:
+            case 30:
               // output stop my video share screen
               if (localREC) {
                 localREC.stop();
@@ -46255,18 +46253,20 @@ var CommonChatRoomVideo = function () {
               }
 
               localRECStream = null;
-              this.dataset.state = 'off';
+              $recBtn.addClass('state-off');
+              $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
+              $('.rec').removeClass('d-none');
 
-            case 34:
+            case 38:
               canClickRecBtn = true;
-              $(this).find('.control-no-show-pop').css('cursor', 'pointer');
+              $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
 
-            case 36:
+            case 40:
             case "end":
               return _context6.stop();
           }
         }
-      }, _callee6, this, [[5, 22]]);
+      }, _callee6, null, [[6, 25]]);
     }));
     return _handleRecordingScreen.apply(this, arguments);
   }

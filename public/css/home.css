@@ -6436,6 +6436,14 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E921";
 }
 
+.icon-controller-record:before {
+  content: "\E92D";
+}
+
+.icon-import_export:before {
+  content: "\E92E";
+}
+
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   -o-transition: background-color 5000s ease-in-out 0s;
@@ -6892,11 +6900,13 @@ input:-webkit-autofill {
   right: 92px;
 }
 
-.wrap-control-meet .control-show-pop {
+.wrap-control-meet .control-show-pop,
+.wrap-control-meet .control-no-show-pop {
   color: #22c0c9;
 }
 
-.wrap-control-meet .control-show-pop:hover {
+.wrap-control-meet .control-show-pop:hover,
+.wrap-control-meet .control-no-show-pop:hover {
   background-color: transparent;
 }
 
@@ -7036,6 +7046,38 @@ input:-webkit-autofill {
   border-radius: 50%;
 }
 
+.btn-rec-screen:not(.state-off) .icomoon {
+  position: relative;
+  border: 3px solid;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.download-rec {
+  position: fixed;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rec {
+  position: fixed;
+  left: 20px;
+  top: 10px;
+  padding-left: 14px;
+}
+
+.rec-icon {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  left: 0;
+  background: #c8102e;
+  top: 10px;
+  border-radius: 50%;
+  animation: rec 2s infinite;
+}
+
 #link-info {
   position: absolute;
   border: none;
@@ -7153,5 +7195,15 @@ input:-webkit-autofill {
   }
   .control-no-show-pop {
     padding: 0 20px;
+  }
+}
+
+@keyframes rec {
+  0%,
+  100% {
+    box-shadow: 0px 0px 0px 0px #c8102e;
+  }
+  50% {
+    box-shadow: 0px 0px 8px 0px #c8102e;
   }
 }

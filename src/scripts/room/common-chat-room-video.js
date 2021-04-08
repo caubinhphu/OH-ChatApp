@@ -9,7 +9,6 @@ const CommonChatRoomVideo = (() => {
   const btnAudio = document.getElementById('btn-audio-connect');
   const meetingShow = document.getElementById('meeting-show');
   const btnShare = document.getElementById('btn-share-screen');
-  const btnRec = document.getElementById('btn-rec-screen');
 
   let canClickAudioBtn = true;
   let canClickVideoBtn = true;
@@ -179,11 +178,11 @@ const CommonChatRoomVideo = (() => {
   });
 
   // rec btn click
-  btnRec.addEventListener('click', handleRecordingScreen);
+  $('.btn-rec-screen').on('click', handleRecordingScreen);
   // shortcut key
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'r' || e.key === 'R') && e.altKey === true) {
-      handleRecordingScreen.bind(btnRec)();
+      handleRecordingScreen();
     }
   });
 
@@ -611,10 +610,11 @@ const CommonChatRoomVideo = (() => {
   // handle recorder screen
   async function handleRecordingScreen() {
     if (canClickRecBtn) {
+      const $recBtn = $('.btn-rec-screen')
       canClickRecBtn = false;
-      $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
+      $recBtn.find('.control-no-show-pop').css('cursor', 'no-drop');
 
-      if (this.dataset.state === 'off') {
+      if ($recBtn.hasClass('state-off')) {
         // get stream video from camera of user and set in the window
         if (navigator.mediaDevices.getDisplayMedia) {
           try {
@@ -627,7 +627,8 @@ const CommonChatRoomVideo = (() => {
               audio: true
             });
 
-            this.dataset.state = 'on';
+            $recBtn.removeClass('state-off')
+            $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
             const tracks = [
               ...desktopRECStream.getVideoTracks(),
               ...mergeAudioStreams(desktopRECStream, voiceRECStream)
@@ -642,11 +643,16 @@ const CommonChatRoomVideo = (() => {
             localREC.onstop = async () => {
               const blob = new Blob(blobs, {type: 'video/webm'});
               const url = window.URL.createObjectURL(blob);
-              const download = document.querySelector('#xx')
+              const download = document.createElement('a')
+              $(download).addClass('download-rec')
               download.href = url;
-              download.download = 'test.webm';
+              download.download = `${$('#room-info-name-room').text()}_${(new Date()).toLocaleDateString().replace(/[-\/]/g, '-')}.webm`;
+              $('#main').append(download)
+              download.click()
+              download.remove()
             }
             localREC.start();
+            $('.rec').removeClass('d-none')
           } catch (error) {
             // console.log(error);
             outputWarnMessage('Không thể quay màn hình!')
@@ -674,12 +680,13 @@ const CommonChatRoomVideo = (() => {
           });
         }
 
-
         localRECStream = null;
-        this.dataset.state = 'off';
+        $recBtn.addClass('state-off')
+        $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
+        $('.rec').addClass('d-none')
       }
       canClickRecBtn = true;
-      $(this).find('.control-no-show-pop').css('cursor', 'pointer');
+      $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
     }
   }
 

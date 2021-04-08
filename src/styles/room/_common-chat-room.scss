@@ -281,7 +281,8 @@
     transform: rotate(45deg);
     right: 92px;
   }
-  .control-show-pop {
+  .control-show-pop,
+  .control-no-show-pop {
     color: $color-22;
     &:hover {
       background-color: transparent;
@@ -413,6 +414,38 @@
     }
   }
 }
+.btn-rec-screen {
+  &:not(.state-off) {
+    .icomoon {
+      position: relative;
+      border: 3px solid;
+      border-radius: 50%;
+      font-size: 20px;
+    }
+  }
+}
+.download-rec {
+  position: fixed;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.rec {
+  position: fixed;
+    left: 20px;
+    top: 10px;
+    padding-left: 14px;
+}
+.rec-icon {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  left: 0;
+  background: $color-c8;
+  top: 10px;
+  border-radius: 50%;
+  animation: rec 2s infinite;
+}
 #link-info {
   position: absolute;
   border: none;
@@ -525,5 +558,15 @@
   }
   .control-no-show-pop {
     padding: 0 20px;
+  }
+}
+
+@keyframes rec {
+  0%,
+  100% {
+    box-shadow: 0px 0px 0px 0px $color-c8;
+  }
+  50% {
+    box-shadow: 0px 0px 8px 0px $color-c8;
   }
 }
