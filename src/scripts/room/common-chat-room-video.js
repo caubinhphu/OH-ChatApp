@@ -74,7 +74,7 @@ const CommonChatRoomVideo = (() => {
     userId
   }) => {
     // remove peer of this user
-    console.log(userId);
+    // console.log(userId);
     const peerIndex = peers.findIndex(
       (p) => p.offerId === userId || p.answerId === userId
     );
@@ -226,26 +226,26 @@ const CommonChatRoomVideo = (() => {
     });
 
     // add events
-    peer.on('connect', () => console.log('call connection'));
+    // peer.on('connect', () => console.log('call connection'));
 
-    peer.on('close', () => {
-      console.log('call close');
-    });
+    // peer.on('close', () => {
+    //   console.log('call close');
+    // });
 
     // peer.on('data', (data) => console.log(data.toString()));
 
     peer.on('stream', (stream) => {
-      console.log('call stream');
+      // console.log('call stream');
       if (stream.getVideoTracks().length >= 2) {
         outputShare(stream, socketId)
       }
     });
 
     peer.on('track', (track, stream) => {
-      console.log('call track');
+      // console.log('call track');
       if (track.kind === 'video') {
         if (stream.getVideoTracks().length < 2) {
-          console.log(stream, socketId);
+          // console.log(stream, socketId);
           outputVideo(stream, socketId);
         }
       } else if (track.kind === 'audio') {
@@ -254,7 +254,7 @@ const CommonChatRoomVideo = (() => {
     });
 
     peer.on('signal', (signal) => {
-      console.log('call signal');
+      // console.log('call signal');
       socket.emit('offerStream', {
         receiveId: socketId,
         callerId,
@@ -280,14 +280,14 @@ const CommonChatRoomVideo = (() => {
     peer.signal(signal);
 
     // add events
-    peer.on('connect', () => console.log('answer connect'));
+    // peer.on('connect', () => console.log('answer connect'));
 
-    peer.on('close', () => {
-      console.log('answer close');
-    });
+    // peer.on('close', () => {
+    //   console.log('answer close');
+    // });
 
     peer.on('signal', (signal) => {
-      console.log('answer signal');
+      // console.log('answer signal');
       socket.emit('answerStream', {
         signal: JSON.stringify(signal),
         callerId
@@ -297,14 +297,14 @@ const CommonChatRoomVideo = (() => {
     // peer.on('data', (data) => console.log(data.toString()));
 
     peer.on('stream', (stream) => {
-      console.log('answer stream');
+      // console.log('answer stream');
       if (stream.getVideoTracks().length >= 2) {
         outputShare(stream, callerId)
       }
     });
 
     peer.on('track', (track, stream) => {
-      console.log('answer track');
+      // console.log('answer track');
       if (track.kind === 'video') {
         if (stream.getVideoTracks().length < 2) {
           outputVideo(stream, callerId);
@@ -648,7 +648,7 @@ const CommonChatRoomVideo = (() => {
             }
             localREC.start();
           } catch (error) {
-            console.log(error);
+            // console.log(error);
             outputWarnMessage('Không thể quay màn hình!')
           }
         }
