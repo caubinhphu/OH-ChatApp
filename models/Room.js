@@ -40,6 +40,7 @@ const roomSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
+  timeStart: Date
 });
 
 // get host of the room
@@ -76,15 +77,17 @@ roomSchema.methods.getSocketIdWaitingRoom = function () {
 
 // get users of the room info to send to client
 roomSchema.methods.getRoomUsersInfo = function () {
-  return this.users.map((user) => {
-    return {
-      id: user.id,
-      name: user.name,
-      socketId: user.socketId,
-      host: user.host,
-      avatar: user.avatar,
-    };
-  });
+  return this.users
+    .filter(user => !user.timeLeave)
+    .map((user) => {
+      return {
+        id: user.id,
+        name: user.name,
+        socketId: user.socketId,
+        host: user.host,
+        avatar: user.avatar,
+      };
+    });
 };
 
 // get users of the room info to export xlsx

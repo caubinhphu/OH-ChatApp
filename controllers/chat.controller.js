@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs')
 
 const Room = require('../models/Room');
+const moment = require('moment');
 
 const siteRoom = 'OH Chat - Room'
 
@@ -114,24 +115,57 @@ module.exports.exportUsers = async (req, res, next) => {
         ];
         newWs['!cols'] = colsWs;
 
-        const colNum = xlsx.utils.decode_col('C'); //decode_col converts Excel col name to an integer for col #
+        const colNums = [
+          xlsx.utils.decode_col('C'), //decode_col converts Excel col name to an integer for col #
+          xlsx.utils.decode_col('D')
+        ]
         const fmt = 'm/d/yy h:mm'; // or any Excel number format
 
         /* get worksheet range */
         const range = xlsx.utils.decode_range(newWs['!ref']);
         for(let i = range.s.r + 1; i <= range.e.r; ++i) {
           /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
-          const ref = xlsx.utils.encode_cell({r:i, c:colNum});
+          const ref = xlsx.utils.encode_cell({r:i, c:colNums[0]});
           /* if the particular row did not contain data for the column, the cell will not be generated */
           if(!newWs[ref]) { continue; }
           /* `.t == "d"` for number cells */
           if(newWs[ref].t !== 'd') { continue; }
           /* assign the `.z` number format */
           newWs[ref].z = fmt;
+
+          /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
+          const ref2 = xlsx.utils.encode_cell({r:i, c:colNums[1]});
+          /* if the particular row did not contain data for the column, the cell will not be generated */
+          if(!newWs[ref2]) { continue; }
+          /* `.t == "d"` for number cells */
+          if(newWs[ref2].t !== 'd') { continue; }
+          /* assign the `.z` number format */
+          newWs[ref2].z = fmt;
         }
 
-        console.log(newWs);
-        xlsx.utils.book_append_sheet(newWb, newWs, 'Export');
+        xlsx.utils.book_append_sheet(newWb, newWs, 'Members');
+
+        const newWs2 = xlsx.utils.json_to_sheet([{
+          'ID phòng': room.roomId,
+          'Bắt đầu': room.timeStart,
+          'Kết thúc': new Date(),
+          'Thời gian': moment(new Date()).diff(moment(room.timeStart), 'minutes') + ' phút',
+          'Thành viên tham gia': room.users.length
+        }], {
+          cellDates: true,
+        });
+        const colsWs2 = [
+          { wch: 15 }, // STT
+          { wch: 20 }, // STT
+          { wch: 20 }, // STT
+          { wch: 15 }, // STT
+          { wch: 20 }, // STT
+        ];
+        newWs2['!cols'] = colsWs2;
+        newWs2['B2'].z = 'm/d/yy h:mm'
+        newWs2['C2'].z = 'm/d/yy h:mm'
+
+        xlsx.utils.book_append_sheet(newWb, newWs2, 'Statistic');
 
         const filename = `order.dasdf.xlsx`;
         const pathFile = path.join(__dirname, '..', filename);

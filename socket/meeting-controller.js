@@ -28,6 +28,7 @@ module.exports.onCreateRoom = async function ({
     const room = await Room.create({
       roomId,
       password,
+      timeStart: new Date()
     });
 
     if (memberId === '') {
@@ -606,9 +607,12 @@ module.exports.onDisconnect = async function (io, reason) {
         if (reason.typeLeave === 'self') {
           // self leave
           // remove user from this room
-          room.removeUserById(user.id);
-          await room.save();
-          await User.deleteOne({ _id: user._id });
+          // room.removeUserById(user.id);
+
+          user.timeLeave = new Date()
+          await user.save()
+          // await room.save();
+          // await User.deleteOne({ _id: user._id });
 
           // send message notify for remaining users in the room
           this.to(room.roomId).emit(
@@ -616,24 +620,7 @@ module.exports.onDisconnect = async function (io, reason) {
             formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
           );
 
-          // if not exists user in the room => delete this room
-          if (room.users.length <= 0) {
-            // get socketId of users in waiting room to notify for them
-            const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
-
-            // delete users in waiting room
-            await User.deleteMany({ _id: { $in: room.waitingRoom } });
-            // delete the room
-            await Room.deleteOne({ roomId: room.roomId });
-
-            // notify end room for user in waiting room
-            socketIdsWaitingRoom.forEach((socketId) => {
-              io.to(socketId).emit(
-                'joinRoomBlocked',
-                'Phòng bạn yêu cầu đã kết thúc chat!'
-              );
-            });
-          } else {
+          if (room.users.some(u => !u.timeLeave)) {
             // update room info => send room info (name & password & users)
             this.to(room.roomId).emit('roomInfo', {
               nameRoom: room.roomId,
@@ -643,6 +630,25 @@ module.exports.onDisconnect = async function (io, reason) {
 
             this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
               userId: user.socketId,
+            });
+          } else {
+            // if not exists user in the room => delete this room
+            // get socketId of users in waiting room to notify for them
+            const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+
+            // delete users in waiting room
+            await User.deleteMany({ _id: { $in: room.waitingRoom } });
+            // delete users in room
+            await User.deleteMany({ _id: { $in: room.users } });
+            // delete the room
+            await Room.deleteOne({ roomId: room.roomId });
+
+            // notify end room for user in waiting room
+            socketIdsWaitingRoom.forEach((socketId) => {
+              io.to(socketId).emit(
+                'joinRoomBlocked',
+                'Phòng bạn yêu cầu đã kết thúc chat!'
+              );
             });
           }
           // send message to client after disconnect
@@ -693,17 +699,20 @@ module.exports.onDisconnect = async function (io, reason) {
             const host = room.getUser('id', dataToken.userId);
             if (host && host.host) {
               // remove user in the room
-              const user = room.removeUserById(reason.userId);
+              // const user = room.removeUserById(reason.userId);
+              const userBeKick = await User.findById(reason.userId)
 
-              if (user) {
+              if (userBeKick) {
                 // save the room
-                await room.save();
+                // await room.save();
+                userBeKick.timeLeave = new Date()
+                await userBeKick.save()
 
                 // remove the user
-                await User.deleteOne({ _id: user._id });
+                // await User.deleteOne({ _id: userBeKick._id });
 
                 // send message to user is kicked out the room
-                io.to(user.socketId).emit('kickedOutRoom', 'OK');
+                io.to(userBeKick.socketId).emit('kickedOutRoom', 'OK');
               }
 
               // update room info => send room info (name & password & users)
@@ -714,7 +723,7 @@ module.exports.onDisconnect = async function (io, reason) {
               });
 
               io.to(room.roomId).emit('infoLeaveRoomForStream', {
-                userId: user.socketId,
+                userId: userBeKick.socketId,
               });
             } else {
               this.emit('error', 'Bạn không phải host, bạn không có quyền này');
@@ -723,47 +732,54 @@ module.exports.onDisconnect = async function (io, reason) {
             this.emit('error', 'Access token không hợp lệ!');
           }
         } else {
-          // // close page
-          // if (!user.allowJoin) {
-          //   // remove user from this room
-          //   room.removeUserById(user.id);
-          //   await room.save();
-          //   await User.deleteOne({ _id: user._id });
+          // close page
+          if (!user.allowJoin) {
+            // remove user from this room
+            // room.removeUserById(user.id);
+            // await room.save();
+            // await User.deleteOne({ _id: user._id });
+            user.timeLeave = new Date()
+            await user.save()
 
-          //   // send message notify for remaining users in the room
-          //   this.to(room.roomId).emit(
-          //     'message',
-          //     formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
-          //   );
-          //   // if not exists user in the room => delete this room
-          //   if (room.users.length <= 0) {
-          //     // get socketId of users in waiting room to notify for them
-          //     const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+            // send message notify for remaining users in the room
+            this.to(room.roomId).emit(
+              'message',
+              formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
+            );
 
-          //     // delete users in waiting room
-          //     await User.deleteMany({ _id: { $in: room.waitingRoom } });
-          //     // delete the room
-          //     await Room.deleteOne({ roomId: room.roomId });
+            // if not exists user in the room => delete this room
+            if (room.users.some(u => !u.timeLeave)) {
+              // update room info => send room info (name & password & users)
+               this.to(room.roomId).emit('roomInfo', {
+                nameRoom: room.roomId,
+                password: room.password,
+                users: room.getRoomUsersInfo(),
+              });
+              this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
+                userId: user.socketId,
+              });
+            } else {
+              // get socketId of users in waiting room to notify for them
+              const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
 
-          //     // notify end room for user in waiting room
-          //     socketIdsWaitingRoom.forEach((socketId) => {
-          //       io.to(socketId).emit(
-          //         'joinRoomBlocked',
-          //         'Phòng bạn yêu cầu đã kết thúc chat!'
-          //       );
-          //     });
-          //   } else {
-          //     // update room info => send room info (name & password & users)
-          //     this.to(room.roomId).emit('roomInfo', {
-          //       nameRoom: room.roomId,
-          //       password: room.password,
-          //       users: room.getRoomUsersInfo(),
-          //     });
-          //     this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
-          //       userId: user.socketId,
-          //     });
-          //   }
-          // }
+              // delete users in waiting room
+              await User.deleteMany({ _id: { $in: room.waitingRoom } });
+
+              // delete users in room
+              await User.deleteMany({ _id: { $in: room.users } });
+
+              // delete the room
+              await Room.deleteOne({ roomId: room.roomId });
+
+              // notify end room for user in waiting room
+              socketIdsWaitingRoom.forEach((socketId) => {
+                io.to(socketId).emit(
+                  'joinRoomBlocked',
+                  'Phòng bạn yêu cầu đã kết thúc chat!'
+                );
+              });
+            }
+          }
         }
       } else {
         this.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');
