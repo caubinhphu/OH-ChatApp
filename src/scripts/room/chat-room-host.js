@@ -128,6 +128,16 @@ const ChatRoomHost = (() => {
     });
   });
 
+  $('.users-mana-sub').on('click', function() {
+    if (!$(this).hasClass('is-active')) {
+      $(this).addClass('is-active')
+      $('.user-m-sub-box').removeClass('d-none')
+    } else {
+      $(this).removeClass('is-active')
+      $('.user-m-sub-box').addClass('d-none')
+    }
+  })
+
   // output room info
   function outputRoomInfo(roomInfo, socketId) {
     // room name, password and input copy

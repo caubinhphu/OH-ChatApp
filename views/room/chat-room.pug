@@ -1,5 +1,15 @@
 extends ./common-chat-room
 
+block subControlArea
+  #users-area.control-area(data-control="user")
+    .control-area-main.d-flex.flex-column
+      .control-area-top.p-1.d-flex.justify-content-between
+        button.arrow-smaller.btn.btn-default(data-area="users")
+          span.icomoon.icon-arrow-right
+        .align-self-center.control-title Thành viên
+        div
+      #room-users.control-area-middle.flex-fill
+
 block subArea
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')

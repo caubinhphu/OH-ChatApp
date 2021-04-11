@@ -46255,7 +46255,7 @@ var CommonChatRoomVideo = function () {
               localRECStream = null;
               $recBtn.addClass('state-off');
               $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
-              $('.rec').removeClass('d-none');
+              $('.rec').addClass('d-none');
 
             case 38:
               canClickRecBtn = true;
@@ -48402,6 +48402,15 @@ var ChatRoomHost = function () {
       userId: this.dataset.id,
       token: qs.get('token')
     });
+  });
+  $('.users-mana-sub').on('click', function () {
+    if (!$(this).hasClass('is-active')) {
+      $(this).addClass('is-active');
+      $('.user-m-sub-box').removeClass('d-none');
+    } else {
+      $(this).removeClass('is-active');
+      $('.user-m-sub-box').addClass('d-none');
+    }
   }); // output room info
 
   function outputRoomInfo(roomInfo, socketId) {

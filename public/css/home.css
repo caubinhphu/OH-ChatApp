@@ -7145,6 +7145,16 @@ input:-webkit-autofill {
   display: flex;
 }
 
+.user-m-sub-box {
+  position: absolute;
+  right: 45px;
+  background: #0c1a2f;
+  border-radius: 10px;
+  z-index: 2;
+  top: 0;
+  width: 200px;
+}
+
 @media only screen and (max-width: 1024px) {
   .popup.special {
     left: 86%;

@@ -505,10 +505,20 @@
     font-size: 60px;
   }
 }
-
 .them-share {
   display: flex;
 }
+.user-m-sub-box {
+  position: absolute;
+  right: 45px;
+  background: $color-0c;
+  border-radius: 10px;
+  z-index: 2;
+  top: 0;
+  width: 200px;
+}
+
+
 @media only screen and (max-width: 1024px) {
   .popup {
     &.special {

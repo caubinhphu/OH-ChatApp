@@ -11,15 +11,15 @@ block subMeetingControl2
     .control-show-pop(data-control="manager")
       span.icomoon.icon-security
 
-block waitingRoomInfo
-  #waiting-room(style="display: none")
-    #waiting-room-info.p-2.flex-fill.d-flex.flex-column
-      .mb-2.text-secondary
-        span.icomoon.icon-user-plus
-        div.d-inline-block
-          span &nbsp; Phòng chờ
-          span#amount-waiting.ml-1
-      #waiting-room-users.flex-fill
+//- block waitingRoomInfo
+//-   #waiting-room(style="display: none")
+//-     #waiting-room-info.p-2.flex-fill.d-flex.flex-column
+//-       .mb-2.text-secondary
+//-         span.icomoon.icon-user-plus
+//-         div.d-inline-block
+//-           span &nbsp; Phòng chờ
+//-           span#amount-waiting.ml-1
+//-       #waiting-room-users.flex-fill
 
 block subControlArea
   #manager-area.control-area(data-control="manager")
@@ -46,6 +46,27 @@ block subControlArea
             input#management-turnoff-chat.custom-control-input(type="checkbox", name="management", value="turnoff-chat")
             label.custom-control-label(for="management-turnoff-chat") Tắt chat
 
+  #users-area.control-area(data-control="user")
+    .control-area-main.d-flex.flex-column.ps-rv
+      .control-area-top.p-1.d-flex.justify-content-between
+        button.arrow-smaller.btn.btn-default(data-area="users")
+          span.icomoon.icon-arrow-right
+        .align-self-center.control-title Thành viên
+        button.users-mana-sub.btn-icon.btn.small-btn
+          span.icomoon.icon-dots-three-vertical
+          span.sr-only User manager sub
+        .user-m-sub-box.d-none
+          .text-center
+            a.btn.btn-link(href=`/export-users/?token=${token}`) Lưu danh sách 
+      #waiting-room(style="display: none")
+        #waiting-room-info.p-2.flex-fill.d-flex.flex-column
+          .mb-2.text-secondary
+            span.icomoon.icon-user-plus
+            div.d-inline-block
+              span &nbsp; Phòng chờ
+              span#amount-waiting.ml-1
+          #waiting-room-users.flex-fill
+      #room-users.control-area-middle.flex-fill
 block subArea
   #confirm-leave-room-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='leaveRoom', aria-hidden='true')
     .modal-dialog.modal-dialog-centered(role='document')

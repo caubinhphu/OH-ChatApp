@@ -46255,7 +46255,7 @@ var CommonChatRoomVideo = function () {
               localRECStream = null;
               $recBtn.addClass('state-off');
               $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
-              $('.rec').removeClass('d-none');
+              $('.rec').addClass('d-none');
 
             case 38:
               canClickRecBtn = true;

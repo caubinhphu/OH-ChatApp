@@ -1,3 +1,4 @@
+const moment = require('moment');
 const mongoose = require('mongoose');
 
 const roomSchema = new mongoose.Schema({
@@ -82,6 +83,27 @@ roomSchema.methods.getRoomUsersInfo = function () {
       socketId: user.socketId,
       host: user.host,
       avatar: user.avatar,
+    };
+  });
+};
+
+// get users of the room info to export xlsx
+roomSchema.methods.getRoomUsersInfoExport = function () {
+  return this.users.map((user, index) => {
+    let time = 0
+    if (user.timeJoin) {
+      if (user.timeLeave) {
+        time = moment(user.timeLeave).diff(moment(user.timeJoin), 'minutes')
+      } else {
+        time = moment().diff(moment(user.timeJoin), 'minutes')
+      }
+    }
+    return {
+      'STT': index + 1,
+      'Họ và tên': user.name,
+      'Vào lúc': user.timeJoin,
+      'Ra lúc': user.timeLeave,
+      'Thời gian': `${time} phút`
     };
   });
 };

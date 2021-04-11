@@ -205,6 +205,7 @@ module.exports.onJoinChat = async function (io, { token }) {
         // set socket chat for the user
         user.socketId = this.id;
         user.allowJoin = false;
+        user.timeJoin = new Date()
         await user.save();
 
         // broadcast emit join room

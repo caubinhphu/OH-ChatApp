@@ -17,4 +17,6 @@ router.get('/host/chat', controller.getHostChat);
 
 router.get('/meeting', controller.redirectJoin);
 
+router.get('/export-users', controller.exportUsers);
+
 module.exports = router;

@@ -22,6 +22,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '/images/default-avatar.jpg',
   },
+  timeJoin: Date,
+  timeLeave: Date
 });
 
 const User = mongoose.model('User', userSchema);
