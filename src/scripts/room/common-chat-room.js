@@ -270,7 +270,7 @@ const CommonChatRoom = (() => {
 
   $('#copy-info').on('click', function() {
     copyText('#link-info');
-    outputSuccessMessage('Copied the room information')
+    outputSuccessMessage('Sao chép thông tin phòng thành công')
   });
 })()
 

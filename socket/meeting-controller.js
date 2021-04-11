@@ -613,7 +613,6 @@ module.exports.onDisconnect = async function (io, reason) {
           await user.save()
           // await room.save();
           // await User.deleteOne({ _id: user._id });
-
           // send message notify for remaining users in the room
           this.to(room.roomId).emit(
             'message',
@@ -733,7 +732,7 @@ module.exports.onDisconnect = async function (io, reason) {
           }
         } else {
           // close page
-          if (!user.allowJoin) {
+          if (!user.allowJoin && !user.timeLeave) {
             // remove user from this room
             // room.removeUserById(user.id);
             // await room.save();
