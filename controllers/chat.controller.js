@@ -43,8 +43,10 @@ module.exports.getJoin = (req, res) => {
 };
 
 module.exports.getChat = (req, res) => {
+  const { token } = req.query
   res.render('room/chat-room', {
     titleSite: siteRoom,
+    token
   });
 };
 
@@ -167,9 +169,46 @@ module.exports.exportUsers = async (req, res, next) => {
 
         xlsx.utils.book_append_sheet(newWb, newWs2, 'Statistic');
 
-        const filename = `order.dasdf.xlsx`;
+        const filename = `info-${dataToken.roomId}_${moment().format('DD-MM-YY')}.xlsx`;
         const pathFile = path.join(__dirname, '..', filename);
         xlsx.writeFile(newWb, pathFile);
+
+        res.download(pathFile, filename, (err) => {
+          if (err) { throw err; }
+          fs.unlink(pathFile, (err) => {
+            if (err) { throw err; }
+          });
+        });
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+module.exports.exportChat = async (req, res, next) => {
+  const { token } = req.query
+  if (token) {
+    try {
+      const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
+      // find room join with users in this room
+      const room = await Room.findOne({
+        roomId: dataToken.roomId,
+      }).populate({
+        path: 'messages',
+        populate: {
+          path: 'memberSendId'
+        }
+      });
+
+      if (room) {
+        const filename = `chat-${dataToken.roomId}_${moment().format('DD-MM-YY')}.txt`;
+        const pathFile = path.join(__dirname, '..', filename);
+
+        const chatText = room.messages.map(msg => {
+          return `${moment(msg.time).format('H:mm')} Từ ${msg.memberSendId.name}: ${msg.content}`
+        }).join('\n')
+
+        fs.writeFileSync(pathFile, chatText)
 
         res.download(pathFile, filename, (err) => {
           if (err) { throw err; }

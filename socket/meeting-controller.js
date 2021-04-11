@@ -6,6 +6,7 @@ const formatMessage = require('../utils/message');
 const Room = require('../models/Room');
 const User = require('../models/User');
 const Member = require('../models/Member');
+const Message = require('../models/Message');
 
 // names bot
 const botName = 'OH Bot';
@@ -281,10 +282,17 @@ module.exports.onMessageChat = async function ({ token, message }) {
       if (user) {
         if (room.status.allowChat || user.host) {
           // broadcast message to all user in the room
-          this.to(room.roomId).emit(
-            'message',
-            formatMessage(user.name, message, user.avatar)
-          );
+          const msgFormatted = formatMessage(user.name, message, user.avatar)
+          this.to(room.roomId).emit('message', msgFormatted);
+          const msg = await Message.create({
+            time: new Date(),
+            content: msgFormatted.message,
+            externalModelType: 'User',
+            memberSendId: user._id
+          })
+
+          room.messages.push(msg._id)
+          await room.save()
         } else {
           // not allowed chat
           this.emit('error', 'Chat bị cấm bởi host');
@@ -611,7 +619,7 @@ module.exports.onDisconnect = async function (io, reason) {
 
           user.timeLeave = new Date()
           await user.save()
-          // await room.save();
+
           // await User.deleteOne({ _id: user._id });
           // send message notify for remaining users in the room
           this.to(room.roomId).emit(
@@ -619,7 +627,7 @@ module.exports.onDisconnect = async function (io, reason) {
             formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
           );
 
-          if (room.users.some(u => !u.timeLeave)) {
+          if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
             // update room info => send room info (name & password & users)
             this.to(room.roomId).emit('roomInfo', {
               nameRoom: room.roomId,
@@ -639,6 +647,8 @@ module.exports.onDisconnect = async function (io, reason) {
             await User.deleteMany({ _id: { $in: room.waitingRoom } });
             // delete users in room
             await User.deleteMany({ _id: { $in: room.users } });
+            // delete messages in room
+            await Message.deleteMany({ _id: { $in: room.messages } });
             // delete the room
             await Room.deleteOne({ roomId: room.roomId });
 
@@ -669,6 +679,9 @@ module.exports.onDisconnect = async function (io, reason) {
 
               // delete users in the room
               await User.deleteMany({ _id: { $in: room.users } });
+
+              // delete messages in room
+              await Message.deleteMany({ _id: { $in: room.messages } });
 
               // delete the room
               await Room.deleteOne({ roomId: room.roomId });
@@ -738,6 +751,8 @@ module.exports.onDisconnect = async function (io, reason) {
             // await room.save();
             // await User.deleteOne({ _id: user._id });
             user.timeLeave = new Date()
+            user.markModified('timeLeave')
+
             await user.save()
 
             // send message notify for remaining users in the room
@@ -745,9 +760,8 @@ module.exports.onDisconnect = async function (io, reason) {
               'message',
               formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
             );
-
             // if not exists user in the room => delete this room
-            if (room.users.some(u => !u.timeLeave)) {
+            if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
               // update room info => send room info (name & password & users)
                this.to(room.roomId).emit('roomInfo', {
                 nameRoom: room.roomId,
@@ -766,6 +780,9 @@ module.exports.onDisconnect = async function (io, reason) {
 
               // delete users in room
               await User.deleteMany({ _id: { $in: room.users } });
+
+              // delete messages in room
+              await Message.deleteMany({ _id: { $in: room.messages } });
 
               // delete the room
               await Room.deleteOne({ roomId: room.roomId });

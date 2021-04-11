@@ -40,7 +40,13 @@ const roomSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
-  timeStart: Date
+  timeStart: Date,
+  messages: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Message',
+    }
+  ]
 });
 
 // get host of the room
