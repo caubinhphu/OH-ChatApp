@@ -389,7 +389,7 @@
   content: "\e916";
   color: $white;
 }
-#hide-time-btn[data-status="off"] span::before {
+#hide-time-btn[data-status="off"] span.icomoon::before {
   content: "\e914";
 }
 .amount-participants,
@@ -508,7 +508,7 @@
 .them-share {
   display: flex;
 }
-.user-m-sub-box {
+.sub-mana-box {
   position: absolute;
   right: 45px;
   background: $color-0c;
@@ -516,8 +516,19 @@
   z-index: 2;
   top: 0;
   width: 200px;
+  padding: 10px;
 }
-
+.sub-mana-item {
+  display: block;
+  cursor: pointer;
+  padding: 5px 0;
+  border-radius: 10px;
+  &:hover {
+    background-color: $gray-900;
+    text-decoration: none;
+    color: inherit;
+  }
+}
 
 @media only screen and (max-width: 1024px) {
   .popup {

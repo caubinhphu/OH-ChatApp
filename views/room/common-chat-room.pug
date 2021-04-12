@@ -1,7 +1,6 @@
 extends ./layout
 
 block contentMain
-  a(href=`/export-chat/?token=${token}`) Export
   #meeting-area
     .rec.text-danger.d-none
       .rec-icon.d-inline
@@ -99,8 +98,19 @@ block contentMain
               button.arrow-smaller.btn.btn-default(data-area="chat")
                 span.icomoon.icon-arrow-right
               .align-self-center.control-title Chat
-              button#hide-time-btn.btn-icon.btn(data-status="on", title="Ẩn thời gian")
-                span.icomoon.icon-timer_off
+              button.chat-mana-sub.btn-icon.btn.small-btn
+                span.icomoon.icon-dots-three-vertical
+                span.sr-only Chat manager sub
+              .chat-m-sub-box.sub-mana-box.d-none
+                .text-center
+                  a.sub-mana-item(href=`/export-chat/?token=${token}`)
+                    span.icomoon.icon-save
+                    span &nbsp;&nbsp;
+                    span Lưu chat
+                  .sub-mana-item#hide-time-btn(data-status="on")
+                    span.icomoon.icon-timer_off
+                    span &nbsp;&nbsp;
+                    span Ẩn thời gian
             #chat-middle.control-area-middle.flex-fill
             .control-area-bottom.p-1.ps-rv.wrap-chat-input
               form.d-flex(name="sendMsgForm")

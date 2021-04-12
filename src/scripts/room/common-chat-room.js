@@ -118,16 +118,26 @@ const CommonChatRoom = (() => {
         time.style.display = 'none';
       });
       this.dataset.status = 'off';
-      this.title = 'Bật thời gian';
+      $(this).find('span:last-child').html('Bật thời gian')
     } else if (this.dataset.status === 'off') {
       // hide time now -> show time
       document.querySelectorAll('.message-time').forEach((time) => {
         time.style.display = 'inline';
       });
       this.dataset.status = 'on';
-      this.title = 'Ẩn thời gian';
+      $(this).find('span:last-child').html('Ẩn thời gian')
     }
   });
+
+  $('.chat-mana-sub').on('click', function() {
+    if (!$(this).hasClass('is-active')) {
+      $(this).addClass('is-active')
+      $('.chat-m-sub-box').removeClass('d-none')
+    } else {
+      $(this).removeClass('is-active')
+      $('.chat-m-sub-box').addClass('d-none')
+    }
+  })
 
   // disconnect for self
   document

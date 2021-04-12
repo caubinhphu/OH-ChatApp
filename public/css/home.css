@@ -6444,6 +6444,10 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E92E";
 }
 
+.icon-save:before {
+  content: "\E92F";
+}
+
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   -o-transition: background-color 5000s ease-in-out 0s;
@@ -7016,7 +7020,7 @@ input:-webkit-autofill {
   color: #fff;
 }
 
-#hide-time-btn[data-status="off"] span::before {
+#hide-time-btn[data-status="off"] span.icomoon::before {
   content: "\E914";
 }
 
@@ -7145,7 +7149,7 @@ input:-webkit-autofill {
   display: flex;
 }
 
-.user-m-sub-box {
+.sub-mana-box {
   position: absolute;
   right: 45px;
   background: #0c1a2f;
@@ -7153,6 +7157,20 @@ input:-webkit-autofill {
   z-index: 2;
   top: 0;
   width: 200px;
+  padding: 10px;
+}
+
+.sub-mana-item {
+  display: block;
+  cursor: pointer;
+  padding: 5px 0;
+  border-radius: 10px;
+}
+
+.sub-mana-item:hover {
+  background-color: #00142a;
+  text-decoration: none;
+  color: inherit;
 }
 
 @media only screen and (max-width: 1024px) {

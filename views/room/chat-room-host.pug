@@ -55,9 +55,12 @@ block subControlArea
         button.users-mana-sub.btn-icon.btn.small-btn
           span.icomoon.icon-dots-three-vertical
           span.sr-only User manager sub
-        .user-m-sub-box.d-none
+        .user-m-sub-box.sub-mana-box.d-none
           .text-center
-            a.btn.btn-link(href=`/export-users/?token=${token}`) Lưu danh sách 
+            a.sub-mana-item(href=`/export-users/?token=${token}`)
+              span.icomoon.icon-save
+              span &nbsp;&nbsp;
+              span Lưu danh sách
       #waiting-room(style="display: none")
         #waiting-room-info.p-2.flex-fill.d-flex.flex-column
           .mb-2.text-secondary
