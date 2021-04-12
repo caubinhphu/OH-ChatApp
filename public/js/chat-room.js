@@ -44925,21 +44925,39 @@ var CommonChatRoom = function () {
 
       inputMsg.focus();
     }
-  }); // output message in main chat area
+  });
+
+  function isValidHttpUrl(string) {
+    var url;
+
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } // output message in main chat area
+
 
   function outputMessage(msgObj) {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var div = document.createElement('div');
+    var content = msgObj.message;
+
+    if (isValidHttpUrl(msgObj.message)) {
+      content = "<a href=\"".concat(msgObj.message, "\">").concat(msgObj.message, "</a>");
+    }
 
     if (me) {
       div.className = 'message text-right';
-      div.innerHTML = "<small class=\"message-time\" style=\"display:".concat(btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline', "\">").concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg-me\">\n          <small class=\"message-content mx-0\">").concat(msgObj.message, "</small>\n        </div>\n      <div>");
+      div.innerHTML = "<small class=\"message-time\" style=\"display:".concat(btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline', "\">").concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg-me\">\n          <small class=\"message-content mx-0\">").concat(content, "</small>\n        </div>\n      <div>");
     } else {
       if (msgObj.username === 'OH Bot') {
         outputInfoMessage(msgObj.message);
       } else {
         div.className = 'message';
-        div.innerHTML = "<small class=\"message-time\" style=\"display:".concat(btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline', "\">").concat(msgObj.time, "</small>\n          <div>\n            <div class=\"msg\">\n              <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"OH\" />\n              <small class=\"message-name\">").concat(msgObj.username, "</small>\n              <small class=\"message-content\">").concat(msgObj.message, "</small>\n            </div>\n          </div>"); // set un-read
+        div.innerHTML = "<small class=\"message-time\" style=\"display:".concat(btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline', "\">").concat(msgObj.time, "</small>\n          <div>\n            <div class=\"msg\">\n              <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"OH\" />\n              <small class=\"message-name\">").concat(msgObj.username, "</small>\n              <small class=\"message-content\">\n                ").concat(content, "\n              </small>\n            </div>\n          </div>"); // set un-read
 
         if (!$('#chat-area').hasClass('is-active')) {
           $('.control-show-pop[data-control="chat"]').addClass('has-unread');

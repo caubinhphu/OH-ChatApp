@@ -6780,6 +6780,16 @@ input:-webkit-autofill {
   padding: 2px;
 }
 
+.message a {
+  color: #102131;
+  text-decoration: underline;
+}
+
+.message a:hover {
+  color: #102131;
+  text-decoration: none;
+}
+
 .msg {
   width: max-content;
   max-width: 100%;

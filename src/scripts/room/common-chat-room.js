@@ -55,9 +55,21 @@ const CommonChatRoom = (() => {
     }
   });
 
+
+  function isValidHttpUrl(string) {
+    let url;
+    try { url = new URL(string); }
+    catch (_) { return false; }
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  }
+
   // output message in main chat area
-  function outputMessage(msgObj, me = false) {
+  function outputMessage(msgObj, me = false) { 
     const div = document.createElement('div');
+    let content = msgObj.message
+    if (isValidHttpUrl(msgObj.message)) {
+      content = `<a href="${msgObj.message}">${msgObj.message}</a>`
+    }
     if (me) {
       div.className = 'message text-right';
       div.innerHTML = `<small class="message-time" style="display:${
@@ -65,7 +77,7 @@ const CommonChatRoom = (() => {
       }">${msgObj.time}</small>
       <div>
         <div class="msg-me">
-          <small class="message-content mx-0">${msgObj.message}</small>
+          <small class="message-content mx-0">${content}</small>
         </div>
       <div>`;
     } else {
@@ -80,7 +92,9 @@ const CommonChatRoom = (() => {
             <div class="msg">
               <img class="message-avatar" src="${msgObj.avatar}" alt="OH" />
               <small class="message-name">${msgObj.username}</small>
-              <small class="message-content">${msgObj.message}</small>
+              <small class="message-content">
+                ${content}
+              </small>
             </div>
           </div>`;
 
