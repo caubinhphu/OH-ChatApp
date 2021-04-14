@@ -1,4 +1,5 @@
 import moment from 'moment';
+import axios from 'axios';
 
 const CommonChatRoom = (() => {
   const chatMain = document.getElementById('chat-middle'); // chat main area
@@ -22,12 +23,15 @@ const CommonChatRoom = (() => {
   });
 
   // event submit form chat
-  msgForm.addEventListener('submit', (e) => {
+  msgForm.addEventListener('submit', async (e) => {
     // stop submit form
     e.preventDefault();
 
     // input message
     const inputMsg = e.target.elements.message;
+    const files = e.target.elements.file;
+
+    $('.files-upload-box').html('')
 
     if (inputMsg.value !== '') {
       // send message to server
@@ -53,8 +57,65 @@ const CommonChatRoom = (() => {
       // focus input message
       inputMsg.focus();
     }
+
+    if (files.files.length) {
+      await sendFile(files)
+    }
   });
 
+
+  $('#send-file').on('change', function() {
+    const html = [...this.files].map(file => {
+      return `
+        <div class="file-item">
+          <span>${file.name}</span>
+        </div>
+      `
+    }).join('')
+    $('.files-upload-box').html(html)
+  })
+
+  $(document).on('dragenter', (e) => {
+    console.log(1);
+  }).on('dragleave', (e) => {
+    console.log(2);
+  })
+
+  $(document).on('dragend', (e) => {
+    console.log(3);
+    if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
+      e.preventDefault();
+      e.stopPropagation();
+  }
+  })
+
+  async function sendFile(input) {
+    const formData = new FormData();
+    const idSession = new Date().valueOf();
+    [...input.files].forEach(file=>{
+      formData.append('files', file);
+      outputMessage({
+        time: moment().format('H:mm'),
+        username: 'Me',
+        message: `<a class="msg-file" data-session="${idSession}" href="#">${file.name}</a>`
+      }, true, 'wrap-msg-file')
+    });
+    formData.append('session', idSession);
+    try {
+      const res = await axios.post('/upload-file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      console.log(res);
+      const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
+      $msgFile.parents('.wrap-msg-file').addClass('load-done')
+    } catch (error) {
+      console.log(error);
+      const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
+      $msgFile.parents('.message').remove()
+    }
+  }
 
   function isValidHttpUrl(string) {
     let url;
@@ -64,7 +125,7 @@ const CommonChatRoom = (() => {
   }
 
   // output message in main chat area
-  function outputMessage(msgObj, me = false) { 
+  function outputMessage(msgObj, me = false, classMsg = '') { 
     const div = document.createElement('div');
     let content = msgObj.message
     if (isValidHttpUrl(msgObj.message)) {
@@ -76,7 +137,7 @@ const CommonChatRoom = (() => {
         btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline'
       }">${msgObj.time}</small>
       <div>
-        <div class="msg-me">
+        <div class="msg-me ${classMsg}">
           <small class="message-content mx-0">${content}</small>
         </div>
       <div>`;

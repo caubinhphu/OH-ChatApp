@@ -5886,7 +5886,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .wrap-emojis {
   position: absolute;
-  bottom: 50px;
+  bottom: 90%;
   right: 50px;
   background-color: white;
   box-shadow: 2px 2px 5px #555;
@@ -6446,6 +6446,14 @@ a.text-dark:hover, a.text-dark:focus {
 
 .icon-save:before {
   content: "\E92F";
+}
+
+.icon-file:before {
+  content: "\E930";
+}
+
+.icon-insert_drive_file:before {
+  content: "\E931";
 }
 
 input:-webkit-autofill {
@@ -7181,6 +7189,71 @@ input:-webkit-autofill {
   background-color: #00142a;
   text-decoration: none;
   color: inherit;
+}
+
+#chat-area .icon-insert_drive_file {
+  color: #22c0c9;
+}
+
+.files-upload-box .file-item {
+  height: 40px;
+  width: 90px;
+  background: #22c0c9;
+  margin: 5px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.files-upload-box .file-item span {
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  max-width: 248px;
+  word-break: break-all;
+  color: #102131;
+}
+
+.wrap-msg-file {
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wrap-msg-file::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #000000ab;
+  z-index: 1;
+}
+
+.wrap-msg-file .msg-file::after {
+  content: "";
+  position: absolute;
+  background-image: url("/images/loader-white.svg");
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  z-index: 2;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%);
+  background-position: center;
+}
+
+.wrap-msg-file.load-done::after {
+  content: none;
+}
+
+.wrap-msg-file.load-done .msg-file::after {
+  content: none;
 }
 
 @media only screen and (max-width: 1024px) {

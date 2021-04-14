@@ -30,6 +30,8 @@ router.delete('/delete-invitation', controller.deleteFriendInvitation);
 
 router.delete('/destroy-friend', controller.deleteFriend);
 
+router.post('/upload-file', controller.uploadFile)
+
 router.get('/setting', controller.getSetting)
 
 router.put('/setting/password', controller.putPassword)

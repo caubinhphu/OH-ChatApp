@@ -21,4 +21,6 @@ router.get('/export-users', controller.exportUsers);
 
 router.get('/export-chat', controller.exportChat);
 
+router.post('/upload-file', controller.uploadFile)
+
 module.exports = router;

@@ -113,8 +113,10 @@ block subArea
               span.icomoon.icon-close
 
 block subFormChat
-  button.btn.btn-default.open-emojis(type="button") &#128512;
-  //- input#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
+  label.btn.btn-default.send-file.m-0.p-2(for="send-file")
+    span.icomoon.icon-insert_drive_file
+  input#send-file.d-none(type="file", name="file", multiple)
+  button.btn.btn-default.open-emojis.p-2(type="button") &#128512;
   .flex-fill.wrap-msg-box.ps-rv
     textarea#msg.form-control(type="text", name="message", placeholder="Nhập tin nhắn", autocomplete="off")
   button.btn.btn-default.text-secondary

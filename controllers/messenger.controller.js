@@ -198,6 +198,44 @@ module.exports.putAvatar = async (req, res) => {
   });
 };
 
+// upload file
+module.exports.uploadFile = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ mgs: err.message });
+    } else {
+      try {
+        console.log(req.user.id);
+        const member = await Member.findById(req.user.id);
+        // if (member) {
+        //   // upload
+        //   const result = await cloudinary.upload(
+        //     req.file.path,
+        //     path.basename(req.file.filename, path.extname(req.file.filename)),
+        //     'ohchat/avatar'
+        //   );
+        //   const urlAvatar = result.url;
+
+        //   // update db
+        //   member.avatar = urlAvatar
+        //   await member.save()
+
+        console.log(req.file);
+          return res
+            .status(200)
+            .json({ mgs: 'Cập nhật avatar thành công', src: req.file.filename });
+        // } else {
+        //   return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+        // }
+        } catch (error) {
+          console.log(error);
+          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+      }
+    }
+  });
+};
+
 // get my friends
 module.exports.getFriends = async (req, res) => {
   try {

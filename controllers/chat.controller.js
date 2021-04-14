@@ -2,11 +2,92 @@ const xlsx = require('xlsx')
 const jwt = require('jsonwebtoken');
 const path = require('path')
 const fs = require('fs')
+const multer = require('multer');
+const cloudinary = require('../utils/cloudinary');
 
 const Room = require('../models/Room');
 const moment = require('moment');
 
 const siteRoom = 'OH Chat - Room'
+
+const storage = multer.diskStorage({
+  // destination: './public/images/users/',
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+// upload file
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 100000 },
+  fileFilter: (req, file, cb) => {
+    // ext type
+    const extTypes = /js/;
+
+    // check extname
+    const extname = !extTypes.test(path.extname(file.originalname).toLowerCase());
+
+    // check mimetype
+    const mime = !extTypes.test(file.mimetype);
+
+    if (extname && mime) {
+      cb(null, true);
+    } else {
+      cb('Định dạng file không hợp lệ');
+    }
+  },
+}).array('files');
+
+// upload file
+module.exports.uploadFile = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ mgs: err.message, session: req.body.session });
+    } else {
+      try {
+        // console.log(req.user.id);
+        // const member = await Member.findById(req.user.id);
+        // if (member) {
+          // upload
+          console.log(req.files);
+          const fileUrls = []
+          await Promise.all(req.files.map(async (file) => {
+            const result = await cloudinary.upload(
+              file.path,
+              path.basename(file.filename, path.extname(file.filename)),
+              'ohchat/upload'
+            );
+            fileUrls.push({
+              name: file.originalname,
+              url: result.url
+            })
+          }));
+
+          console.log(fileUrls);
+
+          // update db
+          // member.avatar = urlAvatar
+          // await member.save()
+
+          return res
+            .status(200)
+            .json({ mgs: 'Success', fileUrls, session: req.body.session });
+        // } else {
+        //   return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+        // }
+        } catch (error) {
+          console.log(error);
+          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại', session: req.body.session });
+      }
+    }
+  });
+};
 
 module.exports.getIndex = (req, res) => {
   res.render('room', {

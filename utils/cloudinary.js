@@ -7,7 +7,11 @@ module.exports.upload = (url, publicId, folder) => {
   return new Promise((resolve, reject) => {
     cloudinary.v2.uploader.upload(
       url,
-      { public_id: publicId, folder },
+      {
+        public_id: publicId,
+        folder,
+        resource_type: 'auto'
+      },
       function (error, result) {
         if (error) {
           reject(error);
