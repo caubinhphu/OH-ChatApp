@@ -45908,7 +45908,7 @@ var CommonChatRoom = function () {
 
   function _sendFile() {
     _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(input) {
-      var formData, idSession, res, $msgFile, _$msgFile;
+      var formData, idSession, res, $msgFile, _error$response, _error$response$data, _$msgFile;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -45922,41 +45922,52 @@ var CommonChatRoom = function () {
                 outputMessage({
                   time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
                   username: 'Me',
-                  message: "<a class=\"msg-file\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>")
+                  message: "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>")
                 }, true, 'wrap-msg-file');
               });
 
-              formData.append('session', idSession);
-              _context2.prev = 4;
-              _context2.next = 7;
+              _context2.prev = 3;
+              _context2.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/upload-file', formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }
               });
 
-            case 7:
+            case 6:
               res = _context2.sent;
+              input.value = '';
               console.log(res);
-              $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]")); // $msgFile.parents('.wrap-msg-file').addClass('load-done')
+              $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
+              $msgFile.each(function (i, ele) {
+                $(ele).parents('.wrap-msg-file').addClass('load-done');
+                ele.href = res.data.fileUrls[i].url; // send message to server
 
-              _context2.next = 17;
+                socket.emit('messageChat', {
+                  message: res.data.fileUrls[i].url,
+                  type: 'file',
+                  nameFile: res.data.fileUrls[i].name,
+                  token: qs.get('token')
+                });
+              });
+              _context2.next = 19;
               break;
 
-            case 12:
-              _context2.prev = 12;
-              _context2.t0 = _context2["catch"](4);
+            case 13:
+              _context2.prev = 13;
+              _context2.t0 = _context2["catch"](3);
               console.log(_context2.t0);
+              window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
               _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
               _$msgFile.parents('.message').remove();
 
-            case 17:
+            case 19:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[4, 12]]);
+      }, _callee2, null, [[3, 13]]);
     }));
     return _sendFile.apply(this, arguments);
   }
@@ -45981,7 +45992,11 @@ var CommonChatRoom = function () {
     var content = msgObj.message;
 
     if (isValidHttpUrl(msgObj.message)) {
-      content = "<a href=\"".concat(msgObj.message, "\">").concat(msgObj.message, "</a>");
+      if (msgObj.type === 'file') {
+        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
+      } else {
+        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.message, "</a>");
+      }
     }
 
     if (me) {

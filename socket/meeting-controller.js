@@ -264,7 +264,7 @@ module.exports.onJoinChat = async function (io, { token }) {
 };
 
 // receive message from client
-module.exports.onMessageChat = async function ({ token, message }) {
+module.exports.onMessageChat = async function ({ token, message, type, nameFile }) {
   try {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
@@ -283,6 +283,10 @@ module.exports.onMessageChat = async function ({ token, message }) {
         if (room.status.allowChat || user.host) {
           // broadcast message to all user in the room
           const msgFormatted = formatMessage(user.name, message, user.avatar)
+          if (type === 'file') {
+            msgFormatted.type = 'file'
+            msgFormatted.nameFile = nameFile
+          }
           this.to(room.roomId).emit('message', msgFormatted);
           const msg = await Message.create({
             time: new Date(),

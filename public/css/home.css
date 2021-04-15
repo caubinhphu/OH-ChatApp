@@ -7248,6 +7248,10 @@ input:-webkit-autofill {
   background-position: center;
 }
 
+.wrap-msg-file.load-done {
+  pointer-events: auto;
+}
+
 .wrap-msg-file.load-done::after {
   content: none;
 }

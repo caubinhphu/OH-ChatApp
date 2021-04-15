@@ -594,6 +594,7 @@
     }
   }
   &.load-done {
+    pointer-events: auto;
     &::after {
       content: none;
     }

@@ -97,21 +97,32 @@ const CommonChatRoom = (() => {
       outputMessage({
         time: moment().format('H:mm'),
         username: 'Me',
-        message: `<a class="msg-file" data-session="${idSession}" href="#">${file.name}</a>`
+        message: `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`
       }, true, 'wrap-msg-file')
     });
-    formData.append('session', idSession);
     try {
       const res = await axios.post('/upload-file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
+      input.value = ''
       console.log(res);
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
-      $msgFile.parents('.wrap-msg-file').addClass('load-done')
+      $msgFile.each((i, ele) => {
+        $(ele).parents('.wrap-msg-file').addClass('load-done')
+        ele.href = res.data.fileUrls[i].url
+        // send message to server
+        socket.emit('messageChat', {
+          message: res.data.fileUrls[i].url,
+          type: 'file',
+          nameFile: res.data.fileUrls[i].name,
+          token: qs.get('token'),
+        });
+      })
     } catch (error) {
       console.log(error);
+      window.outputErrorMessage(error?.response?.data?.msg)
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.parents('.message').remove()
     }
@@ -129,7 +140,11 @@ const CommonChatRoom = (() => {
     const div = document.createElement('div');
     let content = msgObj.message
     if (isValidHttpUrl(msgObj.message)) {
-      content = `<a href="${msgObj.message}">${msgObj.message}</a>`
+      if (msgObj.type === 'file') {
+        content = `<a href="${msgObj.message}" target="_blank">${msgObj.nameFile}</a>`
+      } else {
+        content = `<a href="${msgObj.message}" target="_blank">${msgObj.message}</a>`
+      }
     }
     if (me) {
       div.className = 'message text-right';
