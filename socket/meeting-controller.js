@@ -817,6 +817,19 @@ module.exports.onDisconnect = async function (io, reason) {
           //     // delete users in room
           //     await User.deleteMany({ _id: { $in: room.users } });
 
+                  // // delete file upload
+                  // const messageFiles = await Message.find({ _id: { $in: room.messages }, type: 'file' })
+                  // if (messageFiles) {
+                  //   const publicIds = messageFiles.map(msg => {
+                  //     const id = msg.content.match(/room.*$/g)
+                  //     if (id) {
+                  //       const ext = path.extname(id[0])
+                  //       return 'ohchat/upload/' + path.basename(id[0], ext)
+                  //     }
+                  //     return null
+                  //   })
+                  //   await cloudinary.deleteResources(publicIds)
+                  // }
           //     // delete messages in room
           //     await Message.deleteMany({ _id: { $in: room.messages } });
 
