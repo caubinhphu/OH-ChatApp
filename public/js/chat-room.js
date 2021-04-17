@@ -45909,8 +45909,7 @@ var CommonChatRoom = function () {
       finalFiles.splice(index, 1);
       $fileItem.remove();
 
-      if (!finalFiles.length) {
-        enabledInputFile();
+      if (!finalFiles.length) {// enabledInputFile()
       }
     }
   });
@@ -46009,8 +46008,8 @@ var CommonChatRoom = function () {
             case 6:
               res = _context2.sent;
               $('#send-file').val('');
-              finalFiles = [];
-              enabledInputFile();
+              finalFiles = []; // enabledInputFile()
+
               console.log(res);
               $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
               $msgFile.each(function (i, ele) {
@@ -46032,28 +46031,30 @@ var CommonChatRoom = function () {
                   $(ele).parents('.message').remove();
                 }
               });
-              _context2.next = 23;
+              _context2.next = 22;
               break;
 
-            case 15:
-              _context2.prev = 15;
+            case 14:
+              _context2.prev = 14;
               _context2.t0 = _context2["catch"](3);
-              console.log(_context2.t0); // window.outputErrorMessage(error?.response?.data?.msg)
-
+              console.dir(_context2.t0);
               _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
               _$msgFile.parents('.message').remove();
 
               $('#send-file').val('');
-              finalFiles = [];
-              enabledInputFile();
+              finalFiles = []; // enabledInputFile()
 
-            case 23:
+              if (_context2.t0.response && _context2.t0.response.data && _context2.t0.response.data.mgs) {
+                window.outputErrorMessage(_context2.t0.response.data.mgs);
+              }
+
+            case 22:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[3, 15]]);
+      }, _callee2, null, [[3, 14]]);
     }));
     return _sendFile.apply(this, arguments);
   }

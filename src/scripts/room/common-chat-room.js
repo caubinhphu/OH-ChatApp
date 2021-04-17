@@ -95,7 +95,7 @@ const CommonChatRoom = (() => {
       finalFiles.splice(index, 1)
       $fileItem.remove()
       if (!finalFiles.length) {
-        enabledInputFile()
+        // enabledInputFile()
       }
     }
   })
@@ -186,7 +186,7 @@ const CommonChatRoom = (() => {
       })
       $('#send-file').val('')
       finalFiles = []
-      enabledInputFile()
+      // enabledInputFile()
       console.log(res);
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.each((i, ele) => {
@@ -206,13 +206,15 @@ const CommonChatRoom = (() => {
         }
       })
     } catch (error) {
-      console.log(error);
-      // window.outputErrorMessage(error?.response?.data?.msg)
+      console.dir(error);
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.parents('.message').remove()
       $('#send-file').val('')
       finalFiles = []
-      enabledInputFile()
+      // enabledInputFile()
+      if (error.response && error.response.data && error.response.data.mgs) {
+        window.outputErrorMessage(error.response.data.mgs)
+      }
     }
   }
 

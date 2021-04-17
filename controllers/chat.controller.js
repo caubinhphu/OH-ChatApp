@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 // upload file
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 100000 },
+  limits: { fileSize: 100000, files: 5 },
   fileFilter: (req, file, cb) => {
     // ext type
     const extTypes = /js/;
@@ -38,7 +38,7 @@ const upload = multer({
     if (extname && mime) {
       cb(null, true);
     } else {
-      cb('Định dạng file không hợp lệ');
+      cb(new Error('Định dạng file không hợp lệ'));
     }
   },
 }).array('files');
@@ -47,15 +47,23 @@ const upload = multer({
 module.exports.uploadFile = async (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
-      console.log(err);
-      return res.status(400).json({ mgs: err.message });
+      // console.log(err);
+      let messageError = ''
+      if (err.code === 'LIMIT_FILE_COUNT') {
+        messageError = 'Chỉ được gửi tối đa 5 tệp cùng một lúc'
+      } else if(err.code === 'LIMIT_FILE_SIZE') {
+        messageError = 'Kích thước tệp không vượt quá 100KB'
+      } else {
+        messageError = err.message
+      }
+      return res.status(400).json({ mgs: messageError });
     } else {
       try {
         // console.log(req.user.id);
         // const member = await Member.findById(req.user.id);
         // if (member) {
           // upload
-          console.log(req.files);
+          // console.log(req.files);
           const fileUrls = []
           await Promise.all(req.files.map(async (file) => {
             const result = await cloudinary.upload(
@@ -80,7 +88,7 @@ module.exports.uploadFile = async (req, res) => {
         //   return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
         // }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           return res.status(400).json({ mgs: 'Gửi file thất bại' });
       }
     }
