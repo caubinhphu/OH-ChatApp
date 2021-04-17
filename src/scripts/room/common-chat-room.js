@@ -118,7 +118,7 @@ const CommonChatRoom = (() => {
     console.log(files);
     if (files.length) {
       let html = '';
-      [...files].forEach((file)=>{
+      [...files].forEach((file) => {
         html += `
           <div class="file-item">
             <span>${file.name}</span>

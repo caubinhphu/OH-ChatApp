@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const formatMessage = require('../utils/message');
 
@@ -7,6 +8,8 @@ const Room = require('../models/Room');
 const User = require('../models/User');
 const Member = require('../models/Member');
 const Message = require('../models/Message');
+
+const cloudinary = require('../utils/cloudinary');
 
 // names bot
 const botName = 'OH Bot';
@@ -292,7 +295,8 @@ module.exports.onMessageChat = async function ({ token, message, type, nameFile 
             time: new Date(),
             content: msgFormatted.message,
             externalModelType: 'User',
-            memberSendId: user._id
+            memberSendId: user._id,
+            type: type === 'file' ? 'file' : 'text'
           })
 
           room.messages.push(msg._id)
@@ -651,6 +655,20 @@ module.exports.onDisconnect = async function (io, reason) {
             await User.deleteMany({ _id: { $in: room.waitingRoom } });
             // delete users in room
             await User.deleteMany({ _id: { $in: room.users } });
+
+            // delete file upload
+            const messageFiles = await Message.find({ _id: { $in: room.messages }, type: 'file' })
+            if (messageFiles) {
+              const publicIds = messageFiles.map(msg => {
+                const id = msg.content.match(/room.*$/g)
+                if (id) {
+                  const ext = path.extname(id[0])
+                  return 'ohchat/upload/' + path.basename(id[0], ext)
+                }
+                return null
+              })
+              await cloudinary.deleteResources(publicIds)
+            }
             // delete messages in room
             await Message.deleteMany({ _id: { $in: room.messages } });
             // delete the room
@@ -683,6 +701,20 @@ module.exports.onDisconnect = async function (io, reason) {
 
               // delete users in the room
               await User.deleteMany({ _id: { $in: room.users } });
+
+              // delete file upload
+              const messageFiles = await Message.find({ _id: { $in: room.messages }, type: 'file' })
+              if (messageFiles) {
+                const publicIds = messageFiles.map(msg => {
+                  const id = msg.content.match(/room.*$/g)
+                  if (id) {
+                    const ext = path.extname(id[0])
+                    return 'ohchat/upload/' + path.basename(id[0], ext)
+                  }
+                  return null
+                })
+                await cloudinary.deleteResources(publicIds)
+              }
 
               // delete messages in room
               await Message.deleteMany({ _id: { $in: room.messages } });

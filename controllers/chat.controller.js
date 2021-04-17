@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(
       null,
-      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
+      'room' + '-' + uniqueSuffix + path.extname(file.originalname)
     );
   },
 });
@@ -68,8 +68,6 @@ module.exports.uploadFile = async (req, res) => {
               url: result.url
             })
           }));
-
-          console.log(fileUrls);
 
           // update db
           // member.avatar = urlAvatar

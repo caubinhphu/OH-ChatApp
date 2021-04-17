@@ -23,4 +23,16 @@ module.exports.upload = (url, publicId, folder) => {
   });
 };
 
+module.exports.deleteResources = (publicIds) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.v2.api.delete_resources(publicIds, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    })
+  });
+};
+
 module.exports.url = (publicId) => cloudinary.url(publicId);
