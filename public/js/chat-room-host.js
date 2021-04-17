@@ -45810,14 +45810,18 @@ var CommonChatRoom = function () {
   var btnChangeStatusTime = document.querySelector('#hide-time-btn'); // Change display status button
 
   var msgForm = document.sendMsgForm; // form chat
-  // console.log(moment);
+
+  var dragZone = document.querySelector('.dragzone'); // console.log(moment);
   // socket.io
 
   var socket = io();
   window.socket = socket; // get token from query string
 
   var qs = new URLSearchParams(location.search);
-  window.qs = qs; // receive  message from server
+  window.qs = qs;
+  var finalFiles = [];
+  var isDragging = 0;
+  var isDragZone = false; // receive  message from server
 
   socket.on('message', function (msgObj) {
     // output message
@@ -45861,13 +45865,13 @@ var CommonChatRoom = function () {
                 inputMsg.focus();
               }
 
-              if (!files.files.length) {
+              if (!finalFiles.length) {
                 _context.next = 8;
                 break;
               }
 
               _context.next = 8;
-              return sendFile(files);
+              return sendFile();
 
             case 8:
             case "end":
@@ -45882,33 +45886,103 @@ var CommonChatRoom = function () {
     };
   }());
   $('#send-file').on('change', function () {
-    var html = _toConsumableArray(this.files).map(function (file) {
-      return "\n        <div class=\"file-item\">\n          <span>".concat(file.name, "</span>\n        </div>\n      ");
-    }).join('');
+    if (this.files.length) {
+      var html = '';
 
-    $('.files-upload-box').html(html);
-  });
-  $(document).on('dragenter', function (e) {
-    console.log(1);
-  }).on('dragleave', function (e) {
-    console.log(2);
-  });
-  $(document).on('dragend', function (e) {
-    console.log(3);
+      _toConsumableArray(this.files).forEach(function (file, i) {
+        html += "\n          <div class=\"file-item\">\n            <span>".concat(file.name, "</span>\n            <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n          </div>\n        ");
+        finalFiles.push(file);
+      });
 
-    if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
-      e.preventDefault();
-      e.stopPropagation();
+      console.log(finalFiles);
+      $('.files-upload-box').append(html); // disabledInputFile()
+
+      this.value = '';
     }
   });
+  $(document).on('click', '.remove-up-file', function (e) {
+    e.preventDefault();
+    var $fileItem = $(this).parents('.file-item');
+    var index = $fileItem.index();
 
-  function sendFile(_x2) {
+    if (index >= 0) {
+      finalFiles.splice(index, 1);
+      $fileItem.remove();
+
+      if (!finalFiles.length) {
+        enabledInputFile();
+      }
+    }
+  });
+  dragZone.addEventListener('dragenter', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDragZone = true;
+  });
+  dragZone.addEventListener('dragleave', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDragZone = false;
+  });
+  dragZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    var files = e.dataTransfer.files;
+    console.log(files);
+
+    if (files.length) {
+      var html = '';
+
+      _toConsumableArray(files).forEach(function (file) {
+        html += "\n          <div class=\"file-item\">\n            <span>".concat(file.name, "</span>\n            <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n          </div>\n        ");
+        finalFiles.push(file);
+      });
+
+      $('.files-upload-box').append(html); // disabledInputFile()
+    }
+
+    console.log(finalFiles);
+  });
+  document.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDragging++;
+
+    if (isDragging === 1) {
+      $('.dragzone').removeClass('d-none');
+    }
+  });
+  document.addEventListener('dragleave', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isDragZone) {
+      $('.dragzone').addClass('d-none');
+      isDragging = 0;
+    }
+  });
+  document.addEventListener('drop', function (e) {
+    e.preventDefault();
+    isDragging = 0;
+    $('.dragzone').addClass('d-none');
+  });
+
+  function disabledInputFile() {
+    $('label.send-file').addClass('disabled');
+    $('input#send-file').prop('disabled', true);
+  }
+
+  function enabledInputFile() {
+    $('label.send-file').removeClass('disabled');
+    $('input#send-file').prop('disabled', false);
+  }
+
+  function sendFile() {
     return _sendFile.apply(this, arguments);
   }
 
   function _sendFile() {
-    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(input) {
-      var formData, idSession, res, $msgFile, _error$response, _error$response$data, _$msgFile;
+    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var formData, idSession, res, $msgFile, _$msgFile;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -45916,8 +45990,7 @@ var CommonChatRoom = function () {
             case 0:
               formData = new FormData();
               idSession = new Date().valueOf();
-
-              _toConsumableArray(input.files).forEach(function (file) {
+              finalFiles.forEach(function (file) {
                 formData.append('files', file);
                 outputMessage({
                   time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
@@ -45925,7 +45998,6 @@ var CommonChatRoom = function () {
                   message: "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>")
                 }, true, 'wrap-msg-file');
               });
-
               _context2.prev = 3;
               _context2.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/upload-file', formData, {
@@ -45936,38 +46008,52 @@ var CommonChatRoom = function () {
 
             case 6:
               res = _context2.sent;
-              input.value = '';
+              $('#send-file').val('');
+              finalFiles = [];
+              enabledInputFile();
               console.log(res);
               $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
               $msgFile.each(function (i, ele) {
-                $(ele).parents('.wrap-msg-file').addClass('load-done');
-                ele.href = res.data.fileUrls[i].url; // send message to server
-
-                socket.emit('messageChat', {
-                  message: res.data.fileUrls[i].url,
-                  type: 'file',
-                  nameFile: res.data.fileUrls[i].name,
-                  token: qs.get('token')
+                var file = res.data.fileUrls.find(function (f) {
+                  return f.name === $(ele).text();
                 });
+
+                if (file) {
+                  $(ele).parents('.wrap-msg-file').addClass('load-done');
+                  ele.href = file.url; // send message to server
+
+                  socket.emit('messageChat', {
+                    message: file.url,
+                    type: 'file',
+                    nameFile: file.name,
+                    token: qs.get('token')
+                  });
+                } else {
+                  $(ele).parents('.message').remove();
+                }
               });
-              _context2.next = 19;
+              _context2.next = 23;
               break;
 
-            case 13:
-              _context2.prev = 13;
+            case 15:
+              _context2.prev = 15;
               _context2.t0 = _context2["catch"](3);
-              console.log(_context2.t0);
-              window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.msg);
+              console.log(_context2.t0); // window.outputErrorMessage(error?.response?.data?.msg)
+
               _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
               _$msgFile.parents('.message').remove();
 
-            case 19:
+              $('#send-file').val('');
+              finalFiles = [];
+              enabledInputFile();
+
+            case 23:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[3, 13]]);
+      }, _callee2, null, [[3, 15]]);
     }));
     return _sendFile.apply(this, arguments);
   }

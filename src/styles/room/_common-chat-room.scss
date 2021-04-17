@@ -552,6 +552,7 @@
     display: flex;
     align-items: center;
     padding: 0 5px;
+    position: relative;
     span {
       overflow: hidden;
       -webkit-line-clamp: 1;
@@ -560,6 +561,15 @@
       max-width: 248px;
       word-break: break-all;
       color: $color-10;
+    }
+    button {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      padding: 1px;
+      font-size: 18px;
+      right: -5px;
+      top: -7px;
     }
   }
 }
@@ -602,6 +612,31 @@
       &::after {
         content: none;
       }
+    }
+  }
+}
+.dragzone {
+  position: absolute;
+  top: 45px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $color-ol;
+  z-index: 2;
+  color: $color-10;
+  .drag-inner {
+    border: 2px $color-10 dashed;
+    .icomoon {
+      font-size: 50px;
+    }
+  }
+}
+label.send-file {
+  &.disabled {
+    cursor: no-drop;
+    opacity: .5;
+    .icomoon {
+      color: $color-0c;
     }
   }
 }

@@ -6124,6 +6124,10 @@ a.text-dark:hover, a.text-dark:focus {
   color: #fff;
 }
 
+.btn-icon.btn-red:hover span {
+  color: #fff;
+}
+
 .btn-icon.btn-red:hover::after {
   box-shadow: inset 0 0 0 45px #c8102e;
 }
@@ -7204,6 +7208,7 @@ input:-webkit-autofill {
   display: flex;
   align-items: center;
   padding: 0 5px;
+  position: relative;
 }
 
 .files-upload-box .file-item span {
@@ -7214,6 +7219,16 @@ input:-webkit-autofill {
   max-width: 248px;
   word-break: break-all;
   color: #102131;
+}
+
+.files-upload-box .file-item button {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  padding: 1px;
+  font-size: 18px;
+  right: -5px;
+  top: -7px;
 }
 
 .wrap-msg-file {
@@ -7258,6 +7273,34 @@ input:-webkit-autofill {
 
 .wrap-msg-file.load-done .msg-file::after {
   content: none;
+}
+
+.dragzone {
+  position: absolute;
+  top: 45px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #9e9e9e73;
+  z-index: 2;
+  color: #102131;
+}
+
+.dragzone .drag-inner {
+  border: 2px #102131 dashed;
+}
+
+.dragzone .drag-inner .icomoon {
+  font-size: 50px;
+}
+
+label.send-file.disabled {
+  cursor: no-drop;
+  opacity: .5;
+}
+
+label.send-file.disabled .icomoon {
+  color: #0c1a2f;
 }
 
 @media only screen and (max-width: 1024px) {

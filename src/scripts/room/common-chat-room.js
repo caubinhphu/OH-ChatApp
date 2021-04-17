@@ -5,6 +5,7 @@ const CommonChatRoom = (() => {
   const chatMain = document.getElementById('chat-middle'); // chat main area
   const btnChangeStatusTime = document.querySelector('#hide-time-btn'); // Change display status button
   const msgForm = document.sendMsgForm; // form chat
+  const dragZone = document.querySelector('.dragzone')
 // console.log(moment);
   // socket.io
   const socket = io();
@@ -13,6 +14,9 @@ const CommonChatRoom = (() => {
   const qs = new URLSearchParams(location.search);
   window.qs = qs
 
+  let finalFiles = []
+  let isDragging = 0;
+  let isDragZone = false;
   // receive  message from server
   socket.on('message', (msgObj) => {
     // output message
@@ -58,41 +62,115 @@ const CommonChatRoom = (() => {
       inputMsg.focus();
     }
 
-    if (files.files.length) {
-      await sendFile(files)
+    if (finalFiles.length) {
+      await sendFile()
     }
   });
 
 
   $('#send-file').on('change', function() {
-    const html = [...this.files].map(file => {
-      return `
-        <div class="file-item">
-          <span>${file.name}</span>
-        </div>
-      `
-    }).join('')
-    $('.files-upload-box').html(html)
+    if (this.files.length) {
+      let html = '';
+      [...this.files].forEach((file, i)=>{
+        html += `
+          <div class="file-item">
+            <span>${file.name}</span>
+            <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+          </div>
+        `
+        finalFiles.push(file)
+      })
+      console.log(finalFiles);
+      $('.files-upload-box').append(html);
+      // disabledInputFile()
+      this.value = ''
+    }
   })
 
-  $(document).on('dragenter', (e) => {
-    console.log(1);
-  }).on('dragleave', (e) => {
-    console.log(2);
+  $(document).on('click', '.remove-up-file', function(e) {
+    e.preventDefault()
+    const $fileItem = $(this).parents('.file-item')
+    const index = $fileItem.index()
+    if (index >= 0) {
+      finalFiles.splice(index, 1)
+      $fileItem.remove()
+      if (!finalFiles.length) {
+        enabledInputFile()
+      }
+    }
   })
 
-  $(document).on('dragend', (e) => {
-    console.log(3);
-    if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
-      e.preventDefault();
-      e.stopPropagation();
+  dragZone.addEventListener('dragenter', e => {
+    e.preventDefault();
+    e.stopPropagation()
+    isDragZone = true
+  })
+
+  dragZone.addEventListener('dragleave', e => {
+    e.preventDefault();
+    e.stopPropagation()
+    isDragZone = false
+  })
+
+  dragZone.addEventListener('drop', e => {
+    e.preventDefault();
+    const { files } = e.dataTransfer
+    console.log(files);
+    if (files.length) {
+      let html = '';
+      [...files].forEach((file)=>{
+        html += `
+          <div class="file-item">
+            <span>${file.name}</span>
+            <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+          </div>
+        `
+        finalFiles.push(file)
+      })
+      $('.files-upload-box').append(html);
+      // disabledInputFile()
+    }
+    console.log(finalFiles);
+  })
+
+  document.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.stopPropagation()
+    isDragging++;
+    if (isDragging === 1) {
+      $('.dragzone').removeClass('d-none')
+    }
+  })
+
+  document.addEventListener('dragleave', e => {
+    e.preventDefault();
+    e.stopPropagation()
+    if (!isDragZone) {
+      $('.dragzone').addClass('d-none')
+      isDragging = 0;
+    }
+  })
+
+  document.addEventListener('drop', e => {
+    e.preventDefault();
+    isDragging = 0;
+    $('.dragzone').addClass('d-none')
+  })
+
+  function disabledInputFile() {
+    $('label.send-file').addClass('disabled')
+    $('input#send-file').prop('disabled', true)
   }
-  })
 
-  async function sendFile(input) {
+  function enabledInputFile() {
+    $('label.send-file').removeClass('disabled')
+    $('input#send-file').prop('disabled', false)
+  }
+
+  async function sendFile() {
     const formData = new FormData();
     const idSession = new Date().valueOf();
-    [...input.files].forEach(file=>{
+    finalFiles.forEach(file=>{
       formData.append('files', file);
       outputMessage({
         time: moment().format('H:mm'),
@@ -106,25 +184,35 @@ const CommonChatRoom = (() => {
           'Content-Type': 'multipart/form-data'
         }
       })
-      input.value = ''
+      $('#send-file').val('')
+      finalFiles = []
+      enabledInputFile()
       console.log(res);
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.each((i, ele) => {
-        $(ele).parents('.wrap-msg-file').addClass('load-done')
-        ele.href = res.data.fileUrls[i].url
-        // send message to server
-        socket.emit('messageChat', {
-          message: res.data.fileUrls[i].url,
-          type: 'file',
-          nameFile: res.data.fileUrls[i].name,
-          token: qs.get('token'),
-        });
+        const file = res.data.fileUrls.find(f => f.name === $(ele).text())
+        if (file) {
+          $(ele).parents('.wrap-msg-file').addClass('load-done')
+          ele.href = file.url
+          // send message to server
+          socket.emit('messageChat', {
+            message: file.url,
+            type: 'file',
+            nameFile: file.name,
+            token: qs.get('token'),
+          });
+        } else {
+          $(ele).parents('.message').remove()
+        }
       })
     } catch (error) {
       console.log(error);
-      window.outputErrorMessage(error?.response?.data?.msg)
+      // window.outputErrorMessage(error?.response?.data?.msg)
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.parents('.message').remove()
+      $('#send-file').val('')
+      finalFiles = []
+      enabledInputFile()
     }
   }
 
