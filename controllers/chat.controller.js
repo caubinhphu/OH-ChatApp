@@ -13,7 +13,6 @@ const siteRoom = 'OH Chat - Room'
 const storage = multer.diskStorage({
   // destination: './public/images/users/',
   filename: (req, file, cb) => {
-    console.log(file);
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(
       null,
@@ -77,7 +76,6 @@ module.exports.uploadFile = async (req, res) => {
               url: result.secure_url,
               resourceType: result.resource_type
             })
-            console.log(result);
           }));
 
           // update db

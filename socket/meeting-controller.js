@@ -657,18 +657,8 @@ module.exports.onDisconnect = async function (io, reason) {
             await User.deleteMany({ _id: { $in: room.users } });
 
             // delete file upload
-            const messageFiles = await Message.find({ _id: { $in: room.messages }, type: 'file' })
-            if (messageFiles) {
-              const publicIds = messageFiles.map(msg => {
-                const id = msg.content.match(/room.*$/g)
-                if (id) {
-                  const ext = path.extname(id[0])
-                  return 'ohchat/upload/' + path.basename(id[0], ext)
-                }
-                return null
-              })
-              await cloudinary.deleteResources(publicIds)
-            }
+            await removeFileUpload(room.messages)
+
             // delete messages in room
             await Message.deleteMany({ _id: { $in: room.messages } });
             // delete the room
@@ -703,31 +693,7 @@ module.exports.onDisconnect = async function (io, reason) {
               await User.deleteMany({ _id: { $in: room.users } });
 
               // delete file upload
-              const messageFiles = await Message.find({ _id: { $in: room.messages }, type: { $in: ['raw', 'image', 'video'] } })
-              if (messageFiles) {
-                const publicIds = {
-                  resRaws: [],
-                  resImages: [],
-                  resVideos: []
-                }
-
-                messageFiles.forEach(msg => {
-                  const id = msg.content.match(/room.*$/g)
-                  if (id) {
-                    if (msg.type === 'raw') {
-                      publicIds.resRaws.push('ohchat/upload/' + id[0])
-                    } else if (msg.type === 'image') {
-                      publicIds.resImages.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
-                    } else if (msg.type === 'video') {
-                      publicIds.resVideos.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
-                    }
-                  }
-                })
-
-                console.log(publicIds);
-                const r2 = await cloudinary.deleteResources(publicIds)
-                console.log(r2);
-              }
+              await removeFileUpload(room.messages)
 
               // delete messages in room
               await Message.deleteMany({ _id: { $in: room.messages } });
@@ -831,21 +797,11 @@ module.exports.onDisconnect = async function (io, reason) {
           //     // delete users in room
           //     await User.deleteMany({ _id: { $in: room.users } });
 
-                  // // delete file upload
-                  // const messageFiles = await Message.find({ _id: { $in: room.messages }, type: 'file' })
-                  // if (messageFiles) {
-                  //   const publicIds = messageFiles.map(msg => {
-                  //     const id = msg.content.match(/room.*$/g)
-                  //     if (id) {
-                  //       const ext = path.extname(id[0])
-                  //       return 'ohchat/upload/' + path.basename(id[0], ext)
-                  //     }
-                  //     return null
-                  //   })
-                  //   await cloudinary.deleteResources(publicIds)
-                  // }
-          //     // delete messages in room
-          //     await Message.deleteMany({ _id: { $in: room.messages } });
+          //    // delete file upload
+                // await removeFileUpload(room.messages)
+
+          //    // delete messages in room
+          //       await Message.deleteMany({ _id: { $in: room.messages } });
 
           //     // delete the room
           //     await Room.deleteOne({ roomId: room.roomId });
@@ -868,3 +824,33 @@ module.exports.onDisconnect = async function (io, reason) {
     }
   }
 };
+
+async function removeFileUpload(messageIds) {
+  try {
+    // delete file upload
+    const messageFiles = await Message.find({ _id: { $in: messageIds }, type: { $in: ['raw', 'image', 'video'] } })
+    if (messageFiles) {
+      const publicIds = {
+        resRaws: [],
+        resImages: [],
+        resVideos: []
+      }
+
+      messageFiles.forEach(msg => {
+        const id = msg.content.match(/room.*$/g)
+        if (id) {
+          if (msg.type === 'raw') {
+            publicIds.resRaws.push('ohchat/upload/' + id[0])
+          } else if (msg.type === 'image') {
+            publicIds.resImages.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
+          } else if (msg.type === 'video') {
+            publicIds.resVideos.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
+          }
+        }
+      })
+      await cloudinary.deleteResources(publicIds)
+    }
+  } catch (error) {
+    return error
+  }
+}
