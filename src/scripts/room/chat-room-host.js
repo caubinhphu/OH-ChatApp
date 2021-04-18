@@ -198,6 +198,18 @@ const ChatRoomHost = (() => {
     if (!manager.allowChat) {
       document.getElementById('management-turnoff-chat').checked = true;
     }
+    if (!manager.allowMic) {
+      document.getElementById('management-turnoff-mic').checked = true;
+    }
+    if (!manager.allowVideo) {
+      document.getElementById('management-turnoff-video').checked = true;
+    }
+    if (!manager.allowShare) {
+      document.getElementById('management-turnoff-share').checked = true;
+    }
+    if (!manager.allowRec) {
+      document.getElementById('management-turnoff-rec').checked = true;
+    }
     const ids = {
       open: 'management-open-room',
       locked: 'management-lock-room',

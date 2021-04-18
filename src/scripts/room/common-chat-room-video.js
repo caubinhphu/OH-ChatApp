@@ -178,11 +178,11 @@ const CommonChatRoomVideo = (() => {
   });
 
   // rec btn click
-  $('.btn-rec-screen').on('click', handleRecordingScreen);
+  $('.btn-rec-screen').on('click', recordingScreen);
   // shortcut key
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'r' || e.key === 'R') && e.altKey === true) {
-      handleRecordingScreen();
+      recordingScreen();
     }
   });
 
@@ -607,6 +607,10 @@ const CommonChatRoomVideo = (() => {
     }
   }
 
+  function recordingScreen() {
+    window.socket.emit('checkAllowRecord')
+  }
+
   // handle recorder screen
   async function handleRecordingScreen() {
     if (canClickRecBtn) {
@@ -689,6 +693,14 @@ const CommonChatRoomVideo = (() => {
       $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
     }
   }
+
+  window.socket.on('resultCheckRecord', async ({ canRec }) => {
+    if (canRec) {
+      await handleRecordingScreen()
+    } else {
+      window.outputErrorMessage('Host đã chặn quay màn hình')
+    }
+  })
 
   window.socket.on('isCanShareScreen', async ({
     isShareScreen

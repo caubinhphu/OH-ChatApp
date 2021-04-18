@@ -47595,11 +47595,11 @@ var CommonChatRoomVideo = function () {
     }
   }); // rec btn click
 
-  $('.btn-rec-screen').on('click', handleRecordingScreen); // shortcut key
+  $('.btn-rec-screen').on('click', recordingScreen); // shortcut key
 
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'r' || e.key === 'R') && e.altKey === true) {
-      handleRecordingScreen();
+      recordingScreen();
     }
   }); // create area meeting item
 
@@ -47885,14 +47885,14 @@ var CommonChatRoomVideo = function () {
 
 
   function _handleAudio() {
-    _handleAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    _handleAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var audioStream;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               if (!canClickAudioBtn) {
-                _context2.next = 30;
+                _context3.next = 30;
                 break;
               }
 
@@ -47900,24 +47900,24 @@ var CommonChatRoomVideo = function () {
               $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
 
               if (!(this.dataset.state === 'off')) {
-                _context2.next = 21;
+                _context3.next = 21;
                 break;
               }
 
               if (!navigator.mediaDevices.getUserMedia) {
-                _context2.next = 19;
+                _context3.next = 19;
                 break;
               }
 
-              _context2.prev = 5;
-              _context2.next = 8;
+              _context3.prev = 5;
+              _context3.next = 8;
               return navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
               });
 
             case 8:
-              audioStream = _context2.sent;
+              audioStream = _context3.sent;
               // turn on video
               // set UI
               this.dataset.state = 'on';
@@ -47929,16 +47929,16 @@ var CommonChatRoomVideo = function () {
               }); // add audio track for stream of local stream
 
               localStream.addTrack(audioStream.getAudioTracks()[0]);
-              _context2.next = 19;
+              _context3.next = 19;
               break;
 
             case 16:
-              _context2.prev = 16;
-              _context2.t0 = _context2["catch"](5);
+              _context3.prev = 16;
+              _context3.t0 = _context3["catch"](5);
               outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
 
             case 19:
-              _context2.next = 28;
+              _context3.next = 28;
               break;
 
             case 21:
@@ -47963,10 +47963,10 @@ var CommonChatRoomVideo = function () {
 
             case 30:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, this, [[5, 16]]);
+      }, _callee3, this, [[5, 16]]);
     }));
     return _handleAudio.apply(this, arguments);
   }
@@ -47977,14 +47977,14 @@ var CommonChatRoomVideo = function () {
 
 
   function _handleVideo() {
-    _handleVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+    _handleVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
       var videoStream;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               if (!canClickVideoBtn) {
-                _context3.next = 32;
+                _context4.next = 32;
                 break;
               }
 
@@ -47992,24 +47992,24 @@ var CommonChatRoomVideo = function () {
               $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
 
               if (!(this.dataset.state === 'off')) {
-                _context3.next = 22;
+                _context4.next = 22;
                 break;
               }
 
               if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 20;
+                _context4.next = 20;
                 break;
               }
 
-              _context3.prev = 5;
-              _context3.next = 8;
+              _context4.prev = 5;
+              _context4.next = 8;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
             case 8:
-              videoStream = _context3.sent;
+              videoStream = _context4.sent;
               // turn on video
               // set UI
               this.dataset.state = 'on';
@@ -48023,16 +48023,16 @@ var CommonChatRoomVideo = function () {
               localStream.addTrack(videoStream.getVideoTracks()[0]); // output my video
 
               outputVideo();
-              _context3.next = 20;
+              _context4.next = 20;
               break;
 
             case 17:
-              _context3.prev = 17;
-              _context3.t0 = _context3["catch"](5);
+              _context4.prev = 17;
+              _context4.t0 = _context4["catch"](5);
               outputWarnMessage('Bạn đã chặn quyền sử dụng camera');
 
             case 20:
-              _context3.next = 30;
+              _context4.next = 30;
               break;
 
             case 22:
@@ -48058,24 +48058,23 @@ var CommonChatRoomVideo = function () {
 
             case 32:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, this, [[5, 17]]);
+      }, _callee4, this, [[5, 17]]);
     }));
     return _handleVideo.apply(this, arguments);
   }
 
   function handleShareScreen() {
     return _handleShareScreen.apply(this, arguments);
-  } // handle recorder screen
-
+  }
 
   function _handleShareScreen() {
-    _handleShareScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    _handleShareScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
               if (canClickShareBtn) {
                 canClickShareBtn = false;
@@ -48097,27 +48096,32 @@ var CommonChatRoomVideo = function () {
 
             case 1:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
-      }, _callee4, this);
+      }, _callee5, this);
     }));
     return _handleShareScreen.apply(this, arguments);
   }
+
+  function recordingScreen() {
+    window.socket.emit('checkAllowRecord');
+  } // handle recorder screen
+
 
   function handleRecordingScreen() {
     return _handleRecordingScreen.apply(this, arguments);
   }
 
   function _handleRecordingScreen() {
-    _handleRecordingScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    _handleRecordingScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
       var $recBtn, tracks, blobs;
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
               if (!canClickRecBtn) {
-                _context6.next = 40;
+                _context7.next = 40;
                 break;
               }
 
@@ -48126,32 +48130,32 @@ var CommonChatRoomVideo = function () {
               $recBtn.find('.control-no-show-pop').css('cursor', 'no-drop');
 
               if (!$recBtn.hasClass('state-off')) {
-                _context6.next = 30;
+                _context7.next = 30;
                 break;
               }
 
               if (!navigator.mediaDevices.getDisplayMedia) {
-                _context6.next = 28;
+                _context7.next = 28;
                 break;
               }
 
-              _context6.prev = 6;
-              _context6.next = 9;
+              _context7.prev = 6;
+              _context7.next = 9;
               return navigator.mediaDevices.getDisplayMedia({
                 video: true,
                 audio: true
               });
 
             case 9:
-              desktopRECStream = _context6.sent;
-              _context6.next = 12;
+              desktopRECStream = _context7.sent;
+              _context7.next = 12;
               return navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
               });
 
             case 12:
-              voiceRECStream = _context6.sent;
+              voiceRECStream = _context7.sent;
               $recBtn.removeClass('state-off');
               $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
               tracks = [].concat(_toConsumableArray(desktopRECStream.getVideoTracks()), _toConsumableArray(mergeAudioStreams(desktopRECStream, voiceRECStream)));
@@ -48165,11 +48169,11 @@ var CommonChatRoomVideo = function () {
                 return blobs.push(e.data);
               };
 
-              localREC.onstop = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+              localREC.onstop = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
                 var blob, url, download;
-                return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                return regeneratorRuntime.wrap(function _callee6$(_context6) {
                   while (1) {
-                    switch (_context5.prev = _context5.next) {
+                    switch (_context6.prev = _context6.next) {
                       case 0:
                         blob = new Blob(blobs, {
                           type: 'video/webm'
@@ -48185,24 +48189,24 @@ var CommonChatRoomVideo = function () {
 
                       case 9:
                       case "end":
-                        return _context5.stop();
+                        return _context6.stop();
                     }
                   }
-                }, _callee5);
+                }, _callee6);
               }));
               localREC.start();
               $('.rec').removeClass('d-none');
-              _context6.next = 28;
+              _context7.next = 28;
               break;
 
             case 25:
-              _context6.prev = 25;
-              _context6.t0 = _context6["catch"](6);
+              _context7.prev = 25;
+              _context7.t0 = _context7["catch"](6);
               // console.log(error);
               outputWarnMessage('Không thể quay màn hình!');
 
             case 28:
-              _context6.next = 38;
+              _context7.next = 38;
               break;
 
             case 30:
@@ -48241,30 +48245,66 @@ var CommonChatRoomVideo = function () {
 
             case 40:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
         }
-      }, _callee6, null, [[6, 25]]);
+      }, _callee7, null, [[6, 25]]);
     }));
     return _handleRecordingScreen.apply(this, arguments);
   }
 
-  window.socket.on('isCanShareScreen', /*#__PURE__*/function () {
+  window.socket.on('resultCheckRecord', /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref5) {
-      var isShareScreen, shareStream;
+      var canRec;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              isShareScreen = _ref5.isShareScreen;
+              canRec = _ref5.canRec;
 
-              if (isShareScreen) {
-                _context.next = 21;
+              if (!canRec) {
+                _context.next = 6;
                 break;
               }
 
-              _context.prev = 2;
-              _context.next = 5;
+              _context.next = 4;
+              return handleRecordingScreen();
+
+            case 4:
+              _context.next = 7;
+              break;
+
+            case 6:
+              window.outputErrorMessage('Host đã chặn quay màn hình');
+
+            case 7:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function (_x) {
+      return _ref6.apply(this, arguments);
+    };
+  }());
+  window.socket.on('isCanShareScreen', /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref7) {
+      var isShareScreen, shareStream;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              isShareScreen = _ref7.isShareScreen;
+
+              if (isShareScreen) {
+                _context2.next = 21;
+                break;
+              }
+
+              _context2.prev = 2;
+              _context2.next = 5;
               return navigator.mediaDevices.getDisplayMedia({
                 video: {
                   cursor: 'always'
@@ -48277,7 +48317,7 @@ var CommonChatRoomVideo = function () {
               });
 
             case 5:
-              shareStream = _context.sent;
+              shareStream = _context2.sent;
               socket.emit('beginShareScreen'); // add event stop share
 
               shareStream.getVideoTracks()[0].onended = stopMyShareScreen; // set UI
@@ -48294,15 +48334,15 @@ var CommonChatRoomVideo = function () {
               localShare = shareStream; // output my share
 
               outputShare();
-              _context.next = 19;
+              _context2.next = 19;
               break;
 
             case 17:
-              _context.prev = 17;
-              _context.t0 = _context["catch"](2);
+              _context2.prev = 17;
+              _context2.t0 = _context2["catch"](2);
 
             case 19:
-              _context.next = 22;
+              _context2.next = 22;
               break;
 
             case 21:
@@ -48310,14 +48350,14 @@ var CommonChatRoomVideo = function () {
 
             case 22:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee, null, [[2, 17]]);
+      }, _callee2, null, [[2, 17]]);
     }));
 
-    return function (_x) {
-      return _ref6.apply(this, arguments);
+    return function (_x2) {
+      return _ref8.apply(this, arguments);
     };
   }());
   $('.btn-stop-share').on('click', stopMyShareScreen);

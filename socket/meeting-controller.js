@@ -10,6 +10,7 @@ const Member = require('../models/Member');
 const Message = require('../models/Message');
 
 const cloudinary = require('../utils/cloudinary');
+const e = require('express');
 
 // names bot
 const botName = 'OH Bot';
@@ -469,6 +470,46 @@ module.exports.onChangeManagement = async function ({ token, value, status }) {
             room.status.state = 'waiting';
             await room.save();
           }
+        } else if (value === 'turnoff-mic') {
+          // turn off mic and save room
+          room.status.allowMic = !status;
+          await room.save();
+
+          // send info change manage from host
+          // this.to(room.roomId).emit('changeStatusRoom', {
+          //   key: 'allowChat',
+          //   value: room.status.allowChat,
+          // });
+        } else if (value === 'turnoff-video') {
+          // turn off chat and save room
+          room.status.allowVideo = !status;
+          await room.save();
+
+          // send info change manage from host
+          // this.to(room.roomId).emit('changeStatusRoom', {
+          //   key: 'allowChat',
+          //   value: room.status.allowChat,
+          // });
+        } else if (value === 'turnoff-share') {
+          // turn off chat and save room
+          room.status.allowShare = !status;
+          await room.save();
+
+          // send info change manage from host
+          // this.to(room.roomId).emit('changeStatusRoom', {
+          //   key: 'allowChat',
+          //   value: room.status.allowChat,
+          // });
+        } else if (value === 'turnoff-rec') {
+          // turn off chat and save room
+          room.status.allowRec = !status;
+          await room.save();
+
+          // send info change manage from host
+          // this.to(room.roomId).emit('changeStatusRoom', {
+          //   key: 'allowChat',
+          //   value: room.status.allowChat,
+          // });
         }
       } else {
         this.emit('error', 'Bạn không phải host, bạn không có quyền này');
@@ -556,7 +597,8 @@ module.exports.onStopShareScreenStream = async function () {
     const room = await Room.findOne({ users: user._id });
     if (room) {
       this.to(room.roomId).broadcast.emit('stopShareScreen', this.id);
-      room.status.isShareScreen = false;
+      // room.status.isShareScreen = false;
+      room.status.allowShare = true;
       await room.save();
     }
   }
@@ -568,7 +610,8 @@ module.exports.onCheckCanShareScreen = async function () {
   if (user) {
     const room = await Room.findOne({ users: user._id });
     if (room) {
-      this.emit('isCanShareScreen', {isShareScreen: room.status.isShareScreen});
+      // this.emit('isCanShareScreen', {isShareScreen: room.status.isShareScreen});
+      this.emit('isCanShareScreen', {isShareScreen: !room.status.allowShare});
     }
   }
 };
@@ -579,8 +622,24 @@ module.exports.onBeginShareScreen = async function () {
   if (user) {
     const room = await Room.findOne({ users: user._id });
     if (room) {
-      room.status.isShareScreen = true;
+      room.status.allowShare = false;
+      // room.status.isShareScreen = true;
       await room.save();
+    }
+  }
+};
+
+// receive signal check can record screen from a client
+module.exports.onCheckAllowRecord = async function () {
+  const user = await User.findOne({ socketId: this.id });
+  if (user) {
+    const room = await Room.findOne({ users: user._id });
+    if (room) {
+      if (user.host || room.status.allowRec) {
+        this.emit('resultCheckRecord', { canRec: true })
+      } else {
+        this.emit('resultCheckRecord', { canRec: false })
+      }
     }
   }
 };

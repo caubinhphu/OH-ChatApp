@@ -19,14 +19,30 @@ const roomSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
+    allowMic: {
+      type: Boolean,
+      default: true,
+    },
+    allowVideo: {
+      type: Boolean,
+      default: true,
+    },
+    allowShare: {
+      type: Boolean,
+      default: true,
+    },
+    allowRec: {
+      type: Boolean,
+      default: true,
+    },
+    // isShareScreen: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     state: {
       type: String,
       default: 'open',
     },
-    isShareScreen: {
-      type: Boolean,
-      default: false,
-    }
   },
   users: [
     {
