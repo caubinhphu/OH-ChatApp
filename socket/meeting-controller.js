@@ -267,7 +267,7 @@ module.exports.onJoinChat = async function (io, { token }) {
 };
 
 // receive message from client
-module.exports.onMessageChat = async function ({ token, message, type, nameFile }) {
+module.exports.onMessageChat = async function ({ token, message, type, nameFile, resourceType }) {
   try {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
@@ -296,7 +296,7 @@ module.exports.onMessageChat = async function ({ token, message, type, nameFile 
             content: msgFormatted.message,
             externalModelType: 'User',
             memberSendId: user._id,
-            type: type === 'file' ? 'file' : 'text'
+            type: type === 'file' ? resourceType : 'text'
           })
 
           room.messages.push(msg._id)
@@ -703,17 +703,30 @@ module.exports.onDisconnect = async function (io, reason) {
               await User.deleteMany({ _id: { $in: room.users } });
 
               // delete file upload
-              const messageFiles = await Message.find({ _id: { $in: room.messages }, type: 'file' })
+              const messageFiles = await Message.find({ _id: { $in: room.messages }, type: { $in: ['raw', 'image', 'video'] } })
               if (messageFiles) {
-                const publicIds = messageFiles.map(msg => {
+                const publicIds = {
+                  resRaws: [],
+                  resImages: [],
+                  resVideos: []
+                }
+
+                messageFiles.forEach(msg => {
                   const id = msg.content.match(/room.*$/g)
                   if (id) {
-                    const ext = path.extname(id[0])
-                    return 'ohchat/upload/' + path.basename(id[0], ext)
+                    if (msg.type === 'raw') {
+                      publicIds.resRaws.push('ohchat/upload/' + id[0])
+                    } else if (msg.type === 'image') {
+                      publicIds.resImages.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
+                    } else if (msg.type === 'video') {
+                      publicIds.resVideos.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
+                    }
                   }
-                  return null
                 })
-                await cloudinary.deleteResources(publicIds)
+
+                console.log(publicIds);
+                const r2 = await cloudinary.deleteResources(publicIds)
+                console.log(r2);
               }
 
               // delete messages in room
@@ -735,6 +748,7 @@ module.exports.onDisconnect = async function (io, reason) {
               this.emit('error', 'Bạn không phải host, bạn không có quyền này');
             }
           } catch (err) {
+            console.log(err);
             this.emit('error', 'Access token không hợp lệ!');
           }
         } else if (reason.typeLeave === 'kicked') {

@@ -179,7 +179,7 @@ module.exports.putAvatar = async (req, res) => {
             path.basename(req.file.filename, path.extname(req.file.filename)),
             'ohchat/avatar'
           );
-          const urlAvatar = result.url;
+          const urlAvatar = result.secure_url;
 
           // update db
           member.avatar = urlAvatar

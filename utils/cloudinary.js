@@ -10,7 +10,7 @@ module.exports.upload = (url, publicId, folder) => {
       {
         public_id: publicId,
         folder,
-        resource_type: 'auto'
+        resource_type: 'auto',
       },
       function (error, result) {
         if (error) {
@@ -24,8 +24,24 @@ module.exports.upload = (url, publicId, folder) => {
 };
 
 module.exports.deleteResources = (publicIds) => {
+  return Promise.all(
+    [
+      this.deleteTypeResources(publicIds.resRaws, 'raw'),
+      this.deleteTypeResources(publicIds.resImages, 'image'),
+      this.deleteTypeResources(publicIds.resVideos, 'video')
+    ]
+  )
+};
+
+module.exports.deleteTypeResources = (publicIds, type) => {
+  if (!publicIds.length) {
+    return null
+  }
   return new Promise((resolve, reject) => {
-    cloudinary.v2.api.delete_resources(publicIds, (error, result) => {
+    cloudinary.v2.api.delete_resources(
+      publicIds,
+      { resource_type: type },
+      (error, result) => {
       if (error) {
         reject(error);
       } else {
@@ -34,5 +50,6 @@ module.exports.deleteResources = (publicIds) => {
     })
   });
 };
+
 
 module.exports.url = (publicId) => cloudinary.url(publicId);

@@ -68,10 +68,10 @@ const CommonChatRoom = (() => {
   });
 
 
-  $('#send-file').on('change', function() {
+  $(document).on('change', '#send-file', function() {
     if (this.files.length) {
       let html = '';
-      [...this.files].forEach((file, i)=>{
+      [...this.files].forEach(file => {
         html += `
           <div class="file-item">
             <span>${file.name}</span>
@@ -112,33 +112,37 @@ const CommonChatRoom = (() => {
     isDragZone = false
   })
 
-  dragZone.addEventListener('drop', e => {
+  dragZone.addEventListener('drop', function(e) {
     e.preventDefault();
-    const { files } = e.dataTransfer
-    console.log(files);
-    if (files.length) {
-      let html = '';
-      [...files].forEach((file) => {
-        html += `
-          <div class="file-item">
-            <span>${file.name}</span>
-            <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
-          </div>
-        `
-        finalFiles.push(file)
-      })
-      $('.files-upload-box').append(html);
-      // disabledInputFile()
+    if (!$(this).hasClass('unable-chat')) {
+      const { files } = e.dataTransfer
+      console.log(files);
+      if (files.length) {
+        let html = '';
+        [...files].forEach((file) => {
+          html += `
+            <div class="file-item">
+              <span>${file.name}</span>
+              <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+            </div>
+          `
+          finalFiles.push(file)
+        })
+        $('.files-upload-box').append(html);
+        // disabledInputFile()
+      }
+      console.log(finalFiles);
     }
-    console.log(finalFiles);
   })
 
   document.addEventListener('dragover', e => {
     e.preventDefault();
     e.stopPropagation()
-    isDragging++;
-    if (isDragging === 1) {
-      $('.dragzone').removeClass('d-none')
+    if (!$(dragZone).hasClass('unable-chat')) {
+      isDragging++;
+      if (isDragging === 1) {
+        $('.dragzone').removeClass('d-none')
+      }
     }
   })
 
@@ -156,16 +160,6 @@ const CommonChatRoom = (() => {
     isDragging = 0;
     $('.dragzone').addClass('d-none')
   })
-
-  function disabledInputFile() {
-    $('label.send-file').addClass('disabled')
-    $('input#send-file').prop('disabled', true)
-  }
-
-  function enabledInputFile() {
-    $('label.send-file').removeClass('disabled')
-    $('input#send-file').prop('disabled', false)
-  }
 
   async function sendFile() {
     const formData = new FormData();
@@ -199,6 +193,7 @@ const CommonChatRoom = (() => {
             message: file.url,
             type: 'file',
             nameFile: file.name,
+            resourceType: file.resourceType,
             token: qs.get('token'),
           });
         } else {

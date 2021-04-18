@@ -116,7 +116,7 @@ module.exports.facebook = (passport) => {
                 profile.id,
                 'ohchat/avatar'
               );
-              avatar = result.url;
+              avatar = result.secure_url;
             }
 
             // create new member
@@ -173,7 +173,7 @@ module.exports.google = (passport) => {
                 profile.id,
                 'ohchat/avatar'
               );
-              avatar = result.url;
+              avatar = result.secure_url;
             }
 
             // create new member

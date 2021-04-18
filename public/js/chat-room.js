@@ -45885,11 +45885,11 @@ var CommonChatRoom = function () {
       return _ref.apply(this, arguments);
     };
   }());
-  $('#send-file').on('change', function () {
+  $(document).on('change', '#send-file', function () {
     if (this.files.length) {
       var html = '';
 
-      _toConsumableArray(this.files).forEach(function (file, i) {
+      _toConsumableArray(this.files).forEach(function (file) {
         html += "\n          <div class=\"file-item\">\n            <span>".concat(file.name, "</span>\n            <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n          </div>\n        ");
         finalFiles.push(file);
       });
@@ -45925,29 +45925,35 @@ var CommonChatRoom = function () {
   });
   dragZone.addEventListener('drop', function (e) {
     e.preventDefault();
-    var files = e.dataTransfer.files;
-    console.log(files);
 
-    if (files.length) {
-      var html = '';
+    if (!$(this).hasClass('unable-chat')) {
+      var files = e.dataTransfer.files;
+      console.log(files);
 
-      _toConsumableArray(files).forEach(function (file) {
-        html += "\n          <div class=\"file-item\">\n            <span>".concat(file.name, "</span>\n            <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n          </div>\n        ");
-        finalFiles.push(file);
-      });
+      if (files.length) {
+        var html = '';
 
-      $('.files-upload-box').append(html); // disabledInputFile()
+        _toConsumableArray(files).forEach(function (file) {
+          html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+          finalFiles.push(file);
+        });
+
+        $('.files-upload-box').append(html); // disabledInputFile()
+      }
+
+      console.log(finalFiles);
     }
-
-    console.log(finalFiles);
   });
   document.addEventListener('dragover', function (e) {
     e.preventDefault();
     e.stopPropagation();
-    isDragging++;
 
-    if (isDragging === 1) {
-      $('.dragzone').removeClass('d-none');
+    if (!$(dragZone).hasClass('unable-chat')) {
+      isDragging++;
+
+      if (isDragging === 1) {
+        $('.dragzone').removeClass('d-none');
+      }
     }
   });
   document.addEventListener('dragleave', function (e) {
@@ -45964,16 +45970,6 @@ var CommonChatRoom = function () {
     isDragging = 0;
     $('.dragzone').addClass('d-none');
   });
-
-  function disabledInputFile() {
-    $('label.send-file').addClass('disabled');
-    $('input#send-file').prop('disabled', true);
-  }
-
-  function enabledInputFile() {
-    $('label.send-file').removeClass('disabled');
-    $('input#send-file').prop('disabled', false);
-  }
 
   function sendFile() {
     return _sendFile.apply(this, arguments);
@@ -46025,6 +46021,7 @@ var CommonChatRoom = function () {
                     message: file.url,
                     type: 'file',
                     nameFile: file.name,
+                    resourceType: file.resourceType,
                     token: qs.get('token')
                   });
                 } else {
@@ -50318,10 +50315,12 @@ console.log('page chat room');
   function outputChatInput(allowed) {
     if (allowed) {
       // allow chat
-      msgForm.innerHTML = "<button type=\"button\" class=\"btn btn-default open-emojis\">&#128512;</button>\n      <div class=\"flex-fill wrap-msg-box ps-rv\">\n        <textarea class=\"form-control\" id=\"msg\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n      </div>\n      <button class=\"btn btn-default text-secondary\"><span class=\"icomoon icon-send\"></span></button>";
+      msgForm.innerHTML = "\n      <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file\">\n        <span class=\"icomoon icon-insert_drive_file\"></span>\n      </label>\n      <input class=\"d-none\" id=\"send-file\" type=\"file\" name=\"file\" multiple=\"multiple\">\n      <button type=\"button\" class=\"btn btn-default open-emojis\">&#128512;</button>\n      <div class=\"flex-fill wrap-msg-box ps-rv\">\n        <textarea class=\"form-control\" id=\"msg\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n      </div>\n      <button class=\"btn btn-default text-secondary\"><span class=\"icomoon icon-send\"></span></button>";
+      $('.dragzone').removeClass('unable-chat');
     } else {
       // not allow chat
       msgForm.innerHTML = "<div class=\"chat-disabled-text\">Chat b\u1ECB c\u1EA5m b\u1EDFi host</div>";
+      $('.dragzone').addClass('unable-chat');
     }
   } // output room info
 

@@ -45885,11 +45885,11 @@ var CommonChatRoom = function () {
       return _ref.apply(this, arguments);
     };
   }());
-  $('#send-file').on('change', function () {
+  $(document).on('change', '#send-file', function () {
     if (this.files.length) {
       var html = '';
 
-      _toConsumableArray(this.files).forEach(function (file, i) {
+      _toConsumableArray(this.files).forEach(function (file) {
         html += "\n          <div class=\"file-item\">\n            <span>".concat(file.name, "</span>\n            <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n          </div>\n        ");
         finalFiles.push(file);
       });
@@ -45925,29 +45925,35 @@ var CommonChatRoom = function () {
   });
   dragZone.addEventListener('drop', function (e) {
     e.preventDefault();
-    var files = e.dataTransfer.files;
-    console.log(files);
 
-    if (files.length) {
-      var html = '';
+    if (!$(this).hasClass('unable-chat')) {
+      var files = e.dataTransfer.files;
+      console.log(files);
 
-      _toConsumableArray(files).forEach(function (file) {
-        html += "\n          <div class=\"file-item\">\n            <span>".concat(file.name, "</span>\n            <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n          </div>\n        ");
-        finalFiles.push(file);
-      });
+      if (files.length) {
+        var html = '';
 
-      $('.files-upload-box').append(html); // disabledInputFile()
+        _toConsumableArray(files).forEach(function (file) {
+          html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+          finalFiles.push(file);
+        });
+
+        $('.files-upload-box').append(html); // disabledInputFile()
+      }
+
+      console.log(finalFiles);
     }
-
-    console.log(finalFiles);
   });
   document.addEventListener('dragover', function (e) {
     e.preventDefault();
     e.stopPropagation();
-    isDragging++;
 
-    if (isDragging === 1) {
-      $('.dragzone').removeClass('d-none');
+    if (!$(dragZone).hasClass('unable-chat')) {
+      isDragging++;
+
+      if (isDragging === 1) {
+        $('.dragzone').removeClass('d-none');
+      }
     }
   });
   document.addEventListener('dragleave', function (e) {
@@ -45964,16 +45970,6 @@ var CommonChatRoom = function () {
     isDragging = 0;
     $('.dragzone').addClass('d-none');
   });
-
-  function disabledInputFile() {
-    $('label.send-file').addClass('disabled');
-    $('input#send-file').prop('disabled', true);
-  }
-
-  function enabledInputFile() {
-    $('label.send-file').removeClass('disabled');
-    $('input#send-file').prop('disabled', false);
-  }
 
   function sendFile() {
     return _sendFile.apply(this, arguments);
@@ -46025,6 +46021,7 @@ var CommonChatRoom = function () {
                     message: file.url,
                     type: 'file',
                     nameFile: file.name,
+                    resourceType: file.resourceType,
                     token: qs.get('token')
                   });
                 } else {

@@ -41,14 +41,22 @@ const ChatRoom = (() => {
   function outputChatInput(allowed) {
     if (allowed) {
       // allow chat
-      msgForm.innerHTML = `<button type="button" class="btn btn-default open-emojis">&#128512;</button>
+      msgForm.innerHTML = `
+      <label class="btn btn-default send-file m-0 p-2" for="send-file">
+        <span class="icomoon icon-insert_drive_file"></span>
+      </label>
+      <input class="d-none" id="send-file" type="file" name="file" multiple="multiple">
+      <button type="button" class="btn btn-default open-emojis">&#128512;</button>
       <div class="flex-fill wrap-msg-box ps-rv">
         <textarea class="form-control" id="msg" type="text" name="message" placeholder="Nhập tin nhắn" autocomplete="off"></textarea>
       </div>
       <button class="btn btn-default text-secondary"><span class="icomoon icon-send"></span></button>`;
+
+      $('.dragzone').removeClass('unable-chat')
     } else {
       // not allow chat
       msgForm.innerHTML = `<div class="chat-disabled-text">Chat bị cấm bởi host</div>`;
+      $('.dragzone').addClass('unable-chat')
     }
   }
 
