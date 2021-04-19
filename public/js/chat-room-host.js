@@ -48291,12 +48291,12 @@ var CommonChatRoomVideo = function () {
   }());
   window.socket.on('isCanShareScreen', /*#__PURE__*/function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref7) {
-      var isShareScreen, shareStream;
+      var isShareScreen, unAllowShare, shareStream;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              isShareScreen = _ref7.isShareScreen;
+              isShareScreen = _ref7.isShareScreen, unAllowShare = _ref7.unAllowShare;
 
               if (isShareScreen) {
                 _context2.next = 21;
@@ -48346,7 +48346,11 @@ var CommonChatRoomVideo = function () {
               break;
 
             case 21:
-              outputWarnMessage('Bạn không thể chia sẻ do có người đang chia sẻ');
+              if (unAllowShare) {
+                outputWarnMessage('Host đã tắt tính năng chia sẻ màn hình');
+              } else {
+                outputWarnMessage('Bạn không thể chia sẻ do có người đang chia sẻ');
+              }
 
             case 22:
             case "end":

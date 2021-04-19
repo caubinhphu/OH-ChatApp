@@ -35,10 +35,10 @@ const roomSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
-    // isShareScreen: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    isShareScreen: {
+      type: Boolean,
+      default: false,
+    },
     state: {
       type: String,
       default: 'open',

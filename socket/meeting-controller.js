@@ -10,11 +10,12 @@ const Member = require('../models/Member');
 const Message = require('../models/Message');
 
 const cloudinary = require('../utils/cloudinary');
-const e = require('express');
 
 // names bot
 const botName = 'OH Bot';
 const botAvatar = '/images/oh-bot.jpg';
+
+const hasErr = 'Có lỗi xảy ra'
 
 // handle error
 module.exports.onError = function (errorMsg) {
@@ -581,66 +582,89 @@ module.exports.onAnswerStream = function (io, data) {
 
 // receive signal stop video stream from a client
 module.exports.onStopVideoStream = async function () {
-  const user = await User.findOne({ socketId: this.id });
-  if (user) {
-    const room = await Room.findOne({ users: user._id });
-    if (room) {
-      this.to(room.roomId).broadcast.emit('stopVideo', this.id);
+  try {
+    const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        this.to(room.roomId).broadcast.emit('stopVideo', this.id);
+      }
     }
-  }
-};
-
-// receive signal stop share screen stream from a client
-module.exports.onStopShareScreenStream = async function () {
-  const user = await User.findOne({ socketId: this.id });
-  if (user) {
-    const room = await Room.findOne({ users: user._id });
-    if (room) {
-      this.to(room.roomId).broadcast.emit('stopShareScreen', this.id);
-      // room.status.isShareScreen = false;
-      room.status.allowShare = true;
-      await room.save();
-    }
+  } catch (error) {
+    this.emit('error', hasErr);
   }
 };
 
 // receive signal check can share screen from a client
 module.exports.onCheckCanShareScreen = async function () {
-  const user = await User.findOne({ socketId: this.id });
-  if (user) {
-    const room = await Room.findOne({ users: user._id });
-    if (room) {
-      // this.emit('isCanShareScreen', {isShareScreen: room.status.isShareScreen});
-      this.emit('isCanShareScreen', {isShareScreen: !room.status.allowShare});
+  try {
+     const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        if (room.status.isShareScreen) {
+          this.emit('isCanShareScreen', { isShareScreen: true });
+        } else if (user.host || room.status.allowShare) {
+          this.emit('isCanShareScreen', { isShareScreen: false });
+        } else {
+          this.emit('isCanShareScreen', { isShareScreen: true, unAllowShare: true })
+        }
+      }
     }
+  } catch (error) {
+    this.emit('error', hasErr);
   }
 };
 
 // receive signal begin share screen from a client
 module.exports.onBeginShareScreen = async function () {
-  const user = await User.findOne({ socketId: this.id });
-  if (user) {
-    const room = await Room.findOne({ users: user._id });
-    if (room) {
-      room.status.allowShare = false;
-      // room.status.isShareScreen = true;
-      await room.save();
+  try {
+    const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        room.status.isShareScreen = true;
+        await room.save();
+      }
     }
+  } catch (error) {
+    this.emit('error', hasErr);
+  }
+};
+
+// receive signal stop share screen stream from a client
+module.exports.onStopShareScreenStream = async function () {
+  try {
+    const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        this.to(room.roomId).broadcast.emit('stopShareScreen', this.id);
+        room.status.isShareScreen = false;
+        await room.save();
+      }
+    }
+  } catch (error) {
+    this.emit('error', hasErr);
   }
 };
 
 // receive signal check can record screen from a client
 module.exports.onCheckAllowRecord = async function () {
-  const user = await User.findOne({ socketId: this.id });
-  if (user) {
-    const room = await Room.findOne({ users: user._id });
-    if (room) {
-      if (user.host || room.status.allowRec) {
-        this.emit('resultCheckRecord', { canRec: true })
-      } else {
-        this.emit('resultCheckRecord', { canRec: false })
+  try {
+    const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        if (user.host || room.status.allowRec) {
+          this.emit('resultCheckRecord', { canRec: true })
+        } else {
+          this.emit('resultCheckRecord', { canRec: false })
+        }
       }
     }
+  } catch (error) {
+    this.emit('error', hasErr);
   }
 };
 

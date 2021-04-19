@@ -703,7 +703,7 @@ const CommonChatRoomVideo = (() => {
   })
 
   window.socket.on('isCanShareScreen', async ({
-    isShareScreen
+    isShareScreen, unAllowShare
   }) => {
     if (!isShareScreen) {
       try {
@@ -744,6 +744,8 @@ const CommonChatRoomVideo = (() => {
       } catch (error) {
 
       }
+    } else if (unAllowShare) {
+      outputWarnMessage('Host đã tắt tính năng chia sẻ màn hình')
     } else {
       outputWarnMessage('Bạn không thể chia sẻ do có người đang chia sẻ')
     }
