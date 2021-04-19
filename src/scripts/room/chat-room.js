@@ -3,10 +3,7 @@ const ChatRoom = (() => {
   const roomName = document.getElementById('room-info-name-room'); // room name
   const participants = document.getElementById('room-users'); // participants area
   // receive info change status room (management of host) from server
-  socket.on('changeStatusRoom', ({
-    key,
-    value
-  }) => {
+  socket.on('changeStatusRoom', ({ key, value }) => {
     if (key === 'allowChat') {
       outputChatInput(value);
     } else if (key === 'allowRec') {
@@ -15,6 +12,8 @@ const ChatRoom = (() => {
       window.outputAllowShare(value)
     } else if (key === 'allowMic') {
       window.outputAllowMic(value)
+    } else if (key === 'allowVideo') {
+      window.outputAllowVideo(value)
     }
   });
 

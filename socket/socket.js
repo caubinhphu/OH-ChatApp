@@ -63,6 +63,9 @@ const socket = function (io) {
     // receive signal check can turn on mic from a client
     socket.on('checkCanTurnOnMic', roomController.onCheckCanTurnOnMic);
 
+    // receive signal check can turn on video from a client
+    socket.on('checkCanTurnOnVideo', roomController.onCheckCanTurnOnVideo);
+
     // receive signal stop video stream from a client
     socket.on('stopVideoStream', roomController.onStopVideoStream);
 

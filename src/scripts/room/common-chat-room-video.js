@@ -488,57 +488,11 @@ const CommonChatRoomVideo = (() => {
       if (this.dataset.state === 'off') {
         // get stream video from camera of user and set in the window
         if (navigator.mediaDevices.getUserMedia) {
-          try {
-            const videoStream = await navigator.mediaDevices.getUserMedia({
-              video: true,
-              audio: false,
-            });
-
-            // turn on video
-            // set UI
-            this.dataset.state = 'on';
-            $(this).addClass('is-turn-on');
-            $(this).find('.popup').html('Tắt camera (Alt + V)');
-
-            // add video track for stream each peer
-            peers.forEach((peer) => {
-              peer.peer.addTrack(
-                videoStream.getVideoTracks()[0],
-                localStream
-              );
-            });
-
-            // add video track for stream in local
-            localStream.addTrack(videoStream.getVideoTracks()[0]);
-
-            // output my video
-            outputVideo();
-          } catch (error) {
-            outputWarnMessage('Bạn đã chặn quyền sử dụng camera')
-          }
+          socket.emit('checkCanTurnOnVideo')
         }
       } else {
         // stop video
-        // set UI
-        this.dataset.state = 'off';
-        $(this).removeClass('is-turn-on');
-        $(this).find('.popup').html('Bật camera (Alt + V)');
-
-        // remove video track of stream each peer
-        peers.forEach((peer) => {
-          peer.peer.removeTrack(
-            localStream.getVideoTracks()[0],
-            localStream
-          );
-        });
-
-        // stop and remove video track of stream in local
-        localStream.getVideoTracks()[0].stop();
-        localStream.removeTrack(localStream.getVideoTracks()[0]);
-
-        // output stop my video
-        socket.emit('stopVideoStream');
-        outputStopVideo();
+        stopVideo()
       }
       canClickVideoBtn = true;
       $(this).find('.control-no-show-pop').css('cursor', 'pointer');
@@ -591,6 +545,8 @@ const CommonChatRoomVideo = (() => {
 
             $recBtn.removeClass('state-off')
             $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
+            $('html').addClass('recoding')
+
             const tracks = [
               ...desktopRECStream.getVideoTracks(),
               ...mergeAudioStreams(desktopRECStream, voiceRECStream)
@@ -719,6 +675,42 @@ const CommonChatRoomVideo = (() => {
     }
   })
 
+  window.socket.on('isCanTurnOnVideo', async ({ allowVideo }) => {
+    if (allowVideo) {
+      try {
+        const videoStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+
+        // turn on video
+        // set UI
+        btnVideo.dataset.state = 'on';
+        $(btnVideo).addClass('is-turn-on');
+        $(btnVideo).find('.popup').html('Tắt camera (Alt + V)');
+        $('html').addClass('turn-on-video')
+
+        // add video track for stream each peer
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            videoStream.getVideoTracks()[0],
+            localStream
+          );
+        });
+
+        // add video track for stream in local
+        localStream.addTrack(videoStream.getVideoTracks()[0]);
+
+        // output my video
+        outputVideo();
+      } catch (error) {
+        outputWarnMessage('Bạn đã chặn quyền sử dụng camera')
+      }
+    } else {
+      outputErrorMessage('Host đã tắt tính năng camera')
+    }
+  })
+
   $('.btn-stop-share').on('click', stopMyShareScreen)
 
   function stopAudio() {
@@ -742,6 +734,30 @@ const CommonChatRoomVideo = (() => {
     // output stop my video
     socket.emit('stopAudioStream');
     outputStopAudio();
+  }
+
+  function stopVideo() {
+    // set UI
+    btnVideo.dataset.state = 'off';
+    $(btnVideo).removeClass('is-turn-on');
+    $(btnVideo).find('.popup').html('Bật camera (Alt + V)');
+    $('html').removeClass('turn-on-video')
+
+    // remove video track of stream each peer
+    peers.forEach((peer) => {
+      peer.peer.removeTrack(
+        localStream.getVideoTracks()[0],
+        localStream
+      );
+    });
+
+    // stop and remove video track of stream in local
+    localStream.getVideoTracks()[0].stop();
+    localStream.removeTrack(localStream.getVideoTracks()[0]);
+
+    // output stop my video
+    socket.emit('stopVideoStream');
+    outputStopVideo();
   }
 
   function stopMyShareScreen() {
@@ -791,6 +807,7 @@ const CommonChatRoomVideo = (() => {
     $recBtn.addClass('state-off')
     $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
     $('.rec').addClass('d-none')
+    $('html').removeClass('recoding')
   }
 
   function outputAllowRec(value) {
@@ -798,7 +815,9 @@ const CommonChatRoomVideo = (() => {
       window.outputInfoMessage('Host đã bật tính năng quay màn hình')
     } else {
       window.outputErrorMessage('Host đã tắt tính năng quay màn hình')
-      stopRec()
+      if ($('html.recoding').length) {
+        stopRec()
+      }
     }
   }
   window.outputAllowRec = outputAllowRec
@@ -808,7 +827,7 @@ const CommonChatRoomVideo = (() => {
       window.outputInfoMessage('Host đã bật tính năng chia sẻ màn hình')
     } else {
       window.outputErrorMessage('Host đã tắt tính năng chia sẻ màn hình')
-      if ('html.sharing'.length) {
+      if ($('html.sharing').length) {
         stopMyShareScreen()
       }
     }
@@ -820,12 +839,24 @@ const CommonChatRoomVideo = (() => {
       window.outputInfoMessage('Host đã bật tính năng microphone')
     } else {
       window.outputErrorMessage('Host đã tắt tính năng microphone')
-      if ('html.turn-on-audio'.length) {
+      if ($('html.turn-on-audio').length) {
         stopAudio()
       }
     }
   }
   window.outputAllowMic = outputAllowMic
+
+  function outputAllowVideo(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng camera')
+    } else {
+      window.outputErrorMessage('Host đã tắt tính năng camera')
+      if ($('html.turn-on-video').length) {
+        stopVideo()
+      }
+    }
+  }
+  window.outputAllowVideo = outputAllowVideo
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');

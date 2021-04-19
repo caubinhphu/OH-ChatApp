@@ -47885,10 +47885,10 @@ var CommonChatRoomVideo = function () {
 
 
   function _handleAudio() {
-    _handleAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    _handleAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
               if (canClickAudioBtn) {
                 canClickAudioBtn = false;
@@ -47910,10 +47910,10 @@ var CommonChatRoomVideo = function () {
 
             case 1:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
-      }, _callee4, this);
+      }, _callee5, this);
     }));
     return _handleAudio.apply(this, arguments);
   }
@@ -47924,91 +47924,35 @@ var CommonChatRoomVideo = function () {
 
 
   function _handleVideo() {
-    _handleVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      var videoStream;
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    _handleVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              if (!canClickVideoBtn) {
-                _context5.next = 32;
-                break;
+              if (canClickVideoBtn) {
+                canClickVideoBtn = false;
+                $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
+
+                if (this.dataset.state === 'off') {
+                  // get stream video from camera of user and set in the window
+                  if (navigator.mediaDevices.getUserMedia) {
+                    socket.emit('checkCanTurnOnVideo');
+                  }
+                } else {
+                  // stop video
+                  stopVideo();
+                }
+
+                canClickVideoBtn = true;
+                $(this).find('.control-no-show-pop').css('cursor', 'pointer');
               }
 
-              canClickVideoBtn = false;
-              $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
-
-              if (!(this.dataset.state === 'off')) {
-                _context5.next = 22;
-                break;
-              }
-
-              if (!navigator.mediaDevices.getUserMedia) {
-                _context5.next = 20;
-                break;
-              }
-
-              _context5.prev = 5;
-              _context5.next = 8;
-              return navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: false
-              });
-
-            case 8:
-              videoStream = _context5.sent;
-              // turn on video
-              // set UI
-              this.dataset.state = 'on';
-              $(this).addClass('is-turn-on');
-              $(this).find('.popup').html('Tắt camera (Alt + V)'); // add video track for stream each peer
-
-              peers.forEach(function (peer) {
-                peer.peer.addTrack(videoStream.getVideoTracks()[0], localStream);
-              }); // add video track for stream in local
-
-              localStream.addTrack(videoStream.getVideoTracks()[0]); // output my video
-
-              outputVideo();
-              _context5.next = 20;
-              break;
-
-            case 17:
-              _context5.prev = 17;
-              _context5.t0 = _context5["catch"](5);
-              outputWarnMessage('Bạn đã chặn quyền sử dụng camera');
-
-            case 20:
-              _context5.next = 30;
-              break;
-
-            case 22:
-              // stop video
-              // set UI
-              this.dataset.state = 'off';
-              $(this).removeClass('is-turn-on');
-              $(this).find('.popup').html('Bật camera (Alt + V)'); // remove video track of stream each peer
-
-              peers.forEach(function (peer) {
-                peer.peer.removeTrack(localStream.getVideoTracks()[0], localStream);
-              }); // stop and remove video track of stream in local
-
-              localStream.getVideoTracks()[0].stop();
-              localStream.removeTrack(localStream.getVideoTracks()[0]); // output stop my video
-
-              socket.emit('stopVideoStream');
-              outputStopVideo();
-
-            case 30:
-              canClickVideoBtn = true;
-              $(this).find('.control-no-show-pop').css('cursor', 'pointer');
-
-            case 32:
+            case 1:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
-      }, _callee5, this, [[5, 17]]);
+      }, _callee6, this);
     }));
     return _handleVideo.apply(this, arguments);
   }
@@ -48043,14 +47987,14 @@ var CommonChatRoomVideo = function () {
   }
 
   function _handleRecordingScreen() {
-    _handleRecordingScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    _handleRecordingScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
       var $recBtn, tracks, blobs;
-      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
-          switch (_context7.prev = _context7.next) {
+          switch (_context8.prev = _context8.next) {
             case 0:
               if (!canClickRecBtn) {
-                _context7.next = 33;
+                _context8.next = 34;
                 break;
               }
 
@@ -48059,34 +48003,35 @@ var CommonChatRoomVideo = function () {
               $recBtn.find('.control-no-show-pop').css('cursor', 'no-drop');
 
               if (!$recBtn.hasClass('state-off')) {
-                _context7.next = 30;
+                _context8.next = 31;
                 break;
               }
 
               if (!navigator.mediaDevices.getDisplayMedia) {
-                _context7.next = 28;
+                _context8.next = 29;
                 break;
               }
 
-              _context7.prev = 6;
-              _context7.next = 9;
+              _context8.prev = 6;
+              _context8.next = 9;
               return navigator.mediaDevices.getDisplayMedia({
                 video: true,
                 audio: true
               });
 
             case 9:
-              desktopRECStream = _context7.sent;
-              _context7.next = 12;
+              desktopRECStream = _context8.sent;
+              _context8.next = 12;
               return navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
               });
 
             case 12:
-              voiceRECStream = _context7.sent;
+              voiceRECStream = _context8.sent;
               $recBtn.removeClass('state-off');
               $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
+              $('html').addClass('recoding');
               tracks = [].concat(_toConsumableArray(desktopRECStream.getVideoTracks()), _toConsumableArray(mergeAudioStreams(desktopRECStream, voiceRECStream)));
               localRECStream = new MediaStream(tracks);
               blobs = [];
@@ -48098,11 +48043,11 @@ var CommonChatRoomVideo = function () {
                 return blobs.push(e.data);
               };
 
-              localREC.onstop = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+              localREC.onstop = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
                 var blob, url, download;
-                return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                return regeneratorRuntime.wrap(function _callee7$(_context7) {
                   while (1) {
-                    switch (_context6.prev = _context6.next) {
+                    switch (_context7.prev = _context7.next) {
                       case 0:
                         blob = new Blob(blobs, {
                           type: 'video/webm'
@@ -48118,39 +48063,39 @@ var CommonChatRoomVideo = function () {
 
                       case 9:
                       case "end":
-                        return _context6.stop();
+                        return _context7.stop();
                     }
                   }
-                }, _callee6);
+                }, _callee7);
               }));
               localREC.start();
               $('.rec').removeClass('d-none');
-              _context7.next = 28;
+              _context8.next = 29;
               break;
 
-            case 25:
-              _context7.prev = 25;
-              _context7.t0 = _context7["catch"](6);
+            case 26:
+              _context8.prev = 26;
+              _context8.t0 = _context8["catch"](6);
               // console.log(error);
               outputWarnMessage('Không thể quay màn hình!');
 
-            case 28:
-              _context7.next = 31;
+            case 29:
+              _context8.next = 32;
               break;
 
-            case 30:
+            case 31:
               stopRec();
 
-            case 31:
+            case 32:
               canClickRecBtn = true;
               $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
 
-            case 33:
+            case 34:
             case "end":
-              return _context7.stop();
+              return _context8.stop();
           }
         }
-      }, _callee7, null, [[6, 25]]);
+      }, _callee8, null, [[6, 26]]);
     }));
     return _handleRecordingScreen.apply(this, arguments);
   }
@@ -48330,6 +48275,70 @@ var CommonChatRoomVideo = function () {
       return _ref10.apply(this, arguments);
     };
   }());
+  window.socket.on('isCanTurnOnVideo', /*#__PURE__*/function () {
+    var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref11) {
+      var allowVideo, videoStream;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              allowVideo = _ref11.allowVideo;
+
+              if (!allowVideo) {
+                _context4.next = 20;
+                break;
+              }
+
+              _context4.prev = 2;
+              _context4.next = 5;
+              return navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+              });
+
+            case 5:
+              videoStream = _context4.sent;
+              // turn on video
+              // set UI
+              btnVideo.dataset.state = 'on';
+              $(btnVideo).addClass('is-turn-on');
+              $(btnVideo).find('.popup').html('Tắt camera (Alt + V)');
+              $('html').addClass('turn-on-video'); // add video track for stream each peer
+
+              peers.forEach(function (peer) {
+                peer.peer.addTrack(videoStream.getVideoTracks()[0], localStream);
+              }); // add video track for stream in local
+
+              localStream.addTrack(videoStream.getVideoTracks()[0]); // output my video
+
+              outputVideo();
+              _context4.next = 18;
+              break;
+
+            case 15:
+              _context4.prev = 15;
+              _context4.t0 = _context4["catch"](2);
+              outputWarnMessage('Bạn đã chặn quyền sử dụng camera');
+
+            case 18:
+              _context4.next = 21;
+              break;
+
+            case 20:
+              outputErrorMessage('Host đã tắt tính năng camera');
+
+            case 21:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[2, 15]]);
+    }));
+
+    return function (_x4) {
+      return _ref12.apply(this, arguments);
+    };
+  }());
   $('.btn-stop-share').on('click', stopMyShareScreen);
 
   function stopAudio() {
@@ -48347,6 +48356,24 @@ var CommonChatRoomVideo = function () {
 
     socket.emit('stopAudioStream');
     outputStopAudio();
+  }
+
+  function stopVideo() {
+    // set UI
+    btnVideo.dataset.state = 'off';
+    $(btnVideo).removeClass('is-turn-on');
+    $(btnVideo).find('.popup').html('Bật camera (Alt + V)');
+    $('html').removeClass('turn-on-video'); // remove video track of stream each peer
+
+    peers.forEach(function (peer) {
+      peer.peer.removeTrack(localStream.getVideoTracks()[0], localStream);
+    }); // stop and remove video track of stream in local
+
+    localStream.getVideoTracks()[0].stop();
+    localStream.removeTrack(localStream.getVideoTracks()[0]); // output stop my video
+
+    socket.emit('stopVideoStream');
+    outputStopVideo();
   }
 
   function stopMyShareScreen() {
@@ -48399,6 +48426,7 @@ var CommonChatRoomVideo = function () {
     $recBtn.addClass('state-off');
     $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
     $('.rec').addClass('d-none');
+    $('html').removeClass('recoding');
   }
 
   function outputAllowRec(value) {
@@ -48406,7 +48434,10 @@ var CommonChatRoomVideo = function () {
       window.outputInfoMessage('Host đã bật tính năng quay màn hình');
     } else {
       window.outputErrorMessage('Host đã tắt tính năng quay màn hình');
-      stopRec();
+
+      if ($('html.recoding').length) {
+        stopRec();
+      }
     }
   }
 
@@ -48418,7 +48449,7 @@ var CommonChatRoomVideo = function () {
     } else {
       window.outputErrorMessage('Host đã tắt tính năng chia sẻ màn hình');
 
-      if ('html.sharing'.length) {
+      if ($('html.sharing').length) {
         stopMyShareScreen();
       }
     }
@@ -48432,13 +48463,27 @@ var CommonChatRoomVideo = function () {
     } else {
       window.outputErrorMessage('Host đã tắt tính năng microphone');
 
-      if ('html.turn-on-audio'.length) {
+      if ($('html.turn-on-audio').length) {
         stopAudio();
       }
     }
   }
 
   window.outputAllowMic = outputAllowMic;
+
+  function outputAllowVideo(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng camera');
+    } else {
+      window.outputErrorMessage('Host đã tắt tính năng camera');
+
+      if ($('html.turn-on-video').length) {
+        stopVideo();
+      }
+    }
+  }
+
+  window.outputAllowVideo = outputAllowVideo;
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');
@@ -50394,6 +50439,8 @@ console.log('page chat room');
       window.outputAllowShare(value);
     } else if (key === 'allowMic') {
       window.outputAllowMic(value);
+    } else if (key === 'allowVideo') {
+      window.outputAllowVideo(value);
     }
   }); // receive room info from server
 
