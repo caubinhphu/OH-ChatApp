@@ -703,6 +703,7 @@ const CommonChatRoomVideo = (() => {
         btnShare.dataset.state = 'on';
         $(btnShare).addClass('is-turn-on');
         $(btnShare).find('.popup').html('Tắt Share (Alt + S)');
+        $('html').addClass('sharing')
 
         // duplicate video track share to detach share with camera
         shareStream.addTrack(shareStream.getVideoTracks()[0].clone())
@@ -718,7 +719,7 @@ const CommonChatRoomVideo = (() => {
         // output my share
         outputShare();
       } catch (error) {
-
+        console.log(error);
       }
     } else if (unAllowShare) {
       outputWarnMessage('Host đã tắt tính năng chia sẻ màn hình')
@@ -735,6 +736,7 @@ const CommonChatRoomVideo = (() => {
     btnShare.dataset.state = 'off';
     $(btnShare).removeClass('is-turn-on');
     $(btnShare).find('.popup').html('Share Screen (Alt + S)');
+    $('html').removeClass('sharing')
 
     // remove video share screen track of stream each peer
     peers.forEach((peer) => {
@@ -781,11 +783,23 @@ const CommonChatRoomVideo = (() => {
     if (value) {
       window.outputInfoMessage('Host đã bật tính năng quay màn hình')
     } else {
-      window.outputInfoMessage('Host đã tắt tính năng quay màn hình')
+      window.outputErrorMessage('Host đã tắt tính năng quay màn hình')
       stopRec()
     }
   }
   window.outputAllowRec = outputAllowRec
+
+  function outputAllowShare(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng chia sẻ màn hình')
+    } else {
+      window.outputErrorMessage('Host đã tắt tính năng chia sẻ màn hình')
+      if ('html.sharing'.length) {
+        stopMyShareScreen()
+      }
+    }
+  }
+  window.outputAllowShare = outputAllowShare
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');

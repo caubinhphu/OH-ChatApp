@@ -497,10 +497,10 @@ module.exports.onChangeManagement = async function ({ token, value, status }) {
           await room.save();
 
           // send info change manage from host
-          // this.to(room.roomId).emit('changeStatusRoom', {
-          //   key: 'allowChat',
-          //   value: room.status.allowChat,
-          // });
+          this.to(room.roomId).emit('changeStatusRoom', {
+            key: 'allowShare',
+            value: room.status.allowShare,
+          });
         } else if (value === 'turnoff-rec') {
           // turn off chat and save room
           room.status.allowRec = !status;

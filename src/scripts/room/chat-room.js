@@ -11,6 +11,8 @@ const ChatRoom = (() => {
       outputChatInput(value);
     } else if (key === 'allowRec') {
       window.outputAllowRec(value)
+    } else if (key === 'allowShare') {
+      window.outputAllowShare(value)
     }
   });
 
