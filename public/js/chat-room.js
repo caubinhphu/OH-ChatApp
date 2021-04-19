@@ -48121,7 +48121,7 @@ var CommonChatRoomVideo = function () {
           switch (_context7.prev = _context7.next) {
             case 0:
               if (!canClickRecBtn) {
-                _context7.next = 40;
+                _context7.next = 33;
                 break;
               }
 
@@ -48206,44 +48206,17 @@ var CommonChatRoomVideo = function () {
               outputWarnMessage('Không thể quay màn hình!');
 
             case 28:
-              _context7.next = 38;
+              _context7.next = 31;
               break;
 
             case 30:
-              // output stop my video share screen
-              if (localREC) {
-                localREC.stop();
-                localREC = null;
-              }
+              stopRec();
 
-              if (localRECStream) {
-                localRECStream.getTracks().forEach(function (track) {
-                  track.stop();
-                });
-              }
-
-              if (voiceRECStream) {
-                voiceRECStream.getTracks().forEach(function (track) {
-                  track.stop();
-                });
-              }
-
-              if (desktopRECStream) {
-                desktopRECStream.getTracks().forEach(function (track) {
-                  track.stop();
-                });
-              }
-
-              localRECStream = null;
-              $recBtn.addClass('state-off');
-              $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
-              $('.rec').addClass('d-none');
-
-            case 38:
+            case 31:
               canClickRecBtn = true;
               $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
 
-            case 40:
+            case 33:
             case "end":
               return _context7.stop();
           }
@@ -48384,6 +48357,49 @@ var CommonChatRoomVideo = function () {
     socket.emit('stopShareScreenStream');
     outputStopShareScreen();
   }
+
+  function stopRec() {
+    var $recBtn = $('.btn-rec-screen');
+
+    if (localREC) {
+      localREC.stop();
+      localREC = null;
+    }
+
+    if (localRECStream) {
+      localRECStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
+
+    if (voiceRECStream) {
+      voiceRECStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
+
+    if (desktopRECStream) {
+      desktopRECStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
+
+    localRECStream = null;
+    $recBtn.addClass('state-off');
+    $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
+    $('.rec').addClass('d-none');
+  }
+
+  function outputAllowRec(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng quay màn hình');
+    } else {
+      window.outputInfoMessage('Host đã tắt tính năng quay màn hình');
+      stopRec();
+    }
+  }
+
+  window.outputAllowRec = outputAllowRec;
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');
@@ -50333,6 +50349,8 @@ console.log('page chat room');
 
     if (key === 'allowChat') {
       outputChatInput(value);
+    } else if (key === 'allowRec') {
+      window.outputAllowRec(value);
     }
   }); // receive room info from server
 

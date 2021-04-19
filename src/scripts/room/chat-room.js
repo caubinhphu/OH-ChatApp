@@ -9,6 +9,8 @@ const ChatRoom = (() => {
   }) => {
     if (key === 'allowChat') {
       outputChatInput(value);
+    } else if (key === 'allowRec') {
+      window.outputAllowRec(value)
     }
   });
 

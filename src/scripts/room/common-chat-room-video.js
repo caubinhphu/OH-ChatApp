@@ -663,31 +663,7 @@ const CommonChatRoomVideo = (() => {
           }
         }
       } else {
-        // output stop my video share screen
-        if (localREC) {
-          localREC.stop();
-          localREC = null
-        }
-        if (localRECStream) {
-          localRECStream.getTracks().forEach(function(track) {
-            track.stop();
-          });
-        }
-        if (voiceRECStream) {
-          voiceRECStream.getTracks().forEach(function(track) {
-            track.stop();
-          });
-        }
-        if (desktopRECStream) {
-          desktopRECStream.getTracks().forEach(function(track) {
-            track.stop();
-          });
-        }
-
-        localRECStream = null;
-        $recBtn.addClass('state-off')
-        $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
-        $('.rec').addClass('d-none')
+        stopRec()
       }
       canClickRecBtn = true;
       $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
@@ -698,7 +674,7 @@ const CommonChatRoomVideo = (() => {
     if (canRec) {
       await handleRecordingScreen()
     } else {
-      window.outputErrorMessage('Host đã chặn quay màn hình')
+      window.outputErrorMessage('Host đã tắt tính năng quay màn hình')
     }
   })
 
@@ -772,6 +748,44 @@ const CommonChatRoomVideo = (() => {
     socket.emit('stopShareScreenStream');
     outputStopShareScreen();
   }
+
+  function stopRec() {
+    const $recBtn = $('.btn-rec-screen')
+    if (localREC) {
+      localREC.stop();
+      localREC = null
+    }
+    if (localRECStream) {
+      localRECStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+    }
+    if (voiceRECStream) {
+      voiceRECStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+    }
+    if (desktopRECStream) {
+      desktopRECStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+    }
+
+    localRECStream = null;
+    $recBtn.addClass('state-off')
+    $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
+    $('.rec').addClass('d-none')
+  }
+
+  function outputAllowRec(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng quay màn hình')
+    } else {
+      window.outputInfoMessage('Host đã tắt tính năng quay màn hình')
+      stopRec()
+    }
+  }
+  window.outputAllowRec = outputAllowRec
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');

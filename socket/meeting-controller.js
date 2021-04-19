@@ -507,10 +507,10 @@ module.exports.onChangeManagement = async function ({ token, value, status }) {
           await room.save();
 
           // send info change manage from host
-          // this.to(room.roomId).emit('changeStatusRoom', {
-          //   key: 'allowChat',
-          //   value: room.status.allowChat,
-          // });
+          this.to(room.roomId).emit('changeStatusRoom', {
+            key: 'allowRec',
+            value: room.status.allowRec
+          });
         }
       } else {
         this.emit('error', 'Bạn không phải host, bạn không có quyền này');
