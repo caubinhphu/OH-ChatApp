@@ -468,53 +468,11 @@ const CommonChatRoomVideo = (() => {
       if (this.dataset.state === 'off') {
         // get stream video from camera of user and set in the window
         if (navigator.mediaDevices.getUserMedia) {
-          try {
-            const audioStream = await navigator.mediaDevices.getUserMedia({
-              video: false,
-              audio: true,
-            });
-
-            // turn on video
-            // set UI
-            this.dataset.state = 'on';
-            $(this).addClass('is-turn-on');
-            $(this).find('.popup').html('Tắt audio (Alt + A)');
-
-            // add audio track for stream of each peer
-            peers.forEach((peer) => {
-              peer.peer.addTrack(
-                audioStream.getAudioTracks()[0],
-                localStream
-              );
-            });
-
-            // add audio track for stream of local stream
-            localStream.addTrack(audioStream.getAudioTracks()[0]);
-          } catch (error) {
-            outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
-          }
+          socket.emit('checkCanTurnOnMic')
         }
       } else {
-        // stop video
-        // set UI
-        this.dataset.state = 'off';
-        $(this).removeClass('is-turn-on');
-        $(this).find('.popup').html('Bật audio (Alt + A)');
-
-        // remove audio track of stream each peer
-        peers.forEach((peer) => {
-          peer.peer.removeTrack(
-            localStream.getAudioTracks()[0],
-            localStream
-          );
-        });
-
-        // remove audio track of stream in local stream
-        localStream.removeTrack(localStream.getAudioTracks()[0]);
-
-        // output stop my video
-        socket.emit('stopAudioStream');
-        outputStopAudio();
+        // stop audio
+        stopAudio()
       }
       canClickAudioBtn = true;
       $(this).find('.control-no-show-pop').css('cursor', 'pointer');
@@ -588,7 +546,7 @@ const CommonChatRoomVideo = (() => {
   }
 
   // handle share screen
-  async function handleShareScreen() {
+  function handleShareScreen() {
     if (canClickShareBtn) {
       canClickShareBtn = false;
       $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
@@ -728,7 +686,63 @@ const CommonChatRoomVideo = (() => {
     }
   })
 
+  window.socket.on('isCanTurnOnMic', async ({ allowMic }) => {
+    if (allowMic) {
+      try {
+        const audioStream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true,
+        });
+
+        // turn on video
+        // set UI
+        btnAudio.dataset.state = 'on';
+        $(btnAudio).addClass('is-turn-on');
+        $(btnAudio).find('.popup').html('Tắt audio (Alt + A)');
+        $('html').addClass('turn-on-audio')
+
+        // add audio track for stream of each peer
+        peers.forEach((peer) => {
+          peer.peer.addTrack(
+            audioStream.getAudioTracks()[0],
+            localStream
+          );
+        });
+
+        // add audio track for stream of local stream
+        localStream.addTrack(audioStream.getAudioTracks()[0]);
+      } catch (error) {
+        outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
+      }
+    } else {
+      outputErrorMessage('Host đã tắt tính năng microphone')
+    }
+  })
+
   $('.btn-stop-share').on('click', stopMyShareScreen)
+
+  function stopAudio() {
+    // set UI
+    btnAudio.dataset.state = 'off';
+    $(btnAudio).removeClass('is-turn-on');
+    $(btnAudio).find('.popup').html('Bật audio (Alt + A)');
+    $('html').removeClass('turn-on-audio')
+
+    // remove audio track of stream each peer
+    peers.forEach((peer) => {
+      peer.peer.removeTrack(
+        localStream.getAudioTracks()[0],
+        localStream
+      );
+    });
+
+    // remove audio track of stream in local stream
+    localStream.removeTrack(localStream.getAudioTracks()[0]);
+
+    // output stop my video
+    socket.emit('stopAudioStream');
+    outputStopAudio();
+  }
 
   function stopMyShareScreen() {
     // stop share screen
@@ -800,6 +814,18 @@ const CommonChatRoomVideo = (() => {
     }
   }
   window.outputAllowShare = outputAllowShare
+
+  function outputAllowMic(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng microphone')
+    } else {
+      window.outputErrorMessage('Host đã tắt tính năng microphone')
+      if ('html.turn-on-audio'.length) {
+        stopAudio()
+      }
+    }
+  }
+  window.outputAllowMic = outputAllowMic
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');

@@ -13,6 +13,8 @@ const ChatRoom = (() => {
       window.outputAllowRec(value)
     } else if (key === 'allowShare') {
       window.outputAllowShare(value)
+    } else if (key === 'allowMic') {
+      window.outputAllowMic(value)
     }
   });
 

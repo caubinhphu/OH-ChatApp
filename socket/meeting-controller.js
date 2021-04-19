@@ -477,10 +477,10 @@ module.exports.onChangeManagement = async function ({ token, value, status }) {
           await room.save();
 
           // send info change manage from host
-          // this.to(room.roomId).emit('changeStatusRoom', {
-          //   key: 'allowChat',
-          //   value: room.status.allowChat,
-          // });
+          this.to(room.roomId).emit('changeStatusRoom', {
+            key: 'allowMic',
+            value: room.status.allowMic,
+          });
         } else if (value === 'turnoff-video') {
           // turn off chat and save room
           room.status.allowVideo = !status;
@@ -588,6 +588,25 @@ module.exports.onStopVideoStream = async function () {
       const room = await Room.findOne({ users: user._id });
       if (room) {
         this.to(room.roomId).broadcast.emit('stopVideo', this.id);
+      }
+    }
+  } catch (error) {
+    this.emit('error', hasErr);
+  }
+};
+
+// receive signal check can turn on mic from a client
+module.exports.onCheckCanTurnOnMic = async function () {
+  try {
+     const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        if (user.host || room.status.allowMic) {
+          this.emit('isCanTurnOnMic', { allowMic: true });
+        } else {
+          this.emit('isCanTurnOnMic', { allowMic: false })
+        }
       }
     }
   } catch (error) {

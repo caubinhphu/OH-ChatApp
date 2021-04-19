@@ -47885,88 +47885,35 @@ var CommonChatRoomVideo = function () {
 
 
   function _handleAudio() {
-    _handleAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var audioStream;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+    _handleAudio = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              if (!canClickAudioBtn) {
-                _context3.next = 30;
-                break;
+              if (canClickAudioBtn) {
+                canClickAudioBtn = false;
+                $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
+
+                if (this.dataset.state === 'off') {
+                  // get stream video from camera of user and set in the window
+                  if (navigator.mediaDevices.getUserMedia) {
+                    socket.emit('checkCanTurnOnMic');
+                  }
+                } else {
+                  // stop audio
+                  stopAudio();
+                }
+
+                canClickAudioBtn = true;
+                $(this).find('.control-no-show-pop').css('cursor', 'pointer');
               }
 
-              canClickAudioBtn = false;
-              $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
-
-              if (!(this.dataset.state === 'off')) {
-                _context3.next = 21;
-                break;
-              }
-
-              if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 19;
-                break;
-              }
-
-              _context3.prev = 5;
-              _context3.next = 8;
-              return navigator.mediaDevices.getUserMedia({
-                video: false,
-                audio: true
-              });
-
-            case 8:
-              audioStream = _context3.sent;
-              // turn on video
-              // set UI
-              this.dataset.state = 'on';
-              $(this).addClass('is-turn-on');
-              $(this).find('.popup').html('Tắt audio (Alt + A)'); // add audio track for stream of each peer
-
-              peers.forEach(function (peer) {
-                peer.peer.addTrack(audioStream.getAudioTracks()[0], localStream);
-              }); // add audio track for stream of local stream
-
-              localStream.addTrack(audioStream.getAudioTracks()[0]);
-              _context3.next = 19;
-              break;
-
-            case 16:
-              _context3.prev = 16;
-              _context3.t0 = _context3["catch"](5);
-              outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
-
-            case 19:
-              _context3.next = 28;
-              break;
-
-            case 21:
-              // stop video
-              // set UI
-              this.dataset.state = 'off';
-              $(this).removeClass('is-turn-on');
-              $(this).find('.popup').html('Bật audio (Alt + A)'); // remove audio track of stream each peer
-
-              peers.forEach(function (peer) {
-                peer.peer.removeTrack(localStream.getAudioTracks()[0], localStream);
-              }); // remove audio track of stream in local stream
-
-              localStream.removeTrack(localStream.getAudioTracks()[0]); // output stop my video
-
-              socket.emit('stopAudioStream');
-              outputStopAudio();
-
-            case 28:
-              canClickAudioBtn = true;
-              $(this).find('.control-no-show-pop').css('cursor', 'pointer');
-
-            case 30:
+            case 1:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, this, [[5, 16]]);
+      }, _callee4, this);
     }));
     return _handleAudio.apply(this, arguments);
   }
@@ -47977,14 +47924,14 @@ var CommonChatRoomVideo = function () {
 
 
   function _handleVideo() {
-    _handleVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+    _handleVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
       var videoStream;
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
               if (!canClickVideoBtn) {
-                _context4.next = 32;
+                _context5.next = 32;
                 break;
               }
 
@@ -47992,24 +47939,24 @@ var CommonChatRoomVideo = function () {
               $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
 
               if (!(this.dataset.state === 'off')) {
-                _context4.next = 22;
+                _context5.next = 22;
                 break;
               }
 
               if (!navigator.mediaDevices.getUserMedia) {
-                _context4.next = 20;
+                _context5.next = 20;
                 break;
               }
 
-              _context4.prev = 5;
-              _context4.next = 8;
+              _context5.prev = 5;
+              _context5.next = 8;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
             case 8:
-              videoStream = _context4.sent;
+              videoStream = _context5.sent;
               // turn on video
               // set UI
               this.dataset.state = 'on';
@@ -48023,16 +47970,16 @@ var CommonChatRoomVideo = function () {
               localStream.addTrack(videoStream.getVideoTracks()[0]); // output my video
 
               outputVideo();
-              _context4.next = 20;
+              _context5.next = 20;
               break;
 
             case 17:
-              _context4.prev = 17;
-              _context4.t0 = _context4["catch"](5);
+              _context5.prev = 17;
+              _context5.t0 = _context5["catch"](5);
               outputWarnMessage('Bạn đã chặn quyền sử dụng camera');
 
             case 20:
-              _context4.next = 30;
+              _context5.next = 30;
               break;
 
             case 22:
@@ -48058,50 +48005,32 @@ var CommonChatRoomVideo = function () {
 
             case 32:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
-      }, _callee4, this, [[5, 17]]);
+      }, _callee5, this, [[5, 17]]);
     }));
     return _handleVideo.apply(this, arguments);
   }
 
   function handleShareScreen() {
-    return _handleShareScreen.apply(this, arguments);
-  }
+    if (canClickShareBtn) {
+      canClickShareBtn = false;
+      $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
 
-  function _handleShareScreen() {
-    _handleShareScreen = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              if (canClickShareBtn) {
-                canClickShareBtn = false;
-                $(this).find('.control-no-show-pop').css('cursor', 'no-drop');
-
-                if (this.dataset.state === 'off') {
-                  // get stream video from camera of user and set in the window
-                  if (navigator.mediaDevices.getDisplayMedia) {
-                    socket.emit('checkCanShareScreen');
-                  }
-                } else {
-                  // output stop my video share screen
-                  stopMyShareScreen();
-                }
-
-                canClickShareBtn = true;
-                $(this).find('.control-no-show-pop').css('cursor', 'pointer');
-              }
-
-            case 1:
-            case "end":
-              return _context5.stop();
-          }
+      if (this.dataset.state === 'off') {
+        // get stream video from camera of user and set in the window
+        if (navigator.mediaDevices.getDisplayMedia) {
+          socket.emit('checkCanShareScreen');
         }
-      }, _callee5, this);
-    }));
-    return _handleShareScreen.apply(this, arguments);
+      } else {
+        // output stop my video share screen
+        stopMyShareScreen();
+      }
+
+      canClickShareBtn = true;
+      $(this).find('.control-no-show-pop').css('cursor', 'pointer');
+    }
   }
 
   function recordingScreen() {
@@ -48339,7 +48268,86 @@ var CommonChatRoomVideo = function () {
       return _ref8.apply(this, arguments);
     };
   }());
+  window.socket.on('isCanTurnOnMic', /*#__PURE__*/function () {
+    var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref9) {
+      var allowMic, audioStream;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              allowMic = _ref9.allowMic;
+
+              if (!allowMic) {
+                _context3.next = 19;
+                break;
+              }
+
+              _context3.prev = 2;
+              _context3.next = 5;
+              return navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+              });
+
+            case 5:
+              audioStream = _context3.sent;
+              // turn on video
+              // set UI
+              btnAudio.dataset.state = 'on';
+              $(btnAudio).addClass('is-turn-on');
+              $(btnAudio).find('.popup').html('Tắt audio (Alt + A)');
+              $('html').addClass('turn-on-audio'); // add audio track for stream of each peer
+
+              peers.forEach(function (peer) {
+                peer.peer.addTrack(audioStream.getAudioTracks()[0], localStream);
+              }); // add audio track for stream of local stream
+
+              localStream.addTrack(audioStream.getAudioTracks()[0]);
+              _context3.next = 17;
+              break;
+
+            case 14:
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](2);
+              outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
+
+            case 17:
+              _context3.next = 20;
+              break;
+
+            case 19:
+              outputErrorMessage('Host đã tắt tính năng microphone');
+
+            case 20:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[2, 14]]);
+    }));
+
+    return function (_x3) {
+      return _ref10.apply(this, arguments);
+    };
+  }());
   $('.btn-stop-share').on('click', stopMyShareScreen);
+
+  function stopAudio() {
+    // set UI
+    btnAudio.dataset.state = 'off';
+    $(btnAudio).removeClass('is-turn-on');
+    $(btnAudio).find('.popup').html('Bật audio (Alt + A)');
+    $('html').removeClass('turn-on-audio'); // remove audio track of stream each peer
+
+    peers.forEach(function (peer) {
+      peer.peer.removeTrack(localStream.getAudioTracks()[0], localStream);
+    }); // remove audio track of stream in local stream
+
+    localStream.removeTrack(localStream.getAudioTracks()[0]); // output stop my video
+
+    socket.emit('stopAudioStream');
+    outputStopAudio();
+  }
 
   function stopMyShareScreen() {
     // stop share screen
@@ -48417,6 +48425,20 @@ var CommonChatRoomVideo = function () {
   }
 
   window.outputAllowShare = outputAllowShare;
+
+  function outputAllowMic(value) {
+    if (value) {
+      window.outputInfoMessage('Host đã bật tính năng microphone');
+    } else {
+      window.outputErrorMessage('Host đã tắt tính năng microphone');
+
+      if ('html.turn-on-audio'.length) {
+        stopAudio();
+      }
+    }
+  }
+
+  window.outputAllowMic = outputAllowMic;
 
   function unPinAll($ele) {
     $ele.removeClass('is-pin');
