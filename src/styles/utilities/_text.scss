@@ -1,3 +1,88 @@
 body {
-  background-color: red;
+  color: $black;
+}
+
+#main {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+#editor {
+  background-color: $white;
+  height: calc(100vh - 60px);
+}
+.ql-toolbar {
+  &.ql-snow {
+    text-align: center;
+  }
+}
+
+.ql-snow {
+  .ql-picker{
+    &.ql-size {
+      .ql-picker-item {
+        &[data-value="12px"]::before {
+          content: '12px';
+          font-size: 14px !important;
+        }
+        &[data-value="18px"]::before {
+          content: '18px';
+          font-size: 18px !important;
+        }
+        &[data-value="24px"]::before {
+          content: '24px';
+          font-size: 24px !important;
+        }
+        &[data-value="28px"]::before {
+          content: '28px';
+          font-size: 28px !important;
+        }
+        &[data-value="32px"]::before {
+          content: '32px';
+          font-size: 32px !important;
+        }
+        &[data-value="40px"]::before {
+          content: '40px';
+          font-size: 40px !important;
+        }
+        &[data-value="50px"]::before {
+          content: '50px';
+          font-size: 50px !important;
+        }
+      }
+      .ql-picker-label {
+        &::before{
+          content: 'Size';
+        }
+        &[data-value="12px"]::before {
+          content: '12px';
+        }
+        &[data-value="18px"]::before {
+          content: '18px';
+        }
+        &[data-value="24px"]::before {
+          content: '24px';
+        }
+        &[data-value="28px"]::before {
+          content: '28px';
+        }
+        &[data-value="32px"]::before {
+          content: '32px';
+        }
+        &[data-value="40px"]::before {
+          content: '40px';
+        }
+        &[data-value="50px"]::before {
+          content: '50px';
+        }
+      }
+    }
+    &.ql-header {
+      .ql-picker-item::before {
+        content: 'Paragraph';
+      }
+      .ql-picker-label::before {
+        content: 'Paragraph';
+      }
+    }
+  }
 }
