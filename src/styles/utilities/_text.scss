@@ -9,6 +9,7 @@ body {
 #editor {
   background-color: $white;
   height: calc(100vh - 60px);
+  box-shadow: 0px 0px 9px 0px #ccc;
 }
 .ql-toolbar {
   &.ql-snow {
@@ -84,5 +85,11 @@ body {
         content: 'Paragraph';
       }
     }
+  }
+}
+.ql-toolbar {
+  margin-bottom: 5px;
+  &.ql-snow + .ql-container.ql-snow {
+    border-top: 1px solid #ccc;
   }
 }

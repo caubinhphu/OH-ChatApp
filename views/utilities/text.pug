@@ -5,8 +5,9 @@ append styles
 
 block main
   #main
+    .text-id.d-none= textId
     #editor
-      p Hello World!
 
 append scripts
+  script(src="/socket.io/socket.io.js")
   script(src="/js/text.js")

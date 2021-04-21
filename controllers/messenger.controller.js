@@ -3,7 +3,6 @@ const moment = require('moment');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');

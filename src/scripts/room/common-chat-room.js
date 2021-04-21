@@ -439,6 +439,22 @@ const CommonChatRoom = (() => {
     $(this).find('.popup').css('display', 'none');
   });
 
+  $('.btn-create-text').on('click', async () => {
+    try {
+      const response = await axios.post('/utility/text', {}, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    console.log(response);
+
+    window.open(`/utility/text/${response.data.textId}`)
+    } catch (error) {
+      console.dir(error);
+    }
+  })
+
   function scrollBottomChatBox() {
     const $ele = $('#chat-middle');
     $ele.animate({scrollTop: $ele[0].scrollHeight - $ele.innerHeight()}, 350, 'swing');

@@ -23,6 +23,4 @@ router.get('/export-chat', controller.exportChat);
 
 router.post('/upload-file', controller.uploadFile)
 
-router.get('/text', controller.getText)
-
 module.exports = router;

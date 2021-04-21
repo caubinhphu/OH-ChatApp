@@ -73,6 +73,7 @@ app.use(flash());
 const chatRoute = require('./routers/chat.route');
 const loginRoute = require('./routers/login.route');
 const messengerRoute = require('./routers/messenger.route');
+const utilitiesRoute = require('./routers/utilities.route');
 
 // middleware
 const { checkAuthenticated } = require('./middlewares/login.middleware');
@@ -93,17 +94,32 @@ app.use((req, res, next) => {
 app.use('/', chatRoute);
 app.use('/login', loginRoute);
 app.use('/messenger', checkAuthenticated, messengerRoute);
+app.use('/utility', utilitiesRoute);
 
 // handle error middleware
 app.use((err, req, res, next) => {
   if (err) {
     console.log(err);
   }
+  res.status(500);
   // res.send(err.message);
   res.render('error', {
     titleSite: 'OH - Chat',
     messageError: err.message
   })
+});
+
+// 404
+app.use(function(req, res) {
+  res.status(404);
+
+  // respond with json
+  if (req.xhr) {
+    res.json({ message: 'Not found' });
+  } else {
+    // respond with html page
+    res.render('404', { url: req.url });
+  }
 });
 
 server.listen(PORT, () => console.log(`Server is running at port ${PORT}`));

@@ -6460,6 +6460,10 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E931";
 }
 
+.icon-file-text:before {
+  content: "\E932";
+}
+
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   -o-transition: background-color 5000s ease-in-out 0s;

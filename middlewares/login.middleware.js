@@ -4,7 +4,12 @@ const Member = require('../models/Member');
 module.exports.checkAuthenticated = async (req, res, next) => {
   // not logged in
   if (!req.isAuthenticated()) {
-    return res.redirect('/');
+    // respond with json
+    if (req.xhr) {
+      return res.status(401).json({ message: 'Bạn chưa đăng nhập' });
+    } else {
+      return res.redirect('/');
+    }
   }
 
   // logged in
@@ -13,7 +18,12 @@ module.exports.checkAuthenticated = async (req, res, next) => {
 
   // not member id
   if (!memberId) {
-    return res.redirect('/');
+    // respond with json
+    if (req.xhr) {
+      return res.status(401).json({ message: 'Bạn chưa đăng nhập' });
+    } else {
+      return res.redirect('/');
+    }
   }
 
   try {
@@ -22,7 +32,12 @@ module.exports.checkAuthenticated = async (req, res, next) => {
 
     // not member
     if (!member) {
-      return res.redirect('/');
+      // respond with json
+      if (req.xhr) {
+        return res.status(401).json({ message: 'Bạn chưa đăng nhập' });
+      } else {
+        return res.redirect('/');
+      }
     }
 
     // member exists

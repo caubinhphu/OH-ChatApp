@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const roomController = require('./meeting-controller');
 const messengerController = require('./messenger-controller');
-
-const formatMessage = require('../utils/message');
+const utilitiesController = require('./utilities-controller');
 
 // connect mongodb
 mongoose.connect(process.env.URI_MONGODB, {
@@ -125,6 +124,16 @@ const socket = function (io) {
     socket.on('msg-callTimeout', function(data) {
       messengerController.onCallTimeout.bind(this, io, data)()
     })
+
+    // ------------------------ Text -----------------------------
+    // receive event join text from client
+    socket.on('join-text', utilitiesController.onJoinText)
+
+    // receive event change text from client
+    socket.on('text-change-s', utilitiesController.onTextChange)
+
+    // receive event save text from client
+    socket.on('text-save', utilitiesController.onTextSave)
   });
 };
 

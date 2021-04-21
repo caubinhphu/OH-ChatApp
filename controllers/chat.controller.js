@@ -97,6 +97,7 @@ module.exports.uploadFile = async (req, res) => {
 };
 
 module.exports.getIndex = (req, res) => {
+  console.log(req.user);
   res.render('room', {
     titleSite: 'OH Chat'
   });
@@ -309,10 +310,4 @@ module.exports.exportChat = async (req, res, next) => {
       next(error)
     }
   }
-}
-
-module.exports.getText = (req, res) => {
-  res.render('utilities/text', {
-    titleSite: 'OH - Text'
-  })
 }
