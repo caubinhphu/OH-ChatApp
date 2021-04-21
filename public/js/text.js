@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 534);
+/******/ 	return __webpack_require__(__webpack_require__.s = 543);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -20978,63 +20978,48 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 531 */,
 /* 532 */,
 /* 533 */,
-/* 534 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(138);
-__webpack_require__(535);
-module.exports = __webpack_require__(546);
-
-
-/***/ }),
-/* 535 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(340);
-/* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(341);
-/* harmony import */ var _room_home__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(536);
-// import $ from 'jquery';
- // import './global/notify'
-
-
-
-console.log('page home');
-
-/***/ }),
-/* 536 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {var Home = function () {
-  if (document.formLogin) {
-    document.formLogin.addEventListener('submit', function () {
-      $('.wrap-loader').removeClass('d-none');
-    });
-  }
-
-  if (document.formRegister) {
-    document.formRegister.addEventListener('submit', function () {
-      $('.wrap-loader').removeClass('d-none');
-    });
-  }
-}();
-
-/* unused harmony default export */ var _unused_webpack_default_export = (Home);
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44)))
-
-/***/ }),
+/* 534 */,
+/* 535 */,
+/* 536 */,
 /* 537 */,
 /* 538 */,
 /* 539 */,
 /* 540 */,
 /* 541 */,
 /* 542 */,
-/* 543 */,
-/* 544 */,
-/* 545 */,
-/* 546 */
+/* 543 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(138);
+__webpack_require__(544);
+module.exports = __webpack_require__(548);
+
+
+/***/ }),
+/* 544 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _global_loading__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(340);
+/* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(341);
+/* harmony import */ var _utilities_text__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(545);
+/* harmony import */ var _utilities_text__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_utilities_text__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+console.log('page text');
+
+/***/ }),
+/* 545 */
+/***/ (function(module, exports) {
+
+console.log('ok');
+
+/***/ }),
+/* 546 */,
+/* 547 */,
+/* 548 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

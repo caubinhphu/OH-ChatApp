@@ -310,3 +310,9 @@ module.exports.exportChat = async (req, res, next) => {
     }
   }
 }
+
+module.exports.getText = (req, res) => {
+  res.render('utilities/text', {
+    titleSite: 'OH - Text'
+  })
+}
