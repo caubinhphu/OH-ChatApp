@@ -33,6 +33,34 @@ block contentMain
             .wrap-meet-pin.flex-fill.ps-rv
       #meeting-control
         .d-flex.justify-content-around.h-100.mx-auto.align-items-center(style="max-width: 1000px")
+          .meeting-control-item.ps-rv.wrap-conts
+            .open-popup-icon
+              span.icomoon.icon-dots-three-vertical
+            .wrap-control-meet
+              .d-flex.justify-content-center.flex-column
+                block subMeetingControl2
+                .meeting-control-item.ps-rv.d-md-none
+                  .control-show-pop.d-flex.align-items-center(data-control="user")
+                    span.icomoon.icon-users
+                    sup.amount-participants
+                    .ctrl-label Thành viên
+                .meeting-control-item.ps-rv.d-md-none
+                  .control-show-pop.d-flex.align-items-center(data-control="chat")
+                    span.icomoon.icon-chat
+                    sup.amount-msg-unread
+                    .ctrl-label Chat
+                .btn-rec-screen.meeting-control-item.ps-rv.state-off
+                  .control-no-show-pop.d-flex.align-items-center
+                    span.icomoon.icon-controller-record.text-danger
+                    .ctrl-label Quay màn hình (Alt + R)
+                .btn-create-text.meeting-control-item.ps-rv
+                  .control-no-show-pop.d-flex.align-items-center
+                    span.icomoon.icon-file-text
+                    .ctrl-label Mở Text
+                .meeting-control-item.ps-rv.d-md-none
+                  .control-show-pop.text-info.d-flex.align-items-center(data-control="info")
+                    span.icomoon.icon-information
+                    .ctrl-label Thông tinh phòng
           #btn-audio-connect.meeting-control-item.ps-rv(data-state="off")
             .popup.special Bật audio (Alt + A)
             .control-no-show-pop
@@ -56,38 +84,14 @@ block contentMain
             .control-show-pop(data-control="chat")
               span.icomoon.icon-chat
               sup.amount-msg-unread
-          .btn-rec-screen.meeting-control-item.d-none.d-md-block.ps-rv.state-off
-            .popup Quay màn hình (Alt + R)
-            .control-no-show-pop
-              span.icomoon.icon-controller-record.text-danger
-          .btn-create-text.meeting-control-item.d-none.d-md-block.ps-rv
-            .popup Mở Text
-            .control-no-show-pop
-              span.icomoon.icon-file-text
+          //- .btn-rec-screen.meeting-control-item.d-none.d-md-block.ps-rv.state-off
+          //-   .popup Quay màn hình (Alt + R)
+          //-   .control-no-show-pop
+          //-     span.icomoon.icon-controller-record.text-danger
           .meeting-control-item.d-none.d-md-block.ps-rv
             .popup Thông tin phòng
             .control-show-pop.text-info(data-control="info")
               span.icomoon.icon-information
-          .meeting-control-item.ps-rv.d-md-none.wrap-conts
-            .open-popup-icon
-              span.icomoon.icon-dots-three-vertical
-            .wrap-control-meet
-              .d-flex.justify-content-center.align-items-center
-                block subMeetingControl2
-                .meeting-control-item.ps-rv
-                  .control-show-pop(data-control="user")
-                    sup.amount-participants
-                    span.icomoon.icon-users
-                .meeting-control-item.ps-rv
-                  .control-show-pop(data-control="chat")
-                    span.icomoon.icon-chat
-                    sup.amount-msg-unread
-                .btn-rec-screen.meeting-control-item.ps-rv.state-off
-                  .control-no-show-pop
-                    span.icomoon.icon-controller-record.text-danger
-                .meeting-control-item.ps-rv
-                  .control-show-pop.text-info(data-control="info")
-                    span.icomoon.icon-information
           .meeting-control-item.ps-rv(data-toggle="modal", data-target="#confirm-leave-room-modal")
             .popup Rời phòng
             .control-no-show-pop.text-danger

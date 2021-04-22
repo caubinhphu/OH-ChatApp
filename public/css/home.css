@@ -6906,13 +6906,11 @@ input:-webkit-autofill {
 
 .wrap-control-meet {
   position: absolute;
-  top: -75px;
   z-index: 9999999;
-  right: -69px;
+  left: 0;
+  bottom: 58px;
   background-color: white;
   border-radius: 12px;
-  padding-top: 12px;
-  padding-bottom: 12px;
   width: max-content;
 }
 
@@ -6920,24 +6918,16 @@ input:-webkit-autofill {
   display: none;
 }
 
-.wrap-control-meet::after {
-  content: "";
-  width: 20px;
-  height: 20px;
-  background: white;
-  position: absolute;
-  transform: rotate(45deg);
-  right: 92px;
-}
-
 .wrap-control-meet .control-show-pop,
 .wrap-control-meet .control-no-show-pop {
-  color: #22c0c9;
+  color: #0c1a2f;
+  padding: 15px 30px;
 }
 
 .wrap-control-meet .control-show-pop:hover,
 .wrap-control-meet .control-no-show-pop:hover {
-  background-color: transparent;
+  background-color: #dedede;
+  transform: none;
 }
 
 .arrow-smaller {
@@ -7307,6 +7297,12 @@ label.send-file.disabled .icomoon {
   color: #0c1a2f;
 }
 
+.ctrl-label {
+  margin-left: 10px;
+  font-size: 20px;
+  color: #0c1a2f !important;
+}
+
 @media only screen and (max-width: 1024px) {
   .popup.special {
     left: 86%;
@@ -7341,22 +7337,6 @@ label.send-file.disabled .icomoon {
   .modal-dialog {
     max-width: 315px;
     margin: 0 auto;
-  }
-}
-
-@media only screen and (max-width: 374px) {
-  .wrap-control-meet {
-    right: -31px;
-    top: -65px;
-  }
-  .wrap-control-meet .control-show-pop {
-    padding: 0 17px;
-  }
-  .wrap-control-meet::after {
-    right: 53px;
-  }
-  .control-no-show-pop {
-    padding: 0 20px;
   }
 }
 

@@ -31,7 +31,6 @@ module.exports.createText = async (req, res) => {
         data: null,
         authorId: member._id
       })
-      console.log(text._id);
       res.status(200).json({ textId: text._id })
     }
   } catch (error) {
