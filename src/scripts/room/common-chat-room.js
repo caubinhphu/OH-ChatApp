@@ -33,7 +33,6 @@ const CommonChatRoom = (() => {
 
     // input message
     const inputMsg = e.target.elements.message;
-    const files = e.target.elements.file;
 
     $('.files-upload-box').html('')
 
@@ -447,9 +446,23 @@ const CommonChatRoom = (() => {
         'X-Requested-With': 'XMLHttpRequest'
       }
     })
-    window.open(`/utility/text/${response.data.textId}`)
+    const url = `${location.origin}/utility/text/${response.data.textId}`
+    // send message to server
+    socket.emit('messageChat', {
+      message: url,
+      token: qs.get('token'),
+    });
+
+    // create message obj to show in client
+    const msgObj = {
+      time: moment().format('H:mm'),
+      username: 'Me',
+      message: url
+    };
+    outputMessage(msgObj, true);
+    window.open(url)
     } catch (error) {
-      if (error.status === 401) {
+      if (error.response.status === 401) {
         window.outputErrorMessage('Bạn cần đăng nhập để thưc hiện chức năng này')
       } else {
         window.outputErrorMessage('Không tạo được Text mới')

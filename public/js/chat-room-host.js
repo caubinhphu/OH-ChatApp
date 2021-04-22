@@ -46909,7 +46909,7 @@ var CommonChatRoom = function () {
 
   msgForm.addEventListener('submit', /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-      var inputMsg, files, msgObj;
+      var inputMsg, msgObj;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -46918,7 +46918,6 @@ var CommonChatRoom = function () {
               e.preventDefault(); // input message
 
               inputMsg = e.target.elements.message;
-              files = e.target.elements.file;
               $('.files-upload-box').html('');
 
               if (inputMsg.value !== '') {
@@ -46943,14 +46942,14 @@ var CommonChatRoom = function () {
               }
 
               if (!finalFiles.length) {
-                _context.next = 8;
+                _context.next = 7;
                 break;
               }
 
-              _context.next = 8;
+              _context.next = 7;
               return sendFile();
 
-            case 8:
+            case 7:
             case "end":
               return _context.stop();
           }
@@ -47119,8 +47118,8 @@ var CommonChatRoom = function () {
               $('#send-file').val('');
               finalFiles = []; // enabledInputFile()
 
-              if (_context3.t0.response && _context3.t0.response.data && _context3.t0.response.data.mgs) {
-                window.outputErrorMessage(_context3.t0.response.data.mgs);
+              if (_context3.t0.response && _context3.t0.response.data && _context3.t0.response.data.message) {
+                window.outputErrorMessage(_context3.t0.response.data.message);
               }
 
             case 22:
@@ -47336,7 +47335,7 @@ var CommonChatRoom = function () {
     $(this).find('.popup').css('display', 'none');
   });
   $('.btn-create-text').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var response;
+    var response, url, msgObj;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -47352,22 +47351,39 @@ var CommonChatRoom = function () {
 
           case 3:
             response = _context2.sent;
-            console.log(response);
-            window.open("/utility/text/".concat(response.data.textId));
-            _context2.next = 11;
+            url = "".concat(location.origin, "/utility/text/").concat(response.data.textId); // send message to server
+
+            socket.emit('messageChat', {
+              message: url,
+              token: qs.get('token')
+            }); // create message obj to show in client
+
+            msgObj = {
+              time: moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'),
+              username: 'Me',
+              message: url
+            };
+            outputMessage(msgObj, true);
+            window.open(url);
+            _context2.next = 14;
             break;
 
-          case 8:
-            _context2.prev = 8;
-            _context2.t0 = _context2["catch"](0);
-            console.dir(_context2.t0);
-
           case 11:
+            _context2.prev = 11;
+            _context2.t0 = _context2["catch"](0);
+
+            if (_context2.t0.response.status === 401) {
+              window.outputErrorMessage('Bạn cần đăng nhập để thưc hiện chức năng này');
+            } else {
+              window.outputErrorMessage('Không tạo được Text mới');
+            }
+
+          case 14:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 8]]);
+    }, _callee2, null, [[0, 11]]);
   })));
 
   function scrollBottomChatBox() {
@@ -48324,7 +48340,7 @@ var CommonChatRoomVideo = function () {
             case 12:
               voiceRECStream = _context8.sent;
               $recBtn.removeClass('state-off');
-              $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
+              $recBtn.find('.ctrl-label').html('Dừng quay màn hình (Alt + V)');
               $('html').addClass('recoding');
               tracks = [].concat(_toConsumableArray(desktopRECStream.getVideoTracks()), _toConsumableArray(mergeAudioStreams(desktopRECStream, voiceRECStream)));
               localRECStream = new MediaStream(tracks);

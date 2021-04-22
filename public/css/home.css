@@ -7007,6 +7007,7 @@ input:-webkit-autofill {
   white-space: nowrap;
   color: white;
   display: none;
+  z-index: 9999999;
 }
 
 .popup::after {
