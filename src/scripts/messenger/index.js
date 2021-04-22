@@ -3,6 +3,7 @@ import '../global/chat-utils'
 
 const Index = (() => {
   const chatMain = document.getElementById('main-right-chat-content');
+  const dragZone = document.querySelector('.dragzone')
   const msgForm = document.sendMsgForm; // form chat
   let hasMessenger = true // has old msg
   let currentPageChat = 0 // current page load old chat
@@ -12,6 +13,10 @@ const Index = (() => {
 
   const classScBottom = '.scroll-bottom'
 
+  let finalFiles = []
+  let isDragging = 0;
+  let isDragZone = false;
+
   if (msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
@@ -19,7 +24,7 @@ const Index = (() => {
     const friendIdChatting = $('#main-right').attr('data-id')
 
     // event submit form chat
-    msgForm.addEventListener('submit', (e) => {
+    msgForm.addEventListener('submit', async (e) => {
       // stop submit form
       e.preventDefault();
 
@@ -45,7 +50,103 @@ const Index = (() => {
         // focus input message
         inputMsg.focus();
       }
+      if (finalFiles.length) {
+        await sendFile()
+      }
     });
+
+
+    $(document).on('change', '#send-file', function() {
+      if (this.files.length) {
+        let html = '';
+        [...this.files].forEach(file => {
+          html += `
+            <div class="file-item">
+              <span>${file.name}</span>
+              <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+            </div>
+          `
+          finalFiles.push(file)
+        })
+        $('.files-upload-box').append(html);
+        // disabledInputFile()
+        this.value = ''
+      }
+    })
+  
+    $(document).on('click', '.remove-up-file', function(e) {
+      e.preventDefault()
+      const $fileItem = $(this).parents('.file-item')
+      const index = $fileItem.index()
+      if (index >= 0) {
+        finalFiles.splice(index, 1)
+        $fileItem.remove()
+        if (!finalFiles.length) {
+          // enabledInputFile()
+        }
+      }
+    })
+  
+    dragZone.addEventListener('dragenter', e => {
+      e.preventDefault();
+      e.stopPropagation()
+      isDragZone = true
+    })
+  
+    dragZone.addEventListener('dragleave', e => {
+      e.preventDefault();
+      e.stopPropagation()
+      isDragZone = false
+    })
+  
+    dragZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (!$(this).hasClass('unable-chat')) {
+        const { files } = e.dataTransfer
+        // console.log(files);
+        if (files.length) {
+          let html = '';
+          [...files].forEach((file) => {
+            html += `
+              <div class="file-item">
+                <span>${file.name}</span>
+                <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+              </div>
+            `
+            finalFiles.push(file)
+          })
+          $('.files-upload-box').append(html);
+          // disabledInputFile()
+        }
+        // console.log(finalFiles);
+      }
+    })
+  
+    document.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.stopPropagation()
+      if (!$(dragZone).hasClass('unable-chat')) {
+        isDragging++;
+        if (isDragging === 1) {
+          $('.dragzone').removeClass('d-none')
+        }
+      }
+    })
+  
+    document.addEventListener('dragleave', e => {
+      e.preventDefault();
+      e.stopPropagation()
+      if (!isDragZone) {
+        $('.dragzone').addClass('d-none')
+        isDragging = 0;
+      }
+    })
+  
+    document.addEventListener('drop', e => {
+      e.preventDefault();
+      isDragging = 0;
+      $('.dragzone').addClass('d-none')
+    })
 
     // change height form input msg
     $(document).on('keydown', '#msg', function(e) {
@@ -230,6 +331,62 @@ const Index = (() => {
         $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>')
       }
     })
+
+    // function send file
+    async function sendFile() {
+      const formData = new FormData();
+      const idSession = new Date().valueOf();
+      finalFiles.forEach(file=>{
+        formData.append('files', file);
+        // create message obj to show in client
+        window.createCallMsgLocal(
+          friendIdChatting,
+          `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
+          'wrap-msg-file',
+          false,
+          true
+        )
+      });
+      try {
+        const res = await axios.post('/messenger/upload-file', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        $('#send-file').val('')
+        finalFiles = []
+        // enabledInputFile()
+        console.log(res);
+        const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
+        $msgFile.each((i, ele) => {
+          const file = res.data.fileUrls.find(f => f.name === $(ele).text())
+          if (file) {
+            $(ele).parents('.wrap-msg-file').addClass('load-done')
+            ele.href = file.url
+            // send message to server
+            socket.emit('msg-messageChat', {
+              message: file.url,
+              type: 'file',
+              nameFile: file.name,
+              resourceType: file.resourceType,
+              token: qs.get('token'),
+            });
+          } else {
+            $(ele).parents('.message').remove()
+          }
+        })
+      } catch (error) {
+        console.dir(error);
+        const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
+        $msgFile.parents('.message').remove()
+        $('#send-file').val('')
+        finalFiles = []
+        // enabledInputFile()
+        if (error.response && error.response.data && error.response.data.message) {
+          window.outputErrorMessage(error.response.data.message)
+        }
+      }
+    }
   }
 })()
 

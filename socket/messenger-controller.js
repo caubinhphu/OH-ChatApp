@@ -94,7 +94,7 @@ module.exports.onMemberOnline = async function (io, { memberId }) {
 };
 
 // receive msg chat of friend
-module.exports.onMessageChat = async function (io, { message, token }) {
+module.exports.onMessageChat = async function (io, { message, token, type, nameFile, resourceType }) {
   try {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
@@ -115,6 +115,10 @@ module.exports.onMessageChat = async function (io, { message, token }) {
       if (friendRelated) {
         // format msg
         const msg = formatMessage(me.name, message, me.avatar)
+        if (type === 'file') {
+          msg.type = 'file'
+          msg.nameFile = nameFile
+        }
         msg.url = me.url
         // me save msg
         // find group msg
@@ -123,7 +127,9 @@ module.exports.onMessageChat = async function (io, { message, token }) {
           const messageObj = await Message.create({
             time: new Date(),
             content: msg.message,
-            memberSendId: me.id
+            memberSendId: me.id,
+            type: type === 'file' ? resourceType : 'text',
+            fileName: type === 'file' ? nameFile : ''
           })
           // push msg to group and save group
           friendRelated.groupMessageId.messages.push(messageObj)

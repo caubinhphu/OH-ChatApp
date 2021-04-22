@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
 
 // upload file
 const upload = multer({
-  storage: storage,
+  storage,
   // limits: { fileSize: 10 },
   fileFilter: (req, file, cb) => {
     // ext type
@@ -58,6 +58,28 @@ const upload = multer({
     }
   },
 }).single('avatar');
+
+// upload file multiple
+const uploadMulti = multer({
+  storage,
+  limits: { fileSize: 500000, files: 5 },
+  fileFilter: (req, file, cb) => {
+    // ext type
+    const extTypes = /js/;
+
+    // check extname
+    const extname = !extTypes.test(path.extname(file.originalname).toLowerCase());
+
+    // check mimetype
+    const mime = !extTypes.test(file.mimetype);
+
+    if (extname && mime) {
+      cb(null, true);
+    } else {
+      cb(new Error('Định dạng file không hợp lệ'));
+    }
+  },
+}).array('files');
 
 // get index messenger page
 module.exports.getIndex = async (req, res, next) => {
@@ -199,37 +221,46 @@ module.exports.putAvatar = async (req, res) => {
 
 // upload file
 module.exports.uploadFile = async (req, res) => {
-  upload(req, res, async (err) => {
+  uploadMulti(req, res, async (err) => {
     if (err) {
-      console.log(err);
-      return res.status(400).json({ message: err.message });
+      let messageError = ''
+      if (err.code === 'LIMIT_FILE_COUNT') {
+        messageError = 'Chỉ được gửi tối đa 5 tệp cùng một lúc'
+      } else if(err.code === 'LIMIT_FILE_SIZE') {
+        messageError = 'Kích thước tệp không vượt quá 100KB'
+      } else {
+        messageError = err.message
+      }
+      return res.status(400).json({ message: messageError });
     } else {
       try {
-        console.log(req.user.id);
         const member = await Member.findById(req.user.id);
-        // if (member) {
-        //   // upload
-        //   const result = await cloudinary.upload(
-        //     req.file.path,
-        //     path.basename(req.file.filename, path.extname(req.file.filename)),
-        //     'ohchat/avatar'
-        //   );
-        //   const urlAvatar = result.url;
+        if (member) {
+          // upload
+          console.log(req.files);
+          const fileUrls = []
+          await Promise.all(req.files.map(async (file) => {
+            const result = await cloudinary.upload(
+              file.path,
+              path.basename(file.filename, path.extname(file.filename)),
+              'ohchat/upload'
+            );
+            fileUrls.push({
+              name: file.originalname,
+              url: result.secure_url,
+              resourceType: result.resource_type
+            })
+          }));
 
-        //   // update db
-        //   member.avatar = urlAvatar
-        //   await member.save()
-
-        console.log(req.file);
           return res
             .status(200)
-            .json({ message: 'Cập nhật avatar thành công', src: req.file.filename });
-        // } else {
-        //   return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
-        // }
-        } catch (error) {
-          console.log(error);
-          return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
+            .json({ message: 'Success', fileUrls });
+        } else {
+          return res.status(400).json({ message: notMem });
+        }
+      } catch (error) {
+        // console.log(error);
+        return res.status(400).json({ message: 'Gửi file thất bại' });
       }
     }
   });

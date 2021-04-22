@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 // upload file
 const upload = multer({
   storage: storage,
-  // limits: { fileSize: 100000, files: 5 },
+  limits: { fileSize: 500000, files: 5 },
   fileFilter: (req, file, cb) => {
     // ext type
     const extTypes = /js/;

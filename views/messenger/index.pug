@@ -42,6 +42,12 @@ block contentMain
 
       if (friendChat)
         #main-right.flex-fill.d-flex.flex-column(data-id=friendChat.id)
+          .dragzone.d-none
+            .d-flex.justify-content-center.align-items-center.h-100.drag-inner
+              div
+                .text-center
+                  span.icomoon.icon-insert_drive_file
+                h4 Kéo thả tệp vào đây
           #main-right-top.d-flex.justify-content-between.p-2.align-items-center
             #main-right-top-left.d-flex
               .friend-img
@@ -81,9 +87,13 @@ block contentMain
                           small.time-call= msg.timeCall
 
           #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
+            .files-upload-box.d-flex.justify-content-center.flex-wrap
             form.d-flex(name="sendMsgForm", method="post")
+              label.btn.btn-default.send-file.m-0.p-2(for="send-file")
+                span.icomoon.icon-insert_drive_file
+              input#send-file.d-none(type="file", name="file", multiple)
               button.btn.btn-default.open-emojis(type="button") &#128512;
-              input(type="hidden", name="_token" value=token)
+              input(type="hidden", name="_token", value=token)
               .flex-fill.wrap-msg-box.ps-rv
                 textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
               button.btn.btn-default.text-secondary
