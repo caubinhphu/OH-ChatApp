@@ -56,7 +56,7 @@ module.exports.uploadFile = async (req, res) => {
       } else {
         messageError = err.message
       }
-      return res.status(400).json({ mgs: messageError });
+      return res.status(400).json({ message: messageError });
     } else {
       try {
         // console.log(req.user.id);
@@ -84,13 +84,13 @@ module.exports.uploadFile = async (req, res) => {
 
           return res
             .status(200)
-            .json({ mgs: 'Success', fileUrls });
+            .json({ message: 'Success', fileUrls });
         // } else {
-        //   return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+        //   return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
         // }
         } catch (error) {
           // console.log(error);
-          return res.status(400).json({ mgs: 'Gửi file thất bại' });
+          return res.status(400).json({ message: 'Gửi file thất bại' });
       }
     }
   });

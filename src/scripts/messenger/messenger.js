@@ -440,7 +440,7 @@ const Messenger = (() => {
 
         $popup.attr('data-allow-load', '1')
       } catch (error) {
-        window.outputErrorMessage(error?.response?.data?.msg)
+        window.outputErrorMessage(error?.response?.data?.message)
       }
     }
   }

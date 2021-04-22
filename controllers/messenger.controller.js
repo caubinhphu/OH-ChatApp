@@ -167,7 +167,7 @@ module.exports.putProfile = async (req, res, next) => {
 module.exports.putAvatar = async (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ mgs: err.message });
+      return res.status(400).json({ message: err.message });
     } else {
       try {
         const member = await Member.findById(req.user.id);
@@ -186,12 +186,12 @@ module.exports.putAvatar = async (req, res) => {
 
           return res
             .status(200)
-            .json({ mgs: 'Cập nhật avatar thành công', src: urlAvatar });
+            .json({ message: 'Cập nhật avatar thành công', src: urlAvatar });
         } else {
-          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+          return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
         }
         } catch (error) {
-          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+          return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
       }
     }
   });
@@ -202,7 +202,7 @@ module.exports.uploadFile = async (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
       console.log(err);
-      return res.status(400).json({ mgs: err.message });
+      return res.status(400).json({ message: err.message });
     } else {
       try {
         console.log(req.user.id);
@@ -223,13 +223,13 @@ module.exports.uploadFile = async (req, res) => {
         console.log(req.file);
           return res
             .status(200)
-            .json({ mgs: 'Cập nhật avatar thành công', src: req.file.filename });
+            .json({ message: 'Cập nhật avatar thành công', src: req.file.filename });
         // } else {
-        //   return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+        //   return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
         // }
         } catch (error) {
           console.log(error);
-          return res.status(400).json({ mgs: 'Cập nhật avatar thất bại' });
+          return res.status(400).json({ message: 'Cập nhật avatar thất bại' });
       }
     }
   });
@@ -258,10 +258,10 @@ module.exports.getFriends = async (req, res) => {
         hasFriend
       });
     } else {
-      res.status(404).json({ msg: notMem });
+      res.status(404).json({ message: notMem });
     }
   } catch (error) {
-    res.status(500).json({ msg: hasErrMsg });
+    res.status(500).json({ message: hasErrMsg });
   }
 };
 
@@ -288,10 +288,10 @@ module.exports.getFriendRequests = async (req, res) => {
         hasFriend
       });
     } else {
-      res.status(404).json({ msg: notMem });
+      res.status(404).json({ message: notMem });
     }
   } catch (error) {
-    res.status(500).json({ msg: hasErrMsg });
+    res.status(500).json({ message: hasErrMsg });
   }
 };
 
@@ -318,10 +318,10 @@ module.exports.getFriendInvitations = async (req, res) => {
         hasFriend
       });
     } else {
-      res.status(404).json({ msg: notMem });
+      res.status(404).json({ message: notMem });
     }
   } catch (error) {
-    res.status(500).json({ msg: hasErrMsg });
+    res.status(500).json({ message: hasErrMsg });
   }
 };
 
@@ -433,9 +433,9 @@ module.exports.getChatOld = async (req, res) => {
         return res.status(200).json({ messages, hasMsg, friendStatus: friendRelated._id.status })
       }
     }
-    return res.status(404).json({ mgs: notMem })
+    return res.status(404).json({ message: notMem })
   } catch (error) {
-    res.status(500).json({ mgs: hasErrMsg })
+    res.status(500).json({ message: hasErrMsg })
   }
 }
 

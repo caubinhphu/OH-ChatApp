@@ -544,7 +544,7 @@ const CommonChatRoomVideo = (() => {
             });
 
             $recBtn.removeClass('state-off')
-            $recBtn.find('.popup').html('Dừng quay màn hình (Alt + V)');
+            $recBtn.find('.ctrl-label').html('Dừng quay màn hình (Alt + V)');
             $('html').addClass('recoding')
 
             const tracks = [

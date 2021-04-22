@@ -207,8 +207,8 @@ const CommonChatRoom = (() => {
       $('#send-file').val('')
       finalFiles = []
       // enabledInputFile()
-      if (error.response && error.response.data && error.response.data.mgs) {
-        window.outputErrorMessage(error.response.data.mgs)
+      if (error.response && error.response.data && error.response.data.message) {
+        window.outputErrorMessage(error.response.data.message)
       }
     }
   }
@@ -447,11 +447,13 @@ const CommonChatRoom = (() => {
         'X-Requested-With': 'XMLHttpRequest'
       }
     })
-    console.log(response);
-
     window.open(`/utility/text/${response.data.textId}`)
     } catch (error) {
-      console.dir(error);
+      if (error.status === 401) {
+        window.outputErrorMessage('Bạn cần đăng nhập để thưc hiện chức năng này')
+      } else {
+        window.outputErrorMessage('Không tạo được Text mới')
+      }
     }
   })
 
