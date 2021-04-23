@@ -206,22 +206,28 @@ const Messenger = (() => {
         <div class="wrap-loader-chat d-none"><img src="/images/loader.svg" alt="loader"></div>
       </div>
       <div class="chat-mini-bottom">
-          <form class="d-flex">
-            <button class="btn btn-default open-emojis" type="button">&#128512;</button>
-            <input type="hidden" name="_token" value="${token}">
-              <div class="flex-fill wrap-msg-box ps-rv">
-                <textarea class="form-control msg-mini" type="text" name="message" placeholder="Nhập tin nhắn" autocomplete="off"></textarea>
-              </div>
-              <button class="btn btn-default text-secondary">
-                <span class="icomoon icon-send"></span>
-              </button>
-          </form>
+        <div class="files-upload-box d-flex justify-content-center flex-wrap"></div>
+        <form class="d-flex">
+          <label class="btn btn-default send-file m-0 p-2" for="send-file-${senderId}">
+            <span class="icomoon icon-insert_drive_file"></span>
+          </label>
+          <input class="d-none send-file-input" id="send-file-${senderId}" type="file" name="file" multiple="multiple">
+          <button class="btn btn-default open-emojis" type="button">&#128512;</button>
+          <input type="hidden" name="_token" value="${token}">
+            <div class="flex-fill wrap-msg-box ps-rv">
+              <textarea class="form-control msg-mini" type="text" name="message" placeholder="Nhập tin nhắn" autocomplete="off"></textarea>
+            </div>
+            <button class="btn btn-default text-secondary">
+              <span class="icomoon icon-send"></span>
+            </button>
+        </form>
       </div>
     </div>
     `;
     $('.wrap-chat-mini').append(html)
 
     const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
+    let finalFiles = []
 
     if (classIsActive === nClassNoAct) {
       outputPreviewMsg($popup, msgObj.message);
@@ -233,9 +239,11 @@ const Messenger = (() => {
     window.emojisForMiniChat($popup)
 
     // event submit form chat
-    $popup.find('form').on('submit', (e) => {
+    $popup.find('form').on('submit', async (e) => {
       // stop submit form
       e.preventDefault();
+
+      $popup.find('.files-upload-box').html('')
 
       // input message
       const inputMsg = e.target.elements.message;
@@ -259,7 +267,31 @@ const Messenger = (() => {
         // focus input message
         inputMsg.focus();
       }
+
+      if (finalFiles.length) {
+        await sendFile($popup, finalFiles)
+        $popup.find('.send-file-input').val('')
+        finalFiles = []
+      }
     });
+
+    $popup.find('.send-file-input').on('change', function() {
+      if (this.files.length) {
+        let html = '';
+        [...this.files].forEach(file => {
+          html += `
+            <div class="file-item">
+              <span>${file.name}</span>
+              <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+            </div>
+          `
+          finalFiles.push(file)
+        })
+        $('.files-upload-box').append(html);
+        // disabledInputFile()
+        this.value = ''
+      }
+    })
 
     $popup.find('.msg-mini').on('keydown', function(e) {
       if (e.which === 13 && ! e.shiftKey) {
@@ -406,16 +438,28 @@ const Messenger = (() => {
         const htmlMsgs = messages.map(msg => {
           const timeEndCall = msg.timeCall ? `<small class="time-call">${msg.timeCall}</small>` : ''
           if (msg.me) {
+            let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
+            if (msg.fileName) {
+              contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+            } else if (msg.isLink) {
+              contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
+            }
             return `
               <div class="message text-right ${msg.class}">
                 <small class="message-time">${msg.time}</small>
                 <div>
                   <div class="msg-me">
-                    <small class="message-content mx-0">${msg.content}</small>
+                    ${ contentHtml }
                     ${ timeEndCall }
                   </div>
                 </div>
               </div>`
+          }
+          let contentHtml = `<small class="message-content">${msg.content}</small>`
+          if (msg.fileName) {
+            contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+          } else if (msg.isLink) {
+            contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
           }
           return `
             <div class="message ${msg.class}">
@@ -423,7 +467,7 @@ const Messenger = (() => {
               <div>
                 <div class="msg">
                   <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
-                  <small class="message-content">${msg.content}</small>
+                  ${ contentHtml }
                   ${ timeEndCall }
                 </div>
               </div>
@@ -451,6 +495,61 @@ const Messenger = (() => {
     setTimeout(() => {
       $popup.find('.preview-msg').removeClass('is-show')
     }, 2000);
+  }
+
+  // function send file
+  async function sendFile($popup, finalFiles) {
+    const formData = new FormData();
+    const idSession = new Date().valueOf();
+    finalFiles.forEach(file=>{
+      formData.append('files', file);
+      // create message obj to show in client
+      createCallMsgLocalMini(
+        $popup.attr('data-id'),
+        `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
+        'wrap-msg-file',
+        false,
+        true
+      )
+    });
+    try {
+      const res = await axios.post('/messenger/upload-file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      // $popup.find('.send-file-input').val('')
+      // finalFiles = []
+      // enabledInputFile()
+      const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
+      $msgFile.each((i, ele) => {
+        const file = res.data.fileUrls.find(f => f.name === $(ele).text())
+        if (file) {
+          $(ele).parents('.wrap-msg-file').addClass('load-done')
+          ele.href = file.url
+          // send message to server
+          socket.emit('msg-messageChat', {
+            message: file.url,
+            type: 'file',
+            nameFile: file.name,
+            resourceType: file.resourceType,
+            token: $popup.find('input[name="_token"]').val()
+          });
+        } else {
+          $(ele).parents('.message').remove()
+        }
+      })
+    } catch (error) {
+      console.dir(error);
+      const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
+      $msgFile.parents('.message').remove()
+      // $popup.find('.send-file-input').val('')
+      // finalFiles = []
+      // enabledInputFile()
+      if (error.response && error.response.data && error.response.data.message) {
+        window.outputErrorMessage(error.response.data.message)
+      }
+    }
   }
 })()
 

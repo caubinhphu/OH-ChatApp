@@ -201,11 +201,11 @@ const Index = (() => {
                 </div>`
             }
             let contentHtml = `<small class="message-content">${msg.content}</small>`
-              if (msg.fileName) {
-                contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
-              } else if (msg.isLink) {
-                contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
-              }
+            if (msg.fileName) {
+              contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+            } else if (msg.isLink) {
+              contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
+            }
             return `
               <div class="message ${msg.class}">
                 <small class="message-time">${msg.time}</small>

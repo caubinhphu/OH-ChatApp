@@ -44551,6 +44551,18 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(20);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -44782,47 +44794,93 @@ var Messenger = function () {
 
 
   function _createMiniPopup() {
-    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(senderId, msgObj, token, classIsActive) {
-      var html, $popup;
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(senderId, msgObj, token, classIsActive) {
+      var html, $popup, finalFiles;
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n          <form class=\"d-flex\">\n            <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n            <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n              <div class=\"flex-fill wrap-msg-box ps-rv\">\n                <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n              </div>\n              <button class=\"btn btn-default text-secondary\">\n                <span class=\"icomoon icon-send\"></span>\n              </button>\n          </form>\n      </div>\n    </div>\n    ");
+              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
               $('.wrap-chat-mini').append(html);
               $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+              finalFiles = [];
 
               if (classIsActive === nClassNoAct) {
                 outputPreviewMsg($popup, msgObj.message);
               }
 
-              _context5.next = 6;
+              _context6.next = 7;
               return loadOldMsg($popup);
 
-            case 6:
+            case 7:
               $popup.find('.wrap-loader-mini').addClass('d-none');
               window.emojisForMiniChat($popup); // event submit form chat
 
-              $popup.find('form').on('submit', function (e) {
-                // stop submit form
-                e.preventDefault(); // input message
+              $popup.find('form').on('submit', /*#__PURE__*/function () {
+                var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+                  var inputMsg;
+                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                    while (1) {
+                      switch (_context4.prev = _context4.next) {
+                        case 0:
+                          // stop submit form
+                          e.preventDefault();
+                          $popup.find('.files-upload-box').html(''); // input message
 
-                var inputMsg = e.target.elements.message;
+                          inputMsg = e.target.elements.message;
 
-                if (inputMsg.value !== '') {
-                  // send message to server
-                  window.window.socket.emit('msg-messageChat', {
-                    message: inputMsg.value,
-                    token: e.target.elements._token.value
-                  }); // create message obj to show in client
+                          if (inputMsg.value !== '') {
+                            // send message to server
+                            window.window.socket.emit('msg-messageChat', {
+                              message: inputMsg.value,
+                              token: e.target.elements._token.value
+                            }); // create message obj to show in client
 
-                  createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
-                  // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
-                  // set value for input message
+                            createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
+                            // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
+                            // set value for input message
 
-                  inputMsg.value = ''; // focus input message
+                            inputMsg.value = ''; // focus input message
 
-                  inputMsg.focus();
+                            inputMsg.focus();
+                          }
+
+                          if (!finalFiles.length) {
+                            _context4.next = 9;
+                            break;
+                          }
+
+                          _context4.next = 7;
+                          return sendFile($popup, finalFiles);
+
+                        case 7:
+                          $popup.find('.send-file-input').val('');
+                          finalFiles = [];
+
+                        case 9:
+                        case "end":
+                          return _context4.stop();
+                      }
+                    }
+                  }, _callee4);
+                }));
+
+                return function (_x9) {
+                  return _ref7.apply(this, arguments);
+                };
+              }());
+              $popup.find('.send-file-input').on('change', function () {
+                if (this.files.length) {
+                  var _html = '';
+
+                  _toConsumableArray(this.files).forEach(function (file) {
+                    _html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+                    finalFiles.push(file);
+                  });
+
+                  $('.files-upload-box').append(_html); // disabledInputFile()
+
+                  this.value = '';
                 }
               });
               $popup.find('.msg-mini').on('keydown', function (e) {
@@ -44840,23 +44898,23 @@ var Messenger = function () {
                 $(this).parents('.wrap-msg-box').removeClass('is-focus');
               }); // handle scroll box chat: load old msg, scroll to bottom
 
-              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-                return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+                return regeneratorRuntime.wrap(function _callee5$(_context5) {
                   while (1) {
-                    switch (_context4.prev = _context4.next) {
+                    switch (_context5.prev = _context5.next) {
                       case 0:
                         if (!(this.scrollTop === 0)) {
-                          _context4.next = 7;
+                          _context5.next = 7;
                           break;
                         }
 
                         $popup.find('.wrap-loader-chat').removeClass('d-none');
-                        _context4.next = 4;
+                        _context5.next = 4;
                         return loadOldMsg($popup);
 
                       case 4:
                         $popup.find('.wrap-loader-chat').addClass('d-none');
-                        _context4.next = 8;
+                        _context5.next = 8;
                         break;
 
                       case 7:
@@ -44868,10 +44926,10 @@ var Messenger = function () {
 
                       case 8:
                       case "end":
-                        return _context4.stop();
+                        return _context5.stop();
                     }
                   }
-                }, _callee4, this);
+                }, _callee5, this);
               }))); // scroll to bottom chat box
 
               $popup.find(classScroll).on('click', function () {
@@ -44907,12 +44965,12 @@ var Messenger = function () {
                 window.callFriend($popup.attr('data-id'), 'video');
               });
 
-            case 17:
+            case 19:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
-      }, _callee5);
+      }, _callee6);
     }));
     return _createMiniPopup.apply(this, arguments);
   }
@@ -44989,26 +45047,26 @@ var Messenger = function () {
   }
 
   function _loadOldMsg() {
-    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6($popup) {
+    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7($popup) {
       var currentPage, responsive, _responsive$data, messages, hasMsg, friendStatus, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response2, _error$response2$data;
 
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
               if (!(+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load'))) {
-                _context6.next = 24;
+                _context7.next = 24;
                 break;
               }
 
               $popup.attr('data-allow-load', '0');
               currentPage = +$popup.attr('data-page');
-              _context6.prev = 3;
-              _context6.next = 6;
+              _context7.prev = 3;
+              _context7.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat($popup.attr('data-id'), "&page=").concat(currentPage));
 
             case 6:
-              responsive = _context6.sent;
+              responsive = _context7.sent;
               _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg, friendStatus = _responsive$data.friendStatus; // $('.wrap-loader-chat').addClass('d-none')
 
               $popup.attr('data-page', currentPage + 1);
@@ -45026,10 +45084,26 @@ var Messenger = function () {
                 var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
 
                 if (msg.me) {
-                  return "\n              <div class=\"message text-right ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me\">\n                    <small class=\"message-content mx-0\">").concat(msg.content, "</small>\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                  var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
+
+                  if (msg.fileName) {
+                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                  } else if (msg.isLink) {
+                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                  }
+
+                  return "\n              <div class=\"message text-right ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me\">\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
                 }
 
-                return "\n            <div class=\"message ".concat(msg["class"], "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  <small class=\"message-content\">").concat(msg.content, "</small>\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
+                var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
+
+                if (msg.fileName) {
+                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                } else if (msg.isLink) {
+                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                }
+
+                return "\n            <div class=\"message ".concat(msg["class"], "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  ").concat(contentHtml, "\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
               }).join(''); // prepend msg list and hold position scroll top of chat box
 
               chatMain = $popup.find(classChatMain).get(0);
@@ -45039,20 +45113,20 @@ var Messenger = function () {
               newScroll = chatMain.scrollHeight - chatMain.clientHeight;
               chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
               $popup.attr('data-allow-load', '1');
-              _context6.next = 24;
+              _context7.next = 24;
               break;
 
             case 21:
-              _context6.prev = 21;
-              _context6.t0 = _context6["catch"](3);
-              window.outputErrorMessage(_context6.t0 === null || _context6.t0 === void 0 ? void 0 : (_error$response2 = _context6.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+              _context7.prev = 21;
+              _context7.t0 = _context7["catch"](3);
+              window.outputErrorMessage(_context7.t0 === null || _context7.t0 === void 0 ? void 0 : (_error$response2 = _context7.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
             case 24:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
         }
-      }, _callee6, null, [[3, 21]]);
+      }, _callee7, null, [[3, 21]]);
     }));
     return _loadOldMsg.apply(this, arguments);
   }
@@ -45063,6 +45137,88 @@ var Messenger = function () {
     setTimeout(function () {
       $popup.find('.preview-msg').removeClass('is-show');
     }, 2000);
+  } // function send file
+
+
+  function sendFile(_x7, _x8) {
+    return _sendFile.apply(this, arguments);
+  }
+
+  function _sendFile() {
+    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8($popup, finalFiles) {
+      var formData, idSession, res, $msgFile, _$msgFile;
+
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              formData = new FormData();
+              idSession = new Date().valueOf();
+              finalFiles.forEach(function (file) {
+                formData.append('files', file); // create message obj to show in client
+
+                createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+              });
+              _context8.prev = 3;
+              _context8.next = 6;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+
+            case 6:
+              res = _context8.sent;
+              // $popup.find('.send-file-input').val('')
+              // finalFiles = []
+              // enabledInputFile()
+              $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+              $msgFile.each(function (i, ele) {
+                var file = res.data.fileUrls.find(function (f) {
+                  return f.name === $(ele).text();
+                });
+
+                if (file) {
+                  $(ele).parents('.wrap-msg-file').addClass('load-done');
+                  ele.href = file.url; // send message to server
+
+                  socket.emit('msg-messageChat', {
+                    message: file.url,
+                    type: 'file',
+                    nameFile: file.name,
+                    resourceType: file.resourceType,
+                    token: $popup.find('input[name="_token"]').val()
+                  });
+                } else {
+                  $(ele).parents('.message').remove();
+                }
+              });
+              _context8.next = 17;
+              break;
+
+            case 11:
+              _context8.prev = 11;
+              _context8.t0 = _context8["catch"](3);
+              console.dir(_context8.t0);
+              _$msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+
+              _$msgFile.parents('.message').remove(); // $popup.find('.send-file-input').val('')
+              // finalFiles = []
+              // enabledInputFile()
+
+
+              if (_context8.t0.response && _context8.t0.response.data && _context8.t0.response.data.message) {
+                window.outputErrorMessage(_context8.t0.response.data.message);
+              }
+
+            case 17:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8, null, [[3, 11]]);
+    }));
+    return _sendFile.apply(this, arguments);
   }
 }();
 
