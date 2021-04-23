@@ -7583,7 +7583,7 @@ label.send-file:hover .icomoon {
 
 .dragzone {
   position: absolute;
-  top: 45px;
+  top: 75px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -7757,6 +7757,16 @@ label.send-file:hover .icomoon {
   width: 100%;
   height: max-content;
   padding: 2px;
+}
+
+.message a {
+  color: #102131;
+  text-decoration: underline;
+}
+
+.message a:hover {
+  color: #102131;
+  text-decoration: none;
 }
 
 .message.call-msg .message-content::before {

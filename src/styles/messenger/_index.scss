@@ -68,6 +68,14 @@
   width: 100%;
   height: max-content;
   padding: 2px;
+  a {
+    color: $color-10;
+    text-decoration: underline;
+    &:hover {
+      color: $color-10;
+      text-decoration: none;
+    }
+  }
   &.call-msg {
     .message-content::before {
       font-family: $icomoon;

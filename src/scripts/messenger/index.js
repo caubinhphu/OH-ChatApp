@@ -28,6 +28,8 @@ const Index = (() => {
       // stop submit form
       e.preventDefault();
 
+      $('.files-upload-box').html('')
+
       // input message
       const inputMsg = e.target.elements.message;
 
@@ -106,6 +108,7 @@ const Index = (() => {
         // console.log(files);
         if (files.length) {
           let html = '';
+          console.log(files);
           [...files].forEach((file) => {
             html += `
               <div class="file-item">
@@ -180,24 +183,36 @@ const Index = (() => {
           const htmlMsgs = messages.map(msg => {
             const timeEndCall = msg.timeCall ? `<small class="time-call">${msg.timeCall}</small>` : ''
             if (msg.me) {
+              let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
+              if (msg.fileName) {
+                contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+              } else if (msg.isLink) {
+                contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
+              }
               return `
                 <div class="message text-right ${msg.class}">
                   <small class="message-time">${msg.time}</small>
                   <div>
                     <div class="msg-me">
-                      <small class="message-content mx-0">${msg.content}</small>
+                      ${ contentHtml }
                       ${ timeEndCall }
                     </div>
                   </div>
                 </div>`
             }
+            let contentHtml = `<small class="message-content">${msg.content}</small>`
+              if (msg.fileName) {
+                contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+              } else if (msg.isLink) {
+                contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
+              }
             return `
               <div class="message ${msg.class}">
                 <small class="message-time">${msg.time}</small>
                 <div>
                   <div class="msg">
                     <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
-                    <small class="message-content">${msg.content}</small>
+                    ${ contentHtml }
                     ${ timeEndCall }
                   </div>
                 </div>
@@ -309,9 +324,15 @@ const Index = (() => {
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
       }
-      $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
-        `<small>${msgObj.message}</small><small>1 phút</small>`
-      )
+      if (msgObj.type && msgObj.type === 'file') {
+        $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
+          `<small>${msgObj.username} đã gửi 1 đính kèm</small><small>1 phút</small>`
+        )
+      } else {
+        $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
+          `<small>${msgObj.message}</small><small>1 phút</small>`
+        )
+      }
     });
 
     // receive signal friend is online
@@ -356,7 +377,6 @@ const Index = (() => {
         $('#send-file').val('')
         finalFiles = []
         // enabledInputFile()
-        console.log(res);
         const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
         $msgFile.each((i, ele) => {
           const file = res.data.fileUrls.find(f => f.name === $(ele).text())
@@ -369,7 +389,7 @@ const Index = (() => {
               type: 'file',
               nameFile: file.name,
               resourceType: file.resourceType,
-              token: qs.get('token'),
+              token: msgForm.elements._token.value
             });
           } else {
             $(ele).parents('.message').remove()

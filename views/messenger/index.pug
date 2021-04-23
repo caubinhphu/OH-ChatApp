@@ -41,7 +41,7 @@ block contentMain
                 span.sr-only= `Chat with ${friend.name}`
 
       if (friendChat)
-        #main-right.flex-fill.d-flex.flex-column(data-id=friendChat.id)
+        #main-right.flex-fill.d-flex.flex-column.ps-rv(data-id=friendChat.id)
           .dragzone.d-none
             .d-flex.justify-content-center.align-items-center.h-100.drag-inner
               div
@@ -73,7 +73,14 @@ block contentMain
                     small.message-time= msg.time
                     div
                       .msg-me
-                        small.message-content.mx-0= msg.content
+                        if (msg.fileName)
+                          small.message-content.mx-0
+                            a(href=msg.content, target="_blank")= msg.fileName
+                        else if (msg.isLink)
+                          small.message-content.mx-0
+                            a(href=msg.content, target="_blank")= msg.content
+                        else
+                          small.message-content.mx-0= msg.content
                         if (msg.timeCall)
                           small.time-call= msg.timeCall
                 else
@@ -82,7 +89,14 @@ block contentMain
                     div
                       .msg
                         img.message-avatar(src=msg.avatar, alt=msg.name)
-                        small.message-content= msg.content
+                        if (msg.fileName)
+                          small.message-content
+                            a(href=msg.content, target="_blank")= msg.fileName
+                        else if (msg.isLink)
+                          small.message-content
+                            a(href=msg.content, target="_blank")= msg.content
+                        else
+                          small.message-content= msg.content
                         if (msg.timeCall)
                           small.time-call= msg.timeCall
 

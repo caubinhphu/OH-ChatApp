@@ -39793,7 +39793,12 @@ var CommonChat = function () {
           timeCall: timeCall
         }, true);
         scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
+
+        if (className !== 'wrap-msg-file') {
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>1 ph\xFAt</small>\n          "));
+        } else {
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>\n          ");
+        }
       } else {
         outputMessage({
           time: time,
@@ -39858,13 +39863,22 @@ var CommonChat = function () {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
+    var content = msgObj.message;
+
+    if (isValidHttpUrl(msgObj.message)) {
+      if (msgObj.type === 'file') {
+        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
+      } else {
+        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.message, "</a>");
+      }
+    }
 
     if (me) {
       div.className = "message text-right ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n    <div>\n      <div class=\"msg-me\">\n        <small class=\"message-content mx-0\">").concat(msgObj.message, "</small>\n        ").concat(msgObj.timeCall || '', "\n      </div>\n    <div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
       div.className = "message ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(msgObj.message, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
     } // append message
 
 
@@ -39876,9 +39890,22 @@ var CommonChat = function () {
   }
 
   window.outputMessage = outputMessage;
+
+  function isValidHttpUrl(string) {
+    var url;
+
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  }
   /**
    * Function scroll to bottom chat box
    */
+
 
   function scrollBottomChatBox() {
     var $chatBox = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -41175,7 +41202,6 @@ var Index = function () {
                 $('#send-file').val('');
                 finalFiles = []; // enabledInputFile()
 
-                console.log(res);
                 $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
                 $msgFile.each(function (i, ele) {
                   var file = res.data.fileUrls.find(function (f) {
@@ -41191,17 +41217,17 @@ var Index = function () {
                       type: 'file',
                       nameFile: file.name,
                       resourceType: file.resourceType,
-                      token: qs.get('token')
+                      token: msgForm.elements._token.value
                     });
                   } else {
                     $(ele).parents('.message').remove();
                   }
                 });
-                _context4.next = 22;
+                _context4.next = 21;
                 break;
 
-              case 14:
-                _context4.prev = 14;
+              case 13:
+                _context4.prev = 13;
                 _context4.t0 = _context4["catch"](3);
                 console.dir(_context4.t0);
                 _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
@@ -41215,12 +41241,12 @@ var Index = function () {
                   window.outputErrorMessage(_context4.t0.response.data.message);
                 }
 
-              case 22:
+              case 21:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, null, [[3, 14]]);
+        }, _callee4, null, [[3, 13]]);
       }));
 
       return function sendFile() {
@@ -41240,7 +41266,8 @@ var Index = function () {
             switch (_context.prev = _context.next) {
               case 0:
                 // stop submit form
-                e.preventDefault(); // input message
+                e.preventDefault();
+                $('.files-upload-box').html(''); // input message
 
                 inputMsg = e.target.elements.message;
 
@@ -41261,14 +41288,14 @@ var Index = function () {
                 }
 
                 if (!finalFiles.length) {
-                  _context.next = 6;
+                  _context.next = 7;
                   break;
                 }
 
-                _context.next = 6;
+                _context.next = 7;
                 return sendFile();
 
-              case 6:
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -41325,6 +41352,7 @@ var Index = function () {
 
         if (files.length) {
           var html = '';
+          console.log(files);
 
           _toConsumableArray(files).forEach(function (file) {
             html += "\n              <div class=\"file-item\">\n                <span>".concat(file.name, "</span>\n                <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n              </div>\n            ");
@@ -41406,10 +41434,26 @@ var Index = function () {
                 var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
 
                 if (msg.me) {
-                  return "\n                <div class=\"message text-right ".concat(msg["class"], "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      <small class=\"message-content mx-0\">").concat(msg.content, "</small>\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
+                  var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
+
+                  if (msg.fileName) {
+                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                  } else if (msg.isLink) {
+                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                  }
+
+                  return "\n                <div class=\"message text-right ".concat(msg["class"], "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
                 }
 
-                return "\n              <div class=\"message ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    <small class=\"message-content\">").concat(msg.content, "</small>\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
+
+                if (msg.fileName) {
+                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                } else if (msg.isLink) {
+                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                }
+
+                return "\n              <div class=\"message ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    ").concat(contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
               }).join(''); // prepend msg list and hold position scroll top of chat box
 
               curScrollPos = this.scrollTop;
@@ -41554,7 +41598,11 @@ var Index = function () {
         chatMain.scrollTop = chatMain.scrollHeight;
       }
 
-      $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+      if (msgObj.type && msgObj.type === 'file') {
+        $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
+      } else {
+        $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+      }
     }); // receive signal friend is online
 
     window.socket.on('msg-friendOnline', function (_ref5) {

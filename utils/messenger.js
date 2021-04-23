@@ -16,7 +16,9 @@ const formatMsg = function (msg, me, friend) {
     me: true,
     name: '',
     class: '',
-    timeCall: ''
+    timeCall: '',
+    fileName: '',
+    isLink: false
   }
 
   const diffDate = moment().diff(moment(msg.time), 'days')
@@ -68,6 +70,13 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.content = 'Cuộc gọi video đi'
       msgFormat.class = 'call-msg call-outgoing call-video call-video'
     }
+  } else if (msg.type === 'text') {
+  } else {
+    msgFormat.fileName = msg.fileName
+  }
+
+  if (isValidHttpUrl(msgFormat.content)) {
+    msgFormat.isLink = true
   }
   return msgFormat
 }
@@ -120,9 +129,9 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
     }
   } else {
     if (me.id === latestMsgObj.memberSendId.toString()) {
-      msg = 'Bạn đã gửi một đính kèm'
+      msg = 'Bạn đã gửi 1 đính kèm'
     } else {
-      msg = `${friend.name} đã gửi một đính kèm`
+      msg = `${friend.name} đã gửi 1 đính kèm`
     }
   }
   latestMessage.msg = msg
@@ -145,6 +154,13 @@ function formatDiffTime(start, end) {
   const s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60
 
   return `${h ? h + 'h' : ''}${m ? m + 'm' : ''}${(h || m)  && !s ? '' : s + 's'}`
+}
+
+function isValidHttpUrl(string) {
+  let url;
+  try { url = new URL(string); }
+  catch (_) { return false; }
+  return url.protocol === 'http:' || url.protocol === 'https:';
 }
 
 module.exports.formatMessageList = formatMessageList

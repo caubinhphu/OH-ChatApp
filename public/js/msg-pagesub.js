@@ -39793,7 +39793,12 @@ var CommonChat = function () {
           timeCall: timeCall
         }, true);
         scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
+
+        if (className !== 'wrap-msg-file') {
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>1 ph\xFAt</small>\n          "));
+        } else {
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>\n          ");
+        }
       } else {
         outputMessage({
           time: time,
@@ -39858,13 +39863,22 @@ var CommonChat = function () {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
+    var content = msgObj.message;
+
+    if (isValidHttpUrl(msgObj.message)) {
+      if (msgObj.type === 'file') {
+        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
+      } else {
+        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.message, "</a>");
+      }
+    }
 
     if (me) {
       div.className = "message text-right ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n    <div>\n      <div class=\"msg-me\">\n        <small class=\"message-content mx-0\">").concat(msgObj.message, "</small>\n        ").concat(msgObj.timeCall || '', "\n      </div>\n    <div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
       div.className = "message ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(msgObj.message, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
     } // append message
 
 
@@ -39876,9 +39890,22 @@ var CommonChat = function () {
   }
 
   window.outputMessage = outputMessage;
+
+  function isValidHttpUrl(string) {
+    var url;
+
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  }
   /**
    * Function scroll to bottom chat box
    */
+
 
   function scrollBottomChatBox() {
     var $chatBox = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;

@@ -606,9 +606,16 @@ const CommonChat = (() => {
           timeCall
         }, true)
         scrollBottomChatBox()
-        $friItem.find('.last-msg').html(`
-          <small>${ msg }</small><small>1 phút</small>
-        `)
+        if (className !== 'wrap-msg-file') {
+          $friItem.find('.last-msg').html(`
+            <small>Bạn: ${ msg }</small><small>1 phút</small>
+          `)
+        } else {
+          $friItem.find('.last-msg').html(`
+            <small>Bạn đã gửi 1 đính kèm</small><small>1 phút</small>
+          `)
+        }
+        
       } else {
         outputMessage({
           time,
@@ -669,22 +676,30 @@ const CommonChat = (() => {
    */
   function outputMessage(msgObj, me = false, $chatBox = null) {
     const div = document.createElement('div');
+    let content = msgObj.message
+    if (isValidHttpUrl(msgObj.message)) {
+      if (msgObj.type === 'file') {
+        content = `<a href="${msgObj.message}" target="_blank">${msgObj.nameFile}</a>`
+      } else {
+        content = `<a href="${msgObj.message}" target="_blank">${msgObj.message}</a>`
+      }
+    }
     if (me) {
       div.className = `message text-right ${msgObj.className}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
-    <div>
-      <div class="msg-me">
-        <small class="message-content mx-0">${msgObj.message}</small>
-        ${ msgObj.timeCall || '' }
-      </div>
-    <div>`;
+        <div>
+          <div class="msg-me">
+            <small class="message-content mx-0">${content}</small>
+            ${ msgObj.timeCall || '' }
+          </div>
+        <div>`;
     } else {
       div.className = `message ${msgObj.className}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
       <div>
         <div class="msg">
           <img class="message-avatar" src="${msgObj.avatar}" alt="${msgObj.username}" />
-          <small class="message-content">${msgObj.message}</small>
+          <small class="message-content">${content}</small>
           ${ msgObj.timeCall || '' }
         </div>
       </div>`;
@@ -698,6 +713,13 @@ const CommonChat = (() => {
     }
   }
   window.outputMessage = outputMessage
+
+  function isValidHttpUrl(string) {
+    let url;
+    try { url = new URL(string); }
+    catch (_) { return false; }
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  }
 
   /**
    * Function scroll to bottom chat box
