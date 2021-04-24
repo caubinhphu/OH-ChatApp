@@ -400,6 +400,12 @@ label.send-file {
     top: 60px;
   }
 }
+.pre-img {
+  max-width: 100px;
+}
+.pre-video {
+  max-width: 245px;
+}
 @media only screen and (max-width: 850px) {
   #user {
     display: none;

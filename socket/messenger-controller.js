@@ -118,6 +118,7 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
         if (type === 'file') {
           msg.type = 'file'
           msg.nameFile = nameFile
+          msg.resourceType = resourceType
         }
         msg.url = me.url
         // me save msg

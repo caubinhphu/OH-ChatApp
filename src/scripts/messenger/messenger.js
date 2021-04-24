@@ -523,7 +523,13 @@ const Messenger = (() => {
           if (msg.me) {
             let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
             if (msg.fileName) {
-              contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+              if (msg.type === 'image') {
+                contentHtml = `<small class="message-content mx-0"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
+              } else if (msg.type === 'video') {
+                contentHtml = `<small class="message-content mx-0"><video class="pre-video" muted autoplay src="${msg.content}"><video/></small>`  
+              } else {
+                contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+              }
             } else if (msg.isLink) {
               contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
             }
@@ -540,7 +546,13 @@ const Messenger = (() => {
           }
           let contentHtml = `<small class="message-content">${msg.content}</small>`
           if (msg.fileName) {
-            contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+            if (msg.type === 'image') {
+              contentHtml = `<small class="message-content"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
+            } else if (msg.type === 'video') {
+              contentHtml = `<small class="message-content"><video class="pre-video" muted autoplay src="${msg.content}"><video/></small>`  
+            } else {
+              contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
+            }
           } else if (msg.isLink) {
             contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
           }

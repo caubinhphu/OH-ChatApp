@@ -39867,7 +39867,13 @@ var CommonChat = function () {
 
     if (isValidHttpUrl(msgObj.message)) {
       if (msgObj.type === 'file') {
-        content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
+        if (msgObj.resourceType === 'image') {
+          content = "<img class=\"pre-img\" src=\"".concat(msgObj.message, "\" alt=\"").concat(msgObj.nameFile, "\" />");
+        } else if (msgObj.resourceType === 'video') {
+          content = "<video class=\"pre-video\" muted autoplay src=\"".concat(msgObj.message, "\"><video/>");
+        } else {
+          content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
+        }
       } else {
         content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.message, "</a>");
       }
@@ -41210,7 +41216,14 @@ var Index = function () {
 
                   if (file) {
                     $(ele).parents('.wrap-msg-file').addClass('load-done');
-                    ele.href = file.url; // send message to server
+                    ele.href = file.url;
+
+                    if (file.resourceType === 'image') {
+                      $(ele).html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                    } else if (file.resourceType === 'video') {
+                      $(ele).html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                    } // send message to server
+
 
                     socket.emit('msg-messageChat', {
                       message: file.url,
@@ -41437,7 +41450,13 @@ var Index = function () {
                   var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
 
                   if (msg.fileName) {
-                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                    if (msg.type === 'image') {
+                      _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
+                    } else if (msg.type === 'video') {
+                      _contentHtml = "<small class=\"message-content mx-0\"><video class=\"pre-video\" muted autoplay src=\"".concat(msg.content, "\"><video/></small>");
+                    } else {
+                      _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                    }
                   } else if (msg.isLink) {
                     _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
                   }
@@ -41448,7 +41467,13 @@ var Index = function () {
                 var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
 
                 if (msg.fileName) {
-                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                  if (msg.type === 'image') {
+                    contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
+                  } else if (msg.type === 'video') {
+                    contentHtml = "<small class=\"message-content\"><video class=\"pre-video\" muted autoplay src=\"".concat(msg.content, "\"><video/></small>");
+                  } else {
+                    contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                  }
                 } else if (msg.isLink) {
                   contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
                 }

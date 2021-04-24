@@ -75,7 +75,12 @@ block contentMain
                       .msg-me
                         if (msg.fileName)
                           small.message-content.mx-0
-                            a(href=msg.content, target="_blank")= msg.fileName
+                            if (msg.type === 'image')
+                              img.pre-img(src=msg.content, alt=msg.fileName)
+                            else if (msg.type === 'video')
+                              video.pre-video(src=msg.content, autoplay, muted, loop)
+                            else
+                              a(href=msg.content, target="_blank")= msg.fileName
                         else if (msg.isLink)
                           small.message-content.mx-0
                             a(href=msg.content, target="_blank")= msg.content
@@ -91,7 +96,12 @@ block contentMain
                         img.message-avatar(src=msg.avatar, alt=msg.name)
                         if (msg.fileName)
                           small.message-content
-                            a(href=msg.content, target="_blank")= msg.fileName
+                            if (msg.type === 'image')
+                              img.pre-img(src=msg.content, alt=msg.fileName)
+                            else if (msg.type === 'video')
+                              video.pre-video(src=msg.content, autoplay, muted, loop)
+                            else
+                              a(href=msg.content, target="_blank")= msg.fileName
                         else if (msg.isLink)
                           small.message-content
                             a(href=msg.content, target="_blank")= msg.content

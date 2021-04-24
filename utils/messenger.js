@@ -18,7 +18,8 @@ const formatMsg = function (msg, me, friend) {
     class: '',
     timeCall: '',
     fileName: '',
-    isLink: false
+    isLink: false,
+    type: msg.type
   }
 
   const diffDate = moment().diff(moment(msg.time), 'days')

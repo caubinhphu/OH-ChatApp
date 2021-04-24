@@ -7680,6 +7680,14 @@ label.send-file:hover .icomoon {
   top: 60px;
 }
 
+.pre-img {
+  max-width: 100px;
+}
+
+.pre-video {
+  max-width: 250px;
+}
+
 @media only screen and (max-width: 850px) {
   #user {
     display: none;
