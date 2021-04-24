@@ -8,6 +8,9 @@ const Messenger = (() => {
   const nClassNoAct = 'not-active'
   const nClassAct = 'is-active'
 
+  let isDragging = 0;
+  let isDragZone = false;
+
   const oldSearchMiniRes = {}
 
   // receive msg obj from server
@@ -58,6 +61,30 @@ const Messenger = (() => {
     }
   })
 
+  document.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.stopPropagation()
+    isDragging++;
+    if (isDragging === 1) {
+      $('.popup-chat-mini.is-active .dragzone').removeClass('d-none')
+    }
+  })
+
+  document.addEventListener('dragleave', e => {
+    e.preventDefault();
+    e.stopPropagation()
+    console.log(e.target);
+    if (!isDragZone) {
+      $('.dragzone').addClass('d-none')
+      isDragging = 0;
+    }
+  })
+
+  document.addEventListener('drop', e => {
+    e.preventDefault();
+    isDragging = 0;
+    $('.dragzone').addClass('d-none')
+  })
 
   // open search friend mini
   $('.open-search-mini').on('click', function(e) {
@@ -167,6 +194,14 @@ const Messenger = (() => {
     <div class="popup-chat-mini d-flex flex-column ps-rv ${ classIsActive }"
       data-id="${senderId}" data-page="0" data-hasMsg="1" data-allow-load="1"
     >
+      <div class="dragzone d-none">
+        <div class="d-flex justify-content-center align-items-center h-100 drag-inner">
+          <div>
+            <div class="text-center"><span class="icomoon icon-insert_drive_file"></span></div>
+            <h4>Kéo thả tệp vào đây</h4>
+          </div>
+        </div>
+      </div>
       <div class="wrap-loader-mini">
         <div class="d-flex justify-content-center align-items-center h-100">
           <img src="/images/loader.svg" alt="loader" />
@@ -286,10 +321,58 @@ const Messenger = (() => {
             </div>
           `
           finalFiles.push(file)
+          console.log($popup);
+          console.log(finalFiles);
         })
-        $('.files-upload-box').append(html);
+        $popup.find('.files-upload-box').append(html);
         // disabledInputFile()
         this.value = ''
+      }
+    })
+
+    $(document).on('click',  '.remove-up-file', function(e) {
+      e.preventDefault()
+      if ($popup.has(this).length) {
+        const $fileItem = $(this).parents('.file-item')
+        const index = $fileItem.index()
+        if (index >= 0) {
+          finalFiles.splice(index, 1)
+          $fileItem.remove()
+          if (!finalFiles.length) {
+            // enabledInputFile()
+          }
+        }
+      }
+    })
+
+    $popup.find('.dragzone').get(0).addEventListener('dragenter', e => {
+      e.preventDefault();
+      e.stopPropagation()
+      isDragZone = true
+    })
+  
+    $popup.find('.dragzone').get(0).addEventListener('dragleave', e => {
+      e.preventDefault();
+      e.stopPropagation()
+      isDragZone = false
+    })
+  
+    $popup.find('.dragzone').get(0).addEventListener('drop', function(e) {
+      e.preventDefault();
+      const { files } = e.dataTransfer
+      if (files.length) {
+        let html = '';
+        [...files].forEach((file) => {
+          html += `
+            <div class="file-item">
+              <span>${file.name}</span>
+              <button class="btn btn-icon btn-red remove-up-file"><span class="icomoon icon-close"></span></button>
+            </div>
+          `
+          finalFiles.push(file)
+        })
+        $popup.find('.files-upload-box').append(html);
+        // disabledInputFile()
       }
     })
 

@@ -7676,6 +7676,10 @@ label.send-file:hover .icomoon {
   content: none;
 }
 
+.popup-chat-mini .dragzone {
+  top: 60px;
+}
+
 @media only screen and (max-width: 850px) {
   #user {
     display: none;

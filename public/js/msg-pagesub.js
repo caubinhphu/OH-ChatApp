@@ -44576,6 +44576,8 @@ var Messenger = function () {
   var classScroll = '.scroll-bottom';
   var nClassNoAct = 'not-active';
   var nClassAct = 'is-active';
+  var isDragging = 0;
+  var isDragZone = false;
   var oldSearchMiniRes = {}; // receive msg obj from server
 
   window.socket.on('msg-messenger', /*#__PURE__*/function () {
@@ -44645,6 +44647,30 @@ var Messenger = function () {
       $popup.removeClass('is-online');
       $popup.find('.mini-status').html('Đang không hoạt động');
     }
+  });
+  document.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDragging++;
+
+    if (isDragging === 1) {
+      $('.popup-chat-mini.is-active .dragzone').removeClass('d-none');
+    }
+  });
+  document.addEventListener('dragleave', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(e.target);
+
+    if (!isDragZone && ($('body').is(e.target) || $('.dragzone').is(e.target))) {
+      $('.dragzone').addClass('d-none');
+      isDragging = 0;
+    }
+  });
+  document.addEventListener('drop', function (e) {
+    e.preventDefault();
+    isDragging = 0;
+    $('.dragzone').addClass('d-none');
   }); // open search friend mini
 
   $('.open-search-mini').on('click', function (e) {
@@ -44800,7 +44826,7 @@ var Messenger = function () {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
-              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
+              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
               $('.wrap-chat-mini').append(html);
               $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
               finalFiles = [];
@@ -44876,11 +44902,54 @@ var Messenger = function () {
                   _toConsumableArray(this.files).forEach(function (file) {
                     _html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
                     finalFiles.push(file);
+                    console.log($popup);
+                    console.log(finalFiles);
                   });
 
-                  $('.files-upload-box').append(_html); // disabledInputFile()
+                  $popup.find('.files-upload-box').append(_html); // disabledInputFile()
 
                   this.value = '';
+                }
+              });
+              $(document).on('click', '.remove-up-file', function (e) {
+                e.preventDefault();
+
+                if ($popup.has(this).length) {
+                  var $fileItem = $(this).parents('.file-item');
+                  var index = $fileItem.index();
+
+                  if (index >= 0) {
+                    finalFiles.splice(index, 1);
+                    $fileItem.remove();
+
+                    if (!finalFiles.length) {// enabledInputFile()
+                    }
+                  }
+                }
+              });
+              $popup.find('.dragzone').get(0).addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                isDragZone = true;
+              });
+              $popup.find('.dragzone').get(0).addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                isDragZone = false;
+              });
+              $popup.find('.dragzone').get(0).addEventListener('drop', function (e) {
+                e.preventDefault();
+                var files = e.dataTransfer.files;
+
+                if (files.length) {
+                  var _html2 = '';
+
+                  _toConsumableArray(files).forEach(function (file) {
+                    _html2 += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+                    finalFiles.push(file);
+                  });
+
+                  $popup.find('.files-upload-box').append(_html2); // disabledInputFile()
                 }
               });
               $popup.find('.msg-mini').on('keydown', function (e) {
@@ -44965,7 +45034,7 @@ var Messenger = function () {
                 window.callFriend($popup.attr('data-id'), 'video');
               });
 
-            case 19:
+            case 23:
             case "end":
               return _context6.stop();
           }
