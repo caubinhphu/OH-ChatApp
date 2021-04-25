@@ -424,12 +424,12 @@ const Index = (() => {
           const file = res.data.fileUrls.find(f => f.name === $(ele).text())
           if (file) {
             $(ele).parents('.wrap-msg-file').addClass('load-done')
-            ele.href = file.url
-
             if (file.resourceType === 'image') {
-              $(ele).html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+              $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
             } else if (file.resourceType === 'video') {
-              $(ele).html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+              $(ele).parents('.message-content').html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+            } else {
+              ele.href = file.url
             }
             // send message to server
             socket.emit('msg-messageChat', {
@@ -480,12 +480,12 @@ const Index = (() => {
           const file = res.data.fileUrls.find(f => f.name === $(ele).text())
           if (file) {
             $(ele).parents('.wrap-msg-file').addClass('load-done')
-            ele.href = file.url
-
             if (file.resourceType === 'image') {
-              $(ele).html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+              $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
             } else if (file.resourceType === 'video') {
-              $(ele).html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+              $(ele).parents('.message-content').html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+            } else {
+              ele.href = file.url
             }
             // send message to server
             socket.emit('msg-messageChat', {

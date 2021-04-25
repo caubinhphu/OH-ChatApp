@@ -83,7 +83,7 @@ const Profile = (() => {
     $('#btn-takephoto').on('click', async () => {
       $(clWrapOpt).addClass('d-none')
       // get photo
-      const picture = await takePicture()
+      const { file: picture } = await window.takePicture($('#modal-crop-avatar'))
       if (picture) {
         // create reader read file from input file avatar
         // crop photo
@@ -296,75 +296,75 @@ const Profile = (() => {
     }
 
     // function sleep
-    const sleep = m => new Promise(r => setTimeout(r, m))
+    // const sleep = m => new Promise(r => setTimeout(r, m))
 
-    // function take a photo and return file type image
-    async function takePicture() {
-      if (navigator.mediaDevices.getUserMedia) {
-        try {
-          const $wrapTake = $('.wrap-takephoto')
-          $wrapTake.removeClass('d-none')
-          // get video stream
-          const videoStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
+    // // function take a photo and return file type image
+    // async function takePicture() {
+    //   if (navigator.mediaDevices.getUserMedia) {
+    //     try {
+    //       const $wrapTake = $('.wrap-takephoto')
+    //       $wrapTake.removeClass('d-none')
+    //       // get video stream
+    //       const videoStream = await navigator.mediaDevices.getUserMedia({
+    //         video: true,
+    //         audio: false,
+    //       });
 
-          // show video stream
-          $wrapTake.find('video').each((i, vd) => {
-            if ('srcObject' in vd) {
-              vd.srcObject = videoStream;
-            } else {
-              vd.src = window.URL.createObjectURL(videoStream);
-            }
-          })
-          const snd = new Audio('/sounds/take-photo.mp3');
-          // count down
-          $('.count-down').removeClass('d-none')
+    //       // show video stream
+    //       $wrapTake.find('video').each((i, vd) => {
+    //         if ('srcObject' in vd) {
+    //           vd.srcObject = videoStream;
+    //         } else {
+    //           vd.src = window.URL.createObjectURL(videoStream);
+    //         }
+    //       })
+    //       const snd = new Audio('/sounds/take-photo.mp3');
+    //       // count down
+    //       $('.count-down').removeClass('d-none')
 
-          // sleep 4s
-          await sleep(4000)
+    //       // sleep 4s
+    //       await sleep(4000)
 
-          // take photo from video
-          const video = $wrapTake.find('video').get(0)
-          const canvas = document.createElement('canvas')
-          const context = canvas.getContext('2d');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          context.drawImage(video, 0, 0);
-          const dataURL = canvas.toDataURL('image/jpeg');
+    //       // take photo from video
+    //       const video = $wrapTake.find('video').get(0)
+    //       const canvas = document.createElement('canvas')
+    //       const context = canvas.getContext('2d');
+    //       canvas.width = video.videoWidth;
+    //       canvas.height = video.videoHeight;
+    //       context.drawImage(video, 0, 0);
+    //       const dataURL = canvas.toDataURL('image/jpeg');
 
-          // create file image
-          const file = dataURLtoFile(dataURL, 'capture')
-          canvas.className = 'res-capture ps-as'
-          $wrapTake.append(canvas)
+    //       // create file image
+    //       const file = dataURLtoFile(dataURL, 'capture.jpg')
+    //       canvas.className = 'res-capture ps-as'
+    //       $wrapTake.append(canvas)
 
-          await Promise.all([
-            snd.play(),
-            sleep(320)
-          ]);
+    //       await Promise.all([
+    //         snd.play(),
+    //         sleep(320)
+    //       ]);
 
-          // stop video stream after take photo
-          $('.count-down').addClass('d-none')
-          $wrapTake.addClass('d-none')
-          $wrapTake.find('canvas').remove()
-          videoStream.getVideoTracks()[0].stop()
-          $wrapTake.find('video').each((i, vd) => {
-            if ('srcObject' in vd) {
-              vd.srcObject = null;
-            } else {
-              vd.src = null;
-            }
-          })
+    //       // stop video stream after take photo
+    //       $('.count-down').addClass('d-none')
+    //       $wrapTake.addClass('d-none')
+    //       $wrapTake.find('canvas').remove()
+    //       videoStream.getVideoTracks()[0].stop()
+    //       $wrapTake.find('video').each((i, vd) => {
+    //         if ('srcObject' in vd) {
+    //           vd.srcObject = null;
+    //         } else {
+    //           vd.src = null;
+    //         }
+    //       })
 
-          // return file
-          return file
-        } catch (error) {
-          console.error(error);
-          window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
-        }
-      }
-    }
+    //       // return file
+    //       return file
+    //     } catch (error) {
+    //       console.error(error);
+    //       window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
+    //     }
+    //   }
+    // }
 
     // re-init choose file avatar
     function reInitChooseFile() {

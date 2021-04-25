@@ -40615,27 +40615,38 @@ var CommonChat = function () {
 
   function _takePicture() {
     _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var $wrapTake, videoStream, snd, video, canvas, context, dataURL, file;
+      var $modal,
+          $wrapTake,
+          videoStream,
+          snd,
+          video,
+          canvas,
+          context,
+          dataURL,
+          file,
+          _args2 = arguments;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
+              $modal = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : $('#modal-take-photo');
+
               if (!navigator.mediaDevices.getUserMedia) {
                 _context2.next = 36;
                 break;
               }
 
-              _context2.prev = 1;
-              $wrapTake = $('.wrap-takephoto');
+              _context2.prev = 2;
+              $wrapTake = $modal.find('.wrap-takephoto');
               $wrapTake.removeClass('d-none'); // get video stream
 
-              _context2.next = 6;
+              _context2.next = 7;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
-            case 6:
+            case 7:
               videoStream = _context2.sent;
               // show video stream
               $wrapTake.find('video').each(function (i, vd) {
@@ -40647,12 +40658,12 @@ var CommonChat = function () {
               });
               snd = new Audio('/sounds/take-photo.mp3'); // count down
 
-              $('.count-down').removeClass('d-none'); // sleep 4s
+              $modal.find('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context2.next = 12;
+              _context2.next = 13;
               return sleep(4000);
 
-            case 12:
+            case 13:
               // take photo from video
               video = $wrapTake.find('video').get(0);
               canvas = document.createElement('canvas');
@@ -40662,15 +40673,15 @@ var CommonChat = function () {
               context.drawImage(video, 0, 0);
               dataURL = canvas.toDataURL('image/jpeg'); // create file image
 
-              file = dataURLtoFile(dataURL, 'capture');
+              file = dataURLtoFile(dataURL, 'capture.jpg');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context2.next = 24;
+              _context2.next = 25;
               return Promise.all([snd.play(), sleep(320)]);
 
-            case 24:
+            case 25:
               // stop video stream after take photo
-              $('.count-down').addClass('d-none');
+              $modal.find('.count-down').addClass('d-none');
               $wrapTake.addClass('d-none');
               $wrapTake.find('canvas').remove();
               videoStream.getVideoTracks()[0].stop();
@@ -40687,10 +40698,9 @@ var CommonChat = function () {
                 dataURL: dataURL
               });
 
-            case 32:
-              _context2.prev = 32;
-              _context2.t0 = _context2["catch"](1);
-              console.error(_context2.t0);
+            case 33:
+              _context2.prev = 33;
+              _context2.t0 = _context2["catch"](2);
               window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
 
             case 36:
@@ -40698,7 +40708,7 @@ var CommonChat = function () {
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[1, 32]]);
+      }, _callee2, null, [[2, 33]]);
     }));
     return _takePicture.apply(this, arguments);
   }
@@ -43981,97 +43991,68 @@ var Profile = function () {
         $('#friend-area').find(".nav-link[href=\"".concat(hash, "\"]")).addClass('active');
       }
     }; // function sleep
-
-
-    // function take a photo and return file type image
-    var takePicture = /*#__PURE__*/function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-        var videoStream, $wrapTake, snd, video, canvas, context, dataURL, file;
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
-          while (1) {
-            switch (_context8.prev = _context8.next) {
-              case 0:
-                if (!navigator.mediaDevices.getUserMedia) {
-                  _context8.next = 36;
-                  break;
-                }
-
-                _context8.prev = 1;
-                _context8.next = 4;
-                return navigator.mediaDevices.getUserMedia({
-                  video: true,
-                  audio: false
-                });
-
-              case 4:
-                videoStream = _context8.sent;
-                // show video stream
-                $wrapTake = $('.wrap-takephoto');
-                $wrapTake.find('video').each(function (i, vd) {
-                  if ('srcObject' in vd) {
-                    vd.srcObject = videoStream;
-                  } else {
-                    vd.src = window.URL.createObjectURL(videoStream);
-                  }
-                });
-                snd = new Audio('/sounds/take-photo.mp3');
-                $wrapTake.removeClass('d-none'); // count down
-
-                $('.count-down').removeClass('d-none'); // sleep 4s
-
-                _context8.next = 12;
-                return sleep(4000);
-
-              case 12:
-                // take photo from video
-                video = $wrapTake.find('video').get(0);
-                canvas = document.createElement('canvas');
-                context = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0);
-                dataURL = canvas.toDataURL('image/jpeg'); // create file image
-
-                file = dataURLtoFile(dataURL, 'capture');
-                canvas.className = 'res-capture ps-as';
-                $wrapTake.append(canvas);
-                _context8.next = 24;
-                return Promise.all([snd.play(), sleep(320)]);
-
-              case 24:
-                // stop video stream after take photo
-                $('.count-down').addClass('d-none');
-                $wrapTake.addClass('d-none');
-                $wrapTake.find('canvas').remove();
-                videoStream.getVideoTracks()[0].stop();
-                $wrapTake.find('video').each(function (i, vd) {
-                  if ('srcObject' in vd) {
-                    vd.srcObject = null;
-                  } else {
-                    vd.src = null;
-                  }
-                }); // return file
-
-                return _context8.abrupt("return", file);
-
-              case 32:
-                _context8.prev = 32;
-                _context8.t0 = _context8["catch"](1);
-                console.error(_context8.t0);
-                window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
-
-              case 36:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8, null, [[1, 32]]);
-      }));
-
-      return function takePicture() {
-        return _ref8.apply(this, arguments);
-      };
-    }(); // re-init choose file avatar
+    // const sleep = m => new Promise(r => setTimeout(r, m))
+    // // function take a photo and return file type image
+    // async function takePicture() {
+    //   if (navigator.mediaDevices.getUserMedia) {
+    //     try {
+    //       const $wrapTake = $('.wrap-takephoto')
+    //       $wrapTake.removeClass('d-none')
+    //       // get video stream
+    //       const videoStream = await navigator.mediaDevices.getUserMedia({
+    //         video: true,
+    //         audio: false,
+    //       });
+    //       // show video stream
+    //       $wrapTake.find('video').each((i, vd) => {
+    //         if ('srcObject' in vd) {
+    //           vd.srcObject = videoStream;
+    //         } else {
+    //           vd.src = window.URL.createObjectURL(videoStream);
+    //         }
+    //       })
+    //       const snd = new Audio('/sounds/take-photo.mp3');
+    //       // count down
+    //       $('.count-down').removeClass('d-none')
+    //       // sleep 4s
+    //       await sleep(4000)
+    //       // take photo from video
+    //       const video = $wrapTake.find('video').get(0)
+    //       const canvas = document.createElement('canvas')
+    //       const context = canvas.getContext('2d');
+    //       canvas.width = video.videoWidth;
+    //       canvas.height = video.videoHeight;
+    //       context.drawImage(video, 0, 0);
+    //       const dataURL = canvas.toDataURL('image/jpeg');
+    //       // create file image
+    //       const file = dataURLtoFile(dataURL, 'capture.jpg')
+    //       canvas.className = 'res-capture ps-as'
+    //       $wrapTake.append(canvas)
+    //       await Promise.all([
+    //         snd.play(),
+    //         sleep(320)
+    //       ]);
+    //       // stop video stream after take photo
+    //       $('.count-down').addClass('d-none')
+    //       $wrapTake.addClass('d-none')
+    //       $wrapTake.find('canvas').remove()
+    //       videoStream.getVideoTracks()[0].stop()
+    //       $wrapTake.find('video').each((i, vd) => {
+    //         if ('srcObject' in vd) {
+    //           vd.srcObject = null;
+    //         } else {
+    //           vd.src = null;
+    //         }
+    //       })
+    //       // return file
+    //       return file
+    //     } catch (error) {
+    //       console.error(error);
+    //       window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
+    //     }
+    //   }
+    // }
+    // re-init choose file avatar
 
 
     var reInitChooseFile = function reInitChooseFile() {
@@ -44178,7 +44159,8 @@ var Profile = function () {
     $('#cancel-crop-btn').on('click', reInitChooseFile); // take photo
 
     $('#btn-takephoto').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var picture, reader;
+      var _yield$window$takePic, picture, reader;
+
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
@@ -44186,10 +44168,11 @@ var Profile = function () {
               $(clWrapOpt).addClass('d-none'); // get photo
 
               _context3.next = 3;
-              return takePicture();
+              return window.takePicture($('#modal-crop-avatar'));
 
             case 3:
-              picture = _context3.sent;
+              _yield$window$takePic = _context3.sent;
+              picture = _yield$window$takePic.file;
 
               if (picture) {
                 // create reader read file from input file avatar
@@ -44224,7 +44207,7 @@ var Profile = function () {
                 $(clWrapCrop).removeClass('d-none');
               }
 
-            case 5:
+            case 6:
             case "end":
               return _context3.stop();
           }
@@ -44363,12 +44346,6 @@ var Profile = function () {
       window.typeConfirm = undefined;
     });
     window.loadDataFriend = loadDataFriend;
-
-    var sleep = function sleep(m) {
-      return new Promise(function (r) {
-        return setTimeout(r, m);
-      });
-    };
   }
 }();
 
@@ -44703,6 +44680,7 @@ var Messenger = function () {
   var nClassAct = 'is-active';
   var isDragging = 0;
   var isDragZone = false;
+  var fileTake = null;
   var oldSearchMiniRes = {}; // receive msg obj from server
 
   window.socket.on('msg-messenger', /*#__PURE__*/function () {
@@ -44937,6 +44915,93 @@ var Messenger = function () {
         }
       }
     }, _callee3, this);
+  })));
+  $('#modal-take-photo').on('shown.bs.modal', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+    var _yield$window$takePic, file, dataURL;
+
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.next = 2;
+            return window.takePicture();
+
+          case 2:
+            _yield$window$takePic = _context4.sent;
+            file = _yield$window$takePic.file;
+            dataURL = _yield$window$takePic.dataURL;
+            $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
+            $('.wrap-photo').removeClass('d-none');
+            fileTake = file;
+            console.log(file);
+
+          case 9:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  })));
+  $('#modal-take-photo').on('hidden.bs.modal', function () {
+    fileTake = null;
+    $('.photo-pre').html('');
+    $('.wrap-photo').addClass('d-none');
+  });
+  $('#send-photo-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var $pop;
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            if (!fileTake) {
+              _context5.next = 6;
+              break;
+            }
+
+            $('#modal-take-photo').modal('hide');
+            $pop = $('.popup-chat-mini.is-active');
+
+            if (!$pop.length) {
+              _context5.next = 6;
+              break;
+            }
+
+            _context5.next = 6;
+            return sendFileSingle(fileTake, $pop);
+
+          case 6:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  })));
+  $('#re-take-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    var _yield$window$takePic2, file, dataURL;
+
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            $('.photo-pre').html('');
+            $('.wrap-photo').addClass('d-none');
+            _context6.next = 4;
+            return window.takePicture();
+
+          case 4:
+            _yield$window$takePic2 = _context6.sent;
+            file = _yield$window$takePic2.file;
+            dataURL = _yield$window$takePic2.dataURL;
+            $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
+            $('.wrap-photo').removeClass('d-none');
+            fileTake = file;
+
+          case 10:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
   }))); // function create new chat box mini
 
   function createMiniPopup(_x2, _x3, _x4, _x5) {
@@ -44945,13 +45010,13 @@ var Messenger = function () {
 
 
   function _createMiniPopup() {
-    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(senderId, msgObj, token, classIsActive) {
+    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(senderId, msgObj, token, classIsActive) {
       var html, $popup, finalFiles;
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context9.prev = _context9.next) {
             case 0:
-              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
+              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default send-take-photo m-0 p-2\" data-toggle=\"modal\" data-target=\"#modal-take-photo\">\n            <span class=\"icomoon icon-camera\"></span>\n          </button>\n          <button class=\"btn btn-default send-rec m-0 p-2\">\n            <span class=\"icomoon icon-mic\"></span>\n          </button>\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
               $('.wrap-chat-mini').append(html);
               $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
               finalFiles = [];
@@ -44960,7 +45025,7 @@ var Messenger = function () {
                 outputPreviewMsg($popup, msgObj.message);
               }
 
-              _context6.next = 7;
+              _context9.next = 7;
               return loadOldMsg($popup);
 
             case 7:
@@ -44968,11 +45033,11 @@ var Messenger = function () {
               window.emojisForMiniChat($popup); // event submit form chat
 
               $popup.find('form').on('submit', /*#__PURE__*/function () {
-                var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+                var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
                   var inputMsg;
-                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                  return regeneratorRuntime.wrap(function _callee7$(_context7) {
                     while (1) {
-                      switch (_context4.prev = _context4.next) {
+                      switch (_context7.prev = _context7.next) {
                         case 0:
                           // stop submit form
                           e.preventDefault();
@@ -44997,11 +45062,11 @@ var Messenger = function () {
                           }
 
                           if (!finalFiles.length) {
-                            _context4.next = 9;
+                            _context7.next = 9;
                             break;
                           }
 
-                          _context4.next = 7;
+                          _context7.next = 7;
                           return sendFile($popup, finalFiles);
 
                         case 7:
@@ -45010,14 +45075,14 @@ var Messenger = function () {
 
                         case 9:
                         case "end":
-                          return _context4.stop();
+                          return _context7.stop();
                       }
                     }
-                  }, _callee4);
+                  }, _callee7);
                 }));
 
-                return function (_x9) {
-                  return _ref7.apply(this, arguments);
+                return function (_x11) {
+                  return _ref10.apply(this, arguments);
                 };
               }());
               $popup.find('.send-file-input').on('change', function () {
@@ -45092,23 +45157,23 @@ var Messenger = function () {
                 $(this).parents('.wrap-msg-box').removeClass('is-focus');
               }); // handle scroll box chat: load old msg, scroll to bottom
 
-              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-                return regeneratorRuntime.wrap(function _callee5$(_context5) {
+              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+                return regeneratorRuntime.wrap(function _callee8$(_context8) {
                   while (1) {
-                    switch (_context5.prev = _context5.next) {
+                    switch (_context8.prev = _context8.next) {
                       case 0:
                         if (!(this.scrollTop === 0)) {
-                          _context5.next = 7;
+                          _context8.next = 7;
                           break;
                         }
 
                         $popup.find('.wrap-loader-chat').removeClass('d-none');
-                        _context5.next = 4;
+                        _context8.next = 4;
                         return loadOldMsg($popup);
 
                       case 4:
                         $popup.find('.wrap-loader-chat').addClass('d-none');
-                        _context5.next = 8;
+                        _context8.next = 8;
                         break;
 
                       case 7:
@@ -45120,10 +45185,10 @@ var Messenger = function () {
 
                       case 8:
                       case "end":
-                        return _context5.stop();
+                        return _context8.stop();
                     }
                   }
-                }, _callee5, this);
+                }, _callee8, this);
               }))); // scroll to bottom chat box
 
               $popup.find(classScroll).on('click', function () {
@@ -45161,10 +45226,10 @@ var Messenger = function () {
 
             case 23:
             case "end":
-              return _context6.stop();
+              return _context9.stop();
           }
         }
-      }, _callee6);
+      }, _callee9);
     }));
     return _createMiniPopup.apply(this, arguments);
   }
@@ -45241,26 +45306,26 @@ var Messenger = function () {
   }
 
   function _loadOldMsg() {
-    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7($popup) {
+    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10($popup) {
       var currentPage, responsive, _responsive$data, messages, hasMsg, friendStatus, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response2, _error$response2$data;
 
-      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context7.prev = _context7.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
               if (!(+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load'))) {
-                _context7.next = 24;
+                _context10.next = 24;
                 break;
               }
 
               $popup.attr('data-allow-load', '0');
               currentPage = +$popup.attr('data-page');
-              _context7.prev = 3;
-              _context7.next = 6;
+              _context10.prev = 3;
+              _context10.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat($popup.attr('data-id'), "&page=").concat(currentPage));
 
             case 6:
-              responsive = _context7.sent;
+              responsive = _context10.sent;
               _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg, friendStatus = _responsive$data.friendStatus; // $('.wrap-loader-chat').addClass('d-none')
 
               $popup.attr('data-page', currentPage + 1);
@@ -45319,20 +45384,20 @@ var Messenger = function () {
               newScroll = chatMain.scrollHeight - chatMain.clientHeight;
               chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
               $popup.attr('data-allow-load', '1');
-              _context7.next = 24;
+              _context10.next = 24;
               break;
 
             case 21:
-              _context7.prev = 21;
-              _context7.t0 = _context7["catch"](3);
-              window.outputErrorMessage(_context7.t0 === null || _context7.t0 === void 0 ? void 0 : (_error$response2 = _context7.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+              _context10.prev = 21;
+              _context10.t0 = _context10["catch"](3);
+              window.outputErrorMessage(_context10.t0 === null || _context10.t0 === void 0 ? void 0 : (_error$response2 = _context10.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
             case 24:
             case "end":
-              return _context7.stop();
+              return _context10.stop();
           }
         }
-      }, _callee7, null, [[3, 21]]);
+      }, _callee10, null, [[3, 21]]);
     }));
     return _loadOldMsg.apply(this, arguments);
   }
@@ -45351,12 +45416,12 @@ var Messenger = function () {
   }
 
   function _sendFile() {
-    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8($popup, finalFiles) {
+    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11($popup, finalFiles) {
       var formData, idSession, res, $msgFile, _$msgFile;
 
-      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               formData = new FormData();
               idSession = new Date().valueOf();
@@ -45365,8 +45430,8 @@ var Messenger = function () {
 
                 createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
               });
-              _context8.prev = 3;
-              _context8.next = 6;
+              _context11.prev = 3;
+              _context11.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
@@ -45374,7 +45439,7 @@ var Messenger = function () {
               });
 
             case 6:
-              res = _context8.sent;
+              res = _context11.sent;
               // $popup.find('.send-file-input').val('')
               // finalFiles = []
               // enabledInputFile()
@@ -45386,7 +45451,15 @@ var Messenger = function () {
 
                 if (file) {
                   $(ele).parents('.wrap-msg-file').addClass('load-done');
-                  ele.href = file.url; // send message to server
+
+                  if (file.resourceType === 'image') {
+                    $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                  } else if (file.resourceType === 'video') {
+                    $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                  } else {
+                    ele.href = file.url;
+                  } // send message to server
+
 
                   socket.emit('msg-messageChat', {
                     message: file.url,
@@ -45399,13 +45472,13 @@ var Messenger = function () {
                   $(ele).parents('.message').remove();
                 }
               });
-              _context8.next = 17;
+              _context11.next = 17;
               break;
 
             case 11:
-              _context8.prev = 11;
-              _context8.t0 = _context8["catch"](3);
-              console.dir(_context8.t0);
+              _context11.prev = 11;
+              _context11.t0 = _context11["catch"](3);
+              console.dir(_context11.t0);
               _$msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
               _$msgFile.parents('.message').remove(); // $popup.find('.send-file-input').val('')
@@ -45413,18 +45486,105 @@ var Messenger = function () {
               // enabledInputFile()
 
 
-              if (_context8.t0.response && _context8.t0.response.data && _context8.t0.response.data.message) {
-                window.outputErrorMessage(_context8.t0.response.data.message);
+              if (_context11.t0.response && _context11.t0.response.data && _context11.t0.response.data.message) {
+                window.outputErrorMessage(_context11.t0.response.data.message);
               }
 
             case 17:
             case "end":
-              return _context8.stop();
+              return _context11.stop();
           }
         }
-      }, _callee8, null, [[3, 11]]);
+      }, _callee11, null, [[3, 11]]);
     }));
     return _sendFile.apply(this, arguments);
+  }
+
+  function sendFileSingle(_x9, _x10) {
+    return _sendFileSingle.apply(this, arguments);
+  }
+
+  function _sendFileSingle() {
+    _sendFileSingle = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(file, $popup) {
+      var formData, idSession, res, $msgFile, _$msgFile2;
+
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+        while (1) {
+          switch (_context12.prev = _context12.next) {
+            case 0:
+              formData = new FormData();
+              idSession = new Date().valueOf();
+              formData.append('files', file); // create message obj to show in client
+
+              createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+              _context12.prev = 4;
+              _context12.next = 7;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+
+            case 7:
+              res = _context12.sent;
+              // $popup.find('.send-file-input').val('')
+              // finalFiles = []
+              // enabledInputFile()
+              $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+              $msgFile.each(function (i, ele) {
+                var fileFind = res.data.fileUrls.find(function (f) {
+                  return f.name === $(ele).text();
+                });
+
+                if (fileFind) {
+                  $(ele).parents('.wrap-msg-file').addClass('load-done');
+
+                  if (fileFind.resourceType === 'image') {
+                    $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" />"));
+                  } else if (fileFind.resourceType === 'video') {
+                    $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(fileFind.url, "\"><video/>"));
+                  } else {
+                    ele.href = fileFind.url;
+                  } // send message to server
+
+
+                  socket.emit('msg-messageChat', {
+                    message: fileFind.url,
+                    type: 'file',
+                    nameFile: fileFind.name,
+                    resourceType: fileFind.resourceType,
+                    token: $popup.find('input[name="_token"]').val()
+                  });
+                } else {
+                  $(ele).parents('.message').remove();
+                }
+              });
+              _context12.next = 18;
+              break;
+
+            case 12:
+              _context12.prev = 12;
+              _context12.t0 = _context12["catch"](4);
+              console.dir(_context12.t0);
+              _$msgFile2 = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+
+              _$msgFile2.parents('.message').remove(); // $popup.find('.send-file-input').val('')
+              // finalFiles = []
+              // enabledInputFile()
+
+
+              if (_context12.t0.response && _context12.t0.response.data && _context12.t0.response.data.message) {
+                window.outputErrorMessage(_context12.t0.response.data.message);
+              }
+
+            case 18:
+            case "end":
+              return _context12.stop();
+          }
+        }
+      }, _callee12, null, [[4, 12]]);
+    }));
+    return _sendFileSingle.apply(this, arguments);
   }
 }();
 

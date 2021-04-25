@@ -8123,11 +8123,13 @@ textarea.form-control.msg-mini {
   min-width: 124px;
 }
 
-.wrap-takephoto {
+.wrap-takephoto,
+.wrap-takephoto-send {
   position: relative;
 }
 
-.wrap-takephoto video {
+.wrap-takephoto video,
+.wrap-takephoto-send video {
   width: 100%;
 }
 

@@ -10,6 +10,7 @@ const Messenger = (() => {
 
   let isDragging = 0;
   let isDragZone = false;
+  let fileTake = null
 
   const oldSearchMiniRes = {}
 
@@ -188,6 +189,39 @@ const Messenger = (() => {
     }
   })
 
+  $('#modal-take-photo').on('shown.bs.modal', async () => {
+    const { file, dataURL } = await window.takePicture()
+    $('.photo-pre').html(`<img src="${dataURL}" alt="capture"/>`)
+    $('.wrap-photo').removeClass('d-none')
+    fileTake = file
+    console.log(file);
+  })
+
+  $('#modal-take-photo').on('hidden.bs.modal', () => {
+    fileTake = null
+    $('.photo-pre').html('')
+    $('.wrap-photo').addClass('d-none')
+  })
+
+  $('#send-photo-btn').on('click', async () => {
+    if (fileTake) {
+      $('#modal-take-photo').modal('hide')
+      const $pop = $('.popup-chat-mini.is-active')
+      if ($pop.length) {
+        await sendFileSingle(fileTake, $pop)
+      }
+    }
+  })
+
+  $('#re-take-btn').on('click', async () => {
+    $('.photo-pre').html('')
+    $('.wrap-photo').addClass('d-none')
+    const { file, dataURL } = await window.takePicture()
+    $('.photo-pre').html(`<img src="${dataURL}" alt="capture"/>`)
+    $('.wrap-photo').removeClass('d-none')
+    fileTake = file
+  })
+
   // function create new chat box mini
   async function createMiniPopup(senderId, msgObj, token, classIsActive) {
     const html = `
@@ -247,6 +281,12 @@ const Messenger = (() => {
             <span class="icomoon icon-insert_drive_file"></span>
           </label>
           <input class="d-none send-file-input" id="send-file-${senderId}" type="file" name="file" multiple="multiple">
+          <button class="btn btn-default send-take-photo m-0 p-2" data-toggle="modal" data-target="#modal-take-photo">
+            <span class="icomoon icon-camera"></span>
+          </button>
+          <button class="btn btn-default send-rec m-0 p-2">
+            <span class="icomoon icon-mic"></span>
+          </button>
           <button class="btn btn-default open-emojis" type="button">&#128512;</button>
           <input type="hidden" name="_token" value="${token}">
             <div class="flex-fill wrap-msg-box ps-rv">
@@ -621,13 +661,77 @@ const Messenger = (() => {
         const file = res.data.fileUrls.find(f => f.name === $(ele).text())
         if (file) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
-          ele.href = file.url
+          if (file.resourceType === 'image') {
+            $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+          } else if (file.resourceType === 'video') {
+            $(ele).parents('.message-content').html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+          } else {
+            ele.href = file.url
+          }
           // send message to server
           socket.emit('msg-messageChat', {
             message: file.url,
             type: 'file',
             nameFile: file.name,
             resourceType: file.resourceType,
+            token: $popup.find('input[name="_token"]').val()
+          });
+        } else {
+          $(ele).parents('.message').remove()
+        }
+      })
+    } catch (error) {
+      console.dir(error);
+      const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
+      $msgFile.parents('.message').remove()
+      // $popup.find('.send-file-input').val('')
+      // finalFiles = []
+      // enabledInputFile()
+      if (error.response && error.response.data && error.response.data.message) {
+        window.outputErrorMessage(error.response.data.message)
+      }
+    }
+  }
+
+  async function sendFileSingle(file, $popup) {
+    const formData = new FormData();
+    const idSession = new Date().valueOf();
+    formData.append('files', file);
+    // create message obj to show in client
+    createCallMsgLocalMini(
+      $popup.attr('data-id'),
+      `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
+      'wrap-msg-file',
+      false,
+      true
+    )
+    try {
+      const res = await axios.post('/messenger/upload-file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      // $popup.find('.send-file-input').val('')
+      // finalFiles = []
+      // enabledInputFile()
+      const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
+      $msgFile.each((i, ele) => {
+        const fileFind = res.data.fileUrls.find(f => f.name === $(ele).text())
+        if (fileFind) {
+          $(ele).parents('.wrap-msg-file').addClass('load-done')
+          if (fileFind.resourceType === 'image') {
+            $(ele).parents('.message-content').html(`<img class="pre-img" src="${fileFind.url}" alt="${fileFind.name}" />`)
+          } else if (fileFind.resourceType === 'video') {
+            $(ele).parents('.message-content').html(`<video class="pre-video" muted autoplay src="${fileFind.url}"><video/>`)
+          } else {
+            ele.href = fileFind.url
+          }
+          // send message to server
+          socket.emit('msg-messageChat', {
+            message: fileFind.url,
+            type: 'file',
+            nameFile: fileFind.name,
+            resourceType: fileFind.resourceType,
             token: $popup.find('input[name="_token"]').val()
           });
         } else {

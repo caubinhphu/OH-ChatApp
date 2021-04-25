@@ -40615,27 +40615,38 @@ var CommonChat = function () {
 
   function _takePicture() {
     _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var $wrapTake, videoStream, snd, video, canvas, context, dataURL, file;
+      var $modal,
+          $wrapTake,
+          videoStream,
+          snd,
+          video,
+          canvas,
+          context,
+          dataURL,
+          file,
+          _args2 = arguments;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
+              $modal = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : $('#modal-take-photo');
+
               if (!navigator.mediaDevices.getUserMedia) {
                 _context2.next = 36;
                 break;
               }
 
-              _context2.prev = 1;
-              $wrapTake = $('.wrap-takephoto');
+              _context2.prev = 2;
+              $wrapTake = $modal.find('.wrap-takephoto');
               $wrapTake.removeClass('d-none'); // get video stream
 
-              _context2.next = 6;
+              _context2.next = 7;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
-            case 6:
+            case 7:
               videoStream = _context2.sent;
               // show video stream
               $wrapTake.find('video').each(function (i, vd) {
@@ -40647,12 +40658,12 @@ var CommonChat = function () {
               });
               snd = new Audio('/sounds/take-photo.mp3'); // count down
 
-              $('.count-down').removeClass('d-none'); // sleep 4s
+              $modal.find('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context2.next = 12;
+              _context2.next = 13;
               return sleep(4000);
 
-            case 12:
+            case 13:
               // take photo from video
               video = $wrapTake.find('video').get(0);
               canvas = document.createElement('canvas');
@@ -40662,15 +40673,15 @@ var CommonChat = function () {
               context.drawImage(video, 0, 0);
               dataURL = canvas.toDataURL('image/jpeg'); // create file image
 
-              file = dataURLtoFile(dataURL, 'capture');
+              file = dataURLtoFile(dataURL, 'capture.jpg');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context2.next = 24;
+              _context2.next = 25;
               return Promise.all([snd.play(), sleep(320)]);
 
-            case 24:
+            case 25:
               // stop video stream after take photo
-              $('.count-down').addClass('d-none');
+              $modal.find('.count-down').addClass('d-none');
               $wrapTake.addClass('d-none');
               $wrapTake.find('canvas').remove();
               videoStream.getVideoTracks()[0].stop();
@@ -40687,10 +40698,9 @@ var CommonChat = function () {
                 dataURL: dataURL
               });
 
-            case 32:
-              _context2.prev = 32;
-              _context2.t0 = _context2["catch"](1);
-              console.error(_context2.t0);
+            case 33:
+              _context2.prev = 33;
+              _context2.t0 = _context2["catch"](2);
               window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
 
             case 36:
@@ -40698,7 +40708,7 @@ var CommonChat = function () {
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[1, 32]]);
+      }, _callee2, null, [[2, 33]]);
     }));
     return _takePicture.apply(this, arguments);
   }
@@ -41994,12 +42004,13 @@ var Index = function () {
 
                   if (file) {
                     $(ele).parents('.wrap-msg-file').addClass('load-done');
-                    ele.href = file.url;
 
                     if (file.resourceType === 'image') {
-                      $(ele).html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                      $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
                     } else if (file.resourceType === 'video') {
-                      $(ele).html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                      $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                    } else {
+                      ele.href = file.url;
                     } // send message to server
 
 
@@ -42077,12 +42088,13 @@ var Index = function () {
 
                   if (file) {
                     $(ele).parents('.wrap-msg-file').addClass('load-done');
-                    ele.href = file.url;
 
                     if (file.resourceType === 'image') {
-                      $(ele).html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                      $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
                     } else if (file.resourceType === 'video') {
-                      $(ele).html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                      $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                    } else {
+                      ele.href = file.url;
                     } // send message to server
 
 

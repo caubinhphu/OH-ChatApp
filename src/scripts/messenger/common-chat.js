@@ -761,10 +761,10 @@ const CommonChat = (() => {
   const sleep = m => new Promise(r => setTimeout(r, m))
 
   // function take a photo and return file type image
-  async function takePicture() {
+  async function takePicture($modal = $('#modal-take-photo')) {
     if (navigator.mediaDevices.getUserMedia) {
       try {
-        const $wrapTake = $('.wrap-takephoto')
+        const $wrapTake = $modal.find('.wrap-takephoto')
         $wrapTake.removeClass('d-none')
         // get video stream
         const videoStream = await navigator.mediaDevices.getUserMedia({
@@ -782,7 +782,7 @@ const CommonChat = (() => {
         })
         const snd = new Audio('/sounds/take-photo.mp3');
         // count down
-        $('.count-down').removeClass('d-none')
+        $modal.find('.count-down').removeClass('d-none')
 
         // sleep 4s
         await sleep(4000)
@@ -797,7 +797,7 @@ const CommonChat = (() => {
         const dataURL = canvas.toDataURL('image/jpeg');
 
         // create file image
-        const file = dataURLtoFile(dataURL, 'capture')
+        const file = dataURLtoFile(dataURL, 'capture.jpg')
         canvas.className = 'res-capture ps-as'
         $wrapTake.append(canvas)
 
@@ -807,7 +807,7 @@ const CommonChat = (() => {
         ]);
 
         // stop video stream after take photo
-        $('.count-down').addClass('d-none')
+        $modal.find('.count-down').addClass('d-none')
         $wrapTake.addClass('d-none')
         $wrapTake.find('canvas').remove()
         videoStream.getVideoTracks()[0].stop()
@@ -822,7 +822,6 @@ const CommonChat = (() => {
         // return file
         return { file, dataURL }
       } catch (error) {
-        console.error(error);
         window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
       }
     }
