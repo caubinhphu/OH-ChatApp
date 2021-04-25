@@ -16,6 +16,7 @@ const Index = (() => {
   let finalFiles = []
   let isDragging = 0;
   let isDragZone = false;
+  let fileTake = null
 
   if (msgForm) {
     // scroll bottom
@@ -327,6 +328,35 @@ const Index = (() => {
       }
     });
 
+    $('#modal-take-photo').on('shown.bs.modal', async () => {
+      const { file, dataURL } = await window.takePicture()
+      $('.photo-pre').html(`<img src="${dataURL}" alt="capture"/>`)
+      $('.wrap-photo').removeClass('d-none')
+      fileTake = file
+    })
+
+    $('#modal-take-photo').on('hidden.bs.modal', () => {
+      fileTake = null
+      $('.photo-pre').html('')
+      $('.wrap-photo').addClass('d-none')
+    })
+
+    $('#send-photo-btn').on('click', async () => {
+      if (fileTake) {
+        $('#modal-take-photo').modal('hide')
+        await sendFileSingle(fileTake)
+      }
+    })
+
+    $('#re-take-btn').on('click', async () => {
+      $('.photo-pre').html('')
+      $('.wrap-photo').addClass('d-none')
+      const { file, dataURL } = await window.takePicture()
+      $('.photo-pre').html(`<img src="${dataURL}" alt="capture"/>`)
+      $('.wrap-photo').removeClass('d-none')
+      fileTake = file
+    })
+
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
       if (friendIdChatting === senderId) {
@@ -419,6 +449,59 @@ const Index = (() => {
         $msgFile.parents('.message').remove()
         $('#send-file').val('')
         finalFiles = []
+        // enabledInputFile()
+        if (error.response && error.response.data && error.response.data.message) {
+          window.outputErrorMessage(error.response.data.message)
+        }
+      }
+    }
+
+    async function sendFileSingle(file) {
+      const formData = new FormData();
+      const idSession = new Date().valueOf();
+      formData.append('files', file);
+        // create message obj to show in client
+        window.createCallMsgLocal(
+          friendIdChatting,
+          `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
+          'wrap-msg-file',
+          false,
+          true
+        )
+      try {
+        const res = await axios.post('/messenger/upload-file', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        // enabledInputFile()
+        const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
+        $msgFile.each((i, ele) => {
+          const file = res.data.fileUrls.find(f => f.name === $(ele).text())
+          if (file) {
+            $(ele).parents('.wrap-msg-file').addClass('load-done')
+            ele.href = file.url
+
+            if (file.resourceType === 'image') {
+              $(ele).html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+            } else if (file.resourceType === 'video') {
+              $(ele).html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+            }
+            // send message to server
+            socket.emit('msg-messageChat', {
+              message: file.url,
+              type: 'file',
+              nameFile: file.name,
+              resourceType: file.resourceType,
+              token: msgForm.elements._token.value
+            });
+          } else {
+            $(ele).parents('.message').remove()
+          }
+        })
+      } catch (error) {
+        const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
+        $msgFile.parents('.message').remove()
         // enabledInputFile()
         if (error.response && error.response.data && error.response.data.message) {
           window.outputErrorMessage(error.response.data.message)

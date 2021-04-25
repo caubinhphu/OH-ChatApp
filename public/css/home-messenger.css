@@ -7577,7 +7577,9 @@ body {
   overflow: auto;
 }
 
-label.send-file:hover .icomoon {
+label.send-file:hover .icomoon,
+.send-take-photo:hover .icomoon,
+.send-rec:hover .icomoon {
   color: #0c1a2f;
 }
 
@@ -7598,6 +7600,10 @@ label.send-file:hover .icomoon {
 
 .dragzone .drag-inner .icomoon {
   font-size: 50px;
+}
+
+.photo-pre img {
+  max-width: 100%;
 }
 
 .files-upload-box .file-item {
@@ -7685,7 +7691,7 @@ label.send-file:hover .icomoon {
 }
 
 .pre-video {
-  max-width: 250px;
+  max-width: 245px;
 }
 
 @media only screen and (max-width: 850px) {

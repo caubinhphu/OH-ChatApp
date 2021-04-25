@@ -295,7 +295,9 @@ body {
   padding: 5px 0;
   overflow: auto;
 }
-label.send-file {
+label.send-file,
+.send-take-photo,
+.send-rec {
   &:hover {
     .icomoon {
       color: $color-0c;
@@ -316,6 +318,11 @@ label.send-file {
     .icomoon {
       font-size: 50px;
     }
+  }
+}
+.photo-pre {
+  img {
+    max-width: 100%;
   }
 }
 .files-upload-box {

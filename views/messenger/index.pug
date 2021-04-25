@@ -116,6 +116,10 @@ block contentMain
               label.btn.btn-default.send-file.m-0.p-2(for="send-file")
                 span.icomoon.icon-insert_drive_file
               input#send-file.d-none(type="file", name="file", multiple)
+              button.btn.btn-default.send-take-photo.m-0.p-2(data-toggle="modal", data-target="#modal-take-photo")
+                span.icomoon.icon-camera
+              button.btn.btn-default.send-rec.m-0.p-2
+                span.icomoon.icon-mic
               button.btn.btn-default.open-emojis(type="button") &#128512;
               input(type="hidden", name="_token", value=token)
               .flex-fill.wrap-msg-box.ps-rv
@@ -125,6 +129,26 @@ block contentMain
 
     .overlay-calling.d-none.ps-as
 
+  #modal-take-photo.modal.fade(tabindex='-1', aria-labelledby='modal-take-photo', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header.align-items-center
+          h4.modal-title Chụp ảnh
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          .wrap-photo.d-none
+            .photo-pre.mb-3
+            .text-center
+              button#send-photo-btn.btn(type="button") Gửi
+              button#re-take-btn.btn.btn-white.ml-3(type="button") Chụp lại
+          .wrap-takephoto
+            .count-down.d-none.ps-as
+              .wrap-num-cd.d-flex.justify-content-center.align-items-center.ps-as
+                -var n = 3
+                  while n > 0 
+                    span(class='cd-num' + n)= n--
+            video(autoplay=true, muted=true, controls=false)
 
 append scripts
   script(src="/js/home-messenger.js")

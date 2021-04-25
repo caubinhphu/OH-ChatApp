@@ -97,7 +97,6 @@ module.exports.uploadFile = async (req, res) => {
 };
 
 module.exports.getIndex = (req, res) => {
-  console.log(req.user);
   res.render('room', {
     titleSite: 'OH Chat'
   });

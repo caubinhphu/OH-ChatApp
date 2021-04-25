@@ -302,6 +302,8 @@ const Profile = (() => {
     async function takePicture() {
       if (navigator.mediaDevices.getUserMedia) {
         try {
+          const $wrapTake = $('.wrap-takephoto')
+          $wrapTake.removeClass('d-none')
           // get video stream
           const videoStream = await navigator.mediaDevices.getUserMedia({
             video: true,
@@ -309,7 +311,6 @@ const Profile = (() => {
           });
 
           // show video stream
-          const $wrapTake = $('.wrap-takephoto')
           $wrapTake.find('video').each((i, vd) => {
             if ('srcObject' in vd) {
               vd.srcObject = videoStream;
@@ -318,7 +319,6 @@ const Profile = (() => {
             }
           })
           const snd = new Audio('/sounds/take-photo.mp3');
-          $wrapTake.removeClass('d-none')
           // count down
           $('.count-down').removeClass('d-none')
 

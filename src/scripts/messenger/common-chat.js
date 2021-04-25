@@ -756,6 +756,92 @@ const CommonChat = (() => {
     return `${h ? h + 'h' : ''}${m ? m + 'm' : ''}${(h || m)  && !s ? '' : s + 's'}`
   }
   window.formatDiffTime = formatDiffTime
+
+  // function sleep
+  const sleep = m => new Promise(r => setTimeout(r, m))
+
+  // function take a photo and return file type image
+  async function takePicture() {
+    if (navigator.mediaDevices.getUserMedia) {
+      try {
+        const $wrapTake = $('.wrap-takephoto')
+        $wrapTake.removeClass('d-none')
+        // get video stream
+        const videoStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+
+        // show video stream
+        $wrapTake.find('video').each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = videoStream;
+          } else {
+            vd.src = window.URL.createObjectURL(videoStream);
+          }
+        })
+        const snd = new Audio('/sounds/take-photo.mp3');
+        // count down
+        $('.count-down').removeClass('d-none')
+
+        // sleep 4s
+        await sleep(4000)
+
+        // take photo from video
+        const video = $wrapTake.find('video').get(0)
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
+        const dataURL = canvas.toDataURL('image/jpeg');
+
+        // create file image
+        const file = dataURLtoFile(dataURL, 'capture')
+        canvas.className = 'res-capture ps-as'
+        $wrapTake.append(canvas)
+
+        await Promise.all([
+          snd.play(),
+          sleep(320)
+        ]);
+
+        // stop video stream after take photo
+        $('.count-down').addClass('d-none')
+        $wrapTake.addClass('d-none')
+        $wrapTake.find('canvas').remove()
+        videoStream.getVideoTracks()[0].stop()
+        $wrapTake.find('video').each((i, vd) => {
+          if ('srcObject' in vd) {
+            vd.srcObject = null;
+          } else {
+            vd.src = null;
+          }
+        })
+
+        // return file
+        return { file, dataURL }
+      } catch (error) {
+        console.error(error);
+        window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
+      }
+    }
+  }
+  window.takePicture = takePicture
+
+  // create file from data base64
+  function dataURLtoFile(dataurl, filename) {
+    let arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
 })()
 
 export default CommonChat
