@@ -44791,6 +44791,7 @@ var Messenger = function () {
   var isDragging = 0;
   var isDragZone = false;
   var fileTake = null;
+  var holdRec = false;
   var oldSearchMiniRes = {}; // receive msg obj from server
 
   window.socket.on('msg-messenger', /*#__PURE__*/function () {
@@ -45112,21 +45113,65 @@ var Messenger = function () {
         }
       }
     }, _callee6);
-  }))); // function create new chat box mini
+  })));
+  $(document).on('mouseup', function (e) {
+    var $recBar = $('.rec-bar');
 
-  function createMiniPopup(_x2, _x3, _x4, _x5) {
+    if (holdRec) {
+      holdRec = false;
+      clearTimeout(window.timeRecHold);
+      $recBar.addClass('d-none').find('.rec-time').html('0:00');
+
+      if ($(e.target).hasClass('rec-cancel')) {
+        window.stopRecorderVoice(true);
+      } else {
+        window.stopRecorderVoice();
+      }
+    }
+  });
+  $(window).on('endRecorderVoice', /*#__PURE__*/function () {
+    var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+      var $pop;
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              $pop = $('.popup-chat-mini.is-active');
+
+              if (!$pop.length) {
+                _context7.next = 4;
+                break;
+              }
+
+              _context7.next = 4;
+              return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), $pop, true);
+
+            case 4:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }));
+
+    return function (_x2) {
+      return _ref10.apply(this, arguments);
+    };
+  }()); // function create new chat box mini
+
+  function createMiniPopup(_x3, _x4, _x5, _x6) {
     return _createMiniPopup.apply(this, arguments);
   } // function create call msg local mini chat
 
 
   function _createMiniPopup() {
-    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(senderId, msgObj, token, classIsActive) {
+    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(senderId, msgObj, token, classIsActive) {
       var html, $popup, finalFiles;
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      return regeneratorRuntime.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context9.prev = _context9.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
-              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default send-take-photo m-0 p-2\" data-toggle=\"modal\" data-target=\"#modal-take-photo\">\n            <span class=\"icomoon icon-camera\"></span>\n          </button>\n          <button class=\"btn btn-default send-rec m-0 p-2\">\n            <span class=\"icomoon icon-mic\"></span>\n          </button>\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
+              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default send-take-photo m-0 p-2\" data-toggle=\"modal\" data-target=\"#modal-take-photo\">\n            <span class=\"icomoon icon-camera\"></span>\n          </button>\n          <button class=\"btn btn-default send-rec m-0 p-2 ps-rv\">\n            <span class=\"icomoon icon-mic\"></span>\n            <div class=\"rec-bar d-none\">\n              <div class=\"d-flex align-items-center justify-content-around\">\n                <span class=\"icomoon icon-close rec-cancel\"></span>\n                <span class=\"rec-time\">0:00</span>\n              </div>\n            </div>\n          </button>\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
               $('.wrap-chat-mini').append(html);
               $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
               finalFiles = [];
@@ -45135,7 +45180,7 @@ var Messenger = function () {
                 outputPreviewMsg($popup, msgObj.message);
               }
 
-              _context9.next = 7;
+              _context11.next = 7;
               return loadOldMsg($popup);
 
             case 7:
@@ -45143,11 +45188,11 @@ var Messenger = function () {
               window.emojisForMiniChat($popup); // event submit form chat
 
               $popup.find('form').on('submit', /*#__PURE__*/function () {
-                var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+                var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
                   var inputMsg;
-                  return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                  return regeneratorRuntime.wrap(function _callee8$(_context8) {
                     while (1) {
-                      switch (_context7.prev = _context7.next) {
+                      switch (_context8.prev = _context8.next) {
                         case 0:
                           // stop submit form
                           e.preventDefault();
@@ -45172,11 +45217,11 @@ var Messenger = function () {
                           }
 
                           if (!finalFiles.length) {
-                            _context7.next = 9;
+                            _context8.next = 9;
                             break;
                           }
 
-                          _context7.next = 7;
+                          _context8.next = 7;
                           return sendFile($popup, finalFiles);
 
                         case 7:
@@ -45185,16 +45230,41 @@ var Messenger = function () {
 
                         case 9:
                         case "end":
-                          return _context7.stop();
+                          return _context8.stop();
                       }
                     }
-                  }, _callee7);
+                  }, _callee8);
                 }));
 
-                return function (_x11) {
-                  return _ref10.apply(this, arguments);
+                return function (_x12) {
+                  return _ref11.apply(this, arguments);
                 };
               }());
+              $popup.find('.send-rec').on('mousedown', function () {
+                holdRec = true;
+                var $recBar = $(this).find('.rec-bar');
+                $recBar.removeClass('d-none');
+                window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+                  return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                    while (1) {
+                      switch (_context9.prev = _context9.next) {
+                        case 0:
+                          if (!holdRec) {
+                            _context9.next = 3;
+                            break;
+                          }
+
+                          _context9.next = 3;
+                          return window.recorderVoice($recBar);
+
+                        case 3:
+                        case "end":
+                          return _context9.stop();
+                      }
+                    }
+                  }, _callee9);
+                })), 1000);
+              });
               $popup.find('.send-file-input').on('change', function () {
                 if (this.files.length) {
                   var _html = '';
@@ -45267,23 +45337,23 @@ var Messenger = function () {
                 $(this).parents('.wrap-msg-box').removeClass('is-focus');
               }); // handle scroll box chat: load old msg, scroll to bottom
 
-              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-                return regeneratorRuntime.wrap(function _callee8$(_context8) {
+              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+                return regeneratorRuntime.wrap(function _callee10$(_context10) {
                   while (1) {
-                    switch (_context8.prev = _context8.next) {
+                    switch (_context10.prev = _context10.next) {
                       case 0:
                         if (!(this.scrollTop === 0)) {
-                          _context8.next = 7;
+                          _context10.next = 7;
                           break;
                         }
 
                         $popup.find('.wrap-loader-chat').removeClass('d-none');
-                        _context8.next = 4;
+                        _context10.next = 4;
                         return loadOldMsg($popup);
 
                       case 4:
                         $popup.find('.wrap-loader-chat').addClass('d-none');
-                        _context8.next = 8;
+                        _context10.next = 8;
                         break;
 
                       case 7:
@@ -45295,10 +45365,10 @@ var Messenger = function () {
 
                       case 8:
                       case "end":
-                        return _context8.stop();
+                        return _context10.stop();
                     }
                   }
-                }, _callee8, this);
+                }, _callee10, this);
               }))); // scroll to bottom chat box
 
               $popup.find(classScroll).on('click', function () {
@@ -45334,12 +45404,12 @@ var Messenger = function () {
                 window.callFriend($popup.attr('data-id'), 'video');
               });
 
-            case 23:
+            case 24:
             case "end":
-              return _context9.stop();
+              return _context11.stop();
           }
         }
-      }, _callee9);
+      }, _callee11);
     }));
     return _createMiniPopup.apply(this, arguments);
   }
@@ -45411,31 +45481,31 @@ var Messenger = function () {
 
   window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-  function loadOldMsg(_x6) {
+  function loadOldMsg(_x7) {
     return _loadOldMsg.apply(this, arguments);
   }
 
   function _loadOldMsg() {
-    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10($popup) {
+    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12($popup) {
       var currentPage, responsive, _responsive$data, messages, hasMsg, friendStatus, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response2, _error$response2$data;
 
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      return regeneratorRuntime.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               if (!(+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load'))) {
-                _context10.next = 24;
+                _context12.next = 24;
                 break;
               }
 
               $popup.attr('data-allow-load', '0');
               currentPage = +$popup.attr('data-page');
-              _context10.prev = 3;
-              _context10.next = 6;
+              _context12.prev = 3;
+              _context12.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat($popup.attr('data-id'), "&page=").concat(currentPage));
 
             case 6:
-              responsive = _context10.sent;
+              responsive = _context12.sent;
               _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg, friendStatus = _responsive$data.friendStatus; // $('.wrap-loader-chat').addClass('d-none')
 
               $popup.attr('data-page', currentPage + 1);
@@ -45498,20 +45568,20 @@ var Messenger = function () {
               newScroll = chatMain.scrollHeight - chatMain.clientHeight;
               chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
               $popup.attr('data-allow-load', '1');
-              _context10.next = 24;
+              _context12.next = 24;
               break;
 
             case 21:
-              _context10.prev = 21;
-              _context10.t0 = _context10["catch"](3);
-              window.outputErrorMessage(_context10.t0 === null || _context10.t0 === void 0 ? void 0 : (_error$response2 = _context10.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+              _context12.prev = 21;
+              _context12.t0 = _context12["catch"](3);
+              window.outputErrorMessage(_context12.t0 === null || _context12.t0 === void 0 ? void 0 : (_error$response2 = _context12.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
             case 24:
             case "end":
-              return _context10.stop();
+              return _context12.stop();
           }
         }
-      }, _callee10, null, [[3, 21]]);
+      }, _callee12, null, [[3, 21]]);
     }));
     return _loadOldMsg.apply(this, arguments);
   }
@@ -45525,17 +45595,17 @@ var Messenger = function () {
   } // function send file
 
 
-  function sendFile(_x7, _x8) {
+  function sendFile(_x8, _x9) {
     return _sendFile.apply(this, arguments);
   }
 
   function _sendFile() {
-    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11($popup, finalFiles) {
+    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13($popup, finalFiles) {
       var formData, idSession, res, $msgFile, _$msgFile;
 
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      return regeneratorRuntime.wrap(function _callee13$(_context13) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context13.prev = _context13.next) {
             case 0:
               formData = new FormData();
               idSession = new Date().valueOf();
@@ -45544,8 +45614,8 @@ var Messenger = function () {
 
                 createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
               });
-              _context11.prev = 3;
-              _context11.next = 6;
+              _context13.prev = 3;
+              _context13.next = 6;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
@@ -45553,7 +45623,7 @@ var Messenger = function () {
               });
 
             case 6:
-              res = _context11.sent;
+              res = _context13.sent;
               // $popup.find('.send-file-input').val('')
               // finalFiles = []
               // enabledInputFile()
@@ -45588,13 +45658,13 @@ var Messenger = function () {
                   $(ele).parents('.message').remove();
                 }
               });
-              _context11.next = 17;
+              _context13.next = 17;
               break;
 
             case 11:
-              _context11.prev = 11;
-              _context11.t0 = _context11["catch"](3);
-              console.dir(_context11.t0);
+              _context13.prev = 11;
+              _context13.t0 = _context13["catch"](3);
+              console.dir(_context13.t0);
               _$msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
               _$msgFile.parents('.message').remove(); // $popup.find('.send-file-input').val('')
@@ -45602,47 +45672,54 @@ var Messenger = function () {
               // enabledInputFile()
 
 
-              if (_context11.t0.response && _context11.t0.response.data && _context11.t0.response.data.message) {
-                window.outputErrorMessage(_context11.t0.response.data.message);
+              if (_context13.t0.response && _context13.t0.response.data && _context13.t0.response.data.message) {
+                window.outputErrorMessage(_context13.t0.response.data.message);
               }
 
             case 17:
             case "end":
-              return _context11.stop();
+              return _context13.stop();
           }
         }
-      }, _callee11, null, [[3, 11]]);
+      }, _callee13, null, [[3, 11]]);
     }));
     return _sendFile.apply(this, arguments);
   }
 
-  function sendFileSingle(_x9, _x10) {
+  function sendFileSingle(_x10, _x11) {
     return _sendFileSingle.apply(this, arguments);
   }
 
   function _sendFileSingle() {
-    _sendFileSingle = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(file, $popup) {
-      var formData, idSession, res, $msgFile, _$msgFile2;
+    _sendFileSingle = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(file, $popup) {
+      var audio,
+          formData,
+          idSession,
+          res,
+          $msgFile,
+          _$msgFile2,
+          _args14 = arguments;
 
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      return regeneratorRuntime.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
+              audio = _args14.length > 2 && _args14[2] !== undefined ? _args14[2] : false;
               formData = new FormData();
               idSession = new Date().valueOf();
               formData.append('files', file); // create message obj to show in client
 
               createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-              _context12.prev = 4;
-              _context12.next = 7;
+              _context14.prev = 5;
+              _context14.next = 8;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }
               });
 
-            case 7:
-              res = _context12.sent;
+            case 8:
+              res = _context14.sent;
               // $popup.find('.send-file-input').val('')
               // finalFiles = []
               // enabledInputFile()
@@ -45658,9 +45735,11 @@ var Messenger = function () {
                   if (fileFind.resourceType === 'image') {
                     $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" />"));
                   } else if (fileFind.resourceType === 'video') {
-                    $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(fileFind.url, "\"></video>"));
-                  } else if (fileFind.resourceType === 'audio') {
-                    $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(fileFind.url, "\"></audio>"));
+                    if (audio) {
+                      $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(fileFind.url, "\"><audio/>"));
+                    } else {
+                      $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(fileFind.url, "\"></video>"));
+                    }
                   } else {
                     ele.href = fileFind.url;
                   } // send message to server
@@ -45670,19 +45749,19 @@ var Messenger = function () {
                     message: fileFind.url,
                     type: 'file',
                     nameFile: fileFind.name,
-                    resourceType: fileFind.resourceType,
+                    resourceType: audio ? 'audio' : fileFind.resourceType,
                     token: $popup.find('input[name="_token"]').val()
                   });
                 } else {
                   $(ele).parents('.message').remove();
                 }
               });
-              _context12.next = 17;
+              _context14.next = 18;
               break;
 
-            case 12:
-              _context12.prev = 12;
-              _context12.t0 = _context12["catch"](4);
+            case 13:
+              _context14.prev = 13;
+              _context14.t0 = _context14["catch"](5);
               // console.dir(error);
               _$msgFile2 = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
@@ -45691,16 +45770,16 @@ var Messenger = function () {
               // enabledInputFile()
 
 
-              if (_context12.t0.response && _context12.t0.response.data && _context12.t0.response.data.message) {
-                window.outputErrorMessage(_context12.t0.response.data.message);
+              if (_context14.t0.response && _context14.t0.response.data && _context14.t0.response.data.message) {
+                window.outputErrorMessage(_context14.t0.response.data.message);
               }
 
-            case 17:
+            case 18:
             case "end":
-              return _context12.stop();
+              return _context14.stop();
           }
         }
-      }, _callee12, null, [[4, 12]]);
+      }, _callee14, null, [[5, 13]]);
     }));
     return _sendFileSingle.apply(this, arguments);
   }

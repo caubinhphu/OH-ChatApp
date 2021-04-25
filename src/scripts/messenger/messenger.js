@@ -11,6 +11,7 @@ const Messenger = (() => {
   let isDragging = 0;
   let isDragZone = false;
   let fileTake = null
+  let holdRec = false
 
   const oldSearchMiniRes = {}
 
@@ -222,6 +223,27 @@ const Messenger = (() => {
     fileTake = file
   })
 
+  $(document).on('mouseup', (e) => {
+    const $recBar = $('.rec-bar')
+    if (holdRec) {
+      holdRec = false
+      clearTimeout(window.timeRecHold)
+      $recBar.addClass('d-none').find('.rec-time').html('0:00')
+      if ($(e.target).hasClass('rec-cancel')) {
+        window.stopRecorderVoice(true)
+      } else {
+        window.stopRecorderVoice()
+      }
+    }
+  })
+
+  $(window).on('endRecorderVoice', async (e) => {
+    const $pop = $('.popup-chat-mini.is-active')
+    if ($pop.length) {
+      await sendFileSingle(new File([e.detail.blob], 'recorder.webm'), $pop, true)
+    }
+  })
+
   // function create new chat box mini
   async function createMiniPopup(senderId, msgObj, token, classIsActive) {
     const html = `
@@ -284,8 +306,14 @@ const Messenger = (() => {
           <button class="btn btn-default send-take-photo m-0 p-2" data-toggle="modal" data-target="#modal-take-photo">
             <span class="icomoon icon-camera"></span>
           </button>
-          <button class="btn btn-default send-rec m-0 p-2">
+          <button class="btn btn-default send-rec m-0 p-2 ps-rv">
             <span class="icomoon icon-mic"></span>
+            <div class="rec-bar d-none">
+              <div class="d-flex align-items-center justify-content-around">
+                <span class="icomoon icon-close rec-cancel"></span>
+                <span class="rec-time">0:00</span>
+              </div>
+            </div>
           </button>
           <button class="btn btn-default open-emojis" type="button">&#128512;</button>
           <input type="hidden" name="_token" value="${token}">
@@ -348,6 +376,17 @@ const Messenger = (() => {
         $popup.find('.send-file-input').val('')
         finalFiles = []
       }
+    });
+
+    $popup.find('.send-rec').on('mousedown', function() {
+      holdRec = true
+      const $recBar = $(this).find('.rec-bar')
+      $recBar.removeClass('d-none')
+      window.timeRecHold = setTimeout(async () => {
+        if (holdRec) {
+          await window.recorderVoice($recBar)
+        }
+      }, 1000);
     });
 
     $popup.find('.send-file-input').on('change', function() {
@@ -699,7 +738,7 @@ const Messenger = (() => {
     }
   }
 
-  async function sendFileSingle(file, $popup) {
+  async function sendFileSingle(file, $popup, audio = false) {
     const formData = new FormData();
     const idSession = new Date().valueOf();
     formData.append('files', file);
@@ -728,9 +767,11 @@ const Messenger = (() => {
           if (fileFind.resourceType === 'image') {
             $(ele).parents('.message-content').html(`<img class="pre-img" src="${fileFind.url}" alt="${fileFind.name}" />`)
           } else if (fileFind.resourceType === 'video') {
-            $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${fileFind.url}"></video>`)
-          } else if (fileFind.resourceType === 'audio') {
-            $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${fileFind.url}"></audio>`)
+            if (audio) {
+              $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${fileFind.url}"><audio/>`)
+            } else {
+              $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${fileFind.url}"></video>`) 
+            }
           } else {
             ele.href = fileFind.url
           }
@@ -739,7 +780,7 @@ const Messenger = (() => {
             message: fileFind.url,
             type: 'file',
             nameFile: fileFind.name,
-            resourceType: fileFind.resourceType,
+            resourceType: audio ? 'audio' : fileFind.resourceType,
             token: $popup.find('input[name="_token"]').val()
           });
         } else {
