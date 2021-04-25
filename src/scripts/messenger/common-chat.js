@@ -764,6 +764,7 @@ const CommonChat = (() => {
   async function takePicture($modal = $('#modal-take-photo')) {
     if (navigator.mediaDevices.getUserMedia) {
       try {
+        $('#is-taking').removeClass('d-none')
         const $wrapTake = $modal.find('.wrap-takephoto')
         $wrapTake.removeClass('d-none')
         // get video stream
@@ -818,10 +819,11 @@ const CommonChat = (() => {
             vd.src = null;
           }
         })
-
+        $('#is-taking').addClass('d-none')
         // return file
         return { file, dataURL }
       } catch (error) {
+        $('#is-taking').addClass('d-none')
         window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
       }
     }

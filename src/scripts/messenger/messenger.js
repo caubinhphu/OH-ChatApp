@@ -739,7 +739,7 @@ const Messenger = (() => {
         }
       })
     } catch (error) {
-      console.dir(error);
+      // console.dir(error);
       const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
       $msgFile.parents('.message').remove()
       // $popup.find('.send-file-input').val('')

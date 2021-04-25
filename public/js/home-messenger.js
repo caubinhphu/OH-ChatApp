@@ -40632,21 +40632,22 @@ var CommonChat = function () {
               $modal = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : $('#modal-take-photo');
 
               if (!navigator.mediaDevices.getUserMedia) {
-                _context2.next = 36;
+                _context2.next = 39;
                 break;
               }
 
               _context2.prev = 2;
+              $('#is-taking').removeClass('d-none');
               $wrapTake = $modal.find('.wrap-takephoto');
               $wrapTake.removeClass('d-none'); // get video stream
 
-              _context2.next = 7;
+              _context2.next = 8;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
-            case 7:
+            case 8:
               videoStream = _context2.sent;
               // show video stream
               $wrapTake.find('video').each(function (i, vd) {
@@ -40660,10 +40661,10 @@ var CommonChat = function () {
 
               $modal.find('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context2.next = 13;
+              _context2.next = 14;
               return sleep(4000);
 
-            case 13:
+            case 14:
               // take photo from video
               video = $wrapTake.find('video').get(0);
               canvas = document.createElement('canvas');
@@ -40676,10 +40677,10 @@ var CommonChat = function () {
               file = dataURLtoFile(dataURL, 'capture.jpg');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context2.next = 25;
+              _context2.next = 26;
               return Promise.all([snd.play(), sleep(320)]);
 
-            case 25:
+            case 26:
               // stop video stream after take photo
               $modal.find('.count-down').addClass('d-none');
               $wrapTake.addClass('d-none');
@@ -40691,24 +40692,26 @@ var CommonChat = function () {
                 } else {
                   vd.src = null;
                 }
-              }); // return file
+              });
+              $('#is-taking').addClass('d-none'); // return file
 
               return _context2.abrupt("return", {
                 file: file,
                 dataURL: dataURL
               });
 
-            case 33:
-              _context2.prev = 33;
+            case 35:
+              _context2.prev = 35;
               _context2.t0 = _context2["catch"](2);
+              $('#is-taking').addClass('d-none');
               window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
 
-            case 36:
+            case 39:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[2, 33]]);
+      }, _callee2, null, [[2, 35]]);
     }));
     return _takePicture.apply(this, arguments);
   }

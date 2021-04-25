@@ -7606,6 +7606,15 @@ label.send-file:hover .icomoon,
   max-width: 100%;
 }
 
+#is-taking {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1051;
+}
+
 .files-upload-box .file-item {
   height: 40px;
   width: 90px;
