@@ -39907,7 +39907,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var CommonChat = function () {
   var socket = io();
-  window.socket = socket;
+  window.socket = socket; // get media device of user
+
+  navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
   var oldSearchRes = {};
   socket.emit('msg-memberOnline', {
     memberId: $('#member-id').text()
@@ -40518,6 +40520,7 @@ var CommonChat = function () {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
+    var classAdd = '';
     var content = msgObj.message;
 
     if (isValidHttpUrl(msgObj.message)) {
@@ -40525,7 +40528,11 @@ var CommonChat = function () {
         if (msgObj.resourceType === 'image') {
           content = "<img class=\"pre-img\" src=\"".concat(msgObj.message, "\" alt=\"").concat(msgObj.nameFile, "\" />");
         } else if (msgObj.resourceType === 'video') {
-          content = "<video class=\"pre-video\" muted autoplay src=\"".concat(msgObj.message, "\"><video/>");
+          content = "<video class=\"pre-video\" controls src=\"".concat(msgObj.message, "\"></video>");
+          classAdd = 'd-flex';
+        } else if (msgObj.resourceType === 'audio') {
+          content = "<audio class=\"pre-video pre-audio\" controls src=\"".concat(msgObj.message, "\"><audio/>");
+          classAdd = 'd-flex';
         } else {
           content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
         }
@@ -40536,10 +40543,10 @@ var CommonChat = function () {
 
     if (me) {
       div.className = "message text-right ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0 ").concat(classAdd, "\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
       div.className = "message ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content ").concat(classAdd, "\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
     } // append message
 
 
@@ -40732,7 +40739,97 @@ var CommonChat = function () {
     return new File([u8arr], filename, {
       type: mime
     });
+  } // handle recorder voice
+
+
+  function recorderVoice() {
+    return _recorderVoice.apply(this, arguments);
   }
+
+  function _recorderVoice() {
+    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var blobs;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              if (!navigator.mediaDevices.getUserMedia) {
+                _context3.next = 15;
+                break;
+              }
+
+              _context3.prev = 1;
+              _context3.next = 4;
+              return navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+              });
+
+            case 4:
+              window.voiceRECStream = _context3.sent;
+              blobs = [];
+              window.localREC = new MediaRecorder(window.voiceRECStream, {
+                mimeType: 'audio/webm;codecs=opus'
+              });
+
+              window.localREC.ondataavailable = function (e) {
+                return blobs.push(e.data);
+              };
+
+              window.localREC.onstop = function () {
+                var blob = new Blob(blobs, {
+                  type: 'audio/webm'
+                }); // window.urlRec = window.URL.createObjectURL(blob);
+                // console.log(window.urlRec);
+                // window.fileRec = dataURLtoFile(window.urlRec, 'recorder.webm')
+
+                var event = new CustomEvent('endRecorderVoice', {
+                  detail: {
+                    blob: blob
+                  }
+                }); // dispatch (trigger) event custom
+
+                window.dispatchEvent(event);
+              };
+
+              window.localREC.start();
+              _context3.next = 15;
+              break;
+
+            case 12:
+              _context3.prev = 12;
+              _context3.t0 = _context3["catch"](1);
+              // console.log(error);
+              outputWarnMessage('Không thể ghi âm!');
+
+            case 15:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[1, 12]]);
+    }));
+    return _recorderVoice.apply(this, arguments);
+  }
+
+  window.recorderVoice = recorderVoice;
+
+  function stopRecorderVoice() {
+    if (window.localREC) {
+      window.localREC.stop();
+      window.localREC = null;
+    }
+
+    if (window.voiceRECStream) {
+      window.voiceRECStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
+
+    window.localRECStream = null;
+  }
+
+  window.stopRecorderVoice = stopRecorderVoice;
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);
@@ -45352,7 +45449,9 @@ var Messenger = function () {
                     if (msg.type === 'image') {
                       _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
                     } else if (msg.type === 'video') {
-                      _contentHtml = "<small class=\"message-content mx-0\"><video class=\"pre-video\" muted autoplay src=\"".concat(msg.content, "\"><video/></small>");
+                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video/></small>");
+                    } else if (msg.type === 'audio') {
+                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio/></small>");
                     } else {
                       _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
                     }
@@ -45369,7 +45468,9 @@ var Messenger = function () {
                   if (msg.type === 'image') {
                     contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
                   } else if (msg.type === 'video') {
-                    contentHtml = "<small class=\"message-content\"><video class=\"pre-video\" muted autoplay src=\"".concat(msg.content, "\"><video/></small>");
+                    contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                  } else if (msg.type === 'audio') {
+                    contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio></small>");
                   } else {
                     contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
                   }
@@ -45458,7 +45559,9 @@ var Messenger = function () {
                   if (file.resourceType === 'image') {
                     $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
                   } else if (file.resourceType === 'video') {
-                    $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                    $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                  } else if (file.resourceType === 'aduio') {
+                    $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"></audio>"));
                   } else {
                     ele.href = file.url;
                   } // send message to server
@@ -45545,7 +45648,9 @@ var Messenger = function () {
                   if (fileFind.resourceType === 'image') {
                     $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" />"));
                   } else if (fileFind.resourceType === 'video') {
-                    $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(fileFind.url, "\"><video/>"));
+                    $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(fileFind.url, "\"></video>"));
+                  } else if (fileFind.resourceType === 'audio') {
+                    $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(fileFind.url, "\"></audio>"));
                   } else {
                     ele.href = fileFind.url;
                   } // send message to server

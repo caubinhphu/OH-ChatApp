@@ -74,11 +74,13 @@ block contentMain
                     div
                       .msg-me
                         if (msg.fileName)
-                          small.message-content.mx-0
+                          small.message-content.mx-0.d-flex
                             if (msg.type === 'image')
                               img.pre-img(src=msg.content, alt=msg.fileName)
                             else if (msg.type === 'video')
-                              video.pre-video(src=msg.content, autoplay, muted, loop)
+                              video.pre-video(src=msg.content, controls)
+                            else if (msg.type === 'audio')
+                              audio.pre-video.pre-audio(src=msg.content, controls)
                             else
                               a(href=msg.content, target="_blank")= msg.fileName
                         else if (msg.isLink)
@@ -95,11 +97,13 @@ block contentMain
                       .msg
                         img.message-avatar(src=msg.avatar, alt=msg.name)
                         if (msg.fileName)
-                          small.message-content
+                          small.message-content.d-flex
                             if (msg.type === 'image')
                               img.pre-img(src=msg.content, alt=msg.fileName)
                             else if (msg.type === 'video')
-                              video.pre-video(src=msg.content, autoplay, muted, loop)
+                              video.pre-video(src=msg.content, controls)
+                            else if (msg.type === 'audio')
+                              audio.pre-video.pre-audio(src=msg.content, controls)
                             else
                               a(href=msg.content, target="_blank")= msg.fileName
                         else if (msg.isLink)

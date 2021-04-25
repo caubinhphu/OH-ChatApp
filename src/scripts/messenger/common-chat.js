@@ -5,6 +5,12 @@ const CommonChat = (() => {
   const socket = io();
   window.socket = socket
 
+  // get media device of user
+  navigator.mediaDevices.getUserMedia =
+    navigator.mediaDevices.getUserMedia ||
+    navigator.mediaDevices.webkitGetUserMedia ||
+    navigator.mediaDevices.mozGetUserMedia ||
+    navigator.mediaDevices.msGetUserMedia;
 
   const oldSearchRes = {}
 
@@ -676,14 +682,20 @@ const CommonChat = (() => {
    */
   function outputMessage(msgObj, me = false, $chatBox = null) {
     const div = document.createElement('div');
+    let classAdd = ''
     let content = msgObj.message
     if (isValidHttpUrl(msgObj.message)) {
       if (msgObj.type === 'file') {
         if (msgObj.resourceType === 'image') {
           content = `<img class="pre-img" src="${msgObj.message}" alt="${msgObj.nameFile}" />`  
         } else if (msgObj.resourceType === 'video') {
-          content = `<video class="pre-video" muted autoplay src="${msgObj.message}"><video/>`  
-        } else {
+          content = `<video class="pre-video" controls src="${msgObj.message}"></video>`  
+          classAdd = 'd-flex'
+        } else if (msgObj.resourceType === 'audio') {
+          content = `<audio class="pre-video pre-audio" controls src="${msgObj.message}"><audio/>`  
+          classAdd = 'd-flex'
+        }
+        else {
           content = `<a href="${msgObj.message}" target="_blank">${msgObj.nameFile}</a>`
         }
       } else {
@@ -695,7 +707,7 @@ const CommonChat = (() => {
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
         <div>
           <div class="msg-me">
-            <small class="message-content mx-0">${content}</small>
+            <small class="message-content mx-0 ${classAdd}">${content}</small>
             ${ msgObj.timeCall || '' }
           </div>
         <div>`;
@@ -705,7 +717,7 @@ const CommonChat = (() => {
       <div>
         <div class="msg">
           <img class="message-avatar" src="${msgObj.avatar}" alt="${msgObj.username}" />
-          <small class="message-content">${content}</small>
+          <small class="message-content ${classAdd}">${content}</small>
           ${ msgObj.timeCall || '' }
         </div>
       </div>`;
@@ -843,6 +855,52 @@ const CommonChat = (() => {
     }
     return new File([u8arr], filename, { type: mime });
   }
+
+  // handle recorder voice
+  async function recorderVoice() {
+    if (navigator.mediaDevices.getUserMedia) {
+      try {
+        window.voiceRECStream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true
+        });
+
+        const blobs = [];
+        window.localREC = new MediaRecorder(window.voiceRECStream, {mimeType: 'audio/webm;codecs=opus'});
+        window.localREC.ondataavailable = (e) => blobs.push(e.data);
+        window.localREC.onstop = () => {
+          const blob = new Blob(blobs, {type: 'audio/webm'});
+          // window.urlRec = window.URL.createObjectURL(blob);
+          // console.log(window.urlRec);
+          // window.fileRec = dataURLtoFile(window.urlRec, 'recorder.webm')
+          const event = new CustomEvent('endRecorderVoice', {
+            detail: { blob }
+          });
+          // dispatch (trigger) event custom
+          window.dispatchEvent(event)
+        }
+        window.localREC.start();
+      } catch (error) {
+        // console.log(error);
+        outputWarnMessage('Không thể ghi âm!')
+      }
+    }
+  }
+  window.recorderVoice = recorderVoice
+
+  function stopRecorderVoice() {
+    if (window.localREC) {
+      window.localREC.stop();
+      window.localREC = null
+    }
+    if (window.voiceRECStream) {
+      window.voiceRECStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+    }
+    window.localRECStream = null;
+  }
+  window.stopRecorderVoice = stopRecorderVoice
 })()
 
 export default CommonChat

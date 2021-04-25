@@ -17,6 +17,7 @@ const Index = (() => {
   let isDragging = 0;
   let isDragZone = false;
   let fileTake = null
+  let holdRec = false
 
   if (msgForm) {
     // scroll bottom
@@ -189,7 +190,9 @@ const Index = (() => {
                 if (msg.type === 'image') {
                   contentHtml = `<small class="message-content mx-0"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
                 } else if (msg.type === 'video') {
-                  contentHtml = `<small class="message-content mx-0"><video class="pre-video" muted autoplay src="${msg.content}"><video/></small>`  
+                  contentHtml = `<small class="message-content mx-0 d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
+                } else if (msg.type === 'audio') {
+                  contentHtml = `<small class="message-content mx-0 d-flex"><audio class="pre-video pre-audio" controls src="${msg.content}"><audio/></small>`  
                 } else {
                   contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
                 }
@@ -212,7 +215,9 @@ const Index = (() => {
               if (msg.type === 'image') {
                 contentHtml = `<small class="message-content"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
               } else if (msg.type === 'video') {
-                contentHtml = `<small class="message-content"><video class="pre-video" muted autoplay src="${msg.content}"><video/></small>`  
+                contentHtml = `<small class="message-content d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
+              } else if (msg.type === 'audio') {
+                contentHtml = `<small class="message-content d-flex"><audio class="pre-video pre-audio" controls src="${msg.content}"><audio/></small>`  
               } else {
                 contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
               }
@@ -357,6 +362,29 @@ const Index = (() => {
       fileTake = file
     })
 
+    
+    $('.send-rec').on('mousedown', () => {
+      holdRec = true
+      window.timeRecHold = setTimeout(async () => {
+        if (holdRec) {
+          await window.recorderVoice()
+        }
+      }, 1000);
+    });
+    $(document).on('mouseup', () => {
+    	if (holdRec) {
+      	holdRec = false
+        console.log('end')
+        clearTimeout(window.timeRecHold)
+        window.stopRecorderVoice()
+      }
+    })
+
+    $(window).on('endRecorderVoice', async (e) => {
+      console.log(e.detail.blob);
+      await sendFileSingle(new File([e.detail.blob], 'recorder.webm'), true)
+    })
+
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
       if (friendIdChatting === senderId) {
@@ -427,7 +455,9 @@ const Index = (() => {
             if (file.resourceType === 'image') {
               $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
             } else if (file.resourceType === 'video') {
-              $(ele).parents('.message-content').html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+              $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${file.url}"></video>`)
+            } else if (file.resourceType === 'audio') {
+              $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${file.url}"><audio/>`)
             } else {
               ele.href = file.url
             }
@@ -456,7 +486,7 @@ const Index = (() => {
       }
     }
 
-    async function sendFileSingle(file) {
+    async function sendFileSingle(file, audio = false) {
       const formData = new FormData();
       const idSession = new Date().valueOf();
       formData.append('files', file);
@@ -483,7 +513,11 @@ const Index = (() => {
             if (file.resourceType === 'image') {
               $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
             } else if (file.resourceType === 'video') {
-              $(ele).parents('.message-content').html(`<video class="pre-video" muted autoplay src="${file.url}"><video/>`)
+              if (audio) {
+                $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${file.url}"><audio/>`)
+              } else {
+                $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${file.url}"></video>`) 
+              }
             } else {
               ele.href = file.url
             }
@@ -492,7 +526,7 @@ const Index = (() => {
               message: file.url,
               type: 'file',
               nameFile: file.name,
-              resourceType: file.resourceType,
+              resourceType: audio ? 'audio' : file.resourceType,
               token: msgForm.elements._token.value
             });
           } else {

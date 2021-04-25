@@ -11,7 +11,7 @@ const messageSchema = mongoose.Schema({
   },
   type: {
     type: String,
-    default: 'text', // [text, raw, image, video, call-audio, call-audio-refuse, call-video, call-video-refuse]
+    default: 'text', // [text, raw, image, video, audio, call-audio, call-audio-refuse, call-video, call-video-refuse]
   },
   externalModelType:{
     type: String,

@@ -124,6 +124,8 @@
   padding: 4px 8px;
   border-radius: 5px;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 }
 
 .msg-me {
@@ -135,6 +137,8 @@
   margin-left: auto;
   text-align: left;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 }
 
 .message-avatar {

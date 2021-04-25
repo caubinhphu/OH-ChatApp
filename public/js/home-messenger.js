@@ -39907,7 +39907,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var CommonChat = function () {
   var socket = io();
-  window.socket = socket;
+  window.socket = socket; // get media device of user
+
+  navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia || navigator.mediaDevices.msGetUserMedia;
   var oldSearchRes = {};
   socket.emit('msg-memberOnline', {
     memberId: $('#member-id').text()
@@ -40518,6 +40520,7 @@ var CommonChat = function () {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
+    var classAdd = '';
     var content = msgObj.message;
 
     if (isValidHttpUrl(msgObj.message)) {
@@ -40525,7 +40528,11 @@ var CommonChat = function () {
         if (msgObj.resourceType === 'image') {
           content = "<img class=\"pre-img\" src=\"".concat(msgObj.message, "\" alt=\"").concat(msgObj.nameFile, "\" />");
         } else if (msgObj.resourceType === 'video') {
-          content = "<video class=\"pre-video\" muted autoplay src=\"".concat(msgObj.message, "\"><video/>");
+          content = "<video class=\"pre-video\" controls src=\"".concat(msgObj.message, "\"></video>");
+          classAdd = 'd-flex';
+        } else if (msgObj.resourceType === 'audio') {
+          content = "<audio class=\"pre-video pre-audio\" controls src=\"".concat(msgObj.message, "\"><audio/>");
+          classAdd = 'd-flex';
         } else {
           content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\">").concat(msgObj.nameFile, "</a>");
         }
@@ -40536,10 +40543,10 @@ var CommonChat = function () {
 
     if (me) {
       div.className = "message text-right ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0 ").concat(classAdd, "\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
       div.className = "message ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content ").concat(classAdd, "\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
     } // append message
 
 
@@ -40732,7 +40739,97 @@ var CommonChat = function () {
     return new File([u8arr], filename, {
       type: mime
     });
+  } // handle recorder voice
+
+
+  function recorderVoice() {
+    return _recorderVoice.apply(this, arguments);
   }
+
+  function _recorderVoice() {
+    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var blobs;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              if (!navigator.mediaDevices.getUserMedia) {
+                _context3.next = 15;
+                break;
+              }
+
+              _context3.prev = 1;
+              _context3.next = 4;
+              return navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+              });
+
+            case 4:
+              window.voiceRECStream = _context3.sent;
+              blobs = [];
+              window.localREC = new MediaRecorder(window.voiceRECStream, {
+                mimeType: 'audio/webm;codecs=opus'
+              });
+
+              window.localREC.ondataavailable = function (e) {
+                return blobs.push(e.data);
+              };
+
+              window.localREC.onstop = function () {
+                var blob = new Blob(blobs, {
+                  type: 'audio/webm'
+                }); // window.urlRec = window.URL.createObjectURL(blob);
+                // console.log(window.urlRec);
+                // window.fileRec = dataURLtoFile(window.urlRec, 'recorder.webm')
+
+                var event = new CustomEvent('endRecorderVoice', {
+                  detail: {
+                    blob: blob
+                  }
+                }); // dispatch (trigger) event custom
+
+                window.dispatchEvent(event);
+              };
+
+              window.localREC.start();
+              _context3.next = 15;
+              break;
+
+            case 12:
+              _context3.prev = 12;
+              _context3.t0 = _context3["catch"](1);
+              // console.log(error);
+              outputWarnMessage('Không thể ghi âm!');
+
+            case 15:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[1, 12]]);
+    }));
+    return _recorderVoice.apply(this, arguments);
+  }
+
+  window.recorderVoice = recorderVoice;
+
+  function stopRecorderVoice() {
+    if (window.localREC) {
+      window.localREC.stop();
+      window.localREC = null;
+    }
+
+    if (window.voiceRECStream) {
+      window.voiceRECStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
+
+    window.localRECStream = null;
+  }
+
+  window.stopRecorderVoice = stopRecorderVoice;
 }();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (CommonChat);
@@ -41968,16 +42065,17 @@ var Index = function () {
   var isDragging = 0;
   var isDragZone = false;
   var fileTake = null;
+  var holdRec = false;
 
   if (msgForm) {
     // function send file
     var sendFile = /*#__PURE__*/function () {
-      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
         var formData, idSession, res, $msgFile, _$msgFile;
 
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 formData = new FormData();
                 idSession = new Date().valueOf();
@@ -41986,8 +42084,8 @@ var Index = function () {
 
                   window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
                 });
-                _context7.prev = 3;
-                _context7.next = 6;
+                _context9.prev = 3;
+                _context9.next = 6;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
@@ -41995,7 +42093,7 @@ var Index = function () {
                 });
 
               case 6:
-                res = _context7.sent;
+                res = _context9.sent;
                 $('#send-file').val('');
                 finalFiles = []; // enabledInputFile()
 
@@ -42011,7 +42109,9 @@ var Index = function () {
                     if (file.resourceType === 'image') {
                       $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
                     } else if (file.resourceType === 'video') {
-                      $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                      $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                    } else if (file.resourceType === 'audio') {
+                      $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"><audio/>"));
                     } else {
                       ele.href = file.url;
                     } // send message to server
@@ -42028,13 +42128,13 @@ var Index = function () {
                     $(ele).parents('.message').remove();
                   }
                 });
-                _context7.next = 21;
+                _context9.next = 21;
                 break;
 
               case 13:
-                _context7.prev = 13;
-                _context7.t0 = _context7["catch"](3);
-                console.dir(_context7.t0);
+                _context9.prev = 13;
+                _context9.t0 = _context9["catch"](3);
+                console.dir(_context9.t0);
                 _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
                 _$msgFile.parents('.message').remove();
@@ -42042,46 +42142,53 @@ var Index = function () {
                 $('#send-file').val('');
                 finalFiles = []; // enabledInputFile()
 
-                if (_context7.t0.response && _context7.t0.response.data && _context7.t0.response.data.message) {
-                  window.outputErrorMessage(_context7.t0.response.data.message);
+                if (_context9.t0.response && _context9.t0.response.data && _context9.t0.response.data.message) {
+                  window.outputErrorMessage(_context9.t0.response.data.message);
                 }
 
               case 21:
               case "end":
-                return _context7.stop();
+                return _context9.stop();
             }
           }
-        }, _callee7, null, [[3, 13]]);
+        }, _callee9, null, [[3, 13]]);
       }));
 
       return function sendFile() {
-        return _ref10.apply(this, arguments);
+        return _ref12.apply(this, arguments);
       };
     }();
 
     var sendFileSingle = /*#__PURE__*/function () {
-      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(file) {
-        var formData, idSession, res, $msgFile, _$msgFile2;
+      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(file) {
+        var audio,
+            formData,
+            idSession,
+            res,
+            $msgFile,
+            _$msgFile2,
+            _args10 = arguments;
 
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
+                audio = _args10.length > 1 && _args10[1] !== undefined ? _args10[1] : false;
                 formData = new FormData();
                 idSession = new Date().valueOf();
                 formData.append('files', file); // create message obj to show in client
 
                 window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-                _context8.prev = 4;
-                _context8.next = 7;
+                _context10.prev = 5;
+                _context10.next = 8;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
                   }
                 });
 
-              case 7:
-                res = _context8.sent;
+              case 8:
+                res = _context10.sent;
                 // enabledInputFile()
                 $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
                 $msgFile.each(function (i, ele) {
@@ -42095,7 +42202,11 @@ var Index = function () {
                     if (file.resourceType === 'image') {
                       $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
                     } else if (file.resourceType === 'video') {
-                      $(ele).parents('.message-content').html("<video class=\"pre-video\" muted autoplay src=\"".concat(file.url, "\"><video/>"));
+                      if (audio) {
+                        $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"><audio/>"));
+                      } else {
+                        $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                      }
                     } else {
                       ele.href = file.url;
                     } // send message to server
@@ -42105,38 +42216,38 @@ var Index = function () {
                       message: file.url,
                       type: 'file',
                       nameFile: file.name,
-                      resourceType: file.resourceType,
+                      resourceType: audio ? 'audio' : file.resourceType,
                       token: msgForm.elements._token.value
                     });
                   } else {
                     $(ele).parents('.message').remove();
                   }
                 });
-                _context8.next = 17;
+                _context10.next = 18;
                 break;
 
-              case 12:
-                _context8.prev = 12;
-                _context8.t0 = _context8["catch"](4);
+              case 13:
+                _context10.prev = 13;
+                _context10.t0 = _context10["catch"](5);
                 _$msgFile2 = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
                 _$msgFile2.parents('.message').remove(); // enabledInputFile()
 
 
-                if (_context8.t0.response && _context8.t0.response.data && _context8.t0.response.data.message) {
-                  window.outputErrorMessage(_context8.t0.response.data.message);
+                if (_context10.t0.response && _context10.t0.response.data && _context10.t0.response.data.message) {
+                  window.outputErrorMessage(_context10.t0.response.data.message);
                 }
 
-              case 17:
+              case 18:
               case "end":
-                return _context8.stop();
+                return _context10.stop();
             }
           }
-        }, _callee8, null, [[4, 12]]);
+        }, _callee10, null, [[5, 13]]);
       }));
 
-      return function sendFileSingle(_x2) {
-        return _ref11.apply(this, arguments);
+      return function sendFileSingle(_x3) {
+        return _ref13.apply(this, arguments);
       };
     }();
 
@@ -42326,7 +42437,9 @@ var Index = function () {
                     if (msg.type === 'image') {
                       _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
                     } else if (msg.type === 'video') {
-                      _contentHtml = "<small class=\"message-content mx-0\"><video class=\"pre-video\" muted autoplay src=\"".concat(msg.content, "\"><video/></small>");
+                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                    } else if (msg.type === 'audio') {
+                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"><audio/></small>");
                     } else {
                       _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
                     }
@@ -42343,7 +42456,9 @@ var Index = function () {
                   if (msg.type === 'image') {
                     contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
                   } else if (msg.type === 'video') {
-                    contentHtml = "<small class=\"message-content\"><video class=\"pre-video\" muted autoplay src=\"".concat(msg.content, "\"><video/></small>");
+                    contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                  } else if (msg.type === 'audio') {
+                    contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"><audio/></small>");
                   } else {
                     contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
                   }
@@ -42561,11 +42676,64 @@ var Index = function () {
           }
         }
       }, _callee6);
-    }))); // receive msg obj from server
+    })));
+    $('.send-rec').on('mousedown', function () {
+      holdRec = true;
+      window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                if (!holdRec) {
+                  _context7.next = 3;
+                  break;
+                }
 
-    window.socket.on('msg-messenger', function (_ref7) {
-      var senderId = _ref7.senderId,
-          msgObj = _ref7.msg;
+                _context7.next = 3;
+                return window.recorderVoice();
+
+              case 3:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      })), 1000);
+    });
+    $(document).on('mouseup', function () {
+      if (holdRec) {
+        holdRec = false;
+        console.log('end');
+        clearTimeout(window.timeRecHold);
+        window.stopRecorderVoice();
+      }
+    });
+    $(window).on('endRecorderVoice', /*#__PURE__*/function () {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                console.log(e.detail.blob);
+                _context8.next = 3;
+                return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), true);
+
+              case 3:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8);
+      }));
+
+      return function (_x2) {
+        return _ref8.apply(this, arguments);
+      };
+    }()); // receive msg obj from server
+
+    window.socket.on('msg-messenger', function (_ref9) {
+      var senderId = _ref9.senderId,
+          msgObj = _ref9.msg;
 
       if (friendIdChatting === senderId) {
         // output message
@@ -42581,8 +42749,8 @@ var Index = function () {
       }
     }); // receive signal friend is online
 
-    window.socket.on('msg-friendOnline', function (_ref8) {
-      var memberId = _ref8.memberId;
+    window.socket.on('msg-friendOnline', function (_ref10) {
+      var memberId = _ref10.memberId;
       $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
       var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
 
@@ -42591,8 +42759,8 @@ var Index = function () {
       }
     }); // receive signal friend is offline
 
-    window.socket.on('msg-friendOffline', function (_ref9) {
-      var memberId = _ref9.memberId;
+    window.socket.on('msg-friendOffline', function (_ref11) {
+      var memberId = _ref11.memberId;
       $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
       var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
 

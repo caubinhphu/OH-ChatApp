@@ -7695,12 +7695,13 @@ label.send-file:hover .icomoon,
   top: 60px;
 }
 
-.pre-img {
-  max-width: 100px;
-}
-
+.pre-img,
 .pre-video {
   max-width: 245px;
+}
+
+.pre-audio {
+  height: 35px;
 }
 
 @media only screen and (max-width: 850px) {
@@ -7837,6 +7838,8 @@ label.send-file:hover .icomoon,
   padding: 4px 8px;
   border-radius: 5px;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 }
 
 .msg-me {
@@ -7848,6 +7851,8 @@ label.send-file:hover .icomoon,
   margin-left: auto;
   text-align: left;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 }
 
 .message-avatar {
