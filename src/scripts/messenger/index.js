@@ -363,20 +363,27 @@ const Index = (() => {
     })
 
     
-    $('.send-rec').on('mousedown', () => {
+    $('.send-rec').on('mousedown', function() {
       holdRec = true
+      const $recBar = $(this).find('.rec-bar')
+      $recBar.removeClass('d-none')
       window.timeRecHold = setTimeout(async () => {
         if (holdRec) {
-          await window.recorderVoice()
+          await window.recorderVoice($recBar)
         }
       }, 1000);
     });
-    $(document).on('mouseup', () => {
+    $(document).on('mouseup', (e) => {
+      const $recBar = $('.rec-bar')
     	if (holdRec) {
-      	holdRec = false
-        console.log('end')
+        holdRec = false
         clearTimeout(window.timeRecHold)
-        window.stopRecorderVoice()
+        $recBar.addClass('d-none').find('.rec-time').html('0:00')
+        if ($(e.target).hasClass('rec-cancel')) {
+          window.stopRecorderVoice(true)
+        } else {
+          window.stopRecorderVoice()
+        }
       }
     })
 

@@ -857,7 +857,7 @@ const CommonChat = (() => {
   }
 
   // handle recorder voice
-  async function recorderVoice() {
+  async function recorderVoice($recBar) {
     if (navigator.mediaDevices.getUserMedia) {
       try {
         window.voiceRECStream = await navigator.mediaDevices.getUserMedia({
@@ -865,19 +865,26 @@ const CommonChat = (() => {
           audio: true
         });
 
+        let time = 1
+        window.timeRec = setInterval(() => {
+          const m = Math.floor(time / 60)
+          const s = time - (60 * m)
+          $recBar.find('.rec-time').html(`${m}:${s.toString().padStart(2, '0')}`)
+          time++
+        }, 1000);
+
         const blobs = [];
         window.localREC = new MediaRecorder(window.voiceRECStream, {mimeType: 'audio/webm;codecs=opus'});
         window.localREC.ondataavailable = (e) => blobs.push(e.data);
         window.localREC.onstop = () => {
-          const blob = new Blob(blobs, {type: 'audio/webm'});
-          // window.urlRec = window.URL.createObjectURL(blob);
-          // console.log(window.urlRec);
-          // window.fileRec = dataURLtoFile(window.urlRec, 'recorder.webm')
-          const event = new CustomEvent('endRecorderVoice', {
-            detail: { blob }
-          });
-          // dispatch (trigger) event custom
-          window.dispatchEvent(event)
+          if (!window.cancelRec) {
+            const blob = new Blob(blobs, {type: 'audio/webm'});
+            const event = new CustomEvent('endRecorderVoice', {
+              detail: { blob }
+            });
+            // dispatch (trigger) event custom
+            window.dispatchEvent(event)
+          }
         }
         window.localREC.start();
       } catch (error) {
@@ -888,8 +895,9 @@ const CommonChat = (() => {
   }
   window.recorderVoice = recorderVoice
 
-  function stopRecorderVoice() {
+  function stopRecorderVoice(cancel = false) {
     if (window.localREC) {
+      window.cancelRec = cancel
       window.localREC.stop();
       window.localREC = null
     }
@@ -899,6 +907,7 @@ const CommonChat = (() => {
       });
     }
     window.localRECStream = null;
+    clearInterval(window.timeRec)
   }
   window.stopRecorderVoice = stopRecorderVoice
 })()

@@ -422,6 +422,32 @@ label.send-file,
 .pre-audio {
   height: 35px;
 }
+.send-rec {
+  overflow: visible;
+  .rec-bar {
+    position: absolute;
+    top: -25px;
+    left: -50px;
+    right: -50px;
+    height: 30px;
+    background-color: $color-10;
+    color: $white !important;
+    border-radius: 7px;
+    span {
+      line-height: 1.8;
+    }
+    .icomoon {
+      color: $white !important;
+    }
+  }
+}
+.rec-cancel {
+  transition: all .25s;
+  &:hover {
+    color: $white !important;
+    transform: scale(1.2);
+  }
+}
 @media only screen and (max-width: 850px) {
   #user {
     display: none;

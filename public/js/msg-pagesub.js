@@ -40742,19 +40742,19 @@ var CommonChat = function () {
   } // handle recorder voice
 
 
-  function recorderVoice() {
+  function recorderVoice(_x) {
     return _recorderVoice.apply(this, arguments);
   }
 
   function _recorderVoice() {
-    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var blobs;
+    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3($recBar) {
+      var time, blobs;
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 15;
+                _context3.next = 17;
                 break;
               }
 
@@ -40767,6 +40767,13 @@ var CommonChat = function () {
 
             case 4:
               window.voiceRECStream = _context3.sent;
+              time = 1;
+              window.timeRec = setInterval(function () {
+                var m = Math.floor(time / 60);
+                var s = time - 60 * m;
+                $recBar.find('.rec-time').html("".concat(m, ":").concat(s.toString().padStart(2, '0')));
+                time++;
+              }, 1000);
               blobs = [];
               window.localREC = new MediaRecorder(window.voiceRECStream, {
                 mimeType: 'audio/webm;codecs=opus'
@@ -40777,37 +40784,36 @@ var CommonChat = function () {
               };
 
               window.localREC.onstop = function () {
-                var blob = new Blob(blobs, {
-                  type: 'audio/webm'
-                }); // window.urlRec = window.URL.createObjectURL(blob);
-                // console.log(window.urlRec);
-                // window.fileRec = dataURLtoFile(window.urlRec, 'recorder.webm')
+                if (!window.cancelRec) {
+                  var blob = new Blob(blobs, {
+                    type: 'audio/webm'
+                  });
+                  var event = new CustomEvent('endRecorderVoice', {
+                    detail: {
+                      blob: blob
+                    }
+                  }); // dispatch (trigger) event custom
 
-                var event = new CustomEvent('endRecorderVoice', {
-                  detail: {
-                    blob: blob
-                  }
-                }); // dispatch (trigger) event custom
-
-                window.dispatchEvent(event);
+                  window.dispatchEvent(event);
+                }
               };
 
               window.localREC.start();
-              _context3.next = 15;
+              _context3.next = 17;
               break;
 
-            case 12:
-              _context3.prev = 12;
+            case 14:
+              _context3.prev = 14;
               _context3.t0 = _context3["catch"](1);
               // console.log(error);
               outputWarnMessage('Không thể ghi âm!');
 
-            case 15:
+            case 17:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[1, 12]]);
+      }, _callee3, null, [[1, 14]]);
     }));
     return _recorderVoice.apply(this, arguments);
   }
@@ -40815,7 +40821,10 @@ var CommonChat = function () {
   window.recorderVoice = recorderVoice;
 
   function stopRecorderVoice() {
+    var cancel = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
     if (window.localREC) {
+      window.cancelRec = cancel;
       window.localREC.stop();
       window.localREC = null;
     }
@@ -40827,6 +40836,7 @@ var CommonChat = function () {
     }
 
     window.localRECStream = null;
+    clearInterval(window.timeRec);
   }
 
   window.stopRecorderVoice = stopRecorderVoice;

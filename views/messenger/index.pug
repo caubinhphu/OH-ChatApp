@@ -122,8 +122,12 @@ block contentMain
               input#send-file.d-none(type="file", name="file", multiple)
               button.btn.btn-default.send-take-photo.m-0.p-2(data-toggle="modal", data-target="#modal-take-photo")
                 span.icomoon.icon-camera
-              button.btn.btn-default.send-rec.m-0.p-2
+              button.btn.btn-default.send-rec.m-0.p-2.ps-rv
                 span.icomoon.icon-mic
+                .rec-bar.d-none
+                  .d-flex.align-items-center.justify-content-around
+                    span.icomoon.icon-close.rec-cancel
+                    span.rec-time 0:00
               button.btn.btn-default.open-emojis(type="button") &#128512;
               input(type="hidden", name="_token", value=token)
               .flex-fill.wrap-msg-box.ps-rv

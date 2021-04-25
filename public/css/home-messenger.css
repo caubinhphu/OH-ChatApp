@@ -7704,6 +7704,38 @@ label.send-file:hover .icomoon,
   height: 35px;
 }
 
+.send-rec {
+  overflow: visible;
+}
+
+.send-rec .rec-bar {
+  position: absolute;
+  top: -25px;
+  left: -50px;
+  right: -50px;
+  height: 30px;
+  background-color: #102131;
+  color: #fff !important;
+  border-radius: 7px;
+}
+
+.send-rec .rec-bar span {
+  line-height: 1.8;
+}
+
+.send-rec .rec-bar .icomoon {
+  color: #fff !important;
+}
+
+.rec-cancel {
+  transition: all .25s;
+}
+
+.rec-cancel:hover {
+  color: #fff !important;
+  transform: scale(1.2);
+}
+
 @media only screen and (max-width: 850px) {
   #user {
     display: none;
