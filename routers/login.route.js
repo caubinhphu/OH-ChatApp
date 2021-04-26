@@ -1,7 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/login.controller');
 const { checkNotAuthenticated } = require('../middlewares/login.middleware');
-const passport = require('passport');
 
 const router = express.Router();
 
@@ -29,6 +28,14 @@ router.route('/register')
 
 router.get('/logout', controller.getLogout);
 
+router.route('/forget-password')
+  .get(checkNotAuthenticated, controller.getForgetPassword1)
+  .post(checkNotAuthenticated, controller.postForgetPassword1)
+
 router.get('/verify/:token', checkNotAuthenticated, controller.getVerifyEmail);
+
+router.get('/forget-verify/:token', checkNotAuthenticated, controller.getForgetPassword2);
+
+router.post('/forget-password-s2', checkNotAuthenticated, controller.postForgetPassword2)
 
 module.exports = router;

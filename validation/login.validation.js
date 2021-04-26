@@ -30,3 +30,35 @@ module.exports.validateRegister = (data) => {
 
   return schema.validate(data);
 };
+
+module.exports.validateEmail = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.base': 'Email phải là chuỗi',
+      'string.email': 'Email không hợp lệ',
+      'string.empty': 'Chưa nhập email',
+    })
+  });
+
+  return schema.validate(data);
+};
+
+module.exports.validateResetPassword = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.base': 'Email phải là chuỗi',
+      'string.email': 'Email không hợp lệ',
+      'string.empty': 'Chưa nhập email',
+    }),
+    password: Joi.string().min(6).required().messages({
+      'string.base': 'Mật khẩu phải là chuỗi',
+      'string.min': 'Mật khẩu dài ít nhất 6 ký tự',
+      'string.empty': 'Chưa nhập mật khẩu',
+    }),
+    password2: Joi.valid(Joi.ref('password')).messages({
+      'any.only': 'Xác nhận mật khẩu không đúng',
+    }),
+  });
+
+  return schema.validate(data);
+};

@@ -11,6 +11,16 @@ const Home = (async () => {
       $('.wrap-loader').removeClass('d-none')
     })
   }
+  if (document.formForget) {
+    document.formForget.addEventListener('submit', () => {
+      $('.wrap-loader').removeClass('d-none')
+    })
+  }
+  if (document.formForgetS2) {
+    document.formForgetS2.addEventListener('submit', () => {
+      $('.wrap-loader').removeClass('d-none')
+    })
+  }
   // try {
   //   const response = await axios.get('/messenger', {
   //   headers: {

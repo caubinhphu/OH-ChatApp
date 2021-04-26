@@ -1,4 +1,4 @@
-extends ../user/layout
+extends ../room/layout
 
 block contentMain
   .content-area.d-flex.justify-content-center.align-items-center
@@ -7,6 +7,7 @@ block contentMain
         img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
         span.text-secondary OH Chat
       #login-area.py-3.px-2
+        h1.text-center ĐĂNG KÝ TÀI KHOẢN
         form(action="/login/register", method="POST", name="formRegister")
           .form-group.d-flex.justify-content-center
             label(for="name", style="width: 160px") Họ tên

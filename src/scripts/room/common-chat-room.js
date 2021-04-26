@@ -261,7 +261,9 @@ const CommonChatRoom = (() => {
         // set un-read
         if (!$('#chat-area').hasClass('is-active')) {
           $('.control-show-pop[data-control="chat"]').addClass('has-unread');
-          $('.open-popup-icon').addClass('has-unread');
+          if ($(window).width() < 768) {
+            $('.open-popup-icon').addClass('has-unread');
+          }
         }
       }
     }
