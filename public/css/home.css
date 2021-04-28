@@ -6573,6 +6573,10 @@ input:-webkit-autofill {
   height: 100vh;
 }
 
+#login-area h1 {
+  font-size: 20px;
+}
+
 #message-area {
   max-width: 600px;
 }

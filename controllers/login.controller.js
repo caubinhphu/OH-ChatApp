@@ -264,8 +264,11 @@ module.exports.postForgetPassword2 = async (req, res, next) => {
       if (!member) {
         errorText.push('Email không hợp lệ');
       } else {
+        // create hash password
+        const salt = await bcrypt.genSalt(10);
+        const passHash = await bcrypt.hash(password, salt);
         member.verifyToken = ''
-        member.password = password
+        member.password = passHash
         await member.save()
 
         req.flash('success', 'Đổi mật khẩu thành công');
@@ -281,7 +284,8 @@ module.exports.postForgetPassword2 = async (req, res, next) => {
     res.render('login/forget-password-s2', {
       titleSide: 'OH Chat',
       errorText,
-      email
+      email,
+      token
     });
   }
 };
