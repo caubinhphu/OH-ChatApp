@@ -19,11 +19,53 @@ const Index = (() => {
   let fileTake = null
   let holdRec = false
 
+  const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+  const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+
   if (msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
 
     const friendIdChatting = $('#main-right').attr('data-id')
+
+    try {
+      const grammar = '#JSGF V1.0;'
+      const recognition = new SpeechRecognition();
+      const speechRecognitionList = new SpeechGrammarList();
+      speechRecognitionList.addFromString(grammar, 1);
+      recognition.grammars = speechRecognitionList;
+      recognition.lang = $('#lang-assistant').text();
+      recognition.interimResults = false;
+
+
+      recognition.onresult = function(event) {
+        const last = event.results.length - 1;
+        const command = event.results[last][0].transcript;
+        console.log('Voice Input: ' + command + '.');
+      };
+
+      recognition.onspeechend = function() {
+        // recognition.stop();
+        recognition.abort();
+      };
+
+      recognition.onerror = function(event) {
+        console.log('Error occurred in recognition: ' + event.error);
+        window.outputErrorMessage(event.error)
+      }
+
+      $('.friend-img').on('click', function() {
+        if (!$(this).hasClass('is-speech')) {
+          $(this).addClass('is-speech')
+          recognition.start()
+        } else {
+          $(this).removeClass('is-speech')
+          recognition.stop();
+        }
+      })
+    } catch (error) {
+      window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này')
+    }
 
     // event submit form chat
     msgForm.addEventListener('submit', async (e) => {

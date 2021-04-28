@@ -8230,6 +8230,11 @@ textarea.form-control.msg-mini {
   line-break: anywhere;
 }
 
+#lang-ass,
+#method-send select {
+  max-width: 250px;
+}
+
 @media only screen and (min-width: 768px) {
   .st-col-tab {
     border-bottom: none;

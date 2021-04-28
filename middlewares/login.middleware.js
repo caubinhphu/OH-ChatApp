@@ -45,6 +45,8 @@ module.exports.checkAuthenticated = async (req, res, next) => {
     res.locals.memberId = member.id;
     res.locals.memberName = member.name;
     res.locals.memberAvatar = member.avatar;
+    res.locals.langAss = member.setting.languageAssistant;
+    res.locals.chatMicVoice = member.setting.chatMicVoice;
 
     next();
   } catch (error) {

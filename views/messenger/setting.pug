@@ -16,7 +16,33 @@ block contentMain
               span  Bảo mật
         .col-md-9.st-col-content
           #v-pills-tab-content.tab-content
-            #v-pills-general.tab-pane.fade(class=`${tab[0] ? tab[0] === 'general' ? 'show active' : '' : 'show active'}`, role='tabpanel', aria-labelledby='v-pills-general-tab') Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam autem, deleniti atque quae ut consequuntur quisquam consequatur quia, dolores quasi eos distinctio nostrum, sint facilis repudiandae aspernatur sunt neque magnam?
+            #v-pills-general.tab-pane.fade(class=`${tab[0] ? tab[0] === 'general' ? 'show active' : '' : 'show active'}`, role='tabpanel', aria-labelledby='v-pills-general-tab')
+              div
+                h4.text-dark Ngôn ngữ trợ lý
+                form.d-flex.align-items-center.mb-5(action="/messenger/setting/lang-ass", method="post", name="formSettingLangAss")
+                  input(type="hidden", name="_method" value="PUT")
+                  select#lang-ass.form-control.form-control-sm.mr-3(name="language")
+                    option(value="vi", selected=(member.setting.languageAssistant === 'vi')) Tiếng Việt
+                    option(value="en", selected=(member.setting.languageAssistant === 'en')) Tiếng Anh
+                  button.btn(type="submit") Lưu
+                h4.text-dark Chat bằng microphone
+                form.d-flex.align-items-center(action="/messenger/setting/chat-mic", method="post", name="formSettingChatMic")
+                  input(type="hidden", name="_method" value="PUT")
+                  .mr-3
+                    .form-check.form-check-inline
+                      .custom-control.custom-radio.my-1.ml-3
+                        input#med-rec.custom-control-input(type="radio", name="method", value="1", checked=member.setting.chatMicVoice)
+                        label.custom-control-label(for="med-rec") Ghi âm
+                      .custom-control.custom-radio.my-1.ml-3
+                        input#med-text.custom-control-input(type="radio", name="method", value="0", checked=!member.setting.chatMicVoice)
+                        label.custom-control-label(for="med-text") Hiện chữ
+                    #method-send(class=`${member.setting.chatMicVoice ? 'd-none' : ''}`)
+                      h5.text-dark Phương thức gửi tin nhắn bằng microphone
+                      select.form-control.form-control-sm.mr-3(name="methodSend")
+                        option(value="confirm-popup") Xác nhận bằng cửa sổ bật lên
+                        option(value="confirm-voice") Xác nhận bằng lời nói
+                        option(value="auto-send") Tự động gửi
+                  button.btn(type="submit") Lưu
             #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
               h4.text-dark Bảo mật và đăng nhập
               table.table

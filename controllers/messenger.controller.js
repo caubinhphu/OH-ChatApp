@@ -774,6 +774,67 @@ module.exports.putUrl = async (req, res, next) => {
     }
   }
 }
+// put setting change language assistant
+module.exports.putLanguageAssistant = async (req, res, next) => {
+  // get info change email
+  const { language } = req.body;
+  if (language !== 'vi' && language !== 'en') {
+    // not pass validate
+    req.flash('error', 'Ngôn ngữ không hợp lệ');
+    req.flash('tab', 'general');
+    return res.redirect(settingUrl)
+  }
+
+  try {
+    const member = await Member.findById(req.user.id);
+    if (member) {
+      member.setting.languageAssistant = language
+      await member.save()
+
+      req.flash('success', 'Đổi ngôn ngữ trợ lý thành công');
+      req.flash('tab', 'general');
+      return res.redirect(settingUrl)
+    } else {
+      next(new Error(notMem))
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+// put setting change mic chat method
+module.exports.putMicChatMethod = async (req, res, next) => {
+  // get info change email
+  const { method, methodSend } = req.body;
+  const meds = {
+    'confirm-popup' : 1,
+    'confirm-voice': 1,
+    'auto-send': 1
+  }
+  if (method !== '1' && method !== '0' && methodSend in meds) {
+    // not pass validate
+    req.flash('error', 'Phương thức không hợp lệ');
+    req.flash('tab', 'general');
+    return res.redirect(settingUrl)
+  }
+
+  try {
+    const member = await Member.findById(req.user.id);
+    if (member) {
+      member.setting.chatMicVoice = +method
+      member.setting.methodSend = methodSend
+      await member.save()
+
+      req.flash('success', 'Đổi phương thức chat microphone thành công');
+      req.flash('tab', 'general');
+      return res.redirect(settingUrl)
+    } else {
+      next(new Error(notMem))
+    }
+  } catch (error) {
+    next(error)
+  }
+}
 
 // get member info by ID
 module.exports.getMemberInfo = async (req, res, next) => {

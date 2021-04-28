@@ -91,6 +91,20 @@ const memberSchema = mongoose.Schema({
   url: {
     type: String,
     default: ''
+  },
+  setting: {
+    languageAssistant: {
+      type: String,
+      default: 'vi'
+    },
+    chatMicVoice: {
+      type: Boolean,
+      default: true
+    },
+    methodSend: {
+      type: String,
+      default: 'confirm-popup'
+    }
   }
 });
 

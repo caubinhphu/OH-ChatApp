@@ -16,6 +16,28 @@ const Setting = (() => {
         $('.url-preview').text($(this).val())
       })
     }
+
+    if (document.formSettingLangAss) {
+      document.formSettingLangAss.addEventListener('submit', () => {
+        // $('.wrap-loader').removeClass('d-none')
+        window.showLoader()
+      })
+    }
+
+    if (document.formSettingChatMic) {
+      document.formSettingChatMic.addEventListener('submit', () => {
+        // $('.wrap-loader').removeClass('d-none')
+        window.showLoader()
+      })
+
+      document.formSettingChatMic.addEventListener('change', function() {
+        if (this.elements.method.value === '1') {
+          $('#method-send').addClass('d-none')
+        } else {
+          $('#method-send').removeClass('d-none')
+        }
+      })
+    }
   }
 })()
 
