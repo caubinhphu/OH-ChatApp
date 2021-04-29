@@ -36,12 +36,12 @@ block contentMain
                       .custom-control.custom-radio.my-1.ml-3
                         input#med-text.custom-control-input(type="radio", name="method", value="0", checked=!member.setting.chatMicVoice)
                         label.custom-control-label(for="med-text") Hiện chữ
-                    #method-send(class=`${member.setting.chatMicVoice ? 'd-none' : ''}`)
+                    #method-send-setting(class=`${member.setting.chatMicVoice ? 'd-none' : ''}`)
                       h5.text-dark Phương thức gửi tin nhắn bằng microphone
                       select.form-control.form-control-sm.mr-3(name="methodSend")
-                        option(value="confirm-popup") Xác nhận bằng cửa sổ bật lên
-                        option(value="confirm-voice") Xác nhận bằng lời nói
-                        option(value="auto-send") Tự động gửi
+                        option(value="confirm-popup", selected=(member.setting.methodSend === 'confirm-popup')) Xác nhận bằng cửa sổ bật lên
+                        option(value="confirm-voice", selected=(member.setting.methodSend === 'confirm-voice')) Xác nhận bằng lời nói
+                        option(value="auto-send", selected=(member.setting.methodSend === 'auto-send')) Tự động gửi
                   button.btn(type="submit") Lưu
             #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
               h4.text-dark Bảo mật và đăng nhập

@@ -11,11 +11,11 @@ const babelPolyfill = 'babel-polyfill'
 
 module.exports = {
   entry: {
-    // home: [
-    //   babelPolyfill,
-    //   './src/scripts/home.js',
-    //   './src/styles/app-meeting.scss',
-    // ],
+    home: [
+      babelPolyfill,
+      './src/scripts/home.js',
+      './src/styles/app-meeting.scss',
+    ],
     // 'create-room': [babelPolyfill, './src/scripts/create-room.js'],
     // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
     // 'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],

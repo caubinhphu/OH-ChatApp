@@ -32,9 +32,9 @@ const Setting = (() => {
 
       document.formSettingChatMic.addEventListener('change', function() {
         if (this.elements.method.value === '1') {
-          $('#method-send').addClass('d-none')
+          $('#method-send-setting').addClass('d-none')
         } else {
-          $('#method-send').removeClass('d-none')
+          $('#method-send-setting').removeClass('d-none')
         }
       })
     }
