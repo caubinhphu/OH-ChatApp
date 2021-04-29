@@ -42076,6 +42076,11 @@ var Index = function () {
   var isDragZone = false;
   var fileTake = null;
   var holdRec = false;
+  var isTalking = false;
+  var languageAssistant = $('#lang-assistant').text();
+  var isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
+  var methodSend = $('#method-send').text();
+  var tokenSend = msgForm.elements._token.value;
   var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
@@ -42134,7 +42139,7 @@ var Index = function () {
                       type: 'file',
                       nameFile: file.name,
                       resourceType: file.resourceType,
-                      token: msgForm.elements._token.value
+                      token: tokenSend
                     });
                   } else {
                     $(ele).parents('.message').remove();
@@ -42229,7 +42234,7 @@ var Index = function () {
                       type: 'file',
                       nameFile: file.name,
                       resourceType: audio ? 'audio' : file.resourceType,
-                      token: msgForm.elements._token.value
+                      token: tokenSend
                     });
                   } else {
                     $(ele).parents('.message').remove();
@@ -42273,34 +42278,69 @@ var Index = function () {
       var speechRecognitionList = new SpeechGrammarList();
       speechRecognitionList.addFromString(grammar, 1);
       recognition.grammars = speechRecognitionList;
-      recognition.lang = $('#lang-assistant').text();
+      recognition.lang = languageAssistant;
       recognition.interimResults = false;
 
       recognition.onresult = function (event) {
         var last = event.results.length - 1;
         var command = event.results[last][0].transcript;
-        console.log('Voice Input: ' + command + '.');
+
+        if (command) {
+          if (methodSend === 'auto-send') {
+            window.socket.emit('msg-messageChat', {
+              message: command,
+              token: tokenSend
+            });
+            window.createCallMsgLocal(friendIdChatting, command, '', false, true);
+          } else if (methodSend === 'confirm-popup') {
+            var $popup = $('.confirm-popup');
+            $popup.find('.msg-output').text(command);
+            $popup.removeClass('d-none');
+          } else if (methodSend === 'confirm-voice') {}
+        }
       };
 
       recognition.onspeechend = function () {
-        // recognition.stop();
-        recognition.abort();
+        recognition.stop();
+        isTalking = false;
       };
 
       recognition.onerror = function (event) {
-        console.log('Error occurred in recognition: ' + event.error);
+        // console.log('Error occurred in recognition: ' + event.error);
         window.outputErrorMessage(event.error);
+        isTalking = false;
       };
 
-      $('.friend-img').on('click', function () {
-        if (!$(this).hasClass('is-speech')) {
-          $(this).addClass('is-speech');
-          recognition.start();
-        } else {
-          $(this).removeClass('is-speech');
-          recognition.stop();
-        }
-      });
+      if (!isChatMicVoice) {
+        $('.send-rec').on('click', function (e) {
+          e.preventDefault();
+
+          if (!isTalking) {
+            recognition.start();
+            isTalking = true;
+          }
+        });
+        $('.confirm-popup .btn-close').on('click', function (e) {
+          e.preventDefault();
+          $('.confirm-popup .msg-output').text('');
+          $('.confirm-popup').addClass('d-none');
+        });
+        $('.confirm-popup .confirm-send-btn').on('click', function (e) {
+          e.preventDefault();
+          var $popup = $('.confirm-popup');
+          var text = $popup.find('.msg-output').text();
+
+          if (text) {
+            window.socket.emit('msg-messageChat', {
+              message: text,
+              token: tokenSend
+            });
+            window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true);
+            $popup.find('.msg-output').text('');
+            $('.confirm-popup').addClass('d-none');
+          }
+        });
+      }
     } catch (error) {
       window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
     } // event submit form chat
@@ -42323,7 +42363,7 @@ var Index = function () {
                   // send message to server
                   window.window.socket.emit('msg-messageChat', {
                     message: inputMsg.value,
-                    token: e.target.elements._token.value
+                    token: tokenSend
                   }); // create message obj to show in client
 
                   window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
@@ -42728,46 +42768,50 @@ var Index = function () {
         }
       }, _callee6);
     })));
-    $('.send-rec').on('mousedown', function () {
-      holdRec = true;
-      var $recBar = $(this).find('.rec-bar');
-      $recBar.removeClass('d-none');
-      window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                if (!holdRec) {
+
+    if (isChatMicVoice) {
+      $('.send-rec').on('mousedown', function () {
+        holdRec = true;
+        var $recBar = $(this).find('.rec-bar');
+        $recBar.removeClass('d-none');
+        window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+          return regeneratorRuntime.wrap(function _callee7$(_context7) {
+            while (1) {
+              switch (_context7.prev = _context7.next) {
+                case 0:
+                  if (!holdRec) {
+                    _context7.next = 3;
+                    break;
+                  }
+
                   _context7.next = 3;
-                  break;
-                }
+                  return window.recorderVoice($recBar);
 
-                _context7.next = 3;
-                return window.recorderVoice($recBar);
-
-              case 3:
-              case "end":
-                return _context7.stop();
+                case 3:
+                case "end":
+                  return _context7.stop();
+              }
             }
+          }, _callee7);
+        })), 1000);
+      });
+      $(document).on('mouseup', function (e) {
+        var $recBar = $('.rec-bar');
+
+        if (holdRec) {
+          holdRec = false;
+          clearTimeout(window.timeRecHold);
+          $recBar.addClass('d-none').find('.rec-time').html('0:00');
+
+          if ($(e.target).hasClass('rec-cancel')) {
+            window.stopRecorderVoice(true);
+          } else {
+            window.stopRecorderVoice();
           }
-        }, _callee7);
-      })), 1000);
-    });
-    $(document).on('mouseup', function (e) {
-      var $recBar = $('.rec-bar');
-
-      if (holdRec) {
-        holdRec = false;
-        clearTimeout(window.timeRecHold);
-        $recBar.addClass('d-none').find('.rec-time').html('0:00');
-
-        if ($(e.target).hasClass('rec-cancel')) {
-          window.stopRecorderVoice(true);
-        } else {
-          window.stopRecorderVoice();
         }
-      }
-    });
+      });
+    }
+
     $(window).on('endRecorderVoice', /*#__PURE__*/function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
         return regeneratorRuntime.wrap(function _callee8$(_context8) {

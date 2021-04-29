@@ -7727,6 +7727,29 @@ label.send-file:hover .icomoon,
   color: #fff !important;
 }
 
+.confirm-popup {
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 200px;
+  background-color: #102131;
+  color: #fff !important;
+  border-radius: 7px;
+  padding: 8px;
+  min-width: 200px;
+}
+
+.confirm-popup .msg-output {
+  margin-bottom: 10px;
+}
+
+.confirm-popup .btn-close {
+  position: absolute;
+  top: -17px;
+  right: -14px;
+}
+
 .rec-cancel {
   transition: all .25s;
 }

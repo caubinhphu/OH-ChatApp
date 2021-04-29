@@ -18,6 +18,13 @@ const Index = (() => {
   let isDragZone = false;
   let fileTake = null
   let holdRec = false
+  let isTalking = false
+
+  const languageAssistant = $('#lang-assistant').text()
+  const isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false
+  const methodSend = $('#method-send').text()
+
+  const tokenSend = msgForm.elements._token.value
 
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
@@ -34,35 +41,71 @@ const Index = (() => {
       const speechRecognitionList = new SpeechGrammarList();
       speechRecognitionList.addFromString(grammar, 1);
       recognition.grammars = speechRecognitionList;
-      recognition.lang = $('#lang-assistant').text();
+      recognition.lang = languageAssistant;
       recognition.interimResults = false;
 
 
       recognition.onresult = function(event) {
         const last = event.results.length - 1;
         const command = event.results[last][0].transcript;
-        console.log('Voice Input: ' + command + '.');
+        if (command) {
+          if (methodSend === 'auto-send') {
+            window.socket.emit('msg-messageChat', {
+              message: command,
+              token: tokenSend,
+            });
+            window.createCallMsgLocal(friendIdChatting, command, '', false, true)
+          } else if (methodSend === 'confirm-popup') {
+            const $popup = $('.confirm-popup')
+            $popup.find('.msg-output').text(command)
+            $popup.removeClass('d-none')
+          } else if (methodSend === 'confirm-voice') {
+
+          }
+        }
       };
 
       recognition.onspeechend = function() {
-        // recognition.stop();
-        recognition.abort();
+        recognition.stop();
+        isTalking = false
       };
 
       recognition.onerror = function(event) {
-        console.log('Error occurred in recognition: ' + event.error);
+        // console.log('Error occurred in recognition: ' + event.error);
         window.outputErrorMessage(event.error)
+        isTalking = false
       }
 
-      $('.friend-img').on('click', function() {
-        if (!$(this).hasClass('is-speech')) {
-          $(this).addClass('is-speech')
-          recognition.start()
-        } else {
-          $(this).removeClass('is-speech')
-          recognition.stop();
-        }
-      })
+      if (!isChatMicVoice) {
+        $('.send-rec').on('click', (e) => {
+          e.preventDefault()
+          if (!isTalking) {
+            recognition.start()
+            isTalking = true
+          }
+        })
+        $('.confirm-popup .btn-close').on('click', (e) => {
+          e.preventDefault()
+          $('.confirm-popup .msg-output').text('')
+          $('.confirm-popup').addClass('d-none')
+        })
+
+        $('.confirm-popup .confirm-send-btn').on('click', (e) => {
+          e.preventDefault()
+          const $popup = $('.confirm-popup')
+          const text = $popup.find('.msg-output').text()
+          if (text) {
+            window.socket.emit('msg-messageChat', {
+              message: text,
+              token: tokenSend,
+            });
+            window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true)
+            $popup.find('.msg-output').text('')
+            $('.confirm-popup').addClass('d-none')
+          }
+        })
+      }
+
     } catch (error) {
       window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này')
     }
@@ -81,7 +124,7 @@ const Index = (() => {
         // send message to server
         window.window.socket.emit('msg-messageChat', {
           message: inputMsg.value,
-          token: e.target.elements._token.value,
+          token: tokenSend,
         });
 
         // create message obj to show in client
@@ -404,30 +447,32 @@ const Index = (() => {
       fileTake = file
     })
 
-    
-    $('.send-rec').on('mousedown', function() {
-      holdRec = true
-      const $recBar = $(this).find('.rec-bar')
-      $recBar.removeClass('d-none')
-      window.timeRecHold = setTimeout(async () => {
+    if (isChatMicVoice) {
+      $('.send-rec').on('mousedown', function() {
+        holdRec = true
+        const $recBar = $(this).find('.rec-bar')
+        $recBar.removeClass('d-none')
+        window.timeRecHold = setTimeout(async () => {
+          if (holdRec) {
+            await window.recorderVoice($recBar)
+          }
+        }, 1000);
+      });
+
+      $(document).on('mouseup', (e) => {
+        const $recBar = $('.rec-bar')
         if (holdRec) {
-          await window.recorderVoice($recBar)
+          holdRec = false
+          clearTimeout(window.timeRecHold)
+          $recBar.addClass('d-none').find('.rec-time').html('0:00')
+          if ($(e.target).hasClass('rec-cancel')) {
+            window.stopRecorderVoice(true)
+          } else {
+            window.stopRecorderVoice()
+          }
         }
-      }, 1000);
-    });
-    $(document).on('mouseup', (e) => {
-      const $recBar = $('.rec-bar')
-    	if (holdRec) {
-        holdRec = false
-        clearTimeout(window.timeRecHold)
-        $recBar.addClass('d-none').find('.rec-time').html('0:00')
-        if ($(e.target).hasClass('rec-cancel')) {
-          window.stopRecorderVoice(true)
-        } else {
-          window.stopRecorderVoice()
-        }
-      }
-    })
+      })
+    }
 
     $(window).on('endRecorderVoice', async (e) => {
       console.log(e.detail.blob);
@@ -516,7 +561,7 @@ const Index = (() => {
               type: 'file',
               nameFile: file.name,
               resourceType: file.resourceType,
-              token: msgForm.elements._token.value
+              token: tokenSend
             });
           } else {
             $(ele).parents('.message').remove()
@@ -576,7 +621,7 @@ const Index = (() => {
               type: 'file',
               nameFile: file.name,
               resourceType: audio ? 'audio' : file.resourceType,
-              token: msgForm.elements._token.value
+              token: tokenSend
             });
           } else {
             $(ele).parents('.message').remove()

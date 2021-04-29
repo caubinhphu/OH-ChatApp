@@ -441,6 +441,26 @@ label.send-file,
     }
   }
 }
+.confirm-popup {
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 200px;
+  background-color: $color-10;
+  color: $white !important;
+  border-radius: 7px;
+  padding: 8px;
+  min-width: 200px;
+  .msg-output {
+    margin-bottom: 10px;
+  }
+  .btn-close {
+    position: absolute;
+    top: -17px;
+    right: -14px;
+  }
+}
 .rec-cancel {
   transition: all .25s;
   &:hover {

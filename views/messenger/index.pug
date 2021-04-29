@@ -116,7 +116,7 @@ block contentMain
 
           #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
             .files-upload-box.d-flex.justify-content-center.flex-wrap
-            form.d-flex(name="sendMsgForm", method="post")
+            form.d-flex.ps-rv(name="sendMsgForm", method="post")
               label.btn.btn-default.send-file.m-0.p-2(for="send-file")
                 span.icomoon.icon-insert_drive_file
               input#send-file.d-none(type="file", name="file", multiple)
@@ -134,6 +134,12 @@ block contentMain
                 textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
               button.btn.btn-default.text-secondary
                 span.icomoon.icon-send
+              .confirm-popup.ps-rv.d-none
+                .msg-output
+                .text-center
+                  button.btn.confirm-send-btn(type="button") Gửi
+                button.btn.btn-icon.small-btn.btn-red.btn-close(type="button")
+                  span.icomoon.icon-close.rec-cancel
 
     .overlay-calling.d-none.ps-as
 
