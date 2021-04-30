@@ -1,7 +1,7 @@
 import axios from 'axios';
 import '../global/chat-utils'
 
-const Index = (() => {
+const Index = (async () => {
   const chatMain = document.getElementById('main-right-chat-content');
   const dragZone = document.querySelector('.dragzone')
   const msgForm = document.sendMsgForm; // form chat
@@ -29,6 +29,12 @@ const Index = (() => {
   let beConfirmed  = false
   let recognitionFor = 'msg'
 
+  const textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?'
+  const textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended'
+  const textNoSend = languageAssistant === 'vi' ? 'Hủy' : 'Not send'
+  const textCancel = languageAssistant === 'vi' ? 'Hủy' : 'cancel'
+  const textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok']
+
   const tokenSend = msgForm.elements._token.value
 
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -54,20 +60,21 @@ const Index = (() => {
       recognition.onresult = function(event) {
         const last = event.results.length - 1;
         const command = event.results[last][0].transcript;
+        // console.log(command);
         // console.log('command: ', command);
         if (command) {
           if (speakFor === 'confirm') {
             beConfirmed = true
             speakFor = 'notification'
-            if (command.toLowerCase() === 'yes') {
+            if (textYes.includes(command.toLowerCase())) {
               window.socket.emit('msg-messageChat', {
                 message: textCommand,
                 token: tokenSend,
               });
               window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true)
-              textNotify = 'Sended'
+              textNotify = textSended
             } else {
-              textNotify = 'Not send'
+              textNotify = textNoSend
             }
             textCommand = ''
           } else {
@@ -84,7 +91,8 @@ const Index = (() => {
             } else if (methodSend === 'confirm-voice') {
               speakFor = 'confirm'
               textCommand = command
-              speak(command + '. send: Yes or No')
+              // console.log(`${command}. ${textConfirm}`);
+              speak(`${command}. ${textConfirm}`)
             }
           }
         }
@@ -99,7 +107,7 @@ const Index = (() => {
         // console.log(speakFor);
         if (recognitionFor === 'confirm' && !beConfirmed) {
           speakFor = 'notification'
-          textNotify = 'Not send'
+          textNotify = textNoSend
         }
         if (methodSend === 'confirm-voice') {
           if (recognitionFor === 'confirm') {
@@ -125,7 +133,7 @@ const Index = (() => {
           window.outputErrorMessage('Bạn chưa nói gì!')
           if (speakFor === 'confirm') {
             speakFor = 'notification'
-            textNotify = 'Cancel'
+            textNotify = textCancel
             beConfirmed = true
           }
         } else {
@@ -134,9 +142,31 @@ const Index = (() => {
       }
 
       const synth = window.speechSynthesis;
-      const voices = synth.getVoices();
       const utterThis = new SpeechSynthesisUtterance();
-      utterThis.voice = voices[1];
+      
+      const voices = await new Promise(rs => setTimeout(() => {
+        rs(synth.getVoices())
+      }, 10))
+
+      const vEN = voices.find(v => v.lang === 'en-US');
+      if (!vEN && languageAssistant !== 'vi') {
+        throw new Error('Ngôn ngữ không hỗ trợ!')
+      }
+      let voice = vEN
+      if (languageAssistant === 'vi') { 
+        const vVN = voices.find(v => v.lang === 'vi-VN');
+        if (vVN) {
+          console.log(vVN);
+          voice = vVN
+        } else {
+          if (vEN) {
+            voice = vEN
+          } else {
+            throw new Error('Ngôn ngữ không hỗ trợ!')
+          }
+        }
+      }
+      utterThis.voice = voices[22];
       utterThis.lang = 'en';
 
       utterThis.onend = () => {

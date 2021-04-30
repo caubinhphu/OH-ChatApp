@@ -42102,904 +42102,986 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-var Index = function () {
-  var chatMain = document.getElementById('main-right-chat-content');
-  var dragZone = document.querySelector('.dragzone');
-  var msgForm = document.sendMsgForm; // form chat
+var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isTalking, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, textConfirm, textSended, textNoSend, textCancel, textYes, tokenSend, SpeechRecognition, SpeechGrammarList, sendFile, sendFileSingle, friendIdChatting, speak, grammar, recognition, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
+  return regeneratorRuntime.wrap(function _callee11$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          chatMain = document.getElementById('main-right-chat-content');
+          dragZone = document.querySelector('.dragzone');
+          msgForm = document.sendMsgForm; // form chat
 
-  var hasMessenger = true; // has old msg
+          hasMessenger = true; // has old msg
 
-  var currentPageChat = 0; // current page load old chat
+          currentPageChat = 0; // current page load old chat
 
-  var allowLoadOld = true;
-  var oldSearchFriRes = {};
-  var classScBottom = '.scroll-bottom';
-  var finalFiles = [];
-  var isDragging = 0;
-  var isDragZone = false;
-  var fileTake = null;
-  var holdRec = false;
-  var languageAssistant = $('#lang-assistant').text();
-  var isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
-  var methodSend = $('#method-send').text();
-  var isTalking = false;
-  var speakFor = '';
-  var textNotify = '';
-  var textCommand = '';
-  var beConfirmed = false;
-  var recognitionFor = 'msg';
-  var tokenSend = msgForm.elements._token.value;
-  var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-  var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-
-  if (msgForm) {
-    // function send file
-    var sendFile = /*#__PURE__*/function () {
-      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-        var formData, idSession, res, $msgFile, _$msgFile;
-
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
-          while (1) {
-            switch (_context9.prev = _context9.next) {
-              case 0:
-                formData = new FormData();
-                idSession = new Date().valueOf();
-                finalFiles.forEach(function (file) {
-                  formData.append('files', file); // create message obj to show in client
-
-                  window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-                });
-                _context9.prev = 3;
-                _context9.next = 6;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
-                });
-
-              case 6:
-                res = _context9.sent;
-                $('#send-file').val('');
-                finalFiles = []; // enabledInputFile()
-
-                $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
-                $msgFile.each(function (i, ele) {
-                  var file = res.data.fileUrls.find(function (f) {
-                    return f.name === $(ele).text();
-                  });
-
-                  if (file) {
-                    $(ele).parents('.wrap-msg-file').addClass('load-done');
-
-                    if (file.resourceType === 'image') {
-                      $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
-                    } else if (file.resourceType === 'video') {
-                      $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
-                    } else if (file.resourceType === 'audio') {
-                      $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"><audio/>"));
-                    } else {
-                      ele.href = file.url;
-                    } // send message to server
-
-
-                    socket.emit('msg-messageChat', {
-                      message: file.url,
-                      type: 'file',
-                      nameFile: file.name,
-                      resourceType: file.resourceType,
-                      token: tokenSend
-                    });
-                  } else {
-                    $(ele).parents('.message').remove();
-                  }
-                });
-                _context9.next = 21;
-                break;
-
-              case 13:
-                _context9.prev = 13;
-                _context9.t0 = _context9["catch"](3);
-                console.dir(_context9.t0);
-                _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
-
-                _$msgFile.parents('.message').remove();
-
-                $('#send-file').val('');
-                finalFiles = []; // enabledInputFile()
-
-                if (_context9.t0.response && _context9.t0.response.data && _context9.t0.response.data.message) {
-                  window.outputErrorMessage(_context9.t0.response.data.message);
-                }
-
-              case 21:
-              case "end":
-                return _context9.stop();
-            }
-          }
-        }, _callee9, null, [[3, 13]]);
-      }));
-
-      return function sendFile() {
-        return _ref12.apply(this, arguments);
-      };
-    }();
-
-    var sendFileSingle = /*#__PURE__*/function () {
-      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(file) {
-        var audio,
-            formData,
-            idSession,
-            res,
-            $msgFile,
-            _$msgFile2,
-            _args10 = arguments;
-
-        return regeneratorRuntime.wrap(function _callee10$(_context10) {
-          while (1) {
-            switch (_context10.prev = _context10.next) {
-              case 0:
-                audio = _args10.length > 1 && _args10[1] !== undefined ? _args10[1] : false;
-                formData = new FormData();
-                idSession = new Date().valueOf();
-                formData.append('files', file); // create message obj to show in client
-
-                window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-                _context10.prev = 5;
-                _context10.next = 8;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
-                });
-
-              case 8:
-                res = _context10.sent;
-                // enabledInputFile()
-                $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
-                $msgFile.each(function (i, ele) {
-                  var file = res.data.fileUrls.find(function (f) {
-                    return f.name === $(ele).text();
-                  });
-
-                  if (file) {
-                    $(ele).parents('.wrap-msg-file').addClass('load-done');
-
-                    if (file.resourceType === 'image') {
-                      $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
-                    } else if (file.resourceType === 'video') {
-                      if (audio) {
-                        $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"><audio/>"));
-                      } else {
-                        $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
-                      }
-                    } else {
-                      ele.href = file.url;
-                    } // send message to server
-
-
-                    socket.emit('msg-messageChat', {
-                      message: file.url,
-                      type: 'file',
-                      nameFile: file.name,
-                      resourceType: audio ? 'audio' : file.resourceType,
-                      token: tokenSend
-                    });
-                  } else {
-                    $(ele).parents('.message').remove();
-                  }
-                });
-                _context10.next = 18;
-                break;
-
-              case 13:
-                _context10.prev = 13;
-                _context10.t0 = _context10["catch"](5);
-                _$msgFile2 = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
-
-                _$msgFile2.parents('.message').remove(); // enabledInputFile()
-
-
-                if (_context10.t0.response && _context10.t0.response.data && _context10.t0.response.data.message) {
-                  window.outputErrorMessage(_context10.t0.response.data.message);
-                }
-
-              case 18:
-              case "end":
-                return _context10.stop();
-            }
-          }
-        }, _callee10, null, [[5, 13]]);
-      }));
-
-      return function sendFileSingle(_x3) {
-        return _ref13.apply(this, arguments);
-      };
-    }();
-
-    // scroll bottom
-    chatMain.scrollTop = chatMain.scrollHeight;
-    var friendIdChatting = $('#main-right').attr('data-id');
-
-    try {
-      var speak = function speak(str) {
-        utterThis.text = str;
-        synth.speak(utterThis);
-      };
-
-      var grammar = '#JSGF V1.0;';
-      var recognition = new SpeechRecognition();
-      var speechRecognitionList = new SpeechGrammarList();
-      speechRecognitionList.addFromString(grammar, 1);
-      recognition.grammars = speechRecognitionList;
-      recognition.lang = languageAssistant;
-      recognition.interimResults = false; // recognition.continuous = true
-
-      recognition.onresult = function (event) {
-        var last = event.results.length - 1;
-        var command = event.results[last][0].transcript; // console.log('command: ', command);
-
-        if (command) {
-          if (speakFor === 'confirm') {
-            beConfirmed = true;
-            speakFor = 'notification';
-
-            if (command.toLowerCase() === 'yes') {
-              window.socket.emit('msg-messageChat', {
-                message: textCommand,
-                token: tokenSend
-              });
-              window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true);
-              textNotify = 'Sended';
-            } else {
-              textNotify = 'Not send';
-            }
-
-            textCommand = '';
-          } else {
-            if (methodSend === 'auto-send') {
-              window.socket.emit('msg-messageChat', {
-                message: command,
-                token: tokenSend
-              });
-              window.createCallMsgLocal(friendIdChatting, command, '', false, true);
-            } else if (methodSend === 'confirm-popup') {
-              var $popup = $('.confirm-popup');
-              $popup.find('.msg-output').text(command);
-              $popup.removeClass('d-none');
-            } else if (methodSend === 'confirm-voice') {
-              speakFor = 'confirm';
-              textCommand = command;
-              speak(command + '. send: Yes or No');
-            }
-          }
-        }
-      };
-
-      recognition.onspeechend = function (e) {
-        // console.log('onspeechend');
-        recognition.stop();
-      };
-
-      recognition.onend = function () {
-        console.log(speakFor);
-
-        if (recognitionFor === 'confirm' && !beConfirmed) {
-          speakFor = 'notification';
-          textNotify = 'Not send';
-        }
-
-        if (methodSend === 'confirm-voice') {
-          if (recognitionFor === 'confirm') {
-            isTalking = false;
-          }
-        } else {
+          allowLoadOld = true;
+          oldSearchFriRes = {};
+          classScBottom = '.scroll-bottom';
+          finalFiles = [];
+          isDragging = 0;
+          isDragZone = false;
+          fileTake = null;
+          holdRec = false;
+          languageAssistant = $('#lang-assistant').text();
+          isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
+          methodSend = $('#method-send').text();
           isTalking = false;
-        }
-
-        beConfirmed = false; // console.log('end recognition');
-        // console.log('speakFor: ', speakFor);
-
-        if (speakFor === 'notification') {
-          speak(textNotify);
+          speakFor = '';
           textNotify = '';
-        }
-      };
-
-      recognition.onerror = function (event) {
-        // console.log('error');
-        // console.log('Error occurred in recognition: ' + event.error);
-        if (event.error === 'no-speech') {
-          window.outputErrorMessage('Bạn chưa nói gì!');
-
-          if (speakFor === 'confirm') {
-            speakFor = 'notification';
-            textNotify = 'Cancel';
-            beConfirmed = true;
-          }
-        } else {
-          window.outputErrorMessage(event.error);
-        }
-      };
-
-      var synth = window.speechSynthesis;
-      var voices = synth.getVoices();
-      var utterThis = new SpeechSynthesisUtterance();
-      utterThis.voice = voices[1];
-      utterThis.lang = 'en';
-
-      utterThis.onend = function () {
-        if (speakFor === 'confirm') {
+          textCommand = '';
           beConfirmed = false;
-          recognitionFor = 'confirm';
-          recognition.start();
-        } else {// speakFor = ''
-        }
-      };
+          recognitionFor = 'msg';
+          textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?';
+          textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended';
+          textNoSend = languageAssistant === 'vi' ? 'Hủy' : 'Not send';
+          textCancel = languageAssistant === 'vi' ? 'Hủy' : 'cancel';
+          textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok'];
+          tokenSend = msgForm.elements._token.value;
+          SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+          SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
-      if (!isChatMicVoice) {
-        $('.send-rec').on('click', function (e) {
-          e.preventDefault();
-
-          if (!isTalking) {
-            recognitionFor = 'msg';
-            isTalking = true;
-            recognition.start();
+          if (!msgForm) {
+            _context11.next = 102;
+            break;
           }
-        });
-        $('.confirm-popup .btn-close').on('click', function (e) {
-          e.preventDefault();
-          $('.confirm-popup .msg-output').text('');
-          $('.confirm-popup').addClass('d-none');
-        });
-        $('.confirm-popup .confirm-send-btn').on('click', function (e) {
-          e.preventDefault();
-          var $popup = $('.confirm-popup');
-          var text = $popup.find('.msg-output').text();
 
-          if (text) {
-            window.socket.emit('msg-messageChat', {
-              message: text,
-              token: tokenSend
-            });
-            window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true);
-            $popup.find('.msg-output').text('');
-            $('.confirm-popup').addClass('d-none');
-          }
-        });
-      }
-    } catch (error) {
-      window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
-    } // event submit form chat
+          // function send file
+          sendFile = /*#__PURE__*/function () {
+            var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+              var formData, idSession, res, $msgFile, _$msgFile;
+
+              return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                while (1) {
+                  switch (_context9.prev = _context9.next) {
+                    case 0:
+                      formData = new FormData();
+                      idSession = new Date().valueOf();
+                      finalFiles.forEach(function (file) {
+                        formData.append('files', file); // create message obj to show in client
+
+                        window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                      });
+                      _context9.prev = 3;
+                      _context9.next = 6;
+                      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data'
+                        }
+                      });
+
+                    case 6:
+                      res = _context9.sent;
+                      $('#send-file').val('');
+                      finalFiles = []; // enabledInputFile()
+
+                      $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
+                      $msgFile.each(function (i, ele) {
+                        var file = res.data.fileUrls.find(function (f) {
+                          return f.name === $(ele).text();
+                        });
+
+                        if (file) {
+                          $(ele).parents('.wrap-msg-file').addClass('load-done');
+
+                          if (file.resourceType === 'image') {
+                            $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                          } else if (file.resourceType === 'video') {
+                            $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                          } else if (file.resourceType === 'audio') {
+                            $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"><audio/>"));
+                          } else {
+                            ele.href = file.url;
+                          } // send message to server
 
 
-    msgForm.addEventListener('submit', /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-        var inputMsg;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                // stop submit form
-                e.preventDefault();
-                $('.files-upload-box').html(''); // input message
+                          socket.emit('msg-messageChat', {
+                            message: file.url,
+                            type: 'file',
+                            nameFile: file.name,
+                            resourceType: file.resourceType,
+                            token: tokenSend
+                          });
+                        } else {
+                          $(ele).parents('.message').remove();
+                        }
+                      });
+                      _context9.next = 21;
+                      break;
 
-                inputMsg = e.target.elements.message;
+                    case 13:
+                      _context9.prev = 13;
+                      _context9.t0 = _context9["catch"](3);
+                      console.dir(_context9.t0);
+                      _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
-                if (inputMsg.value !== '') {
-                  // send message to server
-                  window.window.socket.emit('msg-messageChat', {
-                    message: inputMsg.value,
+                      _$msgFile.parents('.message').remove();
+
+                      $('#send-file').val('');
+                      finalFiles = []; // enabledInputFile()
+
+                      if (_context9.t0.response && _context9.t0.response.data && _context9.t0.response.data.message) {
+                        window.outputErrorMessage(_context9.t0.response.data.message);
+                      }
+
+                    case 21:
+                    case "end":
+                      return _context9.stop();
+                  }
+                }
+              }, _callee9, null, [[3, 13]]);
+            }));
+
+            return function sendFile() {
+              return _ref13.apply(this, arguments);
+            };
+          }();
+
+          sendFileSingle = /*#__PURE__*/function () {
+            var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(file) {
+              var audio,
+                  formData,
+                  idSession,
+                  res,
+                  $msgFile,
+                  _$msgFile2,
+                  _args10 = arguments;
+
+              return regeneratorRuntime.wrap(function _callee10$(_context10) {
+                while (1) {
+                  switch (_context10.prev = _context10.next) {
+                    case 0:
+                      audio = _args10.length > 1 && _args10[1] !== undefined ? _args10[1] : false;
+                      formData = new FormData();
+                      idSession = new Date().valueOf();
+                      formData.append('files', file); // create message obj to show in client
+
+                      window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                      _context10.prev = 5;
+                      _context10.next = 8;
+                      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data'
+                        }
+                      });
+
+                    case 8:
+                      res = _context10.sent;
+                      // enabledInputFile()
+                      $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
+                      $msgFile.each(function (i, ele) {
+                        var file = res.data.fileUrls.find(function (f) {
+                          return f.name === $(ele).text();
+                        });
+
+                        if (file) {
+                          $(ele).parents('.wrap-msg-file').addClass('load-done');
+
+                          if (file.resourceType === 'image') {
+                            $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                          } else if (file.resourceType === 'video') {
+                            if (audio) {
+                              $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"><audio/>"));
+                            } else {
+                              $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                            }
+                          } else {
+                            ele.href = file.url;
+                          } // send message to server
+
+
+                          socket.emit('msg-messageChat', {
+                            message: file.url,
+                            type: 'file',
+                            nameFile: file.name,
+                            resourceType: audio ? 'audio' : file.resourceType,
+                            token: tokenSend
+                          });
+                        } else {
+                          $(ele).parents('.message').remove();
+                        }
+                      });
+                      _context10.next = 18;
+                      break;
+
+                    case 13:
+                      _context10.prev = 13;
+                      _context10.t0 = _context10["catch"](5);
+                      _$msgFile2 = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
+
+                      _$msgFile2.parents('.message').remove(); // enabledInputFile()
+
+
+                      if (_context10.t0.response && _context10.t0.response.data && _context10.t0.response.data.message) {
+                        window.outputErrorMessage(_context10.t0.response.data.message);
+                      }
+
+                    case 18:
+                    case "end":
+                      return _context10.stop();
+                  }
+                }
+              }, _callee10, null, [[5, 13]]);
+            }));
+
+            return function sendFileSingle(_x3) {
+              return _ref14.apply(this, arguments);
+            };
+          }();
+
+          // scroll bottom
+          chatMain.scrollTop = chatMain.scrollHeight;
+          friendIdChatting = $('#main-right').attr('data-id');
+          _context11.prev = 35;
+
+          speak = function speak(str) {
+            utterThis.text = str;
+            synth.speak(utterThis);
+          };
+
+          grammar = '#JSGF V1.0;';
+          recognition = new SpeechRecognition();
+          speechRecognitionList = new SpeechGrammarList();
+          speechRecognitionList.addFromString(grammar, 1);
+          recognition.grammars = speechRecognitionList;
+          recognition.lang = languageAssistant;
+          recognition.interimResults = false; // recognition.continuous = true
+
+          recognition.onresult = function (event) {
+            var last = event.results.length - 1;
+            var command = event.results[last][0].transcript;
+            console.log(command); // console.log('command: ', command);
+
+            if (command) {
+              if (speakFor === 'confirm') {
+                beConfirmed = true;
+                speakFor = 'notification';
+
+                if (textYes.includes(command.toLowerCase())) {
+                  window.socket.emit('msg-messageChat', {
+                    message: textCommand,
                     token: tokenSend
-                  }); // create message obj to show in client
-
-                  window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
-
-                  chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
-
-                  inputMsg.value = ''; // focus input message
-
-                  inputMsg.focus();
+                  });
+                  window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true);
+                  textNotify = textSended;
+                } else {
+                  textNotify = textNoSend;
                 }
 
-                if (!finalFiles.length) {
-                  _context.next = 7;
-                  break;
+                textCommand = '';
+              } else {
+                if (methodSend === 'auto-send') {
+                  window.socket.emit('msg-messageChat', {
+                    message: command,
+                    token: tokenSend
+                  });
+                  window.createCallMsgLocal(friendIdChatting, command, '', false, true);
+                } else if (methodSend === 'confirm-popup') {
+                  var $popup = $('.confirm-popup');
+                  $popup.find('.msg-output').text(command);
+                  $popup.removeClass('d-none');
+                } else if (methodSend === 'confirm-voice') {
+                  speakFor = 'confirm';
+                  textCommand = command;
+                  console.log("".concat(command, ". ").concat(textConfirm));
+                  speak("".concat(command, ". ").concat(textConfirm));
                 }
-
-                _context.next = 7;
-                return sendFile();
-
-              case 7:
-              case "end":
-                return _context.stop();
+              }
             }
-          }
-        }, _callee);
-      }));
+          };
 
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    }());
-    $(document).on('change', '#send-file', function () {
-      if (this.files.length) {
-        var html = '';
+          recognition.onspeechend = function (e) {
+            // console.log('onspeechend');
+            recognition.stop();
+          };
 
-        _toConsumableArray(this.files).forEach(function (file) {
-          html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
-          finalFiles.push(file);
-        });
+          recognition.onend = function () {
+            // console.log(speakFor);
+            if (recognitionFor === 'confirm' && !beConfirmed) {
+              speakFor = 'notification';
+              textNotify = textNoSend;
+            }
 
-        $('.files-upload-box').append(html); // disabledInputFile()
+            if (methodSend === 'confirm-voice') {
+              if (recognitionFor === 'confirm') {
+                isTalking = false;
+              }
+            } else {
+              isTalking = false;
+            }
 
-        this.value = '';
-      }
-    });
-    $(document).on('click', '.remove-up-file', function (e) {
-      e.preventDefault();
-      var $fileItem = $(this).parents('.file-item');
-      var index = $fileItem.index();
+            beConfirmed = false; // console.log('end recognition');
+            // console.log('speakFor: ', speakFor);
 
-      if (index >= 0) {
-        finalFiles.splice(index, 1);
-        $fileItem.remove();
+            if (speakFor === 'notification') {
+              speak(textNotify);
+              textNotify = '';
+            }
+          };
 
-        if (!finalFiles.length) {// enabledInputFile()
-        }
-      }
-    });
-    dragZone.addEventListener('dragenter', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      isDragZone = true;
-    });
-    dragZone.addEventListener('dragleave', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      isDragZone = false;
-    });
-    dragZone.addEventListener('drop', function (e) {
-      e.preventDefault();
+          recognition.onerror = function (event) {
+            // console.log('error');
+            // console.log('Error occurred in recognition: ' + event.error);
+            if (event.error === 'no-speech') {
+              window.outputErrorMessage('Bạn chưa nói gì!');
 
-      if (!$(this).hasClass('unable-chat')) {
-        var files = e.dataTransfer.files; // console.log(files);
+              if (speakFor === 'confirm') {
+                speakFor = 'notification';
+                textNotify = textCancel;
+                beConfirmed = true;
+              }
+            } else {
+              window.outputErrorMessage(event.error);
+            }
+          };
 
-        if (files.length) {
-          var html = '';
-          console.log(files);
-
-          _toConsumableArray(files).forEach(function (file) {
-            html += "\n              <div class=\"file-item\">\n                <span>".concat(file.name, "</span>\n                <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n              </div>\n            ");
-            finalFiles.push(file);
+          synth = window.speechSynthesis;
+          utterThis = new SpeechSynthesisUtterance();
+          _context11.next = 52;
+          return new Promise(function (rs) {
+            return setTimeout(function () {
+              rs(synth.getVoices());
+            }, 10);
           });
 
-          $('.files-upload-box').append(html); // disabledInputFile()
-        } // console.log(finalFiles);
+        case 52:
+          voices = _context11.sent;
+          vEN = voices.find(function (v) {
+            return v.lang === 'en-US';
+          });
 
-      }
-    });
-    document.addEventListener('dragover', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (!$(dragZone).hasClass('unable-chat')) {
-        isDragging++;
-
-        if (isDragging === 1) {
-          $('.dragzone').removeClass('d-none');
-        }
-      }
-    });
-    document.addEventListener('dragleave', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (!isDragZone) {
-        $('.dragzone').addClass('d-none');
-        isDragging = 0;
-      }
-    });
-    document.addEventListener('drop', function (e) {
-      e.preventDefault();
-      isDragging = 0;
-      $('.dragzone').addClass('d-none');
-    }); // change height form input msg
-
-    $(document).on('keydown', '#msg', function (e) {
-      if (e.which === 13 && !e.shiftKey) {
-        e.preventDefault();
-        $(msgForm).find('button.text-secondary').trigger('click');
-        $(this).css('height', '35px');
-      }
-    }).on('input', '#msg', function () {
-      $(this).css('height', '5px');
-      $(this).css('height', "".concat(this.scrollHeight, "px"));
-    }).on('focus', '#msg', function () {
-      $(this).parents('.wrap-msg-box').addClass('is-focus');
-    }).on('blur', '#msg', function () {
-      $(this).parents('.wrap-msg-box').removeClass('is-focus');
-    }); // handle scroll box chat: load old msg, scroll to bottom
-
-    $('#main-right-chat-content').on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll, _error$response, _error$response$data;
-
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              if (!(this.scrollTop === 0 && hasMessenger === true && allowLoadOld)) {
-                _context2.next = 25;
-                break;
-              }
-
-              allowLoadOld = false;
-              $('.wrap-loader-chat').removeClass('d-none');
-              _context2.prev = 3;
-              _context2.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/chatold/?friendid=".concat(friendIdChatting, "&page=").concat(currentPageChat + 1));
-
-            case 6:
-              responsive = _context2.sent;
-              _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg;
-              $('.wrap-loader-chat').addClass('d-none');
-              currentPageChat++;
-              hasMessenger = hasMsg;
-              htmlMsgs = messages.map(function (msg) {
-                var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
-
-                if (msg.me) {
-                  var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
-
-                  if (msg.fileName) {
-                    if (msg.type === 'image') {
-                      _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
-                    } else if (msg.type === 'video') {
-                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
-                    } else if (msg.type === 'audio') {
-                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"><audio/></small>");
-                    } else {
-                      _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
-                    }
-                  } else if (msg.isLink) {
-                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
-                  }
-
-                  return "\n                <div class=\"message text-right ".concat(msg["class"], "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
-                }
-
-                var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
-
-                if (msg.fileName) {
-                  if (msg.type === 'image') {
-                    contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
-                  } else if (msg.type === 'video') {
-                    contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
-                  } else if (msg.type === 'audio') {
-                    contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"><audio/></small>");
-                  } else {
-                    contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
-                  }
-                } else if (msg.isLink) {
-                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
-                }
-
-                return "\n              <div class=\"message ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    ").concat(contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
-              }).join(''); // prepend msg list and hold position scroll top of chat box
-
-              curScrollPos = this.scrollTop;
-              oldScroll = this.scrollHeight - this.clientHeight;
-              $(this).prepend(htmlMsgs);
-              newScroll = this.scrollHeight - this.clientHeight;
-              this.scrollTop = curScrollPos + (newScroll - oldScroll);
-              allowLoadOld = true;
-              _context2.next = 23;
-              break;
-
-            case 20:
-              _context2.prev = 20;
-              _context2.t0 = _context2["catch"](3);
-              window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
-
-            case 23:
-              _context2.next = 26;
-              break;
-
-            case 25:
-              if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-                $(classScBottom).addClass('is-show');
-              } else {
-                $(classScBottom).removeClass('is-show');
-              }
-
-            case 26:
-            case "end":
-              return _context2.stop();
+          if (!(!vEN && languageAssistant !== 'vi')) {
+            _context11.next = 56;
+            break;
           }
-        }
-      }, _callee2, this, [[3, 20]]);
-    }))); // scroll to bottom chat box
 
-    $(classScBottom).on('click', function () {
-      window.scrollBottomChatBox();
-    }); // preventDefault form search friend
+          throw new Error('Ngôn ngữ không hỗ trợ!');
 
-    $('.form-search-friend').on('submit', function (e) {
-      e.preventDefault();
-    }); // send query search friend
+        case 56:
+          voice = vEN;
 
-    $('#search-friend').on('input', function () {
-      $('.loader-search').removeClass('d-none');
-      var value = this.value.replace(/\s+/g, ' ').trim();
-      clearTimeout(window.idTimeOutSearch);
-      window.idTimeOutSearch = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        var friends, response, html, _error$response2, _error$response2$data;
+          if (!(languageAssistant === 'vi')) {
+            _context11.next = 69;
+            break;
+          }
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.prev = 0;
+          vVN = voices.find(function (v) {
+            return v.lang === 'vi-VN';
+          });
 
-                if (!(value && value !== window.oldSearch)) {
-                  _context3.next = 19;
-                  break;
-                }
+          if (!vVN) {
+            _context11.next = 64;
+            break;
+          }
 
-                friends = [];
+          console.log(vVN);
+          voice = vVN;
+          _context11.next = 69;
+          break;
 
-                if (!oldSearchFriRes[value]) {
-                  _context3.next = 7;
-                  break;
-                }
+        case 64:
+          if (!vEN) {
+            _context11.next = 68;
+            break;
+          }
 
-                friends = oldSearchFriRes[value];
-                _context3.next = 12;
-                break;
+          voice = vEN;
+          _context11.next = 69;
+          break;
 
-              case 7:
-                _context3.next = 9;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
-                  params: {
-                    q: value
+        case 68:
+          throw new Error('Ngôn ngữ không hỗ trợ!');
+
+        case 69:
+          utterThis.voice = voices[22];
+          utterThis.lang = 'en';
+
+          utterThis.onend = function () {
+            if (speakFor === 'confirm') {
+              beConfirmed = false;
+              recognitionFor = 'confirm';
+              recognition.start();
+            } else {// speakFor = ''
+            }
+          };
+
+          if (!isChatMicVoice) {
+            $('.send-rec').on('click', function (e) {
+              e.preventDefault();
+
+              if (!isTalking) {
+                recognitionFor = 'msg';
+                isTalking = true;
+                recognition.start();
+              }
+            });
+            $('.confirm-popup .btn-close').on('click', function (e) {
+              e.preventDefault();
+              $('.confirm-popup .msg-output').text('');
+              $('.confirm-popup').addClass('d-none');
+            });
+            $('.confirm-popup .confirm-send-btn').on('click', function (e) {
+              e.preventDefault();
+              var $popup = $('.confirm-popup');
+              var text = $popup.find('.msg-output').text();
+
+              if (text) {
+                window.socket.emit('msg-messageChat', {
+                  message: text,
+                  token: tokenSend
+                });
+                window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true);
+                $popup.find('.msg-output').text('');
+                $('.confirm-popup').addClass('d-none');
+              }
+            });
+          }
+
+          _context11.next = 78;
+          break;
+
+        case 75:
+          _context11.prev = 75;
+          _context11.t0 = _context11["catch"](35);
+          window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
+
+        case 78:
+          // event submit form chat
+          msgForm.addEventListener('submit', /*#__PURE__*/function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+              var inputMsg;
+              return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                  switch (_context.prev = _context.next) {
+                    case 0:
+                      // stop submit form
+                      e.preventDefault();
+                      $('.files-upload-box').html(''); // input message
+
+                      inputMsg = e.target.elements.message;
+
+                      if (inputMsg.value !== '') {
+                        // send message to server
+                        window.window.socket.emit('msg-messageChat', {
+                          message: inputMsg.value,
+                          token: tokenSend
+                        }); // create message obj to show in client
+
+                        window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
+
+                        chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
+
+                        inputMsg.value = ''; // focus input message
+
+                        inputMsg.focus();
+                      }
+
+                      if (!finalFiles.length) {
+                        _context.next = 7;
+                        break;
+                      }
+
+                      _context.next = 7;
+                      return sendFile();
+
+                    case 7:
+                    case "end":
+                      return _context.stop();
                   }
+                }
+              }, _callee);
+            }));
+
+            return function (_x) {
+              return _ref2.apply(this, arguments);
+            };
+          }());
+          $(document).on('change', '#send-file', function () {
+            if (this.files.length) {
+              var html = '';
+
+              _toConsumableArray(this.files).forEach(function (file) {
+                html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+                finalFiles.push(file);
+              });
+
+              $('.files-upload-box').append(html); // disabledInputFile()
+
+              this.value = '';
+            }
+          });
+          $(document).on('click', '.remove-up-file', function (e) {
+            e.preventDefault();
+            var $fileItem = $(this).parents('.file-item');
+            var index = $fileItem.index();
+
+            if (index >= 0) {
+              finalFiles.splice(index, 1);
+              $fileItem.remove();
+
+              if (!finalFiles.length) {// enabledInputFile()
+              }
+            }
+          });
+          dragZone.addEventListener('dragenter', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragZone = true;
+          });
+          dragZone.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragZone = false;
+          });
+          dragZone.addEventListener('drop', function (e) {
+            e.preventDefault();
+
+            if (!$(this).hasClass('unable-chat')) {
+              var files = e.dataTransfer.files; // console.log(files);
+
+              if (files.length) {
+                var html = '';
+                console.log(files);
+
+                _toConsumableArray(files).forEach(function (file) {
+                  html += "\n              <div class=\"file-item\">\n                <span>".concat(file.name, "</span>\n                <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n              </div>\n            ");
+                  finalFiles.push(file);
                 });
 
-              case 9:
-                response = _context3.sent;
-                friends = response.data.friends;
-                oldSearchFriRes[value] = friends;
+                $('.files-upload-box').append(html); // disabledInputFile()
+              } // console.log(finalFiles);
 
-              case 12:
-                window.oldSearch = value;
-                html = friends.map(function (friend) {
-                  return "\n              <div class=\"s-fri-item\">\n                <div class=\"d-flex align-items-center ps-rv\">\n                  <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                  <div class=\"wrap-pre-s-right\">\n                    <div class=\"name-member\">").concat(friend.name, "</div>\n                  </div>\n                  <a class=\"ps-as\" href=\"/messenger/chat/").concat(friend.url ? friend.url : friend._id, "\">\n                    <span class=\"sr-only\">Chat with ").concat(friend.name, "</span>\n                  </a>\n                </div>\n              </div>\n            ");
-                }).join('');
-
-                if (html === '') {
-                  html = "\n                <div class=\"text-center last-mb-none\">\n                  <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n                </div>\n              ";
-                }
-
-                $('.s-fri-res-box').html(html);
-                $('.loader-search').addClass('d-none');
-                _context3.next = 20;
-                break;
-
-              case 19:
-                $('.loader-search').addClass('d-none');
-
-              case 20:
-                _context3.next = 26;
-                break;
-
-              case 22:
-                _context3.prev = 22;
-                _context3.t0 = _context3["catch"](0);
-                $('.loader-search').addClass('d-none');
-                window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response2 = _context3.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
-
-              case 26:
-              case "end":
-                return _context3.stop();
             }
-          }
-        }, _callee3, null, [[0, 22]]);
-      })), 500);
-    }).on('focus', function () {
-      $('.search-fri-res-box').removeClass('d-none');
-    }); // click outside search
+          });
+          document.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-    $(document).on('click', function (e) {
-      var container = $("#main-left-search"); // if the target of the click isn't the container nor a descendant of the container
+            if (!$(dragZone).hasClass('unable-chat')) {
+              isDragging++;
 
-      if (!container.is(e.target) && container.has(e.target).length === 0) {
-        $('.search-fri-res-box').addClass('d-none');
-        $('.loader-search').addClass('d-none');
-      }
-    });
-    $('#modal-take-photo').on('shown.bs.modal', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      var _yield$window$takePic, file, dataURL;
-
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return window.takePicture();
-
-            case 2:
-              _yield$window$takePic = _context4.sent;
-              file = _yield$window$takePic.file;
-              dataURL = _yield$window$takePic.dataURL;
-              $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
-              $('.wrap-photo').removeClass('d-none');
-              fileTake = file;
-
-            case 8:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4);
-    })));
-    $('#modal-take-photo').on('hidden.bs.modal', function () {
-      fileTake = null;
-      $('.photo-pre').html('');
-      $('.wrap-photo').addClass('d-none');
-    });
-    $('#send-photo-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-      return regeneratorRuntime.wrap(function _callee5$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              if (!fileTake) {
-                _context5.next = 4;
-                break;
+              if (isDragging === 1) {
+                $('.dragzone').removeClass('d-none');
               }
+            }
+          });
+          document.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-              $('#modal-take-photo').modal('hide');
-              _context5.next = 4;
-              return sendFileSingle(fileTake);
+            if (!isDragZone) {
+              $('.dragzone').addClass('d-none');
+              isDragging = 0;
+            }
+          });
+          document.addEventListener('drop', function (e) {
+            e.preventDefault();
+            isDragging = 0;
+            $('.dragzone').addClass('d-none');
+          }); // change height form input msg
 
-            case 4:
-            case "end":
-              return _context5.stop();
-          }
-        }
-      }, _callee5);
-    })));
-    $('#re-take-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-      var _yield$window$takePic2, file, dataURL;
+          $(document).on('keydown', '#msg', function (e) {
+            if (e.which === 13 && !e.shiftKey) {
+              e.preventDefault();
+              $(msgForm).find('button.text-secondary').trigger('click');
+              $(this).css('height', '35px');
+            }
+          }).on('input', '#msg', function () {
+            $(this).css('height', '5px');
+            $(this).css('height', "".concat(this.scrollHeight, "px"));
+          }).on('focus', '#msg', function () {
+            $(this).parents('.wrap-msg-box').addClass('is-focus');
+          }).on('blur', '#msg', function () {
+            $(this).parents('.wrap-msg-box').removeClass('is-focus');
+          }); // handle scroll box chat: load old msg, scroll to bottom
 
-      return regeneratorRuntime.wrap(function _callee6$(_context6) {
-        while (1) {
-          switch (_context6.prev = _context6.next) {
-            case 0:
-              $('.photo-pre').html('');
-              $('.wrap-photo').addClass('d-none');
-              _context6.next = 4;
-              return window.takePicture();
+          $('#main-right-chat-content').on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+            var responsive, _responsive$data, messages, hasMsg, htmlMsgs, curScrollPos, oldScroll, newScroll, _error$response, _error$response$data;
 
-            case 4:
-              _yield$window$takePic2 = _context6.sent;
-              file = _yield$window$takePic2.file;
-              dataURL = _yield$window$takePic2.dataURL;
-              $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
-              $('.wrap-photo').removeClass('d-none');
-              fileTake = file;
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    if (!(this.scrollTop === 0 && hasMessenger === true && allowLoadOld)) {
+                      _context2.next = 25;
+                      break;
+                    }
 
-            case 10:
-            case "end":
-              return _context6.stop();
-          }
-        }
-      }, _callee6);
-    })));
+                    allowLoadOld = false;
+                    $('.wrap-loader-chat').removeClass('d-none');
+                    _context2.prev = 3;
+                    _context2.next = 6;
+                    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/chatold/?friendid=".concat(friendIdChatting, "&page=").concat(currentPageChat + 1));
 
-    if (isChatMicVoice) {
-      $('.send-rec').on('mousedown', function () {
-        holdRec = true;
-        var $recBar = $(this).find('.rec-bar');
-        $recBar.removeClass('d-none');
-        window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-          return regeneratorRuntime.wrap(function _callee7$(_context7) {
-            while (1) {
-              switch (_context7.prev = _context7.next) {
-                case 0:
-                  if (!holdRec) {
-                    _context7.next = 3;
+                  case 6:
+                    responsive = _context2.sent;
+                    _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg;
+                    $('.wrap-loader-chat').addClass('d-none');
+                    currentPageChat++;
+                    hasMessenger = hasMsg;
+                    htmlMsgs = messages.map(function (msg) {
+                      var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
+
+                      if (msg.me) {
+                        var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
+
+                        if (msg.fileName) {
+                          if (msg.type === 'image') {
+                            _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
+                          } else if (msg.type === 'video') {
+                            _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                          } else if (msg.type === 'audio') {
+                            _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"><audio/></small>");
+                          } else {
+                            _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                          }
+                        } else if (msg.isLink) {
+                          _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                        }
+
+                        return "\n                <div class=\"message text-right ".concat(msg["class"], "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
+                      }
+
+                      var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
+
+                      if (msg.fileName) {
+                        if (msg.type === 'image') {
+                          contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
+                        } else if (msg.type === 'video') {
+                          contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                        } else if (msg.type === 'audio') {
+                          contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"><audio/></small>");
+                        } else {
+                          contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                        }
+                      } else if (msg.isLink) {
+                        contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                      }
+
+                      return "\n              <div class=\"message ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    ").concat(contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                    }).join(''); // prepend msg list and hold position scroll top of chat box
+
+                    curScrollPos = this.scrollTop;
+                    oldScroll = this.scrollHeight - this.clientHeight;
+                    $(this).prepend(htmlMsgs);
+                    newScroll = this.scrollHeight - this.clientHeight;
+                    this.scrollTop = curScrollPos + (newScroll - oldScroll);
+                    allowLoadOld = true;
+                    _context2.next = 23;
                     break;
-                  }
 
-                  _context7.next = 3;
-                  return window.recorderVoice($recBar);
+                  case 20:
+                    _context2.prev = 20;
+                    _context2.t0 = _context2["catch"](3);
+                    window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
 
-                case 3:
-                case "end":
-                  return _context7.stop();
+                  case 23:
+                    _context2.next = 26;
+                    break;
+
+                  case 25:
+                    if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+                      $(classScBottom).addClass('is-show');
+                    } else {
+                      $(classScBottom).removeClass('is-show');
+                    }
+
+                  case 26:
+                  case "end":
+                    return _context2.stop();
+                }
               }
+            }, _callee2, this, [[3, 20]]);
+          }))); // scroll to bottom chat box
+
+          $(classScBottom).on('click', function () {
+            window.scrollBottomChatBox();
+          }); // preventDefault form search friend
+
+          $('.form-search-friend').on('submit', function (e) {
+            e.preventDefault();
+          }); // send query search friend
+
+          $('#search-friend').on('input', function () {
+            $('.loader-search').removeClass('d-none');
+            var value = this.value.replace(/\s+/g, ' ').trim();
+            clearTimeout(window.idTimeOutSearch);
+            window.idTimeOutSearch = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+              var friends, response, html, _error$response2, _error$response2$data;
+
+              return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                while (1) {
+                  switch (_context3.prev = _context3.next) {
+                    case 0:
+                      _context3.prev = 0;
+
+                      if (!(value && value !== window.oldSearch)) {
+                        _context3.next = 19;
+                        break;
+                      }
+
+                      friends = [];
+
+                      if (!oldSearchFriRes[value]) {
+                        _context3.next = 7;
+                        break;
+                      }
+
+                      friends = oldSearchFriRes[value];
+                      _context3.next = 12;
+                      break;
+
+                    case 7:
+                      _context3.next = 9;
+                      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/messenger/search-friend', {
+                        params: {
+                          q: value
+                        }
+                      });
+
+                    case 9:
+                      response = _context3.sent;
+                      friends = response.data.friends;
+                      oldSearchFriRes[value] = friends;
+
+                    case 12:
+                      window.oldSearch = value;
+                      html = friends.map(function (friend) {
+                        return "\n              <div class=\"s-fri-item\">\n                <div class=\"d-flex align-items-center ps-rv\">\n                  <img class=\"rounded-circle\" alt=\"".concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                  <div class=\"wrap-pre-s-right\">\n                    <div class=\"name-member\">").concat(friend.name, "</div>\n                  </div>\n                  <a class=\"ps-as\" href=\"/messenger/chat/").concat(friend.url ? friend.url : friend._id, "\">\n                    <span class=\"sr-only\">Chat with ").concat(friend.name, "</span>\n                  </a>\n                </div>\n              </div>\n            ");
+                      }).join('');
+
+                      if (html === '') {
+                        html = "\n                <div class=\"text-center last-mb-none\">\n                  <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n                </div>\n              ";
+                      }
+
+                      $('.s-fri-res-box').html(html);
+                      $('.loader-search').addClass('d-none');
+                      _context3.next = 20;
+                      break;
+
+                    case 19:
+                      $('.loader-search').addClass('d-none');
+
+                    case 20:
+                      _context3.next = 26;
+                      break;
+
+                    case 22:
+                      _context3.prev = 22;
+                      _context3.t0 = _context3["catch"](0);
+                      $('.loader-search').addClass('d-none');
+                      window.outputErrorMessage(_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_error$response2 = _context3.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+
+                    case 26:
+                    case "end":
+                      return _context3.stop();
+                  }
+                }
+              }, _callee3, null, [[0, 22]]);
+            })), 500);
+          }).on('focus', function () {
+            $('.search-fri-res-box').removeClass('d-none');
+          }); // click outside search
+
+          $(document).on('click', function (e) {
+            var container = $("#main-left-search"); // if the target of the click isn't the container nor a descendant of the container
+
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+              $('.search-fri-res-box').addClass('d-none');
+              $('.loader-search').addClass('d-none');
             }
-          }, _callee7);
-        })), 1000);
-      });
-      $(document).on('mouseup', function (e) {
-        var $recBar = $('.rec-bar');
+          });
+          $('#modal-take-photo').on('shown.bs.modal', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+            var _yield$window$takePic, file, dataURL;
 
-        if (holdRec) {
-          holdRec = false;
-          clearTimeout(window.timeRecHold);
-          $recBar.addClass('d-none').find('.rec-time').html('0:00');
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    _context4.next = 2;
+                    return window.takePicture();
 
-          if ($(e.target).hasClass('rec-cancel')) {
-            window.stopRecorderVoice(true);
-          } else {
-            window.stopRecorderVoice();
+                  case 2:
+                    _yield$window$takePic = _context4.sent;
+                    file = _yield$window$takePic.file;
+                    dataURL = _yield$window$takePic.dataURL;
+                    $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
+                    $('.wrap-photo').removeClass('d-none');
+                    fileTake = file;
+
+                  case 8:
+                  case "end":
+                    return _context4.stop();
+                }
+              }
+            }, _callee4);
+          })));
+          $('#modal-take-photo').on('hidden.bs.modal', function () {
+            fileTake = null;
+            $('.photo-pre').html('');
+            $('.wrap-photo').addClass('d-none');
+          });
+          $('#send-photo-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    if (!fileTake) {
+                      _context5.next = 4;
+                      break;
+                    }
+
+                    $('#modal-take-photo').modal('hide');
+                    _context5.next = 4;
+                    return sendFileSingle(fileTake);
+
+                  case 4:
+                  case "end":
+                    return _context5.stop();
+                }
+              }
+            }, _callee5);
+          })));
+          $('#re-take-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            var _yield$window$takePic2, file, dataURL;
+
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+              while (1) {
+                switch (_context6.prev = _context6.next) {
+                  case 0:
+                    $('.photo-pre').html('');
+                    $('.wrap-photo').addClass('d-none');
+                    _context6.next = 4;
+                    return window.takePicture();
+
+                  case 4:
+                    _yield$window$takePic2 = _context6.sent;
+                    file = _yield$window$takePic2.file;
+                    dataURL = _yield$window$takePic2.dataURL;
+                    $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
+                    $('.wrap-photo').removeClass('d-none');
+                    fileTake = file;
+
+                  case 10:
+                  case "end":
+                    return _context6.stop();
+                }
+              }
+            }, _callee6);
+          })));
+
+          if (isChatMicVoice) {
+            $('.send-rec').on('mousedown', function () {
+              holdRec = true;
+              var $recBar = $(this).find('.rec-bar');
+              $recBar.removeClass('d-none');
+              window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+                return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                  while (1) {
+                    switch (_context7.prev = _context7.next) {
+                      case 0:
+                        if (!holdRec) {
+                          _context7.next = 3;
+                          break;
+                        }
+
+                        _context7.next = 3;
+                        return window.recorderVoice($recBar);
+
+                      case 3:
+                      case "end":
+                        return _context7.stop();
+                    }
+                  }
+                }, _callee7);
+              })), 1000);
+            });
+            $(document).on('mouseup', function (e) {
+              var $recBar = $('.rec-bar');
+
+              if (holdRec) {
+                holdRec = false;
+                clearTimeout(window.timeRecHold);
+                $recBar.addClass('d-none').find('.rec-time').html('0:00');
+
+                if ($(e.target).hasClass('rec-cancel')) {
+                  window.stopRecorderVoice(true);
+                } else {
+                  window.stopRecorderVoice();
+                }
+              }
+            });
           }
-        }
-      });
+
+          $(window).on('endRecorderVoice', /*#__PURE__*/function () {
+            var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
+              return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                while (1) {
+                  switch (_context8.prev = _context8.next) {
+                    case 0:
+                      console.log(e.detail.blob);
+                      _context8.next = 3;
+                      return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), true);
+
+                    case 3:
+                    case "end":
+                      return _context8.stop();
+                  }
+                }
+              }, _callee8);
+            }));
+
+            return function (_x2) {
+              return _ref9.apply(this, arguments);
+            };
+          }()); // receive msg obj from server
+
+          window.socket.on('msg-messenger', function (_ref10) {
+            var senderId = _ref10.senderId,
+                msgObj = _ref10.msg;
+
+            if (friendIdChatting === senderId) {
+              // output message
+              window.outputMessage(msgObj); // scroll bottom
+
+              chatMain.scrollTop = chatMain.scrollHeight;
+            }
+
+            if (msgObj.type && msgObj.type === 'file') {
+              $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
+            } else {
+              $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+            }
+          }); // receive signal friend is online
+
+          window.socket.on('msg-friendOnline', function (_ref11) {
+            var memberId = _ref11.memberId;
+            $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
+            var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+
+            if ($mainChat.length) {
+              $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
+            }
+          }); // receive signal friend is offline
+
+          window.socket.on('msg-friendOffline', function (_ref12) {
+            var memberId = _ref12.memberId;
+            $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
+            var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
+
+            if ($mainChat.length) {
+              $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
+            }
+          });
+
+        case 102:
+        case "end":
+          return _context11.stop();
+      }
     }
-
-    $(window).on('endRecorderVoice', /*#__PURE__*/function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
-          while (1) {
-            switch (_context8.prev = _context8.next) {
-              case 0:
-                console.log(e.detail.blob);
-                _context8.next = 3;
-                return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), true);
-
-              case 3:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8);
-      }));
-
-      return function (_x2) {
-        return _ref8.apply(this, arguments);
-      };
-    }()); // receive msg obj from server
-
-    window.socket.on('msg-messenger', function (_ref9) {
-      var senderId = _ref9.senderId,
-          msgObj = _ref9.msg;
-
-      if (friendIdChatting === senderId) {
-        // output message
-        window.outputMessage(msgObj); // scroll bottom
-
-        chatMain.scrollTop = chatMain.scrollHeight;
-      }
-
-      if (msgObj.type && msgObj.type === 'file') {
-        $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
-      } else {
-        $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
-      }
-    }); // receive signal friend is online
-
-    window.socket.on('msg-friendOnline', function (_ref10) {
-      var memberId = _ref10.memberId;
-      $(".friend-item[data-id=\"".concat(memberId, "\"]")).addClass('is-online');
-      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-      if ($mainChat.length) {
-        $mainChat.find('.text-status').html('<strong class="text-success">Đang hoạt động</strong>');
-      }
-    }); // receive signal friend is offline
-
-    window.socket.on('msg-friendOffline', function (_ref11) {
-      var memberId = _ref11.memberId;
-      $(".friend-item[data-id=\"".concat(memberId, "\"]")).removeClass('is-online');
-      var $mainChat = $("#main-right[data-id=\"".concat(memberId, "\"]"));
-
-      if ($mainChat.length) {
-        $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
-      }
-    });
-  }
-}();
+  }, _callee11, null, [[35, 75]]);
+}))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21)))
