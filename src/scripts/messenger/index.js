@@ -18,31 +18,21 @@ const Index = (() => {
   let isDragZone = false;
   let fileTake = null
   let holdRec = false
-  let isTalking = false
 
   const languageAssistant = $('#lang-assistant').text()
   const isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false
   const methodSend = $('#method-send').text()
+  let isTalking = false
+  let speakFor = ''
+  let textNotify = ''
+  let textCommand = ''
+  let beConfirmed  = false
+  let recognitionFor = 'msg'
 
   const tokenSend = msgForm.elements._token.value
 
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-
-  const synth = window.speechSynthesis;
-  const voices = synth.getVoices();
-  const utterThis = new SpeechSynthesisUtterance();
-  utterThis.voice = voices[1];
-  utterThis.lang = 'en';
-
-  utterThis.onend = () => {
-    console.log('end speak');
-  }
-
-  function speak(str) {
-    utterThis.text = str
-    synth.speak(utterThis);
-  }
 
   if (msgForm) {
     // scroll bottom
@@ -62,58 +52,115 @@ const Index = (() => {
 
 
       recognition.onresult = function(event) {
-        console.log('res');
         const last = event.results.length - 1;
-        console.log(event.results[last][0].transcript);
         const command = event.results[last][0].transcript;
+        // console.log('command: ', command);
         if (command) {
-          if (methodSend === 'auto-send') {
-            window.socket.emit('msg-messageChat', {
-              message: command,
-              token: tokenSend,
-            });
-            window.createCallMsgLocal(friendIdChatting, command, '', false, true)
-          } else if (methodSend === 'confirm-popup') {
-            const $popup = $('.confirm-popup')
-            $popup.find('.msg-output').text(command)
-            $popup.removeClass('d-none')
-          } else if (methodSend === 'confirm-voice') {
-            // const $popup = $('.confirm-popup')
-            // $popup.find('.msg-output').text(command)
-            // $popup.removeClass('d-none')
-            speak(command + '. send: Yes or No')
+          if (speakFor === 'confirm') {
+            beConfirmed = true
+            speakFor = 'notification'
+            if (command.toLowerCase() === 'yes') {
+              window.socket.emit('msg-messageChat', {
+                message: textCommand,
+                token: tokenSend,
+              });
+              window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true)
+              textNotify = 'Sended'
+            } else {
+              textNotify = 'Not send'
+            }
+            textCommand = ''
+          } else {
+            if (methodSend === 'auto-send') {
+              window.socket.emit('msg-messageChat', {
+                message: command,
+                token: tokenSend,
+              });
+              window.createCallMsgLocal(friendIdChatting, command, '', false, true)
+            } else if (methodSend === 'confirm-popup') {
+              const $popup = $('.confirm-popup')
+              $popup.find('.msg-output').text(command)
+              $popup.removeClass('d-none')
+            } else if (methodSend === 'confirm-voice') {
+              speakFor = 'confirm'
+              textCommand = command
+              speak(command + '. send: Yes or No')
+            }
           }
         }
       };
 
-      recognition.onspeechend = function() {
-        console.log('speech end');
+      recognition.onspeechend = function(e) {
+        // console.log('onspeechend');
         recognition.stop()
       };
 
       recognition.onend = function() {
-        console.log('end');
-        // recognition.start()
-        isTalking = false
+        // console.log(speakFor);
+        if (recognitionFor === 'confirm' && !beConfirmed) {
+          speakFor = 'notification'
+          textNotify = 'Not send'
+        }
+        if (methodSend === 'confirm-voice') {
+          if (recognitionFor === 'confirm') {
+            isTalking = false
+          }
+        } else {
+          isTalking = false
+        }
         
+        beConfirmed = false
+        // console.log('end recognition');
+        // console.log('speakFor: ', speakFor);
+        if (speakFor === 'notification') {
+          speak(textNotify)
+          textNotify = ''
+        }
       };
 
       recognition.onerror = function(event) {
-        console.log('error');
+        // console.log('error');
         // console.log('Error occurred in recognition: ' + event.error);
         if (event.error === 'no-speech') {
           window.outputErrorMessage('Bạn chưa nói gì!')
+          if (speakFor === 'confirm') {
+            speakFor = 'notification'
+            textNotify = 'Cancel'
+            beConfirmed = true
+          }
         } else {
           window.outputErrorMessage(event.error)
         }
+      }
+
+      const synth = window.speechSynthesis;
+      const voices = synth.getVoices();
+      const utterThis = new SpeechSynthesisUtterance();
+      utterThis.voice = voices[1];
+      utterThis.lang = 'en';
+
+      utterThis.onend = () => {
+        if (speakFor === 'confirm') {
+          beConfirmed = false
+          recognitionFor = 'confirm'
+          recognition.start()
+        } else {
+          // speakFor = ''
+        }
+      }
+
+      function speak(str) {
+        utterThis.text = str
+        synth.speak(utterThis);
       }
 
       if (!isChatMicVoice) {
         $('.send-rec').on('click', (e) => {
           e.preventDefault()
           if (!isTalking) {
-            recognition.start()
+            recognitionFor = 'msg'
             isTalking = true
+            recognition.start()
           }
         })
         $('.confirm-popup .btn-close').on('click', (e) => {
