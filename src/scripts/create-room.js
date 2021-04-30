@@ -1,3 +1,4 @@
+import './global/common'
 import './global/loading'
 // import './global/notify'
 import './global/output-message'

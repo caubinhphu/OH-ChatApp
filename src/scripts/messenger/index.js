@@ -29,6 +29,21 @@ const Index = (() => {
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
+  const synth = window.speechSynthesis;
+  const voices = synth.getVoices();
+  const utterThis = new SpeechSynthesisUtterance();
+  utterThis.voice = voices[1];
+  utterThis.lang = 'en';
+
+  utterThis.onend = () => {
+    console.log('end speak');
+  }
+
+  function speak(str) {
+    utterThis.text = str
+    synth.speak(utterThis);
+  }
+
   if (msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
@@ -43,10 +58,13 @@ const Index = (() => {
       recognition.grammars = speechRecognitionList;
       recognition.lang = languageAssistant;
       recognition.interimResults = false;
+      // recognition.continuous = true
 
 
       recognition.onresult = function(event) {
+        console.log('res');
         const last = event.results.length - 1;
+        console.log(event.results[last][0].transcript);
         const command = event.results[last][0].transcript;
         if (command) {
           if (methodSend === 'auto-send') {
@@ -60,20 +78,34 @@ const Index = (() => {
             $popup.find('.msg-output').text(command)
             $popup.removeClass('d-none')
           } else if (methodSend === 'confirm-voice') {
-
+            // const $popup = $('.confirm-popup')
+            // $popup.find('.msg-output').text(command)
+            // $popup.removeClass('d-none')
+            speak(command + '. send: Yes or No')
           }
         }
       };
 
       recognition.onspeechend = function() {
-        recognition.stop();
+        console.log('speech end');
+        recognition.stop()
+      };
+
+      recognition.onend = function() {
+        console.log('end');
+        // recognition.start()
         isTalking = false
+        
       };
 
       recognition.onerror = function(event) {
+        console.log('error');
         // console.log('Error occurred in recognition: ' + event.error);
-        window.outputErrorMessage(event.error)
-        isTalking = false
+        if (event.error === 'no-speech') {
+          window.outputErrorMessage('Bạn chưa nói gì!')
+        } else {
+          window.outputErrorMessage(event.error)
+        }
       }
 
       if (!isChatMicVoice) {

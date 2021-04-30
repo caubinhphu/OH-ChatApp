@@ -95,6 +95,11 @@ app.use('/', chatRoute);
 app.use('/login', loginRoute);
 app.use('/messenger', checkAuthenticated, messengerRoute);
 app.use('/utility', utilitiesRoute);
+app.use('/no-support', (req, res) => {
+  res.render('no-support', {
+    titleSite: 'OH - Chat'
+  })
+})
 
 // handle error middleware
 app.use((err, req, res, next) => {
