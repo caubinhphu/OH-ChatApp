@@ -31,7 +31,7 @@ const Index = (async () => {
 
   const textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?'
   const textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended'
-  const textNoSend = languageAssistant === 'vi' ? 'Hủy' : 'Not send'
+  const textNoSend = languageAssistant === 'vi' ? 'Không gửi' : 'Not send'
   const textCancel = languageAssistant === 'vi' ? 'Hủy' : 'cancel'
   const textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok']
 
@@ -146,7 +146,7 @@ const Index = (async () => {
       
       const voices = await new Promise(rs => setTimeout(() => {
         rs(synth.getVoices())
-      }, 10))
+      }, 100))
 
       const vEN = voices.find(v => v.lang === 'en-US');
       if (!vEN && languageAssistant !== 'vi') {

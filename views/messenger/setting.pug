@@ -43,6 +43,7 @@ block contentMain
                         option(value="confirm-voice", selected=(member.setting.methodSend === 'confirm-voice')) Xác nhận bằng lời nói
                         option(value="auto-send", selected=(member.setting.methodSend === 'auto-send')) Tự động gửi
                   button.btn(type="submit") Lưu
+                button.btn.btn-link.d-none.vn-lang-tutorial(data-toggle="modal" data-target="#vn-lang-ass-tutor") Hướng dẫn kích hoạt trợ lý tiếng Việt
             #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
               h4.text-dark Bảo mật và đăng nhập
               table.table
@@ -97,6 +98,44 @@ block contentMain
                           input#url.form-control.form-control-sm(type="text", name="url", required, value=`${member.url || member.id}`)
                         div
                           button.btn(type="submit") Lưu thay đổi
+  #vn-lang-ass-tutor.modal.fade(tabindex='-1', aria-labelledby='vn-lang-ass-tutor-title', aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h4#vn-lang-ass-tutor-title.modal-title Hướng dẫn kích hoạt trợ lý tiếng Việt 
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body.text-dark
+          ol
+            li
+              h4 Mở phần mềm Powershell bằng quyền quản trị viên
+              .text-center.mb-4
+                img(src="/images/vn-lang-s1.jpg", alt="Setting language")
+            li.ps-rv
+              button.btn.btn-link.copy-code-btn Sao chép
+              textarea.code-copy-box= `$sourcePath = \'HKLM:\\software\\Microsoft\\Speech_OneCore\\Voices\\Tokens\' #Where the OneCore voices live\n$destinationPath = \'HKLM:\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\' #For 64-bit apps\n$destinationPath2 = \'HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\SPEECH\\Voices\\Tokens\' #For 32-bit apps\ncd $destinationPath\n$listVoices = Get-ChildItem $sourcePath\nforeach($voice in $listVoices)\n{\n$source = $voice.PSPath #Get the path of this voices key\ncopy -Path $source -Destination $destinationPath -Recurse\ncopy -Path $source -Destination $destinationPath2 -Recurse\n}`
+              h4 Sao chép đoạn mã bên dưới và dán vào Powershell => nhấn Enter
+              .wrap-code.mb-4
+                code.d-block $sourcePath = 'HKLM:\software\Microsoft\Speech_OneCore\Voices\Tokens' #Where the OneCore voices live
+                code.d-block $destinationPath = 'HKLM:\SOFTWARE\Microsoft\Speech\Voices\Tokens' #For 64-bit apps
+                code.d-block $destinationPath2 = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\SPEECH\Voices\Tokens' #For 32-bit apps
+                code.d-block cd $destinationPath
+                code.d-block $listVoices = Get-ChildItem $sourcePath
+                code.d-block foreach($voice in $listVoices)
+                code.d-block {
+                code.d-block $source = $voice.PSPath #Get the path of this voices key
+                code.d-block copy -Path $source -Destination $destinationPath -Recurse
+                code.d-block copy -Path $source -Destination $destinationPath2 -Recurse
+                code.d-block }
+            li
+              h4 Vào Setting => Time & Language => Speech để kiểm tra
+              .text-center.mb-4
+                img(src="/images/vn-lang-s2.jpg", alt="Setting language")
+            li
+              h4 Khởi động lại máy
+        .modal-footer
+          button.btn(type='button', data-dismiss='modal') Đóng
+
 
 
 

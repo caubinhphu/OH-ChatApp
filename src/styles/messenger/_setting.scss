@@ -8,6 +8,33 @@
 #method-send select {
   max-width: 250px;
 }
+#vn-lang-ass-tutor {
+  img {
+    max-width: 100%;
+  }
+  ol {
+    padding-left: 16px;
+  }
+  .wrap-code {
+    font-size: 14px;
+  }
+  .code-copy-box {
+    width: 1px;
+    height: 1px;
+    resize: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+  }
+  .copy-code-btn {
+    position: absolute;
+    right: 0;
+    top: 46px;
+  }
+}
 @media only screen and (min-width: 768px) {
   .st-col-tab {
     border-bottom: none;
