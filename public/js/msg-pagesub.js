@@ -45397,9 +45397,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                           _toConsumableArray(this.files).forEach(function (file) {
                             _html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
-                            finalFiles.push(file);
-                            console.log($popup);
-                            console.log(finalFiles);
+                            finalFiles.push(file); // console.log($popup);
+                            // console.log(finalFiles);
                           });
 
                           $popup.find('.files-upload-box').append(_html); // disabledInputFile()
@@ -45504,6 +45503,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       $popup.find('.mini-chat-btn').on('click', function () {
                         $popup.removeClass(nClassAct);
                         $popup.addClass(nClassNoAct);
+                        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
                       }); // open mini chat
 
                       $popup.find('.avatar-mini-2').on('click', function () {
@@ -45515,11 +45515,13 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                         var chatMain = $popup.find(classChatMain).get(0);
                         chatMain.scrollTop = chatMain.scrollHeight;
+                        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
                       }); // close mini chat
 
                       $popup.find('.close-chat-btn').on('click', function () {
                         $popup.addClass(nClassCloseMini);
                         $popup.removeClass(nClassAct);
+                        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
                       }); // call audio
 
                       $popup.find('.call-friend-btn').on('click', function () {
@@ -45557,6 +45559,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
               $('button.send-rec').removeClass('disabled').prop('disabled', false);
               $('.popup-chat-mini.not-active').removeClass('disabled');
               $('.mini-chat-btn').removeClass('disabled').prop('disabled', false);
+              $('.close-chat-btn').removeClass('disabled').prop('disabled', false);
               $('.open-search-mini').removeClass('disabled').prop('disabled', false);
             }
           };
@@ -45581,7 +45584,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           textCommand = '';
           beConfirmed = false;
           recognitionFor = 'msg';
-          isHoldStatus = true;
+          isHoldStatus = false;
           textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?';
           textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended';
           textNoSend = languageAssistant === 'vi' ? 'Không gửi' : 'Not send';
@@ -45609,8 +45612,6 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             var last = event.results.length - 1;
             var command = event.results[last][0].transcript;
             var $popup = $('.popup-chat-mini.is-active');
-            console.log(command);
-            console.log($popup);
 
             if (command && $popup.length) {
               if (speakFor === 'confirm') {
@@ -45820,8 +45821,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             recognitionHold.onresult = function (event) {
               var last = event.results.length - 1;
               var command = event.results[last][0].transcript;
-              var $popup = $('.popup-chat-mini.is-active');
-              console.log(command);
+              var $popup = $('.popup-chat-mini.is-active'); // console.log(command);
 
               if ($popup.length && !$popup.find('.send-rec').hasClass('disabled')) {
                 var _last = event.results.length - 1;
@@ -45834,8 +45834,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                     disableSendRec();
                     isHoldStatus = false;
                     recognitionHold.stop();
-                    recognition.start();
-                    console.log('start');
+                    recognition.start(); // console.log('start');
                   }
                 }
               }
@@ -45852,10 +45851,23 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
               }
             }; // recognitionHold.onerror = function(event) {
             // }
+            // recognitionHold.start()
 
-
-            recognitionHold.start();
           }
+
+          $(window).on('changeStatusPopupMini', function () {
+            var hasActive = $('.popup-chat-mini.is-active').length;
+
+            if (recognitionHold) {
+              if (hasActive && !isHoldStatus) {
+                isHoldStatus = true;
+                recognitionHold.start();
+              } else if (!hasActive && isHoldStatus) {
+                isHoldStatus = false;
+                recognitionHold.stop();
+              }
+            }
+          });
 
           if (!isChatMicVoice) {
             $(document).on('click', '.send-rec', function (e) {
@@ -45899,15 +45911,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             });
           }
 
-          _context15.next = 83;
+          _context15.next = 84;
           break;
 
-        case 80:
-          _context15.prev = 80;
+        case 81:
+          _context15.prev = 81;
           _context15.t0 = _context15["catch"](39);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 83:
+        case 84:
           // receive msg obj from server
           window.socket.on('msg-messenger', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
@@ -45920,32 +45932,44 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       senderId = _ref2.senderId, msgObj = _ref2.msg, token = _ref2.token;
                       activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
 
-                      if ($(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
-                        $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
-                        $chatMain = $popup.find(classChatMain);
-                        window.outputMessage(msgObj, false, $chatMain); // scroll bottom
-
-                        window.scrollBottomChatBox($chatMain);
-
-                        if ($popup.hasClass(nClassCloseMini)) {
-                          $popup.removeClass(nClassCloseMini);
-                          classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                          $popup.addClass(classIsActive);
-
-                          if (classIsActive === nClassNoAct) {
-                            outputPreviewMsg($popup, msgObj.message);
-                          } else {
-                            window.scrollBottomChatBox($chatMain);
-                          }
-                        } else if ($popup.hasClass(nClassNoAct)) {
-                          outputPreviewMsg($popup, msgObj.message);
-                        }
-                      } else {
-                        _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                        createMiniPopup(senderId, msgObj, token, _classIsActive);
+                      if (!$(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
+                        _context.next = 10;
+                        break;
                       }
 
-                    case 3:
+                      $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+                      $chatMain = $popup.find(classChatMain);
+                      window.outputMessage(msgObj, false, $chatMain); // scroll bottom
+
+                      window.scrollBottomChatBox($chatMain);
+
+                      if ($popup.hasClass(nClassCloseMini)) {
+                        $popup.removeClass(nClassCloseMini);
+                        classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                        $popup.addClass(classIsActive);
+                        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+
+                        if (classIsActive === nClassNoAct) {
+                          outputPreviewMsg($popup, msgObj.message);
+                        } else {
+                          window.scrollBottomChatBox($chatMain);
+                        }
+                      } else if ($popup.hasClass(nClassNoAct)) {
+                        outputPreviewMsg($popup, msgObj.message);
+                      }
+
+                      _context.next = 14;
+                      break;
+
+                    case 10:
+                      _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                      _context.next = 13;
+                      return createMiniPopup(senderId, msgObj, token, _classIsActive);
+
+                    case 13:
+                      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+
+                    case 14:
                     case "end":
                       return _context.stop();
                   }
@@ -45988,8 +46012,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           });
           document.addEventListener('dragleave', function (e) {
             e.preventDefault();
-            e.stopPropagation();
-            console.log(e.target);
+            e.stopPropagation(); // console.log(e.target);
 
             if (!isDragZone) {
               $('.dragzone').addClass('d-none');
@@ -46014,6 +46037,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
               $(this).addClass('is-open');
               $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
               $('.box-search-mini').removeClass('d-none');
+              window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
               $('#s-fri-mini').focus();
             }
           });
@@ -46116,26 +46140,30 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                     $('.open-search-mini').removeClass('is-open');
 
                     if (!$popupMini.length) {
-                      _context3.next = 10;
+                      _context3.next = 11;
                       break;
                     }
 
                     // is chatting
                     $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
                     $popupMini.removeClass(nClassNoAct).removeClass(nClassCloseMini).addClass(nClassAct);
-                    _context3.next = 13;
+                    window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+                    _context3.next = 15;
                     break;
 
-                  case 10:
+                  case 11:
                     // isn't chatting
                     $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
-                    _context3.next = 13;
+                    _context3.next = 14;
                     return createMiniPopup(friendId, {
                       avatar: $(this).find('img').attr('src'),
                       username: $(this).find('.name-member').html()
                     }, token, nClassAct);
 
-                  case 13:
+                  case 14:
+                    window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+
+                  case 15:
                   case "end":
                     return _context3.stop();
                 }
@@ -46158,10 +46186,9 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                     dataURL = _yield$window$takePic.dataURL;
                     $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
                     $('.wrap-photo').removeClass('d-none');
-                    fileTake = file;
-                    console.log(file);
+                    fileTake = file; // console.log(file);
 
-                  case 9:
+                  case 8:
                   case "end":
                     return _context4.stop();
                 }
@@ -46286,12 +46313,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-        case 101:
+        case 102:
         case "end":
           return _context15.stop();
       }
     }
-  }, _callee15, null, [[39, 80]]);
+  }, _callee15, null, [[39, 81]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Messenger);

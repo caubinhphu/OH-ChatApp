@@ -26,7 +26,7 @@ const Messenger = (async () => {
   let textCommand = ''
   let beConfirmed  = false
   let recognitionFor = 'msg'
-  let isHoldStatus = true
+  let isHoldStatus = false
 
   const textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?'
   const textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended'
@@ -247,13 +247,26 @@ const Messenger = (async () => {
       // recognitionHold.onerror = function(event) {
         
       // }
-      recognitionHold.start()
+      // recognitionHold.start()
     }
 
     function speak(str) {
       utterThis.text = str
       synth.speak(utterThis);
     }
+
+    $(window).on('changeStatusPopupMini', () => {
+      const hasActive = $('.popup-chat-mini.is-active').length
+      if (recognitionHold) {
+        if (hasActive && !isHoldStatus) {
+          isHoldStatus = true
+          recognitionHold.start()
+        } else if (!hasActive && isHoldStatus) {
+          isHoldStatus = false
+          recognitionHold.stop()
+        }
+      }
+    })
 
     if (!isChatMicVoice) {
       $(document).on('click', '.send-rec', function (e) {
@@ -329,6 +342,7 @@ const Messenger = (async () => {
         $popup.removeClass(nClassCloseMini)
         const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
         $popup.addClass(classIsActive)
+        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
         if (classIsActive === nClassNoAct) {
           outputPreviewMsg($popup, msgObj.message);
         } else {
@@ -339,7 +353,8 @@ const Messenger = (async () => {
       }
     } else {
       const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
-      createMiniPopup(senderId, msgObj, token, classIsActive)
+      await createMiniPopup(senderId, msgObj, token, classIsActive)
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     }
   });
 
@@ -398,6 +413,7 @@ const Messenger = (async () => {
       $(this).addClass('is-open')
       $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct)
       $('.box-search-mini').removeClass('d-none')
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
       $('#s-fri-mini').focus()
     }
   })
@@ -473,6 +489,7 @@ const Messenger = (async () => {
       // is chatting
       $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct)
       $popupMini.removeClass(nClassNoAct).removeClass(nClassCloseMini).addClass(nClassAct)
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     } else {
       // isn't chatting
       $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct)
@@ -485,6 +502,7 @@ const Messenger = (async () => {
         token,
         nClassAct,
       )
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     }
   })
 
@@ -798,6 +816,7 @@ const Messenger = (async () => {
     $popup.find('.mini-chat-btn').on('click', () => {
       $popup.removeClass(nClassAct)
       $popup.addClass(nClassNoAct)
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     });
 
     // open mini chat
@@ -811,12 +830,14 @@ const Messenger = (async () => {
       // scroll bottom
       const chatMain = $popup.find(classChatMain).get(0)
       chatMain.scrollTop = chatMain.scrollHeight;
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     });
 
     // close mini chat
     $popup.find('.close-chat-btn').on('click', () => {
       $popup.addClass(nClassCloseMini)
       $popup.removeClass(nClassAct)
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     });
 
     // call audio
