@@ -42122,7 +42122,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isTalking, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, textConfirm, textSended, textNoSend, textCancel, textYes, tokenSend, SpeechRecognition, SpeechGrammarList, sendFile, sendFileSingle, friendIdChatting, speak, grammar, recognition, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
+  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, isTalking, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, textConfirm, textSended, textNoSend, textCancel, textYes, tokenSend, SpeechRecognition, SpeechGrammarList, disableSendRec, sendFile, sendFileSingle, friendIdChatting, speak, grammar, recognition, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
   return regeneratorRuntime.wrap(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
@@ -42146,6 +42146,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           languageAssistant = $('#lang-assistant').text();
           isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
           methodSend = $('#method-send').text();
+          isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false;
           isTalking = false;
           speakFor = '';
           textNotify = '';
@@ -42162,9 +42163,20 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 102;
+            _context11.next = 104;
             break;
           }
+
+          disableSendRec = function disableSendRec() {
+            var flag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+            if (flag) {
+              $('button.send-rec').addClass('disabled').prop('disabled', true);
+            } else {
+              $('button.send-rec').removeClass('disabled').prop('disabled', false);
+            }
+          }; // event submit form chat
+
 
           // function send file
           sendFile = /*#__PURE__*/function () {
@@ -42352,7 +42364,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           // scroll bottom
           chatMain.scrollTop = chatMain.scrollHeight;
           friendIdChatting = $('#main-right').attr('data-id');
-          _context11.prev = 35;
+          _context11.prev = 37;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -42420,14 +42432,22 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             if (recognitionFor === 'confirm' && !beConfirmed) {
               speakFor = 'notification';
               textNotify = textNoSend;
+              textCommand = '';
             }
 
             if (methodSend === 'confirm-voice') {
               if (recognitionFor === 'confirm') {
                 isTalking = false;
+                disableSendRec(false);
+              }
+
+              if (recognitionFor === 'msg' && !textCommand) {
+                isTalking = false;
+                disableSendRec(false);
               }
             } else {
               isTalking = false;
+              disableSendRec(false);
             }
 
             beConfirmed = false; // console.log('end recognition');
@@ -42450,38 +42470,50 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                 textNotify = textCancel;
                 beConfirmed = true;
               }
+
+              if (recognitionFor === 'msg') {
+                isTalking = false;
+                disableSendRec(false);
+              }
             } else {
               window.outputErrorMessage(event.error);
+              isTalking = false;
+              disableSendRec(false);
+              speakFor = '';
+              textNotify = '';
+              recognitionFor = 'msg';
+              beConfirmed = false;
+              textCommand = '';
             }
           };
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context11.next = 52;
+          _context11.next = 54;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 52:
+        case 54:
           voices = _context11.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context11.next = 56;
+            _context11.next = 58;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 56:
+        case 58:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context11.next = 69;
+            _context11.next = 71;
             break;
           }
 
@@ -42490,29 +42522,29 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           });
 
           if (!vVN) {
-            _context11.next = 64;
+            _context11.next = 66;
             break;
           }
 
           console.log(vVN);
           voice = vVN;
-          _context11.next = 69;
+          _context11.next = 71;
           break;
 
-        case 64:
+        case 66:
           if (!vEN) {
-            _context11.next = 68;
+            _context11.next = 70;
             break;
           }
 
           voice = vEN;
-          _context11.next = 69;
+          _context11.next = 71;
           break;
 
-        case 68:
+        case 70:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 69:
+        case 71:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -42529,9 +42561,10 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             $('.send-rec').on('click', function (e) {
               e.preventDefault();
 
-              if (!isTalking) {
+              if (!$('.send-rec').hasClass('disabled')) {
                 recognitionFor = 'msg';
                 isTalking = true;
+                disableSendRec();
                 recognition.start();
               }
             });
@@ -42557,16 +42590,15 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
           }
 
-          _context11.next = 78;
+          _context11.next = 80;
           break;
 
-        case 75:
-          _context11.prev = 75;
-          _context11.t0 = _context11["catch"](35);
+        case 77:
+          _context11.prev = 77;
+          _context11.t0 = _context11["catch"](37);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 78:
-          // event submit form chat
+        case 80:
           msgForm.addEventListener('submit', /*#__PURE__*/function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
               var inputMsg;
@@ -43094,12 +43126,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           });
 
-        case 102:
+        case 104:
         case "end":
           return _context11.stop();
       }
     }
-  }, _callee11, null, [[35, 75]]);
+  }, _callee11, null, [[37, 77]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);

@@ -42,6 +42,9 @@ block contentMain
                         option(value="confirm-popup", selected=(member.setting.methodSend === 'confirm-popup')) Xác nhận bằng cửa sổ bật lên
                         option(value="confirm-voice", selected=(member.setting.methodSend === 'confirm-voice')) Xác nhận bằng lời nói
                         option(value="auto-send", selected=(member.setting.methodSend === 'auto-send')) Tự động gửi
+                      .custom-control.custom-checkbox
+                        input#turn-on-ass-voice.custom-control-input(type="checkbox", name="isChatAss", value="true", checked=member.setting.isChatAssistant)
+                        label.custom-control-label(for="turn-on-ass-voice") Bật chat bằng trợ lý
                   button.btn(type="submit") Lưu
                 button.btn.btn-link.d-none.vn-lang-tutorial(data-toggle="modal" data-target="#vn-lang-ass-tutor") Hướng dẫn kích hoạt trợ lý tiếng Việt
             #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')

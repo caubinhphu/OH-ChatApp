@@ -805,7 +805,7 @@ module.exports.putLanguageAssistant = async (req, res, next) => {
 // put setting change mic chat method
 module.exports.putMicChatMethod = async (req, res, next) => {
   // get info change email
-  const { method, methodSend } = req.body;
+  const { method, methodSend, isChatAss } = req.body;
   const meds = {
     'confirm-popup' : 1,
     'confirm-voice': 1,
@@ -823,6 +823,7 @@ module.exports.putMicChatMethod = async (req, res, next) => {
     if (member) {
       member.setting.chatMicVoice = +method
       member.setting.methodSend = methodSend
+      member.setting.isChatAssistant = isChatAss === 'true' ? true : false
       await member.save()
 
       req.flash('success', 'Đổi phương thức chat microphone thành công');

@@ -51,6 +51,11 @@
     line-height: 1;
     padding: 5px;
   }
+  &.disabled {
+    color: $color-74 !important;
+    pointer-events: none;
+    cursor: no-drop;
+  }
 }
 
 .btn-link {

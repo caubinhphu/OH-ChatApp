@@ -6704,6 +6704,12 @@ background: #ccc;
   padding: 5px;
 }
 
+.btn.disabled {
+  color: #747474 !important;
+  pointer-events: none;
+  cursor: no-drop;
+}
+
 .btn-link {
   color: #22c0c9;
   border-radius: 0;

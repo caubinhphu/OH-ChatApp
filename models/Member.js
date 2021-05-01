@@ -104,6 +104,10 @@ const memberSchema = mongoose.Schema({
     methodSend: {
       type: String,
       default: 'confirm-popup'
+    },
+    isChatAssistant: {
+      type: Boolean,
+      default: false
     }
   }
 });

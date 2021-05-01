@@ -22,7 +22,9 @@ const Index = (async () => {
   const languageAssistant = $('#lang-assistant').text()
   const isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false
   const methodSend = $('#method-send').text()
-  let isTalking = false
+  const isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false
+
+  // let isTalking = false
   let speakFor = ''
   let textNotify = ''
   let textCommand = ''
@@ -108,13 +110,20 @@ const Index = (async () => {
         if (recognitionFor === 'confirm' && !beConfirmed) {
           speakFor = 'notification'
           textNotify = textNoSend
+          textCommand = ''
         }
         if (methodSend === 'confirm-voice') {
           if (recognitionFor === 'confirm') {
-            isTalking = false
+            // isTalking = false
+            disableSendRec(false)
+          }
+          if (recognitionFor === 'msg' && !textCommand) {
+            // isTalking = false
+            disableSendRec(false)
           }
         } else {
-          isTalking = false
+          // isTalking = false
+          disableSendRec(false)
         }
         
         beConfirmed = false
@@ -136,8 +145,19 @@ const Index = (async () => {
             textNotify = textCancel
             beConfirmed = true
           }
+          if (recognitionFor === 'msg') {
+            // isTalking = false
+            disableSendRec(false)
+          }
         } else {
           window.outputErrorMessage(event.error)
+          // isTalking = false
+          disableSendRec(false)
+          speakFor = ''
+          textNotify = ''
+          recognitionFor = 'msg'
+          beConfirmed = false
+          textCommand = ''
         }
       }
 
@@ -187,9 +207,10 @@ const Index = (async () => {
       if (!isChatMicVoice) {
         $('.send-rec').on('click', (e) => {
           e.preventDefault()
-          if (!isTalking) {
+          if (!$('.send-rec').hasClass('disabled')) {
             recognitionFor = 'msg'
-            isTalking = true
+            // isTalking = true
+            disableSendRec()
             recognition.start()
           }
         })
@@ -218,7 +239,13 @@ const Index = (async () => {
     } catch (error) {
       window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này')
     }
-
+    function disableSendRec(flag = true) {
+      if (flag) {
+        $('button.send-rec').addClass('disabled').prop('disabled', true)
+      } else {
+        $('button.send-rec').removeClass('disabled').prop('disabled', false)
+      }
+    }
     // event submit form chat
     msgForm.addEventListener('submit', async (e) => {
       // stop submit form
