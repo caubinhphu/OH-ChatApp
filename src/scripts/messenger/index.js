@@ -30,6 +30,7 @@ const Index = (async () => {
   let textCommand = ''
   let beConfirmed  = false
   let recognitionFor = 'msg'
+  let isHoldStatus = true
 
   const textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?'
   const textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended'
@@ -51,13 +52,12 @@ const Index = (async () => {
     try {
       const grammar = '#JSGF V1.0;'
       const recognition = new SpeechRecognition();
+      let recognitionHold = null;
       const speechRecognitionList = new SpeechGrammarList();
       speechRecognitionList.addFromString(grammar, 1);
       recognition.grammars = speechRecognitionList;
       recognition.lang = languageAssistant;
       recognition.interimResults = false;
-      // recognition.continuous = true
-
 
       recognition.onresult = function(event) {
         const last = event.results.length - 1;
@@ -116,14 +116,26 @@ const Index = (async () => {
           if (recognitionFor === 'confirm') {
             // isTalking = false
             disableSendRec(false)
+            if (isChatAssistant && recognitionHold) {
+              isHoldStatus = true
+              recognitionHold.start()
+            }
           }
           if (recognitionFor === 'msg' && !textCommand) {
             // isTalking = false
             disableSendRec(false)
+            if (isChatAssistant && recognitionHold) {
+              isHoldStatus = true
+              recognitionHold.start()
+            }
           }
         } else {
           // isTalking = false
           disableSendRec(false)
+          if (isChatAssistant && recognitionHold) {
+            isHoldStatus = true
+            recognitionHold.start()
+          }
         }
         
         beConfirmed = false
@@ -148,6 +160,10 @@ const Index = (async () => {
           if (recognitionFor === 'msg') {
             // isTalking = false
             disableSendRec(false)
+            if (isChatAssistant && recognitionHold) {
+              isHoldStatus = true
+              recognitionHold.start()
+            }
           }
         } else {
           window.outputErrorMessage(event.error)
@@ -158,6 +174,10 @@ const Index = (async () => {
           recognitionFor = 'msg'
           beConfirmed = false
           textCommand = ''
+          if (isChatAssistant && recognitionHold) {
+            isHoldStatus = true
+            recognitionHold.start()
+          }
         }
       }
 
@@ -176,7 +196,7 @@ const Index = (async () => {
       if (languageAssistant === 'vi') { 
         const vVN = voices.find(v => v.lang === 'vi-VN');
         if (vVN) {
-          console.log(vVN);
+          // console.log(vVN);
           voice = vVN
         } else {
           if (vEN) {
@@ -199,6 +219,51 @@ const Index = (async () => {
         }
       }
 
+      if (isChatAssistant) {
+        recognitionHold = new SpeechRecognition();
+        recognitionHold.grammars = speechRecognitionList;
+        recognitionHold.lang = languageAssistant;
+        recognitionHold.interimResults = false;
+
+        recognitionHold.onresult = function(event) {
+          const last = event.results.length - 1;
+          const command = event.results[last][0].transcript;
+          console.log(command);
+          console.log($('.send-rec').hasClass('disabled'));
+          if (!$('.send-rec').hasClass('disabled')) {
+            const last = event.results.length - 1;
+            const command = event.results[last][0].transcript;
+            if (command) {
+              console.log(command);
+              if (command.toLowerCase() === 'nhắn tin') {
+                recognitionFor = 'msg'
+                disableSendRec()
+                isHoldStatus = false
+                recognitionHold.stop()
+                recognition.start()
+                console.log('start');
+              }
+            }
+          }
+        };
+  
+        recognitionHold.onspeechend = function(e) {
+          // console.log('onspeechend');
+          recognitionHold.stop()
+        };
+  
+        recognitionHold.onend = function() {
+          if (isHoldStatus) {
+            recognitionHold.start()
+          }
+        };
+  
+        // recognitionHold.onerror = function(event) {
+          
+        // }
+        recognitionHold.start()
+      }
+
       function speak(str) {
         utterThis.text = str
         synth.speak(utterThis);
@@ -211,6 +276,10 @@ const Index = (async () => {
             recognitionFor = 'msg'
             // isTalking = true
             disableSendRec()
+            if (isChatAssistant && recognitionHold && isHoldStatus) {
+              recognitionHold.stop()
+              isHoldStatus = false
+            }
             recognition.start()
           }
         })
