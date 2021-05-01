@@ -39,6 +39,45 @@ const Setting = (async () => {
     }
 
     if (document.formSettingChatMic) {
+      const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+      const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+      try {
+        const grammar = '#JSGF V1.0;'
+        const recognition = new SpeechRecognition();
+        const speechRecognitionList = new SpeechGrammarList();
+        speechRecognitionList.addFromString(grammar, 1);
+        recognition.grammars = speechRecognitionList;
+        recognition.lang = languageAssistant;
+        recognition.interimResults = false;
+
+        recognition.onresult = function(event) {
+          const last = event.results.length - 1;
+          const command = event.results[last][0].transcript;
+          if (command) {
+            $('#directive-hidden').val(command.toLowerCase())
+            $('#directive-show').val(command.toLowerCase())
+          }
+        };
+
+        recognition.onspeechend = () => {
+          recognition.stop()
+        };
+
+        recognition.onend = function() {
+          $('.set-directive-btn').removeClass('disabled')
+        };
+
+        $('.set-directive-btn').on('click', function (e) {
+          e.preventDefault()
+          if (!$(this).hasClass('disabled')) {
+            $(this).addClass('disabled')
+            recognition.start()
+          }
+        })
+      } catch (error) {
+        window.outputErrorMessage('Trình duyệt không hổ trợ chức năng này')
+      }
+
       if (languageAssistant === 'vi' && methodSend === 'confirm-voice' && !supportVN && isWin) {
         window.outputWarnMessage('Trình duyệt hiện không hổ trợ tiếng Việt!')
         $('.vn-lang-tutorial').removeClass('d-none')
@@ -60,6 +99,11 @@ const Setting = (async () => {
           } else {
             $('.vn-lang-tutorial').addClass('d-none')
           }
+        }
+        if ($('#turn-on-ass-voice').is(':checked')) {
+          $('.wrap-directive').removeClass('d-none')
+        } else {
+          $('.wrap-directive').addClass('d-none')
         }
       })
 

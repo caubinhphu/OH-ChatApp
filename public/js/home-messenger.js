@@ -42122,7 +42122,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, tokenSend, SpeechRecognition, SpeechGrammarList, disableSendRec, sendFile, sendFileSingle, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
+  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, tokenSend, SpeechRecognition, SpeechGrammarList, disableSendRec, sendFile, sendFileSingle, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
   return regeneratorRuntime.wrap(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
@@ -42146,7 +42146,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           languageAssistant = $('#lang-assistant').text();
           isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
           methodSend = $('#method-send').text();
-          isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false; // let isTalking = false
+          isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false;
+          directiveChatText = $('#directive-chat-text').text(); // let isTalking = false
 
           speakFor = '';
           textNotify = '';
@@ -42164,7 +42165,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 105;
+            _context11.next = 106;
             break;
           }
 
@@ -42365,7 +42366,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           // scroll bottom
           chatMain.scrollTop = chatMain.scrollHeight;
           friendIdChatting = $('#main-right').attr('data-id');
-          _context11.prev = 37;
+          _context11.prev = 38;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -42516,31 +42517,31 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context11.next = 55;
+          _context11.next = 56;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 55:
+        case 56:
           voices = _context11.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context11.next = 59;
+            _context11.next = 60;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 59:
+        case 60:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context11.next = 71;
+            _context11.next = 72;
             break;
           }
 
@@ -42549,29 +42550,29 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           });
 
           if (!vVN) {
-            _context11.next = 66;
+            _context11.next = 67;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context11.next = 71;
+          _context11.next = 72;
           break;
 
-        case 66:
+        case 67:
           if (!vEN) {
-            _context11.next = 70;
+            _context11.next = 71;
             break;
           }
 
           voice = vEN;
-          _context11.next = 71;
+          _context11.next = 72;
           break;
 
-        case 70:
+        case 71:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 71:
+        case 72:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -42604,7 +42605,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                 if (_command) {
                   console.log(_command);
 
-                  if (_command.toLowerCase() === 'nhắn tin') {
+                  if (_command.toLowerCase() === directiveChatText.toLowerCase()) {
                     recognitionFor = 'msg';
                     disableSendRec();
                     isHoldStatus = false;
@@ -42671,15 +42672,15 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
           }
 
-          _context11.next = 81;
+          _context11.next = 82;
           break;
 
-        case 78:
-          _context11.prev = 78;
-          _context11.t0 = _context11["catch"](37);
+        case 79:
+          _context11.prev = 79;
+          _context11.t0 = _context11["catch"](38);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 81:
+        case 82:
           msgForm.addEventListener('submit', /*#__PURE__*/function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
               var inputMsg;
@@ -43207,12 +43208,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           });
 
-        case 105:
+        case 106:
         case "end":
           return _context11.stop();
       }
     }
-  }, _callee11, null, [[37, 78]]);
+  }, _callee11, null, [[38, 79]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);

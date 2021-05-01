@@ -805,13 +805,13 @@ module.exports.putLanguageAssistant = async (req, res, next) => {
 // put setting change mic chat method
 module.exports.putMicChatMethod = async (req, res, next) => {
   // get info change email
-  const { method, methodSend, isChatAss } = req.body;
+  const { method, methodSend, isChatAss, directiveChatText } = req.body;
   const meds = {
     'confirm-popup' : 1,
     'confirm-voice': 1,
     'auto-send': 1
   }
-  if (method !== '1' && method !== '0' && methodSend in meds) {
+  if (method !== '1' && method !== '0' && !(methodSend in meds) && !directiveChatText) {
     // not pass validate
     req.flash('error', 'Phương thức không hợp lệ');
     req.flash('tab', 'general');
@@ -824,6 +824,7 @@ module.exports.putMicChatMethod = async (req, res, next) => {
       member.setting.chatMicVoice = +method
       member.setting.methodSend = methodSend
       member.setting.isChatAssistant = isChatAss === 'true' ? true : false
+      member.setting.directiveChatText = directiveChatText.toLowerCase()
       await member.save()
 
       req.flash('success', 'Đổi phương thức chat microphone thành công');

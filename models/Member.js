@@ -108,6 +108,10 @@ const memberSchema = mongoose.Schema({
     isChatAssistant: {
       type: Boolean,
       default: false
+    },
+    directiveChatText: {
+      type: String,
+      default: 'chat'
     }
   }
 });

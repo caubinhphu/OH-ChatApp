@@ -44797,7 +44797,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 var Setting = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-  var languageAssistant, methodSend, isWin, supportVN, synth, voices;
+  var languageAssistant, methodSend, isWin, supportVN, synth, voices, SpeechRecognition, SpeechGrammarList, grammar, recognition, speechRecognitionList;
   return regeneratorRuntime.wrap(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -44849,6 +44849,48 @@ var Setting = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _
             }
 
             if (document.formSettingChatMic) {
+              SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+              SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+
+              try {
+                grammar = '#JSGF V1.0;';
+                recognition = new SpeechRecognition();
+                speechRecognitionList = new SpeechGrammarList();
+                speechRecognitionList.addFromString(grammar, 1);
+                recognition.grammars = speechRecognitionList;
+                recognition.lang = languageAssistant;
+                recognition.interimResults = false;
+
+                recognition.onresult = function (event) {
+                  var last = event.results.length - 1;
+                  var command = event.results[last][0].transcript;
+
+                  if (command) {
+                    $('#directive-hidden').val(command.toLowerCase());
+                    $('#directive-show').val(command.toLowerCase());
+                  }
+                };
+
+                recognition.onspeechend = function () {
+                  recognition.stop();
+                };
+
+                recognition.onend = function () {
+                  $('.set-directive-btn').removeClass('disabled');
+                };
+
+                $('.set-directive-btn').on('click', function (e) {
+                  e.preventDefault();
+
+                  if (!$(this).hasClass('disabled')) {
+                    $(this).addClass('disabled');
+                    recognition.start();
+                  }
+                });
+              } catch (error) {
+                window.outputErrorMessage('Trình duyệt không hổ trợ chức năng này');
+              }
+
               if (languageAssistant === 'vi' && methodSend === 'confirm-voice' && !supportVN && isWin) {
                 window.outputWarnMessage('Trình duyệt hiện không hổ trợ tiếng Việt!');
                 $('.vn-lang-tutorial').removeClass('d-none');
@@ -44871,6 +44913,12 @@ var Setting = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _
                   } else {
                     $('.vn-lang-tutorial').addClass('d-none');
                   }
+                }
+
+                if ($('#turn-on-ass-voice').is(':checked')) {
+                  $('.wrap-directive').removeClass('d-none');
+                } else {
+                  $('.wrap-directive').addClass('d-none');
                 }
               });
               $('.copy-code-btn').on('click', function (e) {
@@ -44923,7 +44971,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
+  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
 
   return regeneratorRuntime.wrap(function _callee15$(_context15) {
     while (1) {
@@ -45577,7 +45625,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           languageAssistant = $('#lang-assistant').text();
           isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
           methodSend = $('#method-send').text();
-          isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false; // let isTalking = false
+          isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false;
+          directiveChatText = $('#directive-chat-text').text(); // let isTalking = false
 
           speakFor = '';
           textNotify = '';
@@ -45592,7 +45641,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok'];
           SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-          _context15.prev = 39;
+          _context15.prev = 40;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -45744,31 +45793,31 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context15.next = 57;
+          _context15.next = 58;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 57:
+        case 58:
           voices = _context15.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context15.next = 61;
+            _context15.next = 62;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 61:
+        case 62:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context15.next = 73;
+            _context15.next = 74;
             break;
           }
 
@@ -45777,29 +45826,29 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           });
 
           if (!vVN) {
-            _context15.next = 68;
+            _context15.next = 69;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context15.next = 73;
+          _context15.next = 74;
           break;
 
-        case 68:
+        case 69:
           if (!vEN) {
-            _context15.next = 72;
+            _context15.next = 73;
             break;
           }
 
           voice = vEN;
-          _context15.next = 73;
+          _context15.next = 74;
           break;
 
-        case 72:
+        case 73:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 73:
+        case 74:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -45829,7 +45878,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                 var _command = event.results[_last][0].transcript;
 
                 if (_command) {
-                  if (_command.toLowerCase() === 'nhắn tin') {
+                  if (_command.toLowerCase() === directiveChatText.toLowerCase()) {
                     recognitionFor = 'msg';
                     disableSendRec();
                     isHoldStatus = false;
@@ -45911,15 +45960,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             });
           }
 
-          _context15.next = 84;
+          _context15.next = 85;
           break;
 
-        case 81:
-          _context15.prev = 81;
-          _context15.t0 = _context15["catch"](39);
+        case 82:
+          _context15.prev = 82;
+          _context15.t0 = _context15["catch"](40);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 84:
+        case 85:
           // receive msg obj from server
           window.socket.on('msg-messenger', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
@@ -46313,12 +46362,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-        case 102:
+        case 103:
         case "end":
           return _context15.stop();
       }
     }
-  }, _callee15, null, [[39, 81]]);
+  }, _callee15, null, [[40, 82]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Messenger);

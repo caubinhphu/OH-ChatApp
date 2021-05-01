@@ -49,6 +49,7 @@ module.exports.checkAuthenticated = async (req, res, next) => {
     res.locals.chatMicVoice = member.setting.chatMicVoice;
     res.locals.methodSend = member.setting.methodSend;
     res.locals.isChatAssistant = member.setting.isChatAssistant;
+    res.locals.directiveChatText = member.setting.directiveChatText;
 
     next();
   } catch (error) {

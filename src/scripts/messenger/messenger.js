@@ -19,6 +19,7 @@ const Messenger = (async () => {
   const isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false
   const methodSend = $('#method-send').text()
   const isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false
+  const directiveChatText = $('#directive-chat-text').text()
 
   // let isTalking = false
   let speakFor = ''
@@ -221,7 +222,7 @@ const Messenger = (async () => {
           const last = event.results.length - 1;
           const command = event.results[last][0].transcript;
           if (command) {
-            if (command.toLowerCase() === 'nhắn tin') {
+            if (command.toLowerCase() === directiveChatText.toLowerCase()) {
               recognitionFor = 'msg'
               disableSendRec()
               isHoldStatus = false
