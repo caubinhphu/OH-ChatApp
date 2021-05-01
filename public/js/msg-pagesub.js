@@ -44922,1008 +44922,1377 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-var Messenger = function () {
-  var classChatMain = '.chat-mini-main';
-  var nClassCloseMini = 'close-mini-chat';
-  var classScroll = '.scroll-bottom';
-  var nClassNoAct = 'not-active';
-  var nClassAct = 'is-active';
-  var isDragging = 0;
-  var isDragZone = false;
-  var fileTake = null;
-  var holdRec = false;
-  var oldSearchMiniRes = {}; // receive msg obj from server
+var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
 
-  window.socket.on('msg-messenger', /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref) {
-      var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive;
+  return regeneratorRuntime.wrap(function _callee15$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          _sendFileSingle = function _sendFileSingle3() {
+            _sendFileSingle = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(file, $popup) {
+              var audio,
+                  formData,
+                  idSession,
+                  res,
+                  $msgFile,
+                  _$msgFile2,
+                  _args14 = arguments;
 
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              senderId = _ref.senderId, msgObj = _ref.msg, token = _ref.token;
-              activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
+              return regeneratorRuntime.wrap(function _callee14$(_context14) {
+                while (1) {
+                  switch (_context14.prev = _context14.next) {
+                    case 0:
+                      audio = _args14.length > 2 && _args14[2] !== undefined ? _args14[2] : false;
+                      formData = new FormData();
+                      idSession = new Date().valueOf();
+                      formData.append('files', file); // create message obj to show in client
 
-              if ($(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
-                $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
-                $chatMain = $popup.find(classChatMain);
-                window.outputMessage(msgObj, false, $chatMain); // scroll bottom
+                      createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                      _context14.prev = 5;
+                      _context14.next = 8;
+                      return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data'
+                        }
+                      });
 
-                window.scrollBottomChatBox($chatMain);
+                    case 8:
+                      res = _context14.sent;
+                      // $popup.find('.send-file-input').val('')
+                      // finalFiles = []
+                      // enabledInputFile()
+                      $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+                      $msgFile.each(function (i, ele) {
+                        var fileFind = res.data.fileUrls.find(function (f) {
+                          return f.name === $(ele).text();
+                        });
 
-                if ($popup.hasClass(nClassCloseMini)) {
-                  $popup.removeClass(nClassCloseMini);
-                  classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                  $popup.addClass(classIsActive);
+                        if (fileFind) {
+                          $(ele).parents('.wrap-msg-file').addClass('load-done');
 
-                  if (classIsActive === nClassNoAct) {
-                    outputPreviewMsg($popup, msgObj.message);
-                  } else {
-                    window.scrollBottomChatBox($chatMain);
+                          if (fileFind.resourceType === 'image') {
+                            $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" />"));
+                          } else if (fileFind.resourceType === 'video') {
+                            if (audio) {
+                              $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(fileFind.url, "\"><audio/>"));
+                            } else {
+                              $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(fileFind.url, "\"></video>"));
+                            }
+                          } else {
+                            ele.href = fileFind.url;
+                          } // send message to server
+
+
+                          socket.emit('msg-messageChat', {
+                            message: fileFind.url,
+                            type: 'file',
+                            nameFile: fileFind.name,
+                            resourceType: audio ? 'audio' : fileFind.resourceType,
+                            token: $popup.find('input[name="_token"]').val()
+                          });
+                        } else {
+                          $(ele).parents('.message').remove();
+                        }
+                      });
+                      _context14.next = 18;
+                      break;
+
+                    case 13:
+                      _context14.prev = 13;
+                      _context14.t0 = _context14["catch"](5);
+                      // console.dir(error);
+                      _$msgFile2 = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+
+                      _$msgFile2.parents('.message').remove(); // $popup.find('.send-file-input').val('')
+                      // finalFiles = []
+                      // enabledInputFile()
+
+
+                      if (_context14.t0.response && _context14.t0.response.data && _context14.t0.response.data.message) {
+                        window.outputErrorMessage(_context14.t0.response.data.message);
+                      }
+
+                    case 18:
+                    case "end":
+                      return _context14.stop();
                   }
-                } else if ($popup.hasClass(nClassNoAct)) {
-                  outputPreviewMsg($popup, msgObj.message);
                 }
+              }, _callee14, null, [[5, 13]]);
+            }));
+            return _sendFileSingle.apply(this, arguments);
+          };
+
+          sendFileSingle = function _sendFileSingle2(_x10, _x11) {
+            return _sendFileSingle.apply(this, arguments);
+          };
+
+          _sendFile = function _sendFile3() {
+            _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13($popup, finalFiles) {
+              var formData, idSession, res, $msgFile, _$msgFile;
+
+              return regeneratorRuntime.wrap(function _callee13$(_context13) {
+                while (1) {
+                  switch (_context13.prev = _context13.next) {
+                    case 0:
+                      formData = new FormData();
+                      idSession = new Date().valueOf();
+                      finalFiles.forEach(function (file) {
+                        formData.append('files', file); // create message obj to show in client
+
+                        createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                      });
+                      _context13.prev = 3;
+                      _context13.next = 6;
+                      return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data'
+                        }
+                      });
+
+                    case 6:
+                      res = _context13.sent;
+                      // $popup.find('.send-file-input').val('')
+                      // finalFiles = []
+                      // enabledInputFile()
+                      $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+                      $msgFile.each(function (i, ele) {
+                        var file = res.data.fileUrls.find(function (f) {
+                          return f.name === $(ele).text();
+                        });
+
+                        if (file) {
+                          $(ele).parents('.wrap-msg-file').addClass('load-done');
+
+                          if (file.resourceType === 'image') {
+                            $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
+                          } else if (file.resourceType === 'video') {
+                            $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                          } else if (file.resourceType === 'aduio') {
+                            $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"></audio>"));
+                          } else {
+                            ele.href = file.url;
+                          } // send message to server
+
+
+                          socket.emit('msg-messageChat', {
+                            message: file.url,
+                            type: 'file',
+                            nameFile: file.name,
+                            resourceType: file.resourceType,
+                            token: $popup.find('input[name="_token"]').val()
+                          });
+                        } else {
+                          $(ele).parents('.message').remove();
+                        }
+                      });
+                      _context13.next = 17;
+                      break;
+
+                    case 11:
+                      _context13.prev = 11;
+                      _context13.t0 = _context13["catch"](3);
+                      console.dir(_context13.t0);
+                      _$msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
+
+                      _$msgFile.parents('.message').remove(); // $popup.find('.send-file-input').val('')
+                      // finalFiles = []
+                      // enabledInputFile()
+
+
+                      if (_context13.t0.response && _context13.t0.response.data && _context13.t0.response.data.message) {
+                        window.outputErrorMessage(_context13.t0.response.data.message);
+                      }
+
+                    case 17:
+                    case "end":
+                      return _context13.stop();
+                  }
+                }
+              }, _callee13, null, [[3, 11]]);
+            }));
+            return _sendFile.apply(this, arguments);
+          };
+
+          sendFile = function _sendFile2(_x8, _x9) {
+            return _sendFile.apply(this, arguments);
+          };
+
+          outputPreviewMsg = function _outputPreviewMsg($popup, msg) {
+            $popup.find('.preview-msg span').html(msg);
+            $popup.find('.preview-msg').addClass('is-show');
+            setTimeout(function () {
+              $popup.find('.preview-msg').removeClass('is-show');
+            }, 2000);
+          };
+
+          _loadOldMsg = function _loadOldMsg3() {
+            _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12($popup) {
+              var currentPage, responsive, _responsive$data, messages, hasMsg, friendStatus, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response2, _error$response2$data;
+
+              return regeneratorRuntime.wrap(function _callee12$(_context12) {
+                while (1) {
+                  switch (_context12.prev = _context12.next) {
+                    case 0:
+                      if (!(+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load'))) {
+                        _context12.next = 24;
+                        break;
+                      }
+
+                      $popup.attr('data-allow-load', '0');
+                      currentPage = +$popup.attr('data-page');
+                      _context12.prev = 3;
+                      _context12.next = 6;
+                      return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat($popup.attr('data-id'), "&page=").concat(currentPage));
+
+                    case 6:
+                      responsive = _context12.sent;
+                      _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg, friendStatus = _responsive$data.friendStatus; // $('.wrap-loader-chat').addClass('d-none')
+
+                      $popup.attr('data-page', currentPage + 1);
+                      $popup.attr('data-hasMsg', hasMsg ? '1' : '0');
+
+                      if (friendStatus === 'online') {
+                        $popup.addClass('is-online');
+                        $popup.find('.mini-status').html('Đang hoạt động');
+                      } else {
+                        $popup.removeClass('is-online');
+                        $popup.find('.mini-status').html('Đang không hoạt động');
+                      }
+
+                      htmlMsgs = messages.map(function (msg) {
+                        var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
+
+                        if (msg.me) {
+                          var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
+
+                          if (msg.fileName) {
+                            if (msg.type === 'image') {
+                              _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
+                            } else if (msg.type === 'video') {
+                              _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video/></small>");
+                            } else if (msg.type === 'audio') {
+                              _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio/></small>");
+                            } else {
+                              _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                            }
+                          } else if (msg.isLink) {
+                            _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                          }
+
+                          return "\n              <div class=\"message text-right ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me\">\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                        }
+
+                        var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
+
+                        if (msg.fileName) {
+                          if (msg.type === 'image') {
+                            contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
+                          } else if (msg.type === 'video') {
+                            contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                          } else if (msg.type === 'audio') {
+                            contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio></small>");
+                          } else {
+                            contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
+                          }
+                        } else if (msg.isLink) {
+                          contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                        }
+
+                        return "\n            <div class=\"message ".concat(msg["class"], "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  ").concat(contentHtml, "\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
+                      }).join(''); // prepend msg list and hold position scroll top of chat box
+
+                      chatMain = $popup.find(classChatMain).get(0);
+                      curScrollPos = chatMain.scrollTop;
+                      oldScroll = chatMain.scrollHeight - chatMain.clientHeight;
+                      $(chatMain).prepend(htmlMsgs);
+                      newScroll = chatMain.scrollHeight - chatMain.clientHeight;
+                      chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
+                      $popup.attr('data-allow-load', '1');
+                      _context12.next = 24;
+                      break;
+
+                    case 21:
+                      _context12.prev = 21;
+                      _context12.t0 = _context12["catch"](3);
+                      window.outputErrorMessage(_context12.t0 === null || _context12.t0 === void 0 ? void 0 : (_error$response2 = _context12.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+
+                    case 24:
+                    case "end":
+                      return _context12.stop();
+                  }
+                }
+              }, _callee12, null, [[3, 21]]);
+            }));
+            return _loadOldMsg.apply(this, arguments);
+          };
+
+          loadOldMsg = function _loadOldMsg2(_x7) {
+            return _loadOldMsg.apply(this, arguments);
+          };
+
+          createCallMsgLocalMini = function _createCallMsgLocalMi2(friendId) {
+            var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+            var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+            var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+            var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+            var $chatBox = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
+            var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
+            var timeCall = null;
+
+            if (isCallEnd && window.timeStartCall) {
+              time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
+              timeCall = "<small class=\"time-call\">".concat(window.formatDiffTime(window.timeStartCall, new Date()), "</small>");
+              window.timeStartCall = undefined;
+            }
+
+            if ($chatBox.length) {
+              if (me) {
+                window.outputMessage({
+                  time: time,
+                  username: 'Me',
+                  message: msg,
+                  className: className,
+                  timeCall: timeCall
+                }, true, $chatBox.find(classChatMain));
+                window.scrollBottomChatBox($chatBox.find(classChatMain));
               } else {
-                _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                createMiniPopup(senderId, msgObj, token, _classIsActive);
+                window.outputMessage({
+                  time: time,
+                  username: $chatBox.find('.mini-name').text(),
+                  message: msg,
+                  avatar: $chatBox.find('.avatar-mini').attr('src'),
+                  className: className,
+                  timeCall: timeCall
+                }, false, $chatBox.find(classChatMain));
+                window.scrollBottomChatBox($chatBox.find(classChatMain));
               }
+            }
+          };
 
-            case 3:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
+          createCallMsgLocalMiniChat = function _createCallMsgLocalMi(friendId) {
+            var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+            var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+            var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+            var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+            var $popup = $(".popup-chat-mini[data-id=".concat(friendId, "]"));
 
-    return function (_x) {
-      return _ref2.apply(this, arguments);
-    };
-  }()); // receive signal friend is online
+            if ($popup.length) {
+              createCallMsgLocalMini(friendId, msg, className, isCallEnd, me);
 
-  window.socket.on('msg-friendOnline', function (_ref3) {
-    var memberId = _ref3.memberId;
-    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
-
-    if ($popup.length) {
-      $popup.addClass('is-online');
-      $popup.find('.mini-status').html('Đang hoạt động');
-    }
-  }); // receive signal friend is offline
-
-  window.socket.on('msg-friendOffline', function (_ref4) {
-    var memberId = _ref4.memberId;
-    var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
-
-    if ($popup.length) {
-      $popup.removeClass('is-online');
-      $popup.find('.mini-status').html('Đang không hoạt động');
-    }
-  });
-  document.addEventListener('dragover', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    isDragging++;
-
-    if (isDragging === 1) {
-      $('.popup-chat-mini.is-active .dragzone').removeClass('d-none');
-    }
-  });
-  document.addEventListener('dragleave', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log(e.target);
-
-    if (!isDragZone) {
-      $('.dragzone').addClass('d-none');
-      isDragging = 0;
-    }
-  });
-  document.addEventListener('drop', function (e) {
-    e.preventDefault();
-    isDragging = 0;
-    $('.dragzone').addClass('d-none');
-  }); // open search friend mini
-
-  $('.open-search-mini').on('click', function (e) {
-    e.preventDefault();
-
-    if ($(this).hasClass('is-open')) {
-      // close
-      $('.box-search-mini').addClass('d-none');
-      $(this).removeClass('is-open');
-    } else {
-      // open
-      $(this).addClass('is-open');
-      $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
-      $('.box-search-mini').removeClass('d-none');
-      $('#s-fri-mini').focus();
-    }
-  });
-  $('.close-search-mini').on('click', function () {
-    // close
-    $('.box-search-mini').addClass('d-none');
-    $('.open-search-mini').removeClass('is-open');
-  }); // send query search friend
-
-  $('#s-fri-mini').on('input', function () {
-    $('.loader-search').removeClass('d-none');
-    var value = this.value.replace(/\s+/g, ' ').trim();
-    clearTimeout(window.idTimeOutSearchMini);
-    window.idTimeOutSearchMini = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var friends, response, html, _error$response, _error$response$data;
-
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-
-              if (!(value && window.oldSearch !== value)) {
-                _context2.next = 19;
-                break;
+              if ($popup.hasClass(nClassNoAct)) {
+                outputPreviewMsg($popup, msg);
               }
+            }
+          };
 
-              friends = [];
+          _createMiniPopup = function _createMiniPopup3() {
+            _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(senderId, msgObj, token, classIsActive) {
+              var html, $popup, finalFiles;
+              return regeneratorRuntime.wrap(function _callee11$(_context11) {
+                while (1) {
+                  switch (_context11.prev = _context11.next) {
+                    case 0:
+                      html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex ps-rv\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default send-take-photo m-0 p-2\" data-toggle=\"modal\" data-target=\"#modal-take-photo\">\n            <span class=\"icomoon icon-camera\"></span>\n          </button>\n          <button class=\"btn btn-default send-rec m-0 p-2 ps-rv\">\n            <span class=\"icomoon icon-mic\"></span>\n            <div class=\"rec-bar d-none\">\n              <div class=\"d-flex align-items-center justify-content-around\">\n                <span class=\"icomoon icon-close rec-cancel\"></span>\n                <span class=\"rec-time\">0:00</span>\n              </div>\n            </div>\n          </button>\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n          <div class=\"confirm-popup ps-rv d-none\">\n            <div class=\"msg-output\"></div>\n            <div class=\"text-center\"><button class=\"btn confirm-send-btn\" type=\"button\">G\u1EEDi</button></div><button\n              class=\"btn btn-icon small-btn btn-red btn-close\" type=\"button\"><span\n                class=\"icomoon icon-close rec-cancel\"></span></button>\n          </div>\n        </form>\n      </div>\n    </div>\n    ");
+                      $('.wrap-chat-mini').append(html);
+                      $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+                      finalFiles = [];
 
-              if (!oldSearchMiniRes[value]) {
-                _context2.next = 7;
-                break;
-              }
+                      if (classIsActive === nClassNoAct) {
+                        outputPreviewMsg($popup, msgObj.message);
+                      }
 
-              friends = oldSearchMiniRes[value];
-              _context2.next = 12;
-              break;
+                      _context11.next = 7;
+                      return loadOldMsg($popup);
 
-            case 7:
-              _context2.next = 9;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/messenger/search-friend', {
-                params: {
-                  q: value,
-                  mini: '1'
+                    case 7:
+                      $popup.find('.wrap-loader-mini').addClass('d-none');
+                      window.emojisForMiniChat($popup); // event submit form chat
+
+                      $popup.find('form').on('submit', /*#__PURE__*/function () {
+                        var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
+                          var inputMsg;
+                          return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                            while (1) {
+                              switch (_context8.prev = _context8.next) {
+                                case 0:
+                                  // stop submit form
+                                  e.preventDefault();
+                                  $popup.find('.files-upload-box').html(''); // input message
+
+                                  inputMsg = e.target.elements.message;
+
+                                  if (inputMsg.value !== '') {
+                                    // send message to server
+                                    window.socket.emit('msg-messageChat', {
+                                      message: inputMsg.value,
+                                      token: e.target.elements._token.value
+                                    }); // create message obj to show in client
+
+                                    createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
+                                    // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
+                                    // set value for input message
+
+                                    inputMsg.value = ''; // focus input message
+
+                                    inputMsg.focus();
+                                  }
+
+                                  if (!finalFiles.length) {
+                                    _context8.next = 9;
+                                    break;
+                                  }
+
+                                  _context8.next = 7;
+                                  return sendFile($popup, finalFiles);
+
+                                case 7:
+                                  $popup.find('.send-file-input').val('');
+                                  finalFiles = [];
+
+                                case 9:
+                                case "end":
+                                  return _context8.stop();
+                              }
+                            }
+                          }, _callee8);
+                        }));
+
+                        return function (_x12) {
+                          return _ref12.apply(this, arguments);
+                        };
+                      }());
+
+                      if (isChatMicVoice) {
+                        $popup.find('.send-rec').on('mousedown', function () {
+                          holdRec = true;
+                          var $recBar = $(this).find('.rec-bar');
+                          $recBar.removeClass('d-none');
+                          window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+                            return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                              while (1) {
+                                switch (_context9.prev = _context9.next) {
+                                  case 0:
+                                    if (!holdRec) {
+                                      _context9.next = 3;
+                                      break;
+                                    }
+
+                                    _context9.next = 3;
+                                    return window.recorderVoice($recBar);
+
+                                  case 3:
+                                  case "end":
+                                    return _context9.stop();
+                                }
+                              }
+                            }, _callee9);
+                          })), 1000);
+                        });
+                      }
+
+                      $popup.find('.send-file-input').on('change', function () {
+                        if (this.files.length) {
+                          var _html = '';
+
+                          _toConsumableArray(this.files).forEach(function (file) {
+                            _html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+                            finalFiles.push(file);
+                            console.log($popup);
+                            console.log(finalFiles);
+                          });
+
+                          $popup.find('.files-upload-box').append(_html); // disabledInputFile()
+
+                          this.value = '';
+                        }
+                      });
+                      $(document).on('click', '.remove-up-file', function (e) {
+                        e.preventDefault();
+
+                        if ($popup.has(this).length) {
+                          var $fileItem = $(this).parents('.file-item');
+                          var index = $fileItem.index();
+
+                          if (index >= 0) {
+                            finalFiles.splice(index, 1);
+                            $fileItem.remove();
+
+                            if (!finalFiles.length) {// enabledInputFile()
+                            }
+                          }
+                        }
+                      });
+                      $popup.find('.dragzone').get(0).addEventListener('dragenter', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        isDragZone = true;
+                      });
+                      $popup.find('.dragzone').get(0).addEventListener('dragleave', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        isDragZone = false;
+                      });
+                      $popup.find('.dragzone').get(0).addEventListener('drop', function (e) {
+                        e.preventDefault();
+                        var files = e.dataTransfer.files;
+
+                        if (files.length) {
+                          var _html2 = '';
+
+                          _toConsumableArray(files).forEach(function (file) {
+                            _html2 += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
+                            finalFiles.push(file);
+                          });
+
+                          $popup.find('.files-upload-box').append(_html2); // disabledInputFile()
+                        }
+                      });
+                      $popup.find('.msg-mini').on('keydown', function (e) {
+                        if (e.which === 13 && !e.shiftKey) {
+                          e.preventDefault();
+                          $popup.find('button.text-secondary').trigger('click');
+                          $(this).css('height', '35px');
+                        }
+                      }).on('input', function () {
+                        $(this).css('height', '5px');
+                        $(this).css('height', "".concat(this.scrollHeight, "px"));
+                      }).on('focus', function () {
+                        $(this).parents('.wrap-msg-box').addClass('is-focus');
+                      }).on('blur', function () {
+                        $(this).parents('.wrap-msg-box').removeClass('is-focus');
+                      }); // handle scroll box chat: load old msg, scroll to bottom
+
+                      $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+                        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+                          while (1) {
+                            switch (_context10.prev = _context10.next) {
+                              case 0:
+                                if (!(this.scrollTop === 0)) {
+                                  _context10.next = 7;
+                                  break;
+                                }
+
+                                $popup.find('.wrap-loader-chat').removeClass('d-none');
+                                _context10.next = 4;
+                                return loadOldMsg($popup);
+
+                              case 4:
+                                $popup.find('.wrap-loader-chat').addClass('d-none');
+                                _context10.next = 8;
+                                break;
+
+                              case 7:
+                                if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
+                                  $popup.find(classScroll).addClass('is-show');
+                                } else {
+                                  $popup.find(classScroll).removeClass('is-show');
+                                }
+
+                              case 8:
+                              case "end":
+                                return _context10.stop();
+                            }
+                          }
+                        }, _callee10, this);
+                      }))); // scroll to bottom chat box
+
+                      $popup.find(classScroll).on('click', function () {
+                        window.scrollBottomChatBox($popup.find(classChatMain));
+                      }); // minimize chat
+
+                      $popup.find('.mini-chat-btn').on('click', function () {
+                        $popup.removeClass(nClassAct);
+                        $popup.addClass(nClassNoAct);
+                      }); // open mini chat
+
+                      $popup.find('.avatar-mini-2').on('click', function () {
+                        $('.popup-chat-mini').removeClass(nClassAct);
+                        $('.popup-chat-mini').addClass(nClassNoAct);
+                        $popup.addClass(nClassAct);
+                        $popup.removeClass(nClassNoAct); // window.scrollBottomChatBox($popup.find(classChatMain))
+                        // scroll bottom
+
+                        var chatMain = $popup.find(classChatMain).get(0);
+                        chatMain.scrollTop = chatMain.scrollHeight;
+                      }); // close mini chat
+
+                      $popup.find('.close-chat-btn').on('click', function () {
+                        $popup.addClass(nClassCloseMini);
+                        $popup.removeClass(nClassAct);
+                      }); // call audio
+
+                      $popup.find('.call-friend-btn').on('click', function () {
+                        window.callFriend($popup.attr('data-id'));
+                      }); // call video
+
+                      $popup.find('.video-friend-btn').on('click', function () {
+                        window.callFriend($popup.attr('data-id'), 'video');
+                      });
+
+                    case 24:
+                    case "end":
+                      return _context11.stop();
+                  }
                 }
-              });
+              }, _callee11);
+            }));
+            return _createMiniPopup.apply(this, arguments);
+          };
 
-            case 9:
-              response = _context2.sent;
-              friends = response.data.friends;
-              oldSearchMiniRes[value] = friends;
+          createMiniPopup = function _createMiniPopup2(_x3, _x4, _x5, _x6) {
+            return _createMiniPopup.apply(this, arguments);
+          };
 
-            case 12:
-              window.oldSearch = value;
-              html = friends.map(function (friend) {
-                return "\n            <div class=\"pre-search-item\" data-id=\"".concat(friend._id, "\" data-token=\"").concat(friend.token, "\">\n              <div class=\"d-flex align-items-center\">\n              <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <div class=\"wrap-pre-s-right\">\n                  <div class=\"name-member\">").concat(friend.name, "</div>\n                </div>\n              </div>\n            </div>\n          ");
-              }).join('');
+          disableSendRec = function _disableSendRec() {
+            var flag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-              if (html === '') {
-                html = "\n              <div class=\"text-center last-mb-none\">\n                <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n              </div>\n            ";
+            if (flag) {
+              $('button.send-rec').addClass('disabled').prop('disabled', true);
+              $('.popup-chat-mini.not-active').addClass('disabled');
+              $('.mini-chat-btn').addClass('disabled').prop('disabled', true);
+              $('.close-chat-btn').addClass('disabled').prop('disabled', true);
+              $('.open-search-mini').addClass('disabled').prop('disabled', true);
+            } else {
+              $('button.send-rec').removeClass('disabled').prop('disabled', false);
+              $('.popup-chat-mini.not-active').removeClass('disabled');
+              $('.mini-chat-btn').removeClass('disabled').prop('disabled', false);
+              $('.open-search-mini').removeClass('disabled').prop('disabled', false);
+            }
+          };
+
+          classChatMain = '.chat-mini-main';
+          nClassCloseMini = 'close-mini-chat';
+          classScroll = '.scroll-bottom';
+          nClassNoAct = 'not-active';
+          nClassAct = 'is-active';
+          isDragging = 0;
+          isDragZone = false;
+          fileTake = null;
+          holdRec = false;
+          oldSearchMiniRes = {};
+          languageAssistant = $('#lang-assistant').text();
+          isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
+          methodSend = $('#method-send').text();
+          isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false; // let isTalking = false
+
+          speakFor = '';
+          textNotify = '';
+          textCommand = '';
+          beConfirmed = false;
+          recognitionFor = 'msg';
+          isHoldStatus = true;
+          textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?';
+          textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended';
+          textNoSend = languageAssistant === 'vi' ? 'Không gửi' : 'Not send';
+          textCancel = languageAssistant === 'vi' ? 'Hủy' : 'cancel';
+          textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok'];
+          SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+          SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+          _context15.prev = 39;
+
+          speak = function speak(str) {
+            utterThis.text = str;
+            synth.speak(utterThis);
+          };
+
+          grammar = '#JSGF V1.0;';
+          recognition = new SpeechRecognition();
+          recognitionHold = null;
+          speechRecognitionList = new SpeechGrammarList();
+          speechRecognitionList.addFromString(grammar, 1);
+          recognition.grammars = speechRecognitionList;
+          recognition.lang = languageAssistant;
+          recognition.interimResults = false;
+
+          recognition.onresult = function (event) {
+            var last = event.results.length - 1;
+            var command = event.results[last][0].transcript;
+            var $popup = $('.popup-chat-mini.is-active');
+            console.log(command);
+            console.log($popup);
+
+            if (command && $popup.length) {
+              if (speakFor === 'confirm') {
+                beConfirmed = true;
+                speakFor = 'notification';
+
+                if (textYes.includes(command.toLowerCase())) {
+                  window.socket.emit('msg-messageChat', {
+                    message: textCommand,
+                    token: $popup.find('input[name="_token"]').val()
+                  });
+                  window.createCallMsgLocalMini($popup.attr('data-id'), textCommand, '', false, true);
+                  textNotify = textSended;
+                } else {
+                  textNotify = textNoSend;
+                }
+
+                textCommand = '';
+              } else {
+                if (methodSend === 'auto-send') {
+                  window.socket.emit('msg-messageChat', {
+                    message: command,
+                    token: tokenSend
+                  });
+                  window.socket.emit('msg-messageChat', {
+                    message: command,
+                    token: $popup.find('input[name="_token"]').val()
+                  });
+                  window.createCallMsgLocalMini($popup.attr('data-id'), command, '', false, true);
+                } else if (methodSend === 'confirm-popup') {
+                  var $popupConfirm = $popup.find('.confirm-popup');
+                  $popupConfirm.find('.msg-output').text(command);
+                  $popupConfirm.removeClass('d-none');
+                } else if (methodSend === 'confirm-voice') {
+                  speakFor = 'confirm';
+                  textCommand = command;
+                  speak("".concat(command, ". ").concat(textConfirm));
+                }
+              }
+            }
+          };
+
+          recognition.onspeechend = function () {
+            recognition.stop();
+          };
+
+          recognition.onend = function () {
+            // console.log(speakFor);
+            if (recognitionFor === 'confirm' && !beConfirmed) {
+              speakFor = 'notification';
+              textNotify = textNoSend;
+              textCommand = '';
+            }
+
+            if (methodSend === 'confirm-voice') {
+              if (recognitionFor === 'confirm') {
+                // isTalking = false
+                disableSendRec(false);
+
+                if (isChatAssistant && recognitionHold) {
+                  isHoldStatus = true;
+                  recognitionHold.start();
+                }
               }
 
-              $('.b-s-m-result').html(html);
-              $('.loader-search').addClass('d-none');
-              _context2.next = 20;
-              break;
+              if (recognitionFor === 'msg' && !textCommand) {
+                // isTalking = false
+                disableSendRec(false);
 
-            case 19:
-              $('.loader-search').addClass('d-none');
+                if (isChatAssistant && recognitionHold) {
+                  isHoldStatus = true;
+                  recognitionHold.start();
+                }
+              }
+            } else {
+              // isTalking = false
+              disableSendRec(false);
 
-            case 20:
-              _context2.next = 26;
-              break;
+              if (isChatAssistant && recognitionHold) {
+                isHoldStatus = true;
+                recognitionHold.start();
+              }
+            }
 
-            case 22:
-              _context2.prev = 22;
-              _context2.t0 = _context2["catch"](0);
-              window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
-              $('.loader-search').addClass('d-none');
+            beConfirmed = false;
 
-            case 26:
-            case "end":
-              return _context2.stop();
+            if (speakFor === 'notification') {
+              speak(textNotify);
+              textNotify = '';
+            }
+          };
+
+          recognition.onerror = function (event) {
+            // console.log('error');
+            // console.log('Error occurred in recognition: ' + event.error);
+            if (event.error === 'no-speech') {
+              window.outputErrorMessage('Bạn chưa nói gì!');
+
+              if (speakFor === 'confirm') {
+                speakFor = 'notification';
+                textNotify = textCancel;
+                beConfirmed = true;
+              }
+
+              if (recognitionFor === 'msg') {
+                // isTalking = false
+                disableSendRec(false);
+
+                if (isChatAssistant && recognitionHold) {
+                  isHoldStatus = true;
+                  recognitionHold.start();
+                }
+              }
+            } else {
+              window.outputErrorMessage(event.error); // isTalking = false
+
+              disableSendRec(false);
+              speakFor = '';
+              textNotify = '';
+              recognitionFor = 'msg';
+              beConfirmed = false;
+              textCommand = '';
+
+              if (isChatAssistant && recognitionHold) {
+                isHoldStatus = true;
+                recognitionHold.start();
+              }
+            }
+          };
+
+          synth = window.speechSynthesis;
+          utterThis = new SpeechSynthesisUtterance();
+          _context15.next = 57;
+          return new Promise(function (rs) {
+            return setTimeout(function () {
+              rs(synth.getVoices());
+            }, 100);
+          });
+
+        case 57:
+          voices = _context15.sent;
+          vEN = voices.find(function (v) {
+            return v.lang === 'en-US';
+          });
+
+          if (!(!vEN && languageAssistant !== 'vi')) {
+            _context15.next = 61;
+            break;
           }
-        }
-      }, _callee2, null, [[0, 22]]);
-    })), 500);
-  }); // choose friend to chat from search results
 
-  $(document).on('click', '.pre-search-item', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    var friendId, token, $popupMini;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            friendId = $(this).attr('data-id');
-            token = $(this).attr('data-token');
-            $popupMini = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
+          throw new Error('Ngôn ngữ không hỗ trợ!');
+
+        case 61:
+          voice = vEN;
+
+          if (!(languageAssistant === 'vi')) {
+            _context15.next = 73;
+            break;
+          }
+
+          vVN = voices.find(function (v) {
+            return v.lang === 'vi-VN';
+          });
+
+          if (!vVN) {
+            _context15.next = 68;
+            break;
+          }
+
+          // console.log(vVN);
+          voice = vVN;
+          _context15.next = 73;
+          break;
+
+        case 68:
+          if (!vEN) {
+            _context15.next = 72;
+            break;
+          }
+
+          voice = vEN;
+          _context15.next = 73;
+          break;
+
+        case 72:
+          throw new Error('Ngôn ngữ không hỗ trợ!');
+
+        case 73:
+          utterThis.voice = voices[22];
+          utterThis.lang = 'en';
+
+          utterThis.onend = function () {
+            if (speakFor === 'confirm') {
+              beConfirmed = false;
+              recognitionFor = 'confirm';
+              recognition.start();
+            } else {// speakFor = ''
+            }
+          };
+
+          if (isChatAssistant) {
+            recognitionHold = new SpeechRecognition();
+            recognitionHold.grammars = speechRecognitionList;
+            recognitionHold.lang = languageAssistant;
+            recognitionHold.interimResults = false;
+
+            recognitionHold.onresult = function (event) {
+              var last = event.results.length - 1;
+              var command = event.results[last][0].transcript;
+              var $popup = $('.popup-chat-mini.is-active');
+              console.log(command);
+
+              if ($popup.length && !$popup.find('.send-rec').hasClass('disabled')) {
+                var _last = event.results.length - 1;
+
+                var _command = event.results[_last][0].transcript;
+
+                if (_command) {
+                  if (_command.toLowerCase() === 'nhắn tin') {
+                    recognitionFor = 'msg';
+                    disableSendRec();
+                    isHoldStatus = false;
+                    recognitionHold.stop();
+                    recognition.start();
+                    console.log('start');
+                  }
+                }
+              }
+            };
+
+            recognitionHold.onspeechend = function (e) {
+              // console.log('onspeechend');
+              recognitionHold.stop();
+            };
+
+            recognitionHold.onend = function () {
+              if (isHoldStatus) {
+                recognitionHold.start();
+              }
+            }; // recognitionHold.onerror = function(event) {
+            // }
+
+
+            recognitionHold.start();
+          }
+
+          if (!isChatMicVoice) {
+            $(document).on('click', '.send-rec', function (e) {
+              e.preventDefault();
+
+              if (!$(this).hasClass('disabled')) {
+                recognitionFor = 'msg'; // isTalking = true
+
+                disableSendRec();
+
+                if (isChatAssistant && recognitionHold && isHoldStatus) {
+                  recognitionHold.stop();
+                  isHoldStatus = false;
+                }
+
+                recognition.start();
+              }
+            });
+            $(document).on('click', '.confirm-popup .btn-close', function (e) {
+              e.preventDefault();
+              var $parent = $(this).parents('.confirm-popup');
+              $parent.find('.msg-output').text('');
+              $parent.addClass('d-none');
+            });
+            $(document).on('click', '.confirm-popup .confirm-send-btn', function (e) {
+              e.preventDefault();
+              var $popupConfirm = $(this).parents('.confirm-popup');
+              var $popup = $popupConfirm.parents('.popup-chat-mini');
+              var text = $popupConfirm.find('.msg-output').text();
+
+              if (text) {
+                window.socket.emit('msg-messageChat', {
+                  message: text,
+                  token: $popup.find('input[name="_token"]').val()
+                }); // create message obj to show in client
+
+                createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(text), '', false, true);
+                $popupConfirm.find('.msg-output').text('');
+                $popupConfirm.addClass('d-none');
+              }
+            });
+          }
+
+          _context15.next = 83;
+          break;
+
+        case 80:
+          _context15.prev = 80;
+          _context15.t0 = _context15["catch"](39);
+          window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
+
+        case 83:
+          // receive msg obj from server
+          window.socket.on('msg-messenger', /*#__PURE__*/function () {
+            var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
+              var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive;
+
+              return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                  switch (_context.prev = _context.next) {
+                    case 0:
+                      senderId = _ref2.senderId, msgObj = _ref2.msg, token = _ref2.token;
+                      activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
+
+                      if ($(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
+                        $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
+                        $chatMain = $popup.find(classChatMain);
+                        window.outputMessage(msgObj, false, $chatMain); // scroll bottom
+
+                        window.scrollBottomChatBox($chatMain);
+
+                        if ($popup.hasClass(nClassCloseMini)) {
+                          $popup.removeClass(nClassCloseMini);
+                          classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                          $popup.addClass(classIsActive);
+
+                          if (classIsActive === nClassNoAct) {
+                            outputPreviewMsg($popup, msgObj.message);
+                          } else {
+                            window.scrollBottomChatBox($chatMain);
+                          }
+                        } else if ($popup.hasClass(nClassNoAct)) {
+                          outputPreviewMsg($popup, msgObj.message);
+                        }
+                      } else {
+                        _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                        createMiniPopup(senderId, msgObj, token, _classIsActive);
+                      }
+
+                    case 3:
+                    case "end":
+                      return _context.stop();
+                  }
+                }
+              }, _callee);
+            }));
+
+            return function (_x) {
+              return _ref3.apply(this, arguments);
+            };
+          }()); // receive signal friend is online
+
+          window.socket.on('msg-friendOnline', function (_ref4) {
+            var memberId = _ref4.memberId;
+            var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
+
+            if ($popup.length) {
+              $popup.addClass('is-online');
+              $popup.find('.mini-status').html('Đang hoạt động');
+            }
+          }); // receive signal friend is offline
+
+          window.socket.on('msg-friendOffline', function (_ref5) {
+            var memberId = _ref5.memberId;
+            var $popup = $(".popup-chat-mini[data-id=\"".concat(memberId, "\"]"));
+
+            if ($popup.length) {
+              $popup.removeClass('is-online');
+              $popup.find('.mini-status').html('Đang không hoạt động');
+            }
+          });
+          document.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging++;
+
+            if (isDragging === 1) {
+              $('.popup-chat-mini.is-active .dragzone').removeClass('d-none');
+            }
+          });
+          document.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(e.target);
+
+            if (!isDragZone) {
+              $('.dragzone').addClass('d-none');
+              isDragging = 0;
+            }
+          });
+          document.addEventListener('drop', function (e) {
+            e.preventDefault();
+            isDragging = 0;
+            $('.dragzone').addClass('d-none');
+          }); // open search friend mini
+
+          $('.open-search-mini').on('click', function (e) {
+            e.preventDefault();
+
+            if ($(this).hasClass('is-open')) {
+              // close
+              $('.box-search-mini').addClass('d-none');
+              $(this).removeClass('is-open');
+            } else {
+              // open
+              $(this).addClass('is-open');
+              $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
+              $('.box-search-mini').removeClass('d-none');
+              $('#s-fri-mini').focus();
+            }
+          });
+          $('.close-search-mini').on('click', function () {
+            // close
             $('.box-search-mini').addClass('d-none');
             $('.open-search-mini').removeClass('is-open');
+          }); // send query search friend
 
-            if (!$popupMini.length) {
-              _context3.next = 10;
-              break;
-            }
+          $('#s-fri-mini').on('input', function () {
+            $('.loader-search').removeClass('d-none');
+            var value = this.value.replace(/\s+/g, ' ').trim();
+            clearTimeout(window.idTimeOutSearchMini);
+            window.idTimeOutSearchMini = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+              var friends, response, html, _error$response, _error$response$data;
 
-            // is chatting
-            $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
-            $popupMini.removeClass(nClassNoAct).removeClass(nClassCloseMini).addClass(nClassAct);
-            _context3.next = 13;
-            break;
+              return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                  switch (_context2.prev = _context2.next) {
+                    case 0:
+                      _context2.prev = 0;
 
-          case 10:
-            // isn't chatting
-            $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
-            _context3.next = 13;
-            return createMiniPopup(friendId, {
-              avatar: $(this).find('img').attr('src'),
-              username: $(this).find('.name-member').html()
-            }, token, nClassAct);
+                      if (!(value && window.oldSearch !== value)) {
+                        _context2.next = 19;
+                        break;
+                      }
 
-          case 13:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  })));
-  $('#modal-take-photo').on('shown.bs.modal', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var _yield$window$takePic, file, dataURL;
+                      friends = [];
 
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.next = 2;
-            return window.takePicture();
+                      if (!oldSearchMiniRes[value]) {
+                        _context2.next = 7;
+                        break;
+                      }
 
-          case 2:
-            _yield$window$takePic = _context4.sent;
-            file = _yield$window$takePic.file;
-            dataURL = _yield$window$takePic.dataURL;
-            $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
-            $('.wrap-photo').removeClass('d-none');
-            fileTake = file;
-            console.log(file);
+                      friends = oldSearchMiniRes[value];
+                      _context2.next = 12;
+                      break;
 
-          case 9:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4);
-  })));
-  $('#modal-take-photo').on('hidden.bs.modal', function () {
-    fileTake = null;
-    $('.photo-pre').html('');
-    $('.wrap-photo').addClass('d-none');
-  });
-  $('#send-photo-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var $pop;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            if (!fileTake) {
-              _context5.next = 6;
-              break;
-            }
+                    case 7:
+                      _context2.next = 9;
+                      return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/messenger/search-friend', {
+                        params: {
+                          q: value,
+                          mini: '1'
+                        }
+                      });
 
-            $('#modal-take-photo').modal('hide');
-            $pop = $('.popup-chat-mini.is-active');
+                    case 9:
+                      response = _context2.sent;
+                      friends = response.data.friends;
+                      oldSearchMiniRes[value] = friends;
 
-            if (!$pop.length) {
-              _context5.next = 6;
-              break;
-            }
+                    case 12:
+                      window.oldSearch = value;
+                      html = friends.map(function (friend) {
+                        return "\n            <div class=\"pre-search-item\" data-id=\"".concat(friend._id, "\" data-token=\"").concat(friend.token, "\">\n              <div class=\"d-flex align-items-center\">\n              <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <div class=\"wrap-pre-s-right\">\n                  <div class=\"name-member\">").concat(friend.name, "</div>\n                </div>\n              </div>\n            </div>\n          ");
+                      }).join('');
 
-            _context5.next = 6;
-            return sendFileSingle(fileTake, $pop);
+                      if (html === '') {
+                        html = "\n              <div class=\"text-center last-mb-none\">\n                <p>Kh\xF4ng t\xECm th\u1EA5y b\u1EA1n b\xE8 ph\xF9 h\u1EE3p</p>\n              </div>\n            ";
+                      }
 
-          case 6:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
-  })));
-  $('#re-take-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    var _yield$window$takePic2, file, dataURL;
+                      $('.b-s-m-result').html(html);
+                      $('.loader-search').addClass('d-none');
+                      _context2.next = 20;
+                      break;
 
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
+                    case 19:
+                      $('.loader-search').addClass('d-none');
+
+                    case 20:
+                      _context2.next = 26;
+                      break;
+
+                    case 22:
+                      _context2.prev = 22;
+                      _context2.t0 = _context2["catch"](0);
+                      window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
+                      $('.loader-search').addClass('d-none');
+
+                    case 26:
+                    case "end":
+                      return _context2.stop();
+                  }
+                }
+              }, _callee2, null, [[0, 22]]);
+            })), 500);
+          }); // choose friend to chat from search results
+
+          $(document).on('click', '.pre-search-item', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var friendId, token, $popupMini;
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+              while (1) {
+                switch (_context3.prev = _context3.next) {
+                  case 0:
+                    friendId = $(this).attr('data-id');
+                    token = $(this).attr('data-token');
+                    $popupMini = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
+                    $('.box-search-mini').addClass('d-none');
+                    $('.open-search-mini').removeClass('is-open');
+
+                    if (!$popupMini.length) {
+                      _context3.next = 10;
+                      break;
+                    }
+
+                    // is chatting
+                    $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
+                    $popupMini.removeClass(nClassNoAct).removeClass(nClassCloseMini).addClass(nClassAct);
+                    _context3.next = 13;
+                    break;
+
+                  case 10:
+                    // isn't chatting
+                    $('.popup-chat-mini.is-active').removeClass(nClassAct).addClass(nClassNoAct);
+                    _context3.next = 13;
+                    return createMiniPopup(friendId, {
+                      avatar: $(this).find('img').attr('src'),
+                      username: $(this).find('.name-member').html()
+                    }, token, nClassAct);
+
+                  case 13:
+                  case "end":
+                    return _context3.stop();
+                }
+              }
+            }, _callee3, this);
+          })));
+          $('#modal-take-photo').on('shown.bs.modal', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+            var _yield$window$takePic, file, dataURL;
+
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    _context4.next = 2;
+                    return window.takePicture();
+
+                  case 2:
+                    _yield$window$takePic = _context4.sent;
+                    file = _yield$window$takePic.file;
+                    dataURL = _yield$window$takePic.dataURL;
+                    $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
+                    $('.wrap-photo').removeClass('d-none');
+                    fileTake = file;
+                    console.log(file);
+
+                  case 9:
+                  case "end":
+                    return _context4.stop();
+                }
+              }
+            }, _callee4);
+          })));
+          $('#modal-take-photo').on('hidden.bs.modal', function () {
+            fileTake = null;
             $('.photo-pre').html('');
             $('.wrap-photo').addClass('d-none');
-            _context6.next = 4;
-            return window.takePicture();
+          });
+          $('#send-photo-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            var $pop;
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    if (!fileTake) {
+                      _context5.next = 6;
+                      break;
+                    }
 
-          case 4:
-            _yield$window$takePic2 = _context6.sent;
-            file = _yield$window$takePic2.file;
-            dataURL = _yield$window$takePic2.dataURL;
-            $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
-            $('.wrap-photo').removeClass('d-none');
-            fileTake = file;
+                    $('#modal-take-photo').modal('hide');
+                    $pop = $('.popup-chat-mini.is-active');
 
-          case 10:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6);
-  })));
-  $(document).on('mouseup', function (e) {
-    var $recBar = $('.rec-bar');
+                    if (!$pop.length) {
+                      _context5.next = 6;
+                      break;
+                    }
 
-    if (holdRec) {
-      holdRec = false;
-      clearTimeout(window.timeRecHold);
-      $recBar.addClass('d-none').find('.rec-time').html('0:00');
+                    _context5.next = 6;
+                    return sendFileSingle(fileTake, $pop);
 
-      if ($(e.target).hasClass('rec-cancel')) {
-        window.stopRecorderVoice(true);
-      } else {
-        window.stopRecorderVoice();
-      }
-    }
-  });
-  $(window).on('endRecorderVoice', /*#__PURE__*/function () {
-    var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
-      var $pop;
-      return regeneratorRuntime.wrap(function _callee7$(_context7) {
-        while (1) {
-          switch (_context7.prev = _context7.next) {
-            case 0:
-              $pop = $('.popup-chat-mini.is-active');
-
-              if (!$pop.length) {
-                _context7.next = 4;
-                break;
+                  case 6:
+                  case "end":
+                    return _context5.stop();
+                }
               }
+            }, _callee5);
+          })));
+          $('#re-take-btn').on('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            var _yield$window$takePic2, file, dataURL;
 
-              _context7.next = 4;
-              return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), $pop, true);
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+              while (1) {
+                switch (_context6.prev = _context6.next) {
+                  case 0:
+                    $('.photo-pre').html('');
+                    $('.wrap-photo').addClass('d-none');
+                    _context6.next = 4;
+                    return window.takePicture();
 
-            case 4:
-            case "end":
-              return _context7.stop();
-          }
-        }
-      }, _callee7);
-    }));
+                  case 4:
+                    _yield$window$takePic2 = _context6.sent;
+                    file = _yield$window$takePic2.file;
+                    dataURL = _yield$window$takePic2.dataURL;
+                    $('.photo-pre').html("<img src=\"".concat(dataURL, "\" alt=\"capture\"/>"));
+                    $('.wrap-photo').removeClass('d-none');
+                    fileTake = file;
 
-    return function (_x2) {
-      return _ref10.apply(this, arguments);
-    };
-  }()); // function create new chat box mini
-
-  function createMiniPopup(_x3, _x4, _x5, _x6) {
-    return _createMiniPopup.apply(this, arguments);
-  } // function create call msg local mini chat
-
-
-  function _createMiniPopup() {
-    _createMiniPopup = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(senderId, msgObj, token, classIsActive) {
-      var html, $popup, finalFiles;
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
-        while (1) {
-          switch (_context11.prev = _context11.next) {
-            case 0:
-              html = "\n    <div class=\"popup-chat-mini d-flex flex-column ps-rv ".concat(classIsActive, "\"\n      data-id=\"").concat(senderId, "\" data-page=\"0\" data-hasMsg=\"1\" data-allow-load=\"1\"\n    >\n      <div class=\"dragzone d-none\">\n        <div class=\"d-flex justify-content-center align-items-center h-100 drag-inner\">\n          <div>\n            <div class=\"text-center\"><span class=\"icomoon icon-insert_drive_file\"></span></div>\n            <h4>K\xE9o th\u1EA3 t\u1EC7p v\xE0o \u0111\xE2y</h4>\n          </div>\n        </div>\n      </div>\n      <div class=\"wrap-loader-mini\">\n        <div class=\"d-flex justify-content-center align-items-center h-100\">\n          <img src=\"/images/loader.svg\" alt=\"loader\" />\n        </div>\n      </div>\n      <div class=\"scroll-bottom\"><span class=\"icomoon icon-circle-down\"></span></div>\n      <img class=\"avatar-mini-2\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" title=\"").concat(msgObj.username, "\" />\n      <div class=\"preview-msg\">\n        <span></span>\n      </div>\n      <div class=\"dot-status-mini\"></div>\n      <div class=\"chat-mini-top\">\n        <div class=\"d-flex p-2\">\n          <div class=\"flex-fill d-flex align-items-center pr-1\">\n            <img class=\"rounded-circle mr-1 avatar-mini\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n            <div>\n                <div class=\"mini-name\">").concat(msgObj.username, "</div>\n                <div class=\"mini-status\">\u0110ang kh\xF4ng ho\u1EA1t \u0111\u1ED9ng</div>\n            </div>\n          </div>\n          <div class=\"flex-fill d-flex align-items-center justify-content-end\">\n            <button class=\"call-friend-btn btn btn-icon small-btn btn-green mr-1\" type=\"button\" title=\"G\u1ECDi\">\n              <span class=\"icomoon icon-phone\"></span>\n            </button>\n            <button class=\"video-friend-btn btn btn-icon small-btn btn-purple mr-1\" type=\"button\" title=\"G\u1ECDi video\">\n              <span class=\"icomoon icon-camera\"></span>\n            </button><button class=\"mini-chat-btn btn btn-icon small-btn btn-red mr-1\" type=\"button\" title=\"\u1EA8n chat\">\n              <span class=\"icomoon icon-minus\"></span>\n            </button>\n            <button class=\"close-chat-btn btn btn-icon small-btn btn-red\" type=\"button\" title=\"\u0110\xF3ng chat\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n      <div class=\"chat-mini-main flex-fill p-2 ps-rv\">\n        <div class=\"wrap-loader-chat d-none\"><img src=\"/images/loader.svg\" alt=\"loader\"></div>\n      </div>\n      <div class=\"chat-mini-bottom\">\n        <div class=\"files-upload-box d-flex justify-content-center flex-wrap\"></div>\n        <form class=\"d-flex\">\n          <label class=\"btn btn-default send-file m-0 p-2\" for=\"send-file-").concat(senderId, "\">\n            <span class=\"icomoon icon-insert_drive_file\"></span>\n          </label>\n          <input class=\"d-none send-file-input\" id=\"send-file-").concat(senderId, "\" type=\"file\" name=\"file\" multiple=\"multiple\">\n          <button class=\"btn btn-default send-take-photo m-0 p-2\" data-toggle=\"modal\" data-target=\"#modal-take-photo\">\n            <span class=\"icomoon icon-camera\"></span>\n          </button>\n          <button class=\"btn btn-default send-rec m-0 p-2 ps-rv\">\n            <span class=\"icomoon icon-mic\"></span>\n            <div class=\"rec-bar d-none\">\n              <div class=\"d-flex align-items-center justify-content-around\">\n                <span class=\"icomoon icon-close rec-cancel\"></span>\n                <span class=\"rec-time\">0:00</span>\n              </div>\n            </div>\n          </button>\n          <button class=\"btn btn-default open-emojis\" type=\"button\">&#128512;</button>\n          <input type=\"hidden\" name=\"_token\" value=\"").concat(token, "\">\n            <div class=\"flex-fill wrap-msg-box ps-rv\">\n              <textarea class=\"form-control msg-mini\" type=\"text\" name=\"message\" placeholder=\"Nh\u1EADp tin nh\u1EAFn\" autocomplete=\"off\"></textarea>\n            </div>\n            <button class=\"btn btn-default text-secondary\">\n              <span class=\"icomoon icon-send\"></span>\n            </button>\n        </form>\n      </div>\n    </div>\n    ");
-              $('.wrap-chat-mini').append(html);
-              $popup = $(".popup-chat-mini[data-id=".concat(senderId, "]"));
-              finalFiles = [];
-
-              if (classIsActive === nClassNoAct) {
-                outputPreviewMsg($popup, msgObj.message);
+                  case 10:
+                  case "end":
+                    return _context6.stop();
+                }
               }
+            }, _callee6);
+          })));
+          $(document).on('mouseup', function (e) {
+            var $recBar = $('.rec-bar');
 
-              _context11.next = 7;
-              return loadOldMsg($popup);
+            if (holdRec) {
+              holdRec = false;
+              clearTimeout(window.timeRecHold);
+              $recBar.addClass('d-none').find('.rec-time').html('0:00');
 
-            case 7:
-              $popup.find('.wrap-loader-mini').addClass('d-none');
-              window.emojisForMiniChat($popup); // event submit form chat
-
-              $popup.find('form').on('submit', /*#__PURE__*/function () {
-                var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
-                  var inputMsg;
-                  return regeneratorRuntime.wrap(function _callee8$(_context8) {
-                    while (1) {
-                      switch (_context8.prev = _context8.next) {
-                        case 0:
-                          // stop submit form
-                          e.preventDefault();
-                          $popup.find('.files-upload-box').html(''); // input message
-
-                          inputMsg = e.target.elements.message;
-
-                          if (inputMsg.value !== '') {
-                            // send message to server
-                            window.window.socket.emit('msg-messageChat', {
-                              message: inputMsg.value,
-                              token: e.target.elements._token.value
-                            }); // create message obj to show in client
-
-                            createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
-                            // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
-                            // set value for input message
-
-                            inputMsg.value = ''; // focus input message
-
-                            inputMsg.focus();
-                          }
-
-                          if (!finalFiles.length) {
-                            _context8.next = 9;
-                            break;
-                          }
-
-                          _context8.next = 7;
-                          return sendFile($popup, finalFiles);
-
-                        case 7:
-                          $popup.find('.send-file-input').val('');
-                          finalFiles = [];
-
-                        case 9:
-                        case "end":
-                          return _context8.stop();
-                      }
-                    }
-                  }, _callee8);
-                }));
-
-                return function (_x12) {
-                  return _ref11.apply(this, arguments);
-                };
-              }());
-              $popup.find('.send-rec').on('mousedown', function () {
-                holdRec = true;
-                var $recBar = $(this).find('.rec-bar');
-                $recBar.removeClass('d-none');
-                window.timeRecHold = setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-                  return regeneratorRuntime.wrap(function _callee9$(_context9) {
-                    while (1) {
-                      switch (_context9.prev = _context9.next) {
-                        case 0:
-                          if (!holdRec) {
-                            _context9.next = 3;
-                            break;
-                          }
-
-                          _context9.next = 3;
-                          return window.recorderVoice($recBar);
-
-                        case 3:
-                        case "end":
-                          return _context9.stop();
-                      }
-                    }
-                  }, _callee9);
-                })), 1000);
-              });
-              $popup.find('.send-file-input').on('change', function () {
-                if (this.files.length) {
-                  var _html = '';
-
-                  _toConsumableArray(this.files).forEach(function (file) {
-                    _html += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
-                    finalFiles.push(file);
-                    console.log($popup);
-                    console.log(finalFiles);
-                  });
-
-                  $popup.find('.files-upload-box').append(_html); // disabledInputFile()
-
-                  this.value = '';
-                }
-              });
-              $(document).on('click', '.remove-up-file', function (e) {
-                e.preventDefault();
-
-                if ($popup.has(this).length) {
-                  var $fileItem = $(this).parents('.file-item');
-                  var index = $fileItem.index();
-
-                  if (index >= 0) {
-                    finalFiles.splice(index, 1);
-                    $fileItem.remove();
-
-                    if (!finalFiles.length) {// enabledInputFile()
-                    }
-                  }
-                }
-              });
-              $popup.find('.dragzone').get(0).addEventListener('dragenter', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                isDragZone = true;
-              });
-              $popup.find('.dragzone').get(0).addEventListener('dragleave', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                isDragZone = false;
-              });
-              $popup.find('.dragzone').get(0).addEventListener('drop', function (e) {
-                e.preventDefault();
-                var files = e.dataTransfer.files;
-
-                if (files.length) {
-                  var _html2 = '';
-
-                  _toConsumableArray(files).forEach(function (file) {
-                    _html2 += "\n            <div class=\"file-item\">\n              <span>".concat(file.name, "</span>\n              <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n            </div>\n          ");
-                    finalFiles.push(file);
-                  });
-
-                  $popup.find('.files-upload-box').append(_html2); // disabledInputFile()
-                }
-              });
-              $popup.find('.msg-mini').on('keydown', function (e) {
-                if (e.which === 13 && !e.shiftKey) {
-                  e.preventDefault();
-                  $popup.find('button.text-secondary').trigger('click');
-                  $(this).css('height', '35px');
-                }
-              }).on('input', function () {
-                $(this).css('height', '5px');
-                $(this).css('height', "".concat(this.scrollHeight, "px"));
-              }).on('focus', function () {
-                $(this).parents('.wrap-msg-box').addClass('is-focus');
-              }).on('blur', function () {
-                $(this).parents('.wrap-msg-box').removeClass('is-focus');
-              }); // handle scroll box chat: load old msg, scroll to bottom
-
-              $popup.find(classChatMain).on('scroll', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-                return regeneratorRuntime.wrap(function _callee10$(_context10) {
-                  while (1) {
-                    switch (_context10.prev = _context10.next) {
-                      case 0:
-                        if (!(this.scrollTop === 0)) {
-                          _context10.next = 7;
-                          break;
-                        }
-
-                        $popup.find('.wrap-loader-chat').removeClass('d-none');
-                        _context10.next = 4;
-                        return loadOldMsg($popup);
-
-                      case 4:
-                        $popup.find('.wrap-loader-chat').addClass('d-none');
-                        _context10.next = 8;
-                        break;
-
-                      case 7:
-                        if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
-                          $popup.find(classScroll).addClass('is-show');
-                        } else {
-                          $popup.find(classScroll).removeClass('is-show');
-                        }
-
-                      case 8:
-                      case "end":
-                        return _context10.stop();
-                    }
-                  }
-                }, _callee10, this);
-              }))); // scroll to bottom chat box
-
-              $popup.find(classScroll).on('click', function () {
-                window.scrollBottomChatBox($popup.find(classChatMain));
-              }); // minimize chat
-
-              $popup.find('.mini-chat-btn').on('click', function () {
-                $popup.removeClass(nClassAct);
-                $popup.addClass(nClassNoAct);
-              }); // open mini chat
-
-              $popup.find('.avatar-mini-2').on('click', function () {
-                $('.popup-chat-mini').removeClass(nClassAct);
-                $('.popup-chat-mini').addClass(nClassNoAct);
-                $popup.addClass(nClassAct);
-                $popup.removeClass(nClassNoAct); // window.scrollBottomChatBox($popup.find(classChatMain))
-                // scroll bottom
-
-                var chatMain = $popup.find(classChatMain).get(0);
-                chatMain.scrollTop = chatMain.scrollHeight;
-              }); // close mini chat
-
-              $popup.find('.close-chat-btn').on('click', function () {
-                $popup.addClass(nClassCloseMini);
-                $popup.removeClass(nClassAct);
-              }); // call audio
-
-              $popup.find('.call-friend-btn').on('click', function () {
-                window.callFriend($popup.attr('data-id'));
-              }); // call video
-
-              $popup.find('.video-friend-btn').on('click', function () {
-                window.callFriend($popup.attr('data-id'), 'video');
-              });
-
-            case 24:
-            case "end":
-              return _context11.stop();
-          }
-        }
-      }, _callee11);
-    }));
-    return _createMiniPopup.apply(this, arguments);
-  }
-
-  function createCallMsgLocalMiniChat(friendId) {
-    var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-    var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-    var $popup = $(".popup-chat-mini[data-id=".concat(friendId, "]"));
-
-    if ($popup.length) {
-      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me);
-
-      if ($popup.hasClass(nClassNoAct)) {
-        outputPreviewMsg($popup, msg);
-      }
-    }
-  }
-
-  window.createCallMsgLocalMiniChat = createCallMsgLocalMiniChat;
-  /**
-  * Function create and append call message to local
-  * @param {string} friendId friend id
-  * @param {string} msg message
-  * @param {string} className class name
-  * @param {boolean} isCallEnd isCallEnd
-  * @param {boolean} me is me
-  */
-
-  function createCallMsgLocalMini(friendId) {
-    var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-    var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-    var $chatBox = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
-    var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
-    var timeCall = null;
-
-    if (isCallEnd && window.timeStartCall) {
-      time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
-      timeCall = "<small class=\"time-call\">".concat(window.formatDiffTime(window.timeStartCall, new Date()), "</small>");
-      window.timeStartCall = undefined;
-    }
-
-    if ($chatBox.length) {
-      if (me) {
-        window.outputMessage({
-          time: time,
-          username: 'Me',
-          message: msg,
-          className: className,
-          timeCall: timeCall
-        }, true, $chatBox.find(classChatMain));
-        window.scrollBottomChatBox($chatBox.find(classChatMain));
-      } else {
-        window.outputMessage({
-          time: time,
-          username: $chatBox.find('.mini-name').text(),
-          message: msg,
-          avatar: $chatBox.find('.avatar-mini').attr('src'),
-          className: className,
-          timeCall: timeCall
-        }, false, $chatBox.find(classChatMain));
-        window.scrollBottomChatBox($chatBox.find(classChatMain));
-      }
-    }
-  }
-
-  window.createCallMsgLocalMini = createCallMsgLocalMini;
-
-  function loadOldMsg(_x7) {
-    return _loadOldMsg.apply(this, arguments);
-  }
-
-  function _loadOldMsg() {
-    _loadOldMsg = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12($popup) {
-      var currentPage, responsive, _responsive$data, messages, hasMsg, friendStatus, htmlMsgs, chatMain, curScrollPos, oldScroll, newScroll, _error$response2, _error$response2$data;
-
-      return regeneratorRuntime.wrap(function _callee12$(_context12) {
-        while (1) {
-          switch (_context12.prev = _context12.next) {
-            case 0:
-              if (!(+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load'))) {
-                _context12.next = 24;
-                break;
-              }
-
-              $popup.attr('data-allow-load', '0');
-              currentPage = +$popup.attr('data-page');
-              _context12.prev = 3;
-              _context12.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/messenger/chatold/?friendid=".concat($popup.attr('data-id'), "&page=").concat(currentPage));
-
-            case 6:
-              responsive = _context12.sent;
-              _responsive$data = responsive.data, messages = _responsive$data.messages, hasMsg = _responsive$data.hasMsg, friendStatus = _responsive$data.friendStatus; // $('.wrap-loader-chat').addClass('d-none')
-
-              $popup.attr('data-page', currentPage + 1);
-              $popup.attr('data-hasMsg', hasMsg ? '1' : '0');
-
-              if (friendStatus === 'online') {
-                $popup.addClass('is-online');
-                $popup.find('.mini-status').html('Đang hoạt động');
+              if ($(e.target).hasClass('rec-cancel')) {
+                window.stopRecorderVoice(true);
               } else {
-                $popup.removeClass('is-online');
-                $popup.find('.mini-status').html('Đang không hoạt động');
+                window.stopRecorderVoice();
               }
+            }
+          });
+          $(window).on('endRecorderVoice', /*#__PURE__*/function () {
+            var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+              var $pop;
+              return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                while (1) {
+                  switch (_context7.prev = _context7.next) {
+                    case 0:
+                      $pop = $('.popup-chat-mini.is-active');
 
-              htmlMsgs = messages.map(function (msg) {
-                var timeEndCall = msg.timeCall ? "<small class=\"time-call\">".concat(msg.timeCall, "</small>") : '';
+                      if (!$pop.length) {
+                        _context7.next = 4;
+                        break;
+                      }
 
-                if (msg.me) {
-                  var _contentHtml = "<small class=\"message-content mx-0\">".concat(msg.content, "</small>");
+                      _context7.next = 4;
+                      return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), $pop, true);
 
-                  if (msg.fileName) {
-                    if (msg.type === 'image') {
-                      _contentHtml = "<small class=\"message-content mx-0\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
-                    } else if (msg.type === 'video') {
-                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video/></small>");
-                    } else if (msg.type === 'audio') {
-                      _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio/></small>");
-                    } else {
-                      _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
-                    }
-                  } else if (msg.isLink) {
-                    _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
+                    case 4:
+                    case "end":
+                      return _context7.stop();
                   }
-
-                  return "\n              <div class=\"message text-right ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me\">\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
                 }
+              }, _callee7);
+            }));
 
-                var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
+            return function (_x2) {
+              return _ref11.apply(this, arguments);
+            };
+          }()); // function create new chat box mini
 
-                if (msg.fileName) {
-                  if (msg.type === 'image') {
-                    contentHtml = "<small class=\"message-content\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></small>");
-                  } else if (msg.type === 'video') {
-                    contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
-                  } else if (msg.type === 'audio') {
-                    contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio></small>");
-                  } else {
-                    contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.fileName, "</a></small>");
-                  }
-                } else if (msg.isLink) {
-                  contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
-                }
+          window.createCallMsgLocalMiniChat = createCallMsgLocalMiniChat;
+          /**
+          * Function create and append call message to local
+          * @param {string} friendId friend id
+          * @param {string} msg message
+          * @param {string} className class name
+          * @param {boolean} isCallEnd isCallEnd
+          * @param {boolean} me is me
+          */
 
-                return "\n            <div class=\"message ".concat(msg["class"], "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  ").concat(contentHtml, "\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
-              }).join(''); // prepend msg list and hold position scroll top of chat box
+          window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-              chatMain = $popup.find(classChatMain).get(0);
-              curScrollPos = chatMain.scrollTop;
-              oldScroll = chatMain.scrollHeight - chatMain.clientHeight;
-              $(chatMain).prepend(htmlMsgs);
-              newScroll = chatMain.scrollHeight - chatMain.clientHeight;
-              chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
-              $popup.attr('data-allow-load', '1');
-              _context12.next = 24;
-              break;
-
-            case 21:
-              _context12.prev = 21;
-              _context12.t0 = _context12["catch"](3);
-              window.outputErrorMessage(_context12.t0 === null || _context12.t0 === void 0 ? void 0 : (_error$response2 = _context12.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
-
-            case 24:
-            case "end":
-              return _context12.stop();
-          }
-        }
-      }, _callee12, null, [[3, 21]]);
-    }));
-    return _loadOldMsg.apply(this, arguments);
-  }
-
-  function outputPreviewMsg($popup, msg) {
-    $popup.find('.preview-msg span').html(msg);
-    $popup.find('.preview-msg').addClass('is-show');
-    setTimeout(function () {
-      $popup.find('.preview-msg').removeClass('is-show');
-    }, 2000);
-  } // function send file
-
-
-  function sendFile(_x8, _x9) {
-    return _sendFile.apply(this, arguments);
-  }
-
-  function _sendFile() {
-    _sendFile = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13($popup, finalFiles) {
-      var formData, idSession, res, $msgFile, _$msgFile;
-
-      return regeneratorRuntime.wrap(function _callee13$(_context13) {
-        while (1) {
-          switch (_context13.prev = _context13.next) {
-            case 0:
-              formData = new FormData();
-              idSession = new Date().valueOf();
-              finalFiles.forEach(function (file) {
-                formData.append('files', file); // create message obj to show in client
-
-                createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-              });
-              _context13.prev = 3;
-              _context13.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
-              });
-
-            case 6:
-              res = _context13.sent;
-              // $popup.find('.send-file-input').val('')
-              // finalFiles = []
-              // enabledInputFile()
-              $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
-              $msgFile.each(function (i, ele) {
-                var file = res.data.fileUrls.find(function (f) {
-                  return f.name === $(ele).text();
-                });
-
-                if (file) {
-                  $(ele).parents('.wrap-msg-file').addClass('load-done');
-
-                  if (file.resourceType === 'image') {
-                    $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" />"));
-                  } else if (file.resourceType === 'video') {
-                    $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
-                  } else if (file.resourceType === 'aduio') {
-                    $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"></audio>"));
-                  } else {
-                    ele.href = file.url;
-                  } // send message to server
-
-
-                  socket.emit('msg-messageChat', {
-                    message: file.url,
-                    type: 'file',
-                    nameFile: file.name,
-                    resourceType: file.resourceType,
-                    token: $popup.find('input[name="_token"]').val()
-                  });
-                } else {
-                  $(ele).parents('.message').remove();
-                }
-              });
-              _context13.next = 17;
-              break;
-
-            case 11:
-              _context13.prev = 11;
-              _context13.t0 = _context13["catch"](3);
-              console.dir(_context13.t0);
-              _$msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
-
-              _$msgFile.parents('.message').remove(); // $popup.find('.send-file-input').val('')
-              // finalFiles = []
-              // enabledInputFile()
-
-
-              if (_context13.t0.response && _context13.t0.response.data && _context13.t0.response.data.message) {
-                window.outputErrorMessage(_context13.t0.response.data.message);
-              }
-
-            case 17:
-            case "end":
-              return _context13.stop();
-          }
-        }
-      }, _callee13, null, [[3, 11]]);
-    }));
-    return _sendFile.apply(this, arguments);
-  }
-
-  function sendFileSingle(_x10, _x11) {
-    return _sendFileSingle.apply(this, arguments);
-  }
-
-  function _sendFileSingle() {
-    _sendFileSingle = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(file, $popup) {
-      var audio,
-          formData,
-          idSession,
-          res,
-          $msgFile,
-          _$msgFile2,
-          _args14 = arguments;
-
-      return regeneratorRuntime.wrap(function _callee14$(_context14) {
-        while (1) {
-          switch (_context14.prev = _context14.next) {
-            case 0:
-              audio = _args14.length > 2 && _args14[2] !== undefined ? _args14[2] : false;
-              formData = new FormData();
-              idSession = new Date().valueOf();
-              formData.append('files', file); // create message obj to show in client
-
-              createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-              _context14.prev = 5;
-              _context14.next = 8;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
-              });
-
-            case 8:
-              res = _context14.sent;
-              // $popup.find('.send-file-input').val('')
-              // finalFiles = []
-              // enabledInputFile()
-              $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
-              $msgFile.each(function (i, ele) {
-                var fileFind = res.data.fileUrls.find(function (f) {
-                  return f.name === $(ele).text();
-                });
-
-                if (fileFind) {
-                  $(ele).parents('.wrap-msg-file').addClass('load-done');
-
-                  if (fileFind.resourceType === 'image') {
-                    $(ele).parents('.message-content').html("<img class=\"pre-img\" src=\"".concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" />"));
-                  } else if (fileFind.resourceType === 'video') {
-                    if (audio) {
-                      $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(fileFind.url, "\"><audio/>"));
-                    } else {
-                      $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(fileFind.url, "\"></video>"));
-                    }
-                  } else {
-                    ele.href = fileFind.url;
-                  } // send message to server
-
-
-                  socket.emit('msg-messageChat', {
-                    message: fileFind.url,
-                    type: 'file',
-                    nameFile: fileFind.name,
-                    resourceType: audio ? 'audio' : fileFind.resourceType,
-                    token: $popup.find('input[name="_token"]').val()
-                  });
-                } else {
-                  $(ele).parents('.message').remove();
-                }
-              });
-              _context14.next = 18;
-              break;
-
-            case 13:
-              _context14.prev = 13;
-              _context14.t0 = _context14["catch"](5);
-              // console.dir(error);
-              _$msgFile2 = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
-
-              _$msgFile2.parents('.message').remove(); // $popup.find('.send-file-input').val('')
-              // finalFiles = []
-              // enabledInputFile()
-
-
-              if (_context14.t0.response && _context14.t0.response.data && _context14.t0.response.data.message) {
-                window.outputErrorMessage(_context14.t0.response.data.message);
-              }
-
-            case 18:
-            case "end":
-              return _context14.stop();
-          }
-        }
-      }, _callee14, null, [[5, 13]]);
-    }));
-    return _sendFileSingle.apply(this, arguments);
-  }
-}();
+        case 101:
+        case "end":
+          return _context15.stop();
+      }
+    }
+  }, _callee15, null, [[39, 80]]);
+}))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Messenger);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))

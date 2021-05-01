@@ -51,6 +51,14 @@ body {
     }
   }
 }
+.open-search-mini,
+.mini-chat-btn,
+.close-chat-btn {
+  &.disabled {
+    opacity: .5;
+    pointer-events: none;
+  }
+}
 .popup-chat-mini {
   // z-index: 99;
   &.not-active {
@@ -69,6 +77,10 @@ body {
     .avatar-mini-2,
     .dot-status-mini {
       display: block;
+    }
+    &.disabled {
+      opacity: .5;
+      pointer-events: none;
     }
   }
   &.is-active {

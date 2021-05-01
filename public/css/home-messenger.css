@@ -7346,6 +7346,13 @@ body {
   border-radius: 50%;
 }
 
+.open-search-mini.disabled,
+.mini-chat-btn.disabled,
+.close-chat-btn.disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
 .popup-chat-mini.not-active {
   margin-bottom: 5px;
   background: #fff;
@@ -7365,6 +7372,11 @@ body {
 .popup-chat-mini.not-active .avatar-mini-2,
 .popup-chat-mini.not-active .dot-status-mini {
   display: block;
+}
+
+.popup-chat-mini.not-active.disabled {
+  opacity: .5;
+  pointer-events: none;
 }
 
 .popup-chat-mini.is-active {

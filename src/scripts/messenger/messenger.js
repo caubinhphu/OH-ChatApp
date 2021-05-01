@@ -1,7 +1,7 @@
 import moment from 'moment';
 import axios from 'axios';
 
-const Messenger = (() => {
+const Messenger = (async () => {
   const classChatMain = '.chat-mini-main'
   const nClassCloseMini = 'close-mini-chat'
   const classScroll = '.scroll-bottom'
@@ -14,6 +14,304 @@ const Messenger = (() => {
   let holdRec = false
 
   const oldSearchMiniRes = {}
+
+  const languageAssistant = $('#lang-assistant').text()
+  const isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false
+  const methodSend = $('#method-send').text()
+  const isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false
+
+  // let isTalking = false
+  let speakFor = ''
+  let textNotify = ''
+  let textCommand = ''
+  let beConfirmed  = false
+  let recognitionFor = 'msg'
+  let isHoldStatus = true
+
+  const textConfirm = languageAssistant === 'vi' ? 'Gửi: Có hay không?' : 'Send: Yes or No?'
+  const textSended = languageAssistant === 'vi' ? 'Đã gửi' : 'Sended'
+  const textNoSend = languageAssistant === 'vi' ? 'Không gửi' : 'Not send'
+  const textCancel = languageAssistant === 'vi' ? 'Hủy' : 'cancel'
+  const textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok']
+
+  const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+  const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+
+  try {
+    const grammar = '#JSGF V1.0;'
+    const recognition = new SpeechRecognition();
+    let recognitionHold = null;
+    const speechRecognitionList = new SpeechGrammarList();
+    speechRecognitionList.addFromString(grammar, 1);
+    recognition.grammars = speechRecognitionList;
+    recognition.lang = languageAssistant;
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event) {
+      const last = event.results.length - 1;
+      const command = event.results[last][0].transcript;
+      const $popup = $('.popup-chat-mini.is-active')
+      if (command && $popup.length) {
+        if (speakFor === 'confirm') {
+          beConfirmed = true
+          speakFor = 'notification'
+          if (textYes.includes(command.toLowerCase())) {
+            window.socket.emit('msg-messageChat', {
+              message: textCommand,
+              token: $popup.find('input[name="_token"]').val(),
+            });
+            window.createCallMsgLocalMini($popup.attr('data-id'), textCommand, '', false, true)
+            textNotify = textSended
+          } else {
+            textNotify = textNoSend
+          }
+          textCommand = ''
+        } else {
+          if (methodSend === 'auto-send') {
+            window.socket.emit('msg-messageChat', {
+              message: command,
+              token: tokenSend,
+            });
+            window.socket.emit('msg-messageChat', {
+              message: command,
+              token: $popup.find('input[name="_token"]').val()
+            });
+            window.createCallMsgLocalMini($popup.attr('data-id'), command, '', false, true)
+          } else if (methodSend === 'confirm-popup') {
+            const $popupConfirm = $popup.find('.confirm-popup')
+            $popupConfirm.find('.msg-output').text(command)
+            $popupConfirm.removeClass('d-none')
+          } else if (methodSend === 'confirm-voice') {
+            speakFor = 'confirm'
+            textCommand = command
+            speak(`${command}. ${textConfirm}`)
+          }
+        }
+      }
+    };
+
+    recognition.onspeechend = () => {
+      recognition.stop()
+    };
+
+    recognition.onend = function() {
+      // console.log(speakFor);
+      if (recognitionFor === 'confirm' && !beConfirmed) {
+        speakFor = 'notification'
+        textNotify = textNoSend
+        textCommand = ''
+      }
+      if (methodSend === 'confirm-voice') {
+        if (recognitionFor === 'confirm') {
+          // isTalking = false
+          disableSendRec(false)
+          if (isChatAssistant && recognitionHold) {
+            isHoldStatus = true
+            recognitionHold.start()
+          }
+        }
+        if (recognitionFor === 'msg' && !textCommand) {
+          // isTalking = false
+          disableSendRec(false)
+          if (isChatAssistant && recognitionHold) {
+            isHoldStatus = true
+            recognitionHold.start()
+          }
+        }
+      } else {
+        // isTalking = false
+        disableSendRec(false)
+        if (isChatAssistant && recognitionHold) {
+          isHoldStatus = true
+          recognitionHold.start()
+        }
+      }
+      
+      beConfirmed = false
+      if (speakFor === 'notification') {
+        speak(textNotify)
+        textNotify = ''
+      }
+    };
+
+    recognition.onerror = function(event) {
+      // console.log('error');
+      // console.log('Error occurred in recognition: ' + event.error);
+      if (event.error === 'no-speech') {
+        window.outputErrorMessage('Bạn chưa nói gì!')
+        if (speakFor === 'confirm') {
+          speakFor = 'notification'
+          textNotify = textCancel
+          beConfirmed = true
+        }
+        if (recognitionFor === 'msg') {
+          // isTalking = false
+          disableSendRec(false)
+          if (isChatAssistant && recognitionHold) {
+            isHoldStatus = true
+            recognitionHold.start()
+          }
+        }
+      } else {
+        window.outputErrorMessage(event.error)
+        // isTalking = false
+        disableSendRec(false)
+        speakFor = ''
+        textNotify = ''
+        recognitionFor = 'msg'
+        beConfirmed = false
+        textCommand = ''
+        if (isChatAssistant && recognitionHold) {
+          isHoldStatus = true
+          recognitionHold.start()
+        }
+      }
+    }
+
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance();
+    
+    const voices = await new Promise(rs => setTimeout(() => {
+      rs(synth.getVoices())
+    }, 100))
+
+    const vEN = voices.find(v => v.lang === 'en-US');
+    if (!vEN && languageAssistant !== 'vi') {
+      throw new Error('Ngôn ngữ không hỗ trợ!')
+    }
+    let voice = vEN
+    if (languageAssistant === 'vi') { 
+      const vVN = voices.find(v => v.lang === 'vi-VN');
+      if (vVN) {
+        // console.log(vVN);
+        voice = vVN
+      } else {
+        if (vEN) {
+          voice = vEN
+        } else {
+          throw new Error('Ngôn ngữ không hỗ trợ!')
+        }
+      }
+    }
+    utterThis.voice = voices[22];
+    utterThis.lang = 'en';
+
+    utterThis.onend = () => {
+      if (speakFor === 'confirm') {
+        beConfirmed = false
+        recognitionFor = 'confirm'
+        recognition.start()
+      } else {
+        // speakFor = ''
+      }
+    }
+
+    if (isChatAssistant) {
+      recognitionHold = new SpeechRecognition();
+      recognitionHold.grammars = speechRecognitionList;
+      recognitionHold.lang = languageAssistant;
+      recognitionHold.interimResults = false;
+
+      recognitionHold.onresult = function(event) {
+        const last = event.results.length - 1;
+        const command = event.results[last][0].transcript;
+        const $popup = $('.popup-chat-mini.is-active')
+        // console.log(command);
+        if ($popup.length &&  !$popup.find('.send-rec').hasClass('disabled')) {
+          const last = event.results.length - 1;
+          const command = event.results[last][0].transcript;
+          if (command) {
+            if (command.toLowerCase() === 'nhắn tin') {
+              recognitionFor = 'msg'
+              disableSendRec()
+              isHoldStatus = false
+              recognitionHold.stop()
+              recognition.start()
+              // console.log('start');
+            }
+          }
+        }
+      };
+
+      recognitionHold.onspeechend = function(e) {
+        // console.log('onspeechend');
+        recognitionHold.stop()
+      };
+
+      recognitionHold.onend = function() {
+        if (isHoldStatus) {
+          recognitionHold.start()
+        }
+      };
+
+      // recognitionHold.onerror = function(event) {
+        
+      // }
+      recognitionHold.start()
+    }
+
+    function speak(str) {
+      utterThis.text = str
+      synth.speak(utterThis);
+    }
+
+    if (!isChatMicVoice) {
+      $(document).on('click', '.send-rec', function (e) {
+        e.preventDefault()
+        if (!$(this).hasClass('disabled')) {
+          recognitionFor = 'msg'
+          // isTalking = true
+          disableSendRec()
+          if (isChatAssistant && recognitionHold && isHoldStatus) {
+            recognitionHold.stop()
+            isHoldStatus = false
+          }
+          recognition.start()
+        }
+      })
+      $(document).on('click', '.confirm-popup .btn-close', function (e) {
+        e.preventDefault()
+        const $parent = $(this).parents('.confirm-popup')
+        $parent.find('.msg-output').text('')
+        $parent.addClass('d-none')
+      })
+
+      $(document).on('click', '.confirm-popup .confirm-send-btn', function(e) {
+        e.preventDefault()
+        const $popupConfirm = $(this).parents('.confirm-popup')
+        const $popup = $popupConfirm.parents('.popup-chat-mini')
+        const text = $popupConfirm.find('.msg-output').text()
+        if (text) {
+          window.socket.emit('msg-messageChat', {
+            message: text,
+            token: $popup.find('input[name="_token"]').val(),
+          });
+          // create message obj to show in client
+          createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(text), '', false, true)
+          $popupConfirm.find('.msg-output').text('')
+          $popupConfirm.addClass('d-none')
+        }
+      })
+    }
+
+  } catch (error) {
+    window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này')
+  }
+  function disableSendRec(flag = true) {
+    if (flag) {
+      $('button.send-rec').addClass('disabled').prop('disabled', true)
+      $('.popup-chat-mini.not-active').addClass('disabled')
+      $('.mini-chat-btn').addClass('disabled').prop('disabled', true)
+      $('.close-chat-btn').addClass('disabled').prop('disabled', true)
+      $('.open-search-mini').addClass('disabled').prop('disabled', true)
+    } else {
+      $('button.send-rec').removeClass('disabled').prop('disabled', false)
+      $('.popup-chat-mini.not-active').removeClass('disabled')
+      $('.mini-chat-btn').removeClass('disabled').prop('disabled', false)
+      $('.close-chat-btn').removeClass('disabled').prop('disabled', false)
+      $('.open-search-mini').removeClass('disabled').prop('disabled', false)
+    }
+  }
 
   // receive msg obj from server
   window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
@@ -75,7 +373,7 @@ const Messenger = (() => {
   document.addEventListener('dragleave', e => {
     e.preventDefault();
     e.stopPropagation()
-    console.log(e.target);
+    // console.log(e.target);
     if (!isDragZone) {
       $('.dragzone').addClass('d-none')
       isDragging = 0;
@@ -195,7 +493,7 @@ const Messenger = (() => {
     $('.photo-pre').html(`<img src="${dataURL}" alt="capture"/>`)
     $('.wrap-photo').removeClass('d-none')
     fileTake = file
-    console.log(file);
+    // console.log(file);
   })
 
   $('#modal-take-photo').on('hidden.bs.modal', () => {
@@ -298,7 +596,7 @@ const Messenger = (() => {
       </div>
       <div class="chat-mini-bottom">
         <div class="files-upload-box d-flex justify-content-center flex-wrap"></div>
-        <form class="d-flex">
+        <form class="d-flex ps-rv">
           <label class="btn btn-default send-file m-0 p-2" for="send-file-${senderId}">
             <span class="icomoon icon-insert_drive_file"></span>
           </label>
@@ -323,6 +621,12 @@ const Messenger = (() => {
             <button class="btn btn-default text-secondary">
               <span class="icomoon icon-send"></span>
             </button>
+          <div class="confirm-popup ps-rv d-none">
+            <div class="msg-output"></div>
+            <div class="text-center"><button class="btn confirm-send-btn" type="button">Gửi</button></div><button
+              class="btn btn-icon small-btn btn-red btn-close" type="button"><span
+                class="icomoon icon-close rec-cancel"></span></button>
+          </div>
         </form>
       </div>
     </div>
@@ -353,7 +657,7 @@ const Messenger = (() => {
 
       if (inputMsg.value !== '') {
         // send message to server
-        window.window.socket.emit('msg-messageChat', {
+        window.socket.emit('msg-messageChat', {
           message: inputMsg.value,
           token: e.target.elements._token.value,
         });
@@ -378,16 +682,18 @@ const Messenger = (() => {
       }
     });
 
-    $popup.find('.send-rec').on('mousedown', function() {
-      holdRec = true
-      const $recBar = $(this).find('.rec-bar')
-      $recBar.removeClass('d-none')
-      window.timeRecHold = setTimeout(async () => {
-        if (holdRec) {
-          await window.recorderVoice($recBar)
-        }
-      }, 1000);
-    });
+    if (isChatMicVoice) {
+      $popup.find('.send-rec').on('mousedown', function() {
+        holdRec = true
+        const $recBar = $(this).find('.rec-bar')
+        $recBar.removeClass('d-none')
+        window.timeRecHold = setTimeout(async () => {
+          if (holdRec) {
+            await window.recorderVoice($recBar)
+          }
+        }, 1000);
+      });
+    }
 
     $popup.find('.send-file-input').on('change', function() {
       if (this.files.length) {
@@ -400,8 +706,8 @@ const Messenger = (() => {
             </div>
           `
           finalFiles.push(file)
-          console.log($popup);
-          console.log(finalFiles);
+          // console.log($popup);
+          // console.log(finalFiles);
         })
         $popup.find('.files-upload-box').append(html);
         // disabledInputFile()
