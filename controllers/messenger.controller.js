@@ -811,7 +811,7 @@ module.exports.putMicChatMethod = async (req, res, next) => {
     'confirm-voice': 1,
     'auto-send': 1
   }
-  if (method !== '1' && method !== '0' && !(methodSend in meds) && !directiveChatText) {
+  if ((method !== '1' && method !== '0') || !(methodSend in meds) || !directiveChatText) {
     // not pass validate
     req.flash('error', 'Phương thức không hợp lệ');
     req.flash('tab', 'general');
