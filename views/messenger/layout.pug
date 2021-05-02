@@ -42,23 +42,43 @@ block header
           span.icomoon.icon-chevron-down
       #notify-drop.collapse.p-3(data-parent="#header-right", style="z-index: 1000")
         .notify-item.ps-rv
-          a.ps-as(href="#")
-            span.sr-only Notification
-          .wrap-noti-box.p-2.d-flex.align-items-center
-            .noti-img
-              img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat")
-            .ml-3
-              span.noti-content= memberName
-              small.noti-time 1 giờ trước
+          .noti-box.ps-rv
+            a.ps-as(href="#")
+              span.sr-only Notification
+            .wrap-noti-box.p-2.d-flex.align-items-center
+              .noti-img
+                img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat")
+              .ml-3
+                span.noti-content= memberName
+                small.noti-time 1 giờ trước
+          button.noti-mana-btn.btn.btn-white.btn-icon.small-btn
+            span.icomoon.icon-dots-three-horizontal
+          .noti-mana-box.d-none
+            .noti-mana-item.d-flex.align-items-center
+              span.icomoon.icon-check-circle-o
+              span Đánh dấu là đã đọc
+            .noti-mana-item.d-flex.align-items-center
+              span.icomoon.icon-times-circle-o
+              span Gỡ bỏ thông báo này
         .notify-item.ps-rv.un-read
-          a.ps-as(href="#")
-            span.sr-only Notification
-          .wrap-noti-box.p-2.d-flex.align-items-center
-            .noti-img
-              img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat")
-            .ml-3
-              span.noti-content= memberName
-              small.noti-time 1 giờ trước
+          .noti-box.ps-rv
+            a.ps-as(href="#")
+              span.sr-only Notification
+            .wrap-noti-box.p-2.d-flex.align-items-center
+              .noti-img
+                img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat")
+              .ml-3
+                span.noti-content !{`${memberName}`}
+                small.noti-time 1 giờ trước
+          button.noti-mana-btn.btn.btn-white.btn-icon.small-btn
+            span.icomoon.icon-dots-three-horizontal
+          .noti-mana-box.d-none
+            .noti-mana-item.d-flex.align-items-center
+              span.icomoon.icon-check-circle-o
+              span Đánh dấu là đã đọc
+            .noti-mana-item.d-flex.align-items-center
+              span.icomoon.icon-times-circle-o
+              span Gỡ bỏ thông báo này
 
       #info-drop.collapse(data-parent="#header-right", style="z-index: 1000")
         .p-3

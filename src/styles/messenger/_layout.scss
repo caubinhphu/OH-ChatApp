@@ -32,6 +32,7 @@ body {
   border-radius: 10px;
   box-shadow: 1px 1px 10px #555;
   background-color: white;
+  overflow: auto;
 }
 #info-drop {
   a {
@@ -481,11 +482,6 @@ label.send-file,
   }
 }
 .notify-item {
-  padding-right: 15px;
-  border-radius: 5px;
-  &:hover {
-    background-color: #f2f2f2;
-  }
   &.un-read {
     &::after {
       content: "";
@@ -494,8 +490,8 @@ label.send-file,
       height: 10px;
       background-color: $color-22;
       border-radius: 50%;
-      right: 0;
-      top: 36px;
+      right: 6px;
+      top: 33px;
     }
     .noti-time {
       color: $color-22;
@@ -504,6 +500,18 @@ label.send-file,
     .noti-content {
       color: $color-0c;
     }
+  }
+  &:hover {
+    .noti-mana-btn {
+      display: flex;
+    }
+  }
+}
+.noti-box {
+  border-radius: 5px;
+  padding-right: 15px;
+  &:hover {
+    background-color: #f2f2f2;
   }
 }
 .noti-img {
@@ -521,6 +529,42 @@ label.send-file,
 }
 .noti-time {
   color: $color-74;
+}
+.noti-mana-btn {
+  position: absolute;
+  top: 50%;
+  right: 19px;
+  transform: translateY(-50%);
+  display: none;
+}
+.noti-mana-box {
+  position: absolute;
+  width: 70%;
+  background-color: $white;
+  padding: 10px;
+  z-index: 2;
+  border-radius: 5px;
+  right: 63px;
+  top: 50%;
+  box-shadow: 0 0 5px $color-0c;
+  transform: translateY(-50%)
+}
+.noti-mana-item {
+  align-items: center;
+  border-radius: 5px;
+  padding: 0 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: $color-0c;
+  .icomoon {
+    margin-right: 10px;
+  }
+  &:hover {
+    background: #f2f2f2;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 @media only screen and (max-width: 850px) {
   #user {

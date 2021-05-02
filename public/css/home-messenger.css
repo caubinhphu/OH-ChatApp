@@ -6874,6 +6874,26 @@ background: #ccc;
   box-shadow: inset 0 0 0 45px #c8102e;
 }
 
+.btn-icon.btn-white {
+  color: #102131;
+}
+
+.btn-icon.btn-white:after {
+  box-shadow: inset 0 0 0 0 #f2f2f2;
+}
+
+.btn-icon.btn-white:hover {
+  color: #102131;
+}
+
+.btn-icon.btn-white:hover span {
+  color: #102131;
+}
+
+.btn-icon.btn-white:hover::after {
+  box-shadow: inset 0 0 0 45px #f2f2f2;
+}
+
 .btn-icon.btn-disabled {
   color: #747474;
   cursor: no-drop;
@@ -7204,6 +7224,10 @@ background: #ccc;
 
 .icon-file-text:before {
   content: "\E932";
+}
+
+.icon-dots-three-horizontal:before {
+  content: "\E933";
 }
 
 input:-webkit-autofill {
@@ -7818,15 +7842,6 @@ label.send-file:hover .icomoon,
   transform: scale(1.2);
 }
 
-.notify-item {
-  padding-right: 15px;
-  border-radius: 5px;
-}
-
-.notify-item:hover {
-  background-color: #f2f2f2;
-}
-
 .notify-item.un-read::after {
   content: "";
   position: absolute;
@@ -7834,8 +7849,8 @@ label.send-file:hover .icomoon,
   height: 10px;
   background-color: #22c0c9;
   border-radius: 50%;
-  right: 0;
-  top: 36px;
+  right: 6px;
+  top: 33px;
 }
 
 .notify-item.un-read .noti-time {
@@ -7845,6 +7860,19 @@ label.send-file:hover .icomoon,
 
 .notify-item.un-read .noti-content {
   color: #0c1a2f;
+}
+
+.notify-item:hover .noti-mana-btn {
+  display: flex;
+}
+
+.noti-box {
+  border-radius: 5px;
+  padding-right: 15px;
+}
+
+.noti-box:hover {
+  background-color: #f2f2f2;
 }
 
 .noti-img img {
@@ -7862,6 +7890,48 @@ label.send-file:hover .icomoon,
 
 .noti-time {
   color: #747474;
+}
+
+.noti-mana-btn {
+  position: absolute;
+  top: 50%;
+  right: 19px;
+  transform: translateY(-50%);
+  display: none;
+}
+
+.noti-mana-box {
+  position: absolute;
+  width: 70%;
+  background-color: #fff;
+  padding: 10px;
+  z-index: 2;
+  border-radius: 5px;
+  right: 63px;
+  top: 50%;
+  box-shadow: 0 0 5px #0c1a2f;
+  transform: translateY(-50%);
+}
+
+.noti-mana-item {
+  align-items: center;
+  border-radius: 5px;
+  padding: 0 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: #0c1a2f;
+}
+
+.noti-mana-item .icomoon {
+  margin-right: 10px;
+}
+
+.noti-mana-item:hover {
+  background: #f2f2f2;
+}
+
+.noti-mana-item:last-child {
+  margin-bottom: 0;
 }
 
 @media only screen and (max-width: 850px) {
