@@ -7818,6 +7818,52 @@ label.send-file:hover .icomoon,
   transform: scale(1.2);
 }
 
+.notify-item {
+  padding-right: 15px;
+  border-radius: 5px;
+}
+
+.notify-item:hover {
+  background-color: #f2f2f2;
+}
+
+.notify-item.un-read::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #22c0c9;
+  border-radius: 50%;
+  right: 0;
+  top: 36px;
+}
+
+.notify-item.un-read .noti-time {
+  color: #22c0c9;
+  font-weight: 600;
+}
+
+.notify-item.un-read .noti-content {
+  color: #0c1a2f;
+}
+
+.noti-img img {
+  max-width: 55px;
+}
+
+.noti-content {
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  color: #747474;
+}
+
+.noti-time {
+  color: #747474;
+}
+
 @media only screen and (max-width: 850px) {
   #user {
     display: none;

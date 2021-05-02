@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const messageSchema = mongoose.Schema({
+const textSchema = mongoose.Schema({
   data: Object,
   authorId: {
     type: mongoose.Types.ObjectId,
@@ -8,6 +8,6 @@ const messageSchema = mongoose.Schema({
   }
 })
 
-const Text = mongoose.model('Text', messageSchema)
+const Text = mongoose.model('Text', textSchema)
 
 module.exports = Text
