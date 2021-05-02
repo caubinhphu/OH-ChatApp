@@ -125,6 +125,11 @@ const socket = function (io) {
       messengerController.onCallTimeout.bind(this, io, data)()
     })
 
+    // receive signal has notification
+    socket.on('msg-notification', function(data) {
+      messengerController.onNotification.bind(this, io, data)()
+    })
+
     // ------------------------ Text -----------------------------
     // receive event join text from client
     socket.on('join-text', utilitiesController.onJoinText)

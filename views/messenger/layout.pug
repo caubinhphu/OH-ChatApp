@@ -41,44 +41,42 @@ block header
         button#member-info-btn.btn.btn-icon.small-btn(type="button", data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")
           span.icomoon.icon-chevron-down
       #notify-drop.collapse.p-3(data-parent="#header-right", style="z-index: 1000")
-        .notify-item.ps-rv
-          .noti-box.ps-rv
-            a.ps-as(href="#")
-              span.sr-only Notification
-            .wrap-noti-box.p-2.d-flex.align-items-center
-              .noti-img
-                img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat")
-              .ml-3
-                span.noti-content= memberName
-                small.noti-time 1 giờ trước
-          button.noti-mana-btn.btn.btn-white.btn-icon.small-btn
-            span.icomoon.icon-dots-three-horizontal
-          .noti-mana-box.d-none
-            .noti-mana-item.d-flex.align-items-center
-              span.icomoon.icon-check-circle-o
-              span Đánh dấu là đã đọc
-            .noti-mana-item.d-flex.align-items-center
-              span.icomoon.icon-times-circle-o
-              span Gỡ bỏ thông báo này
-        .notify-item.ps-rv.un-read
-          .noti-box.ps-rv
-            a.ps-as(href="#")
-              span.sr-only Notification
-            .wrap-noti-box.p-2.d-flex.align-items-center
-              .noti-img
-                img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat")
-              .ml-3
-                span.noti-content !{`${memberName}`}
-                small.noti-time 1 giờ trước
-          button.noti-mana-btn.btn.btn-white.btn-icon.small-btn
-            span.icomoon.icon-dots-three-horizontal
-          .noti-mana-box.d-none
-            .noti-mana-item.d-flex.align-items-center
-              span.icomoon.icon-check-circle-o
-              span Đánh dấu là đã đọc
-            .noti-mana-item.d-flex.align-items-center
-              span.icomoon.icon-times-circle-o
-              span Gỡ bỏ thông báo này
+        if (notifies.length)
+          each notify in notifies
+            .notify-item.ps-rv(data-id=notify._id, class=`${notify.beRead ? '' : 'un-read'}`)
+              .noti-box.ps-rv
+                if (notify.beRead)
+                  a.ps-as(href=notify.link)
+                    span.sr-only= notify.content
+                else
+                  a.ps-as(href=`${notify.link}/?idnotify=${notify._id}`)
+                    span.sr-only= notify.content
+                .wrap-noti-box.p-2.d-flex.align-items-center
+                  .noti-img
+                    img.rounded-circle.avatar(src=notify.image, alt="oh-chat")
+                  .ml-3
+                    span.noti-content !{notify.content}
+                    small.noti-time= notify.timeFromNow
+              button.noti-mana-btn.btn.btn-white.btn-icon.small-btn
+                span.icomoon.icon-dots-three-horizontal
+              .noti-mana-box.d-none
+                .noti-mana-item.d-flex.align-items-center.toggle-status-notify
+                  span.icomoon.icon-check-circle-o
+                  if (notify.beRead)
+                    span Đánh dấu là chưa đọc
+                  else
+                    span Đánh dấu là đã đọc
+                  img(src="/images/loader.svg" alt="loader")
+                .noti-mana-item.d-flex.align-items-center.del-status-notify
+                  span.icomoon.icon-times-circle-o
+                  span Gỡ bỏ thông báo này
+                  button.btn.btn-icon.btn-red.confirm-del-noti.d-none
+                    span.icomoon.icon-checkmark
+          .wrap-loader-notify.d-none
+            img(src='/images/loader.svg', alt='loader')
+        else
+          .text-center.text-secondary
+            h4.mb-0 Không có thông báo nào
 
       #info-drop.collapse(data-parent="#header-right", style="z-index: 1000")
         .p-3

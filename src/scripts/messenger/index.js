@@ -39,12 +39,11 @@ const Index = (async () => {
   const textCancel = languageAssistant === 'vi' ? 'Hủy' : 'cancel'
   const textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok']
 
-  const tokenSend = msgForm.elements._token.value
-
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
   if (msgForm) {
+    const tokenSend = msgForm.elements._token.value
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
 

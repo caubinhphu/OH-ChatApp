@@ -16,6 +16,8 @@ router.get('/search-friend', controller.getSearchFriend)
 
 router.get('/chatold', controller.getChatOld)
 
+router.get('/notifyold', controller.getNotifiesOld)
+
 router.route('/profile')
   .get(controller.getProfile)
   .put(controller.putProfile)
@@ -29,6 +31,10 @@ router.delete('/destroy-request', controller.deleteFriendRequest);
 router.delete('/delete-invitation', controller.deleteFriendInvitation);
 
 router.delete('/destroy-friend', controller.deleteFriend);
+
+router.delete('/delete-notification', controller.deleteNotification);
+
+router.put('/notification-status', controller.putNotificationStatus);
 
 router.post('/upload-file', controller.uploadFile)
 

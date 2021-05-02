@@ -1,4 +1,7 @@
+const moment = require('moment')
+
 const Member = require('../models/Member');
+const Notification = require('../models/Notification');
 
 // check that the user is logged in
 module.exports.checkAuthenticated = async (req, res, next) => {
@@ -40,6 +43,27 @@ module.exports.checkAuthenticated = async (req, res, next) => {
       }
     }
 
+    const notifies = await Notification.find({ memberId: member.id }).sort({ _id: -1 }).limit(20)
+
+    // set local time moment
+    moment.updateLocale('vi', {
+      relativeTime: {
+        m:  "1 phút",
+        h:  "1 giờ",
+        d:  "1 ngày",
+        w:  "1 tuần",
+        M:  "1 tháng",
+        y:  "1 năm",
+      }
+    })
+    moment.locale('vi')
+
+    const notifyObjects = notifies.map(notify => {
+      const obj = notify.toObject()
+      obj.timeFromNow = moment(obj.time).fromNow()
+      return obj
+    })
+
     // member exists
     // set global vars
     res.locals.memberId = member.id;
@@ -50,6 +74,7 @@ module.exports.checkAuthenticated = async (req, res, next) => {
     res.locals.methodSend = member.setting.methodSend;
     res.locals.isChatAssistant = member.setting.isChatAssistant;
     res.locals.directiveChatText = member.setting.directiveChatText;
+    res.locals.notifies = notifyObjects;
 
     next();
   } catch (error) {

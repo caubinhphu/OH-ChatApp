@@ -5,7 +5,7 @@ const notificationSchema = mongoose.Schema({
   time: Date,
   link: String,
   image: String,
-  isRead: {
+  beRead: {
     type: Boolean,
     default: false
   },

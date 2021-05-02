@@ -7230,6 +7230,10 @@ background: #ccc;
   content: "\E933";
 }
 
+.icon-checkmark:before {
+  content: "\E934";
+}
+
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   -o-transition: background-color 5000s ease-in-out 0s;
@@ -7349,6 +7353,18 @@ body {
   border-radius: 10px;
   box-shadow: 1px 1px 10px #555;
   background-color: white;
+  overflow: auto;
+}
+
+.wrap-loader-notify {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.wrap-loader-notify img {
+  max-width: 50px;
 }
 
 #info-drop a {
@@ -7850,7 +7866,8 @@ label.send-file:hover .icomoon,
   background-color: #22c0c9;
   border-radius: 50%;
   right: 6px;
-  top: 33px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .notify-item.un-read .noti-time {
@@ -7862,7 +7879,7 @@ label.send-file:hover .icomoon,
   color: #0c1a2f;
 }
 
-.notify-item:hover .noti-mana-btn {
+.notify-item:hover .noti-mana-btn, .notify-item.is-show .noti-mana-btn {
   display: flex;
 }
 
@@ -7884,7 +7901,7 @@ label.send-file:hover .icomoon,
   -webkit-line-clamp: 3;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  word-break: break-all;
+  word-break: break-word;
   color: #747474;
 }
 
@@ -7922,7 +7939,7 @@ label.send-file:hover .icomoon,
   color: #0c1a2f;
 }
 
-.noti-mana-item .icomoon {
+.noti-mana-item .icomoon:not(.icon-checkmark) {
   margin-right: 10px;
 }
 
@@ -7932,6 +7949,37 @@ label.send-file:hover .icomoon,
 
 .noti-mana-item:last-child {
   margin-bottom: 0;
+}
+
+.confirm-del-noti {
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  margin-left: auto;
+}
+
+.confirm-del-noti .icomoon {
+  font-size: 13px;
+}
+
+.toggle-status-notify img {
+  display: none;
+  position: absolute;
+  max-width: 40px;
+  right: 0;
+}
+
+.toggle-status-notify.is-load {
+  pointer-events: none;
+}
+
+.toggle-status-notify.is-load img {
+  display: block;
+}
+
+#member-notify-btn.un-read .icon-bell {
+  animation: ring 4s .7s ease-in-out infinite;
+  transform-origin: 50% 4px;
 }
 
 @media only screen and (max-width: 850px) {
@@ -7944,6 +7992,81 @@ label.send-file:hover .icomoon,
   .popup-chat-mini.is-active {
     width: 299px;
     height: 420px;
+  }
+}
+
+@keyframes ring {
+  0% {
+    transform: rotate(0);
+  }
+  1% {
+    transform: rotate(30deg);
+  }
+  3% {
+    transform: rotate(-28deg);
+  }
+  5% {
+    transform: rotate(34deg);
+  }
+  7% {
+    transform: rotate(-32deg);
+  }
+  9% {
+    transform: rotate(30deg);
+  }
+  11% {
+    transform: rotate(-28deg);
+  }
+  13% {
+    transform: rotate(26deg);
+  }
+  15% {
+    transform: rotate(-24deg);
+  }
+  17% {
+    transform: rotate(22deg);
+  }
+  19% {
+    transform: rotate(-20deg);
+  }
+  21% {
+    transform: rotate(18deg);
+  }
+  23% {
+    transform: rotate(-16deg);
+  }
+  25% {
+    transform: rotate(14deg);
+  }
+  27% {
+    transform: rotate(-12deg);
+  }
+  29% {
+    transform: rotate(10deg);
+  }
+  31% {
+    transform: rotate(-8deg);
+  }
+  33% {
+    transform: rotate(6deg);
+  }
+  35% {
+    transform: rotate(-4deg);
+  }
+  37% {
+    transform: rotate(2deg);
+  }
+  39% {
+    transform: rotate(-1deg);
+  }
+  41% {
+    transform: rotate(1deg);
+  }
+  43% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
   }
 }
 

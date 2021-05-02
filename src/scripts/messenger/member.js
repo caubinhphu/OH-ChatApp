@@ -64,7 +64,7 @@ const Member = (() => {
         });
 
         if (responsive.status === 200) {
-          const { messages } = responsive.data;
+          const { messages, notification } = responsive.data;
 
           window.outputSuccessMessage(messages)
 
@@ -73,6 +73,8 @@ const Member = (() => {
               Hủy yêu cầu
             </button>
           `)
+
+          window.socket.emit('msg-notification', { notification })
         } else if (responsive.status === 205) {
           window.outputErrorMessage('Gửi lời mời kết bạn thất bại')
           if (reload) {
@@ -96,7 +98,7 @@ const Member = (() => {
           memberId
         });
 
-        const { messages } = responsive.data;
+        const { messages, notification } = responsive.data;
 
         window.outputSuccessMessage(messages)
 
@@ -110,6 +112,7 @@ const Member = (() => {
         } else {
           callback()
         }
+        window.socket.emit('msg-notification', { notification })
       } catch (error) {
         window.outputErrorMessage(error?.response?.data?.messages)
         if (reload) {
@@ -167,7 +170,7 @@ const Member = (() => {
               memberId: window.memberId
             }
           });
-          const { messages } = responsive.data;
+          const { messages, notification } = responsive.data;
 
           window.outputSuccessMessage(messages)
 
@@ -180,6 +183,8 @@ const Member = (() => {
           } else {
             callback()
           }
+
+          window.socket.emit('msg-notification', { notification })
           
         } catch (error) {
           window.outputErrorMessage(error?.response?.data?.messages)

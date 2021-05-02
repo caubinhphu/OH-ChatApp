@@ -163,6 +163,23 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
   }
 }
 
+// receive signal has notification
+module.exports.onNotification = async function (io, { notification }) {
+  try {
+    const member = await Member.findById(notification.memberId)
+    if (member) {
+      // send signal has notification
+      if (member.status === 'online' && member.socketId) {
+        io.to(member.socketId).emit('msg-hasNotification', { notification });
+      }
+    } else {
+      this.emit('error', 'Thành viên không tồn tại');
+    }
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
+
 // receive signal offer call peer of caller => send to receiver
 module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal, typeCall }) {
   try {

@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
 const Message = require('../models/Message');
+const Notification = require('../models/Notification');
+
 const {
   validateProfile,
   validateSettingPassword,
@@ -80,6 +82,37 @@ const uploadMulti = multer({
     }
   },
 }).array('files');
+
+async function removeFileUpload(messageIds) {
+  try {
+    // delete file upload
+    const messageFiles = await Message.find({ _id: { $in: messageIds }, type: { $in: ['raw', 'image', 'video'] } })
+    if (messageFiles) {
+      const publicIds = {
+        resRaws: [],
+        resImages: [],
+        resVideos: []
+      }
+
+      messageFiles.forEach(msg => {
+        const id = msg.content.match(/room.*$/g)
+        if (id) {
+          if (msg.type === 'raw') {
+            publicIds.resRaws.push('ohchat/upload/' + id[0])
+          } else if (msg.type === 'image') {
+            publicIds.resImages.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
+          } else if (msg.type === 'video') {
+            publicIds.resVideos.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
+          }
+        }
+      })
+      await cloudinary.deleteResources(publicIds)
+    }
+  } catch (error) {
+    return error
+  }
+}
+
 
 // get index messenger page
 module.exports.getIndex = async (req, res, next) => {
@@ -470,6 +503,47 @@ module.exports.getChatOld = async (req, res) => {
   }
 }
 
+// get old notifies
+module.exports.getNotifiesOld = async (req, res) => {
+  const { page } = req.query
+  try {
+    const notifies = await Notification.find({ memberId: req.user.id })
+                                        .sort({ _id: -1 })
+                                        .skip(msgPerLoad * page)
+                                        .limit(msgPerLoad + 1)
+    if (notifies) {
+      // set local time moment
+      moment.updateLocale('vi', {
+        relativeTime: {
+          m:  "1 phút",
+          h:  "1 giờ",
+          d:  "1 ngày",
+          w:  "1 tuần",
+          M:  "1 tháng",
+          y:  "1 năm",
+        }
+      })
+      moment.locale('vi')
+
+      const notifyObjects = notifies.map(notify => {
+        const obj = notify.toObject()
+        obj.timeFromNow = moment(obj.time).fromNow()
+        return obj
+      })
+
+      let hasNotify = false
+      if (notifyObjects.length > msgPerLoad) {
+        notifyObjects.pop()
+        hasNotify = true
+      }
+      return res.status(200).json({ notifies: notifyObjects, hasNotify })
+    }
+    return res.status(404).json({ message: hasErrMsg })
+  } catch (error) {
+    res.status(500).json({ message: hasErrMsg })
+  }
+}
+
 // add friend
 module.exports.putAddFriend = async (req, res) => {
   try {
@@ -502,7 +576,15 @@ module.exports.putAddFriend = async (req, res) => {
 
         await me.save();
         await member.save();
-        res.status(200).json({ messages: 'Chấp nhận lời mời thành công' });
+
+        const notification = await Notification.create({
+          time: new Date(),
+          content: `<strong>${me.name}</strong> đã chấp nhận lời mời kết bạn của bạn`,
+          link: me.url ? `/messenger/member/${me.url}` : `/messenger/member/${me.id}`,
+          image: me.avatar,
+          memberId: member.id
+        })
+        res.status(200).json({ messages: 'Chấp nhận lời mời thành công', notification });
       } else {
         res.status(400).json({ messages: 'Chấp nhận lời mời thất bại' })
       }
@@ -534,7 +616,15 @@ module.exports.postFriendRequest = async (req, res) => {
         await me.save();
         await member.save();
 
-        res.status(200).json({ messages: 'Gửi yêu cầu kết bạn thành công' });
+        const notification = await Notification.create({
+          time: new Date(),
+          content: `<strong>${me.name}</strong> đã gửi lời mời kết bạn cho bạn`,
+          link: me.url ? `/messenger/member/${me.url}` : `/messenger/member/${me.id}`,
+          image: me.avatar,
+          memberId: member.id
+        })
+
+        res.status(200).json({ messages: 'Gửi yêu cầu kết bạn thành công', notification });
       }
     } else {
       res.status(404).json({ messages: notMem })
@@ -596,7 +686,15 @@ module.exports.deleteFriendInvitation = async (req, res) => {
         await me.save();
         await member.save();
 
-        res.status(200).json({ messages: 'Xóa lời mời kết bạn thành công' });
+        const notification = await Notification.create({
+          time: new Date(),
+          content: `<strong>${me.name}</strong> đã không chấp nhận lời mời kết bạn của bạn`,
+          link: me.url ? `/messenger/member/${me.url}` : `/messenger/member/${me.id}`,
+          image: me.avatar,
+          memberId: member.id
+        })
+
+        res.status(200).json({ messages: 'Xóa lời mời kết bạn thành công', notification });
       } else {
         res.status(400).json({ messages: 'Xóa lời mời kết bạn thất bại' })
       }
@@ -631,6 +729,8 @@ module.exports.deleteFriend = async (req, res) => {
         const indexMe = friendTmp.friends.findIndex(fr => fr._id.toString() === req.user.id)
 
         if (indexFriend !== -1 && indexMe !== -1) {
+          await removeFileUpload(friend.groupMessageId.messages)
+
           await Message.deleteMany({ _id: { $in: friend.groupMessageId.messages } })
 
           await GroupMessage.deleteOne({ _id: friend.groupMessageId.id })
@@ -656,7 +756,42 @@ module.exports.deleteFriend = async (req, res) => {
   }
 };
 
+// delete notification
+module.exports.deleteNotification = async (req, res) => {
+  try {
+    const { notifyId } = req.body;
+    if (notifyId && notifyId.match(/^[0-9a-fA-F]{24}$/)) {
+      await Notification.deleteOne({ _id: notifyId })
+      res.status(200).json({ messages: 'Xóa thông báo thành công' });
+    } else {
+      res.status(400).json({ messages: 'Xóa thông báo thất bại' })
+    }
+  } catch(error) {
+    res.status(500).json({ messages: hasErrMsg })
+  }
+};
 
+// put notification
+module.exports.putNotificationStatus = async (req, res) => {
+  try {
+    const { notifyId } = req.body;
+    if (notifyId && notifyId.match(/^[0-9a-fA-F]{24}$/)) {
+      const notify = await Notification.findById(notifyId)
+      if (notify) {
+        notify.beRead = !notify.beRead
+        await notify.save()
+        res.sendStatus(200)
+      } else {
+        res.status(400).json({ messages: hasErrMsg })
+      }
+    } else {
+      res.status(400).json({ messages: hasErrMsg })
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ messages: hasErrMsg })
+  }
+};
 
 // get setting messenger page
 module.exports.getSetting = async (req, res, next) => {
@@ -840,6 +975,7 @@ module.exports.putMicChatMethod = async (req, res, next) => {
 
 // get member info by ID
 module.exports.getMemberInfo = async (req, res, next) => {
+  const { idnotify } = req.query
   try {
     const { memberId } = req.params;
     let member = null
@@ -859,6 +995,20 @@ module.exports.getMemberInfo = async (req, res, next) => {
       } else if (me.friendInvitations.find(fr => fr.toString() === member.id)) {
         statusFriend = 'friendInvitation'
       }
+
+      if (idnotify && idnotify.match(/^[0-9a-fA-F]{24}$/)) {
+        const notify = await Notification.findById(idnotify)
+        if (notify && notify.memberId.toString() === me.id.toString() && !notify.beRead) {
+          notify.beRead = true
+          await notify.save()
+
+          const notifyObj = res.locals.notifies.find(noti => noti._id.toString() === idnotify)
+          if (notifyObj) {
+            notifyObj.beRead = true
+          }
+        }
+      }
+
       res.render('messenger/member', {
         titleSite: siteMes,
         member,
