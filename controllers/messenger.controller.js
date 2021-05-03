@@ -86,7 +86,8 @@ const uploadMulti = multer({
 async function removeFileUpload(messageIds) {
   try {
     // delete file upload
-    const messageFiles = await Message.find({ _id: { $in: messageIds }, type: { $in: ['raw', 'image', 'video'] } })
+    const messageFiles = await Message.find({ _id: { $in: messageIds }, type: { $in: ['raw', 'image', 'video', 'audio'] } })
+    console.log(messageFiles);
     if (messageFiles) {
       const publicIds = {
         resRaws: [],
@@ -95,17 +96,18 @@ async function removeFileUpload(messageIds) {
       }
 
       messageFiles.forEach(msg => {
-        const id = msg.content.match(/room.*$/g)
+        const id = msg.content.match(/files.*$/g)
         if (id) {
           if (msg.type === 'raw') {
             publicIds.resRaws.push('ohchat/upload/' + id[0])
           } else if (msg.type === 'image') {
             publicIds.resImages.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
-          } else if (msg.type === 'video') {
+          } else if (msg.type === 'video' || msg.type === 'audio') {
             publicIds.resVideos.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
           }
         }
       })
+      console.log(publicIds);
       await cloudinary.deleteResources(publicIds)
     }
   } catch (error) {
@@ -270,7 +272,7 @@ module.exports.uploadFile = async (req, res) => {
         const member = await Member.findById(req.user.id);
         if (member) {
           // upload
-          console.log(req.files);
+          // console.log(req.files);
           const fileUrls = []
           await Promise.all(req.files.map(async (file) => {
             const result = await cloudinary.upload(
@@ -729,6 +731,7 @@ module.exports.deleteFriend = async (req, res) => {
         const indexMe = friendTmp.friends.findIndex(fr => fr._id.toString() === req.user.id)
 
         if (indexFriend !== -1 && indexMe !== -1) {
+          console.log(friend.groupMessageId.messages);
           await removeFileUpload(friend.groupMessageId.messages)
 
           await Message.deleteMany({ _id: { $in: friend.groupMessageId.messages } })
@@ -788,7 +791,7 @@ module.exports.putNotificationStatus = async (req, res) => {
       res.status(400).json({ messages: hasErrMsg })
     }
   } catch(error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ messages: hasErrMsg })
   }
 };
