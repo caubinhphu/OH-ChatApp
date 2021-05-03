@@ -133,6 +133,12 @@ const Header = (() => {
     }
   });
 
+  $('#member-notify-btn').on('click', function() {
+    if ($(this).hasClass('un-read')) {
+      $(this).removeClass('un-read')
+    }
+  })
+
   window.socket.on('msg-hasNotification', ({ notification }) => {
     const html = `
       <div class="notify-item ps-rv un-read" data-id="${notification._id}">

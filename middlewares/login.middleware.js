@@ -44,6 +44,7 @@ module.exports.checkAuthenticated = async (req, res, next) => {
     }
 
     const notifies = await Notification.find({ memberId: member.id }).sort({ _id: -1 }).limit(20)
+    const count = await Notification.countDocuments({ memberId: member.id, beRead: false })
 
     // set local time moment
     moment.updateLocale('vi', {
@@ -75,6 +76,7 @@ module.exports.checkAuthenticated = async (req, res, next) => {
     res.locals.isChatAssistant = member.setting.isChatAssistant;
     res.locals.directiveChatText = member.setting.directiveChatText;
     res.locals.notifies = notifyObjects;
+    res.locals.countNotify = count;
 
     next();
   } catch (error) {

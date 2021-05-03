@@ -1006,6 +1006,9 @@ module.exports.getMemberInfo = async (req, res, next) => {
           if (notifyObj) {
             notifyObj.beRead = true
           }
+          if (res.locals.countNotify === 1) {
+            res.locals.countNotify = 0
+          }
         }
       }
 
