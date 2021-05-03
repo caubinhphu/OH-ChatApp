@@ -37,8 +37,6 @@ const Text = (async () => {
 
   socket.emit('join-text', { textId })
 
-
-
   try {
     const response = await axios.get('/utility/text/check', {
       headers: {
@@ -50,7 +48,6 @@ const Text = (async () => {
       }
     })
 
-    console.log(response);
     const { isAuthor } = response.data
     if (isAuthor) {
       quill.enable()
@@ -67,22 +64,57 @@ const Text = (async () => {
 
       quill.on('text-change', function(delta, oldDelta, source) {
         if (source === 'user') {
-          // console.log(delta);
           socket.emit('text-change-s', { delta, textId })
         }
       });
 
       socket.on('text-saved', () => {
-        console.log('Saved');
+        window.outputSuccessMessage('Đã lưu')
       })
+    } else {
+      $('#text-name').prop('disabled', true)
+      $('.submit-text-name').remove()
+      $('.text-name-loader').remove()
     }
   } catch (error) {
-    console.dir(error);
+    window.outputErrorMessage('Có lỗi xảy ra!')
   }
 
   socket.on('text-change-r', ({ delta }) => {
-    console.log(delta);
     quill.updateContents(delta)
+  })
+
+  socket.on('text-name-r', ({ name }) => {
+    $('#text-name').val(name)
+  })
+
+  $('.submit-text-name').on('click', async (e) => {
+    $('.wrap-text-name').addClass('loader-put')
+    e.preventDefault()
+    const value = $('#text-name').val()
+    if (value) {
+      try {
+        const response = await axios.put('/utility/text',
+          { name: value, id: textId },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          }
+        )
+
+        const { name, message } = response.data
+
+        window.outputSuccessMessage(message)
+
+        socket.emit('text-name-s', { name, textId })
+      } catch (error) {
+        console.log(error);
+        window.outputErrorMessage(error?.response?.data?.message)
+      }
+    }
+    $('.wrap-text-name').removeClass('loader-put')
   })
 })()
 

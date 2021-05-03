@@ -93,3 +93,25 @@ body {
     border-top: 1px solid #ccc;
   }
 }
+#text-name {
+  max-width: 200px;
+  margin: 0 10px;
+}
+.wrap-text-name {
+  padding: 10px;
+  &.loader-put {
+    .text-name-loader {
+      display: block;
+    }
+    #text-name {
+      pointer-events: none;
+    }
+    .submit-text-name {
+      pointer-events: none;
+    }
+  }
+}
+.text-name-loader {
+  max-width: 45px;
+  display: none;
+}

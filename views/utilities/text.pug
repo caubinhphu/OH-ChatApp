@@ -5,7 +5,13 @@ append styles
 
 block main
   #main
-    .text-id.d-none= textId
+    .text-id.d-none= text._id
+    .wrap-text-name.d-flex.align-items-center
+      label.mb-0(for="text-name") Tên Text
+      input#text-name.form-control.form-control-sm(type="text", name="textName", value=text.name)
+      button.btn.btn-icon.small-btn.submit-text-name.btn-green
+        span.icomoon.icon-checkmark
+      img.text-name-loader(src="/images/loader.svg", alt="loader")
     #editor
 
 append scripts

@@ -139,6 +139,9 @@ const socket = function (io) {
 
     // receive event save text from client
     socket.on('text-save', utilitiesController.onTextSave)
+
+    // receive event change text name from client
+    socket.on('text-name-s', utilitiesController.onChangeTextName)
   });
 };
 

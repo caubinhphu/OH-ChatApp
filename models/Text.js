@@ -5,7 +5,10 @@ const textSchema = mongoose.Schema({
   authorId: {
     type: mongoose.Types.ObjectId,
     ref: 'Member'
-  }
+  },
+  createDate: Date,
+  modifyDate: Date,
+  name: String
 })
 
 const Text = mongoose.model('Text', textSchema)

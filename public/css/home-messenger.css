@@ -71,7 +71,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.875;
-  color: #0c1a2f;
+  color: #22c0c9;
   text-align: left;
   background-color: #e6eff6;
 }
@@ -1363,7 +1363,7 @@ pre code {
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  color: #0c1a2f;
+  color: #22c0c9;
 }
 
 .table th,
@@ -1413,7 +1413,7 @@ pre code {
 }
 
 .table-hover tbody tr:hover {
-  color: #0c1a2f;
+  color: #22c0c9;
   background-color: rgba(0, 20, 42, 0.075);
 }
 
@@ -1788,7 +1788,7 @@ select.form-control:focus::-ms-value {
   padding-bottom: 0.625rem;
   margin-bottom: 0;
   line-height: 1.2;
-  color: #0c1a2f;
+  color: #22c0c9;
   background-color: transparent;
   border: solid transparent;
   border-width: 1px 0;
@@ -6228,7 +6228,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .text-body {
-  color: #0c1a2f !important;
+  color: #22c0c9 !important;
 }
 
 .text-muted {

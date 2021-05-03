@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.post('/text', checkAuthenticated, controller.createText)
 
+router.put('/text', checkAuthenticated, controller.putText)
+
 router.get('/text/check', controller.checkIsAuthorText)
 
 router.get('/text/:textId', controller.getText)

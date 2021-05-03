@@ -27,7 +27,7 @@ module.exports = {
     ],
     'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
     // 'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
-    // 'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
+    'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),

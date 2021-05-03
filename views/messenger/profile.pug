@@ -61,19 +61,22 @@ block contentMain
           #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
             #friend-request-content.row
 
-    #text-created
+    #text-created.container
       h4 Text đã tạo
       table.table.table-sm
         thead
           tr
             td Tên Text
             td Ngày tạo
+            td Lần sửa gần đây
             td Xóa
-        tbody
+        tbody.text-dark
           each text in texts
-            tr
-              td file-name
-              td Ngày tạo
+            tr(data-id=text._id)
+              td
+                a(href=`/utility/text/${text._id}`, target="_blank")= text.name
+              td= text.createDate.toLocaleString()
+              td= text.modifyDate.toLocaleString()
               td.text-center
                 button.btn.btn-icon.btn-red.confirm-del-text
                   span.icomoon.icon-close
