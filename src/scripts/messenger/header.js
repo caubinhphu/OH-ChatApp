@@ -150,7 +150,7 @@ const Header = (() => {
             <div class="noti-img"><img class="rounded-circle avatar" src="${notification.image}" alt="oh-chat" /></div>
             <div class="ml-3">
               <span class="noti-content">${notification.content}</span>
-              <small class="noti-time">vài giấy trước</small></div>
+              <small class="noti-time">vài giây trước</small></div>
             </div>
           </div>
           <button class="noti-mana-btn btn btn-white btn-icon small-btn">

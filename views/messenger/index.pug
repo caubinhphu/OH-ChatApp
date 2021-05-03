@@ -39,6 +39,12 @@ block contentMain
                       small= friend.latestMessage.timeFromNow
               a.ps-as(href=`/messenger/chat/${friend.url ? friend.url : friend.id}`, title=`${friend.name}`)
                 span.sr-only= `Chat with ${friend.name}`
+              button.fri-mana-btn.btn.btn-white.btn-icon.small-btn
+                span.icomoon.icon-dots-three-horizontal
+              .fri-mana-box.d-none
+                a(href=`/messenger/member/${friend.url ? friend.url : friend.id}`).fri-mana-item.d-flex.align-items-center
+                  span.icomoon.icon-info
+                  span Xem thông tin
 
       if (friendChat)
         #main-right.flex-fill.d-flex.flex-column.ps-rv(data-id=friendChat.id)

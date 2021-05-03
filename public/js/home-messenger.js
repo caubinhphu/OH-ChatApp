@@ -42239,7 +42239,7 @@ var Header = function () {
   });
   window.socket.on('msg-hasNotification', function (_ref4) {
     var notification = _ref4.notification;
-    var html = "\n      <div class=\"notify-item ps-rv un-read\" data-id=\"".concat(notification._id, "\">\n        <div class=\"noti-box ps-rv\">\n          <a class=\"ps-as\" href=\"").concat(notification.link, "/?idnotify=").concat(notification._id, "\">\n            <span class=\"sr-only\">").concat(notification.content, "</span>\n          </a>\n          <div class=\"wrap-noti-box p-2 d-flex align-items-center\">\n            <div class=\"noti-img\"><img class=\"rounded-circle avatar\" src=\"").concat(notification.image, "\" alt=\"oh-chat\" /></div>\n            <div class=\"ml-3\">\n              <span class=\"noti-content\">").concat(notification.content, "</span>\n              <small class=\"noti-time\">v\xE0i gi\u1EA5y tr\u01B0\u1EDBc</small></div>\n            </div>\n          </div>\n          <button class=\"noti-mana-btn btn btn-white btn-icon small-btn\">\n            <span class=\"icomoon icon-dots-three-horizontal\"></span>\n          </button>\n          <div class=\"noti-mana-box d-none\">\n            <div class=\"noti-mana-item d-flex align-items-center toggle-status-notify\">\n              <span class=\"icomoon icon-check-circle-o\"></span><span>\u0110\xE1nh d\u1EA5u l\xE0 \u0111\xE3 \u0111\u1ECDc</span>\n            </div>\n            <div class=\"noti-mana-item d-flex align-items-center del-status-notify\">\n              <span class=\"icomoon icon-times-circle-o\"></span>\n              <span>G\u1EE1 b\u1ECF th\xF4ng b\xE1o n\xE0y</span>\n              <button class=\"btn btn-icon btn-red confirm-del-noti d-none\"><span class=\"icomoon icon-checkmark\"></span></button>\n            </div>\n          </div>\n      </div>\n    ");
+    var html = "\n      <div class=\"notify-item ps-rv un-read\" data-id=\"".concat(notification._id, "\">\n        <div class=\"noti-box ps-rv\">\n          <a class=\"ps-as\" href=\"").concat(notification.link, "/?idnotify=").concat(notification._id, "\">\n            <span class=\"sr-only\">").concat(notification.content, "</span>\n          </a>\n          <div class=\"wrap-noti-box p-2 d-flex align-items-center\">\n            <div class=\"noti-img\"><img class=\"rounded-circle avatar\" src=\"").concat(notification.image, "\" alt=\"oh-chat\" /></div>\n            <div class=\"ml-3\">\n              <span class=\"noti-content\">").concat(notification.content, "</span>\n              <small class=\"noti-time\">v\xE0i gi\xE2y tr\u01B0\u1EDBc</small></div>\n            </div>\n          </div>\n          <button class=\"noti-mana-btn btn btn-white btn-icon small-btn\">\n            <span class=\"icomoon icon-dots-three-horizontal\"></span>\n          </button>\n          <div class=\"noti-mana-box d-none\">\n            <div class=\"noti-mana-item d-flex align-items-center toggle-status-notify\">\n              <span class=\"icomoon icon-check-circle-o\"></span><span>\u0110\xE1nh d\u1EA5u l\xE0 \u0111\xE3 \u0111\u1ECDc</span>\n            </div>\n            <div class=\"noti-mana-item d-flex align-items-center del-status-notify\">\n              <span class=\"icomoon icon-times-circle-o\"></span>\n              <span>G\u1EE1 b\u1ECF th\xF4ng b\xE1o n\xE0y</span>\n              <button class=\"btn btn-icon btn-red confirm-del-noti d-none\"><span class=\"icomoon icon-checkmark\"></span></button>\n            </div>\n          </div>\n      </div>\n    ");
     var $box = $('#notify-drop');
 
     if (!$box.find('.notify-item').length) {
@@ -42392,7 +42392,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 106;
+            _context11.next = 108;
             break;
           }
 
@@ -42813,7 +42813,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           };
 
-          if (isChatAssistant) {
+          if (isChatAssistant && !isChatMicVoice) {
             recognitionHold = new SpeechRecognition();
             recognitionHold.grammars = speechRecognitionList;
             recognitionHold.lang = languageAssistant;
@@ -43435,8 +43435,30 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
               $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>');
             }
           });
+          $(document).on('click', '.fri-mana-btn', function (e) {
+            e.preventDefault();
+            var $parent = $(this).parents('.friend-item');
 
-        case 106:
+            if (!$parent.hasClass('is-show')) {
+              $('.friend-item').removeClass('is-show');
+              $('.fri-mana-box').addClass('d-none');
+              $parent.addClass('is-show');
+              $parent.find('.fri-mana-box').removeClass('d-none');
+            } else {
+              $parent.removeClass('is-show');
+              $parent.find('.fri-mana-box').addClass('d-none');
+            }
+          });
+          $(document).on('click', function (e) {
+            var $container = $(".friend-item.is-show .fri-mana-box");
+
+            if (!$(e.target).closest('.fri-mana-box').is($container) && !$(e.target).closest('.fri-mana-btn').hasClass('fri-mana-btn')) {
+              $container.parents('.friend-item').removeClass('is-show');
+              $container.addClass('d-none');
+            }
+          });
+
+        case 108:
         case "end":
           return _context11.stop();
       }

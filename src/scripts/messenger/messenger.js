@@ -207,7 +207,7 @@ const Messenger = (async () => {
       }
     }
 
-    if (isChatAssistant) {
+    if (isChatAssistant && !isChatMicVoice) {
       recognitionHold = new SpeechRecognition();
       recognitionHold.grammars = speechRecognitionList;
       recognitionHold.lang = languageAssistant;

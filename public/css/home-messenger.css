@@ -8113,6 +8113,10 @@ label.send-file:hover .icomoon,
   background-color: #14a76c;
 }
 
+.friend-item:hover .fri-mana-btn, .friend-item.is-show .fri-mana-btn {
+  display: flex;
+}
+
 #main-right {
   width: 0;
 }
@@ -8442,6 +8446,49 @@ textarea.form-control.msg-mini {
 .loader-search img,
 .loader-search-box img {
   max-width: 40px;
+}
+
+.fri-mana-btn {
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  transform: translateY(-50%);
+  display: none;
+}
+
+.fri-mana-box {
+  position: absolute;
+  width: 70%;
+  background-color: #fff;
+  padding: 10px;
+  z-index: 2;
+  border-radius: 5px;
+  right: 63px;
+  top: 50%;
+  box-shadow: 0 0 5px #0c1a2f;
+  transform: translateY(-50%);
+}
+
+.fri-mana-item {
+  align-items: center;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: #0c1a2f;
+}
+
+.fri-mana-item .icomoon:not(.icon-checkmark) {
+  margin-right: 10px;
+}
+
+.fri-mana-item:hover {
+  background: #f2f2f2;
+  text-decoration: none;
+}
+
+.fri-mana-item:last-child {
+  margin-bottom: 0;
 }
 
 @media only screen and (max-width: 850px) {

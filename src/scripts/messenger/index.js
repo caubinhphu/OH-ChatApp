@@ -219,7 +219,7 @@ const Index = (async () => {
         }
       }
 
-      if (isChatAssistant) {
+      if (isChatAssistant && !isChatMicVoice) {
         recognitionHold = new SpeechRecognition();
         recognitionHold.grammars = speechRecognitionList;
         recognitionHold.lang = languageAssistant;
@@ -721,6 +721,28 @@ const Index = (async () => {
         $mainChat.find('.text-status').html('<strong class="text-secondary">Đang không hoạt động</strong>')
       }
     })
+
+    $(document).on('click', '.fri-mana-btn', function(e) {
+      e.preventDefault()
+      const $parent = $(this).parents('.friend-item')
+      if (!$parent.hasClass('is-show')) {
+        $('.friend-item').removeClass('is-show')
+        $('.fri-mana-box').addClass('d-none')
+        $parent.addClass('is-show')
+        $parent.find('.fri-mana-box').removeClass('d-none')
+      } else {
+        $parent.removeClass('is-show')
+        $parent.find('.fri-mana-box').addClass('d-none')
+      }
+    })
+
+    $(document).on('click', function(e) {
+      const $container = $(".friend-item.is-show .fri-mana-box");
+      if (!$(e.target).closest('.fri-mana-box').is($container) && !$(e.target).closest('.fri-mana-btn').hasClass('fri-mana-btn')) {
+        $container.parents('.friend-item').removeClass('is-show')
+        $container.addClass('d-none')
+      }
+    });
 
     // function send file
     async function sendFile() {
