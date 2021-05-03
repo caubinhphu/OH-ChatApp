@@ -47,7 +47,7 @@ block contentMain
                         label.custom-control-label(for="turn-on-ass-voice") Chat bằng trợ lý
                       .wrap-directive(class=`${member.setting.isChatAssistant ? '' : 'd-none'}`)
                         label.text-dark Chỉ thị nhắn tin
-                        input#directive-hidden(type="hidden", name="directiveChatText")
+                        input#directive-hidden(type="hidden", name="directiveChatText", value=member.setting.directiveChatText, required)
                         .d-flex.align-items-center
                           input#directive-show.form-control.form-control-sm.mr-2(type="text", disabled, value=member.setting.directiveChatText)
                           button.btn.btn-icon.small-btn.set-directive-btn
