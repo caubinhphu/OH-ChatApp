@@ -8,6 +8,7 @@ const Member = require('../models/Member');
 const GroupMessage = require('../models/GroupMessage');
 const Message = require('../models/Message');
 const Notification = require('../models/Notification');
+const Text = require('../models/Text');
 
 const {
   validateProfile,
@@ -143,10 +144,12 @@ module.exports.getProfile = async (req, res, next) => {
     const member = await Member.findById(req.user.id);
     if (member) {
       const birthOfDate = moment(member.birthOfDate).format('YYYY-MM-DD');
+      const texts = await Text.find({authorId: req.user.id}).sort({ _id: -1 })
       res.render('messenger/profile', {
         titleSite: siteMes,
         member,
         birthOfDate,
+        texts
       });
     } else {
       req.flash('error', notMem);

@@ -61,6 +61,22 @@ block contentMain
           #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
             #friend-request-content.row
 
+    #text-created
+      h4 Text đã tạo
+      table.table.table-sm
+        thead
+          tr
+            td Tên Text
+            td Ngày tạo
+            td Xóa
+        tbody
+          each text in texts
+            tr
+              td file-name
+              td Ngày tạo
+              td.text-center
+                button.btn.btn-icon.btn-red.confirm-del-text
+                  span.icomoon.icon-close
     #modal-crop-avatar.modal.fade(tabindex='-1', aria-labelledby='modal-crop-avatar', aria-hidden='true')
       .modal-dialog.modal-dialog-centered
         .modal-content

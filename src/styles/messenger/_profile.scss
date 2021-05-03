@@ -32,7 +32,14 @@
     animation-delay: (4 - $i)+s
   }
 }
-
+.confirm-del-text {
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  .icomoon {
+    font-size: 13px;
+  }
+}
 @keyframes time {
   0%,100% {
     opacity: 0;
