@@ -44271,115 +44271,115 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var Profile = function () {
   if ($('#main.profile-page').length) {
     var loadDataFriend = /*#__PURE__*/function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(hash) {
-        var responsive, _responsive$data, friends, hasFriend, _error$response, _error$response$data, requests, _requests$data, _friends, _hasFriend, _error$response2, _error$response2$data, invitations, _invitations$data, _friends2, _hasFriend2, _error$response3, _error$response3$data;
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(hash) {
+        var responsive, _responsive$data, friends, hasFriend, _error$response2, _error$response2$data, requests, _requests$data, _friends, _hasFriend, _error$response3, _error$response3$data, invitations, _invitations$data, _friends2, _hasFriend2, _error$response4, _error$response4$data;
 
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 $('.wrap-loader-friend').removeClass('d-none');
 
                 if (!(hash === '#friend' && isHasFriend && allowLoadFriend)) {
-                  _context7.next = 19;
+                  _context8.next = 19;
                   break;
                 }
 
                 allowLoadFriend = false;
-                _context7.prev = 3;
-                _context7.next = 6;
+                _context8.prev = 3;
+                _context8.next = 6;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friends?page=".concat(pageFriend));
 
               case 6:
-                responsive = _context7.sent;
+                responsive = _context8.sent;
                 _responsive$data = responsive.data, friends = _responsive$data.friends, hasFriend = _responsive$data.hasFriend;
                 $(friendContent).append(friends.map(function (friend) {
                   return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1 des-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y k\u1EBFt b\u1EA1n\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriend = hasFriend;
                 pageFriend++;
-                _context7.next = 16;
+                _context8.next = 16;
                 break;
 
               case 13:
-                _context7.prev = 13;
-                _context7.t0 = _context7["catch"](3);
-                window.outputErrorMessage(_context7.t0 === null || _context7.t0 === void 0 ? void 0 : (_error$response = _context7.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
+                _context8.prev = 13;
+                _context8.t0 = _context8["catch"](3);
+                window.outputErrorMessage(_context8.t0 === null || _context8.t0 === void 0 ? void 0 : (_error$response2 = _context8.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
               case 16:
                 allowLoadFriend = true;
-                _context7.next = 49;
+                _context8.next = 49;
                 break;
 
               case 19:
                 if (!(hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest)) {
-                  _context7.next = 35;
+                  _context8.next = 35;
                   break;
                 }
 
-                _context7.prev = 20;
-                _context7.next = 23;
+                _context8.prev = 20;
+                _context8.next = 23;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-request?page=".concat(pageFriendRequest));
 
               case 23:
-                requests = _context7.sent;
+                requests = _context8.sent;
                 _requests$data = requests.data, _friends = _requests$data.friends, _hasFriend = _requests$data.hasFriend;
                 $(friendRequest).append(_friends.map(function (friend) {
                   return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1 des-req-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendRequest = _hasFriend;
                 pageFriendRequest++;
-                _context7.next = 33;
+                _context8.next = 33;
                 break;
 
               case 30:
-                _context7.prev = 30;
-                _context7.t1 = _context7["catch"](20);
-                window.outputErrorMessage(_context7.t1 === null || _context7.t1 === void 0 ? void 0 : (_error$response2 = _context7.t1.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+                _context8.prev = 30;
+                _context8.t1 = _context8["catch"](20);
+                window.outputErrorMessage(_context8.t1 === null || _context8.t1 === void 0 ? void 0 : (_error$response3 = _context8.t1.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.message);
 
               case 33:
-                _context7.next = 49;
+                _context8.next = 49;
                 break;
 
               case 35:
                 if (!(hash === '#friend-invitation' && isHasFriendInvitation && allowLoadFriendInvitation)) {
-                  _context7.next = 49;
+                  _context8.next = 49;
                   break;
                 }
 
-                _context7.prev = 36;
-                _context7.next = 39;
+                _context8.prev = 36;
+                _context8.next = 39;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-invitation?page=".concat(pageFriendInvitation));
 
               case 39:
-                invitations = _context7.sent;
+                invitations = _context8.sent;
                 _invitations$data = invitations.data, _friends2 = _invitations$data.friends, _hasFriend2 = _invitations$data.hasFriend;
                 $(friendInvitation).append(_friends2.map(function (friend) {
                   return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle\" alt=\"").concat(friend.name, "\" width=\"80px\" height=\"80px\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1 accept-inv-friend\" data-id=\"").concat(friend.id, "\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1 del-inv-friend\" data-id=\"").concat(friend.id, "\">\n                    X\xF3a y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendInvitation = _hasFriend2;
                 pageFriendInvitation++;
-                _context7.next = 49;
+                _context8.next = 49;
                 break;
 
               case 46:
-                _context7.prev = 46;
-                _context7.t2 = _context7["catch"](36);
-                window.outputErrorMessage(_context7.t2 === null || _context7.t2 === void 0 ? void 0 : (_error$response3 = _context7.t2.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.message);
+                _context8.prev = 46;
+                _context8.t2 = _context8["catch"](36);
+                window.outputErrorMessage(_context8.t2 === null || _context8.t2 === void 0 ? void 0 : (_error$response4 = _context8.t2.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.message);
 
               case 49:
                 $('.wrap-loader-friend').addClass('d-none');
 
               case 50:
               case "end":
-                return _context7.stop();
+                return _context8.stop();
             }
           }
-        }, _callee7, null, [[3, 13], [20, 30], [36, 46]]);
+        }, _callee8, null, [[3, 13], [20, 30], [36, 46]]);
       }));
 
-      return function loadDataFriend(_x5) {
-        return _ref7.apply(this, arguments);
+      return function loadDataFriend(_x6) {
+        return _ref8.apply(this, arguments);
       };
     }();
 
@@ -44391,69 +44391,7 @@ var Profile = function () {
         $('#friend-area').find(".tab-pane".concat(hash)).addClass(['show', 'active']);
         $('#friend-area').find(".nav-link[href=\"".concat(hash, "\"]")).addClass('active');
       }
-    }; // function sleep
-    // const sleep = m => new Promise(r => setTimeout(r, m))
-    // // function take a photo and return file type image
-    // async function takePicture() {
-    //   if (navigator.mediaDevices.getUserMedia) {
-    //     try {
-    //       const $wrapTake = $('.wrap-takephoto')
-    //       $wrapTake.removeClass('d-none')
-    //       // get video stream
-    //       const videoStream = await navigator.mediaDevices.getUserMedia({
-    //         video: true,
-    //         audio: false,
-    //       });
-    //       // show video stream
-    //       $wrapTake.find('video').each((i, vd) => {
-    //         if ('srcObject' in vd) {
-    //           vd.srcObject = videoStream;
-    //         } else {
-    //           vd.src = window.URL.createObjectURL(videoStream);
-    //         }
-    //       })
-    //       const snd = new Audio('/sounds/take-photo.mp3');
-    //       // count down
-    //       $('.count-down').removeClass('d-none')
-    //       // sleep 4s
-    //       await sleep(4000)
-    //       // take photo from video
-    //       const video = $wrapTake.find('video').get(0)
-    //       const canvas = document.createElement('canvas')
-    //       const context = canvas.getContext('2d');
-    //       canvas.width = video.videoWidth;
-    //       canvas.height = video.videoHeight;
-    //       context.drawImage(video, 0, 0);
-    //       const dataURL = canvas.toDataURL('image/jpeg');
-    //       // create file image
-    //       const file = dataURLtoFile(dataURL, 'capture.jpg')
-    //       canvas.className = 'res-capture ps-as'
-    //       $wrapTake.append(canvas)
-    //       await Promise.all([
-    //         snd.play(),
-    //         sleep(320)
-    //       ]);
-    //       // stop video stream after take photo
-    //       $('.count-down').addClass('d-none')
-    //       $wrapTake.addClass('d-none')
-    //       $wrapTake.find('canvas').remove()
-    //       videoStream.getVideoTracks()[0].stop()
-    //       $wrapTake.find('video').each((i, vd) => {
-    //         if ('srcObject' in vd) {
-    //           vd.srcObject = null;
-    //         } else {
-    //           vd.src = null;
-    //         }
-    //       })
-    //       // return file
-    //       return file
-    //     } catch (error) {
-    //       console.error(error);
-    //       window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
-    //     }
-    //   }
-    // }
-    // re-init choose file avatar
+    }; // re-init choose file avatar
 
 
     var reInitChooseFile = function reInitChooseFile() {
@@ -44746,6 +44684,82 @@ var Profile = function () {
       window.memberId = undefined;
       window.typeConfirm = undefined;
     });
+    $('.del-text').on('click', function (e) {
+      e.preventDefault();
+      $(this).next('.confirm-del-text').removeClass('d-none');
+    });
+    $(document).on('click', function (e) {
+      var $target = $(e.target);
+      $('.confirm-del-text').each(function () {
+        console.log($target);
+        console.log(this);
+        console.log(!$(this).has($target));
+
+        if (!$($target).closest('.confirm-del-text').is(this) && !$($target).closest('.del-text').length) {
+          $(this).addClass('d-none');
+        }
+      });
+    });
+    $('.confirm-del-text').on('click', /*#__PURE__*/function () {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+        var $rowText, id, responsive, messages, _error$response, _error$response$data;
+
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                e.preventDefault();
+                $rowText = $(this).parents('tr');
+                id = $rowText.attr('data-id');
+                $rowText.find('.wrap-del-text').addClass('loader-del-text');
+                $('.loader-text-del').removeClass('d-none');
+
+                if (!id) {
+                  _context7.next = 18;
+                  break;
+                }
+
+                _context7.prev = 6;
+                _context7.next = 9;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/utility/text", {
+                  data: {
+                    id: id
+                  },
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  }
+                });
+
+              case 9:
+                responsive = _context7.sent;
+                messages = responsive.data.messages;
+                window.outputSuccessMessage(messages);
+                $rowText.remove();
+                _context7.next = 18;
+                break;
+
+              case 15:
+                _context7.prev = 15;
+                _context7.t0 = _context7["catch"](6);
+                window.outputErrorMessage(_context7.t0 === null || _context7.t0 === void 0 ? void 0 : (_error$response = _context7.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
+
+              case 18:
+                $rowText.find('.wrap-del-text').removeClass('loader-del-text');
+                $('.loader-text-del').addClass('d-none');
+
+              case 20:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this, [[6, 15]]);
+      }));
+
+      return function (_x5) {
+        return _ref7.apply(this, arguments);
+      };
+    }());
     window.loadDataFriend = loadDataFriend;
   }
 }();

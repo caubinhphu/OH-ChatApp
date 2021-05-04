@@ -8573,14 +8573,31 @@ textarea.form-control.msg-mini {
   animation-delay: 1s;
 }
 
-.confirm-del-text {
+.confirm-del-text,
+.del-text {
   width: 25px;
   height: 25px;
   padding: 5px;
 }
 
-.confirm-del-text .icomoon {
+.confirm-del-text .icomoon,
+.del-text .icomoon {
   font-size: 13px;
+}
+
+.wrap-del-text.loader-del-text button {
+  pointer-events: none;
+}
+
+.wrap-del-text.loader-del-text button .icomoon {
+  color: #747474;
+}
+
+.loader-text-del {
+  position: absolute;
+  top: -4px;
+  left: 112px;
+  max-width: 40px;
 }
 
 @keyframes time {

@@ -57,6 +57,21 @@ module.exports.putText = async (req, res) => {
   }
 }
 
+module.exports.deleteText = async (req, res) => {
+  const { id } = req.body
+  try {
+    const member = await Member.findById(req.user.id)
+    const text = await Text.findById(id)
+    if (member && text && text.authorId.toString() === req.user.id) {
+      await text.deleteOne()
+
+      res.status(200).json({ message: 'Xóa Text thành công' })
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Xóa Text lỗi' })
+  }
+}
+
 module.exports.checkIsAuthorText = async (req, res) => {
   try {
     if (req.user) {

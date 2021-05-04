@@ -195,6 +195,56 @@ const Profile = (() => {
       window.typeConfirm = undefined
     })
 
+    $('.del-text').on('click', function(e) {
+      e.preventDefault()
+      $(this).next('.confirm-del-text').removeClass('d-none')
+    })
+
+    $(document).on('click', (e) => {
+      const $target = $(e.target)
+      $('.confirm-del-text').each(function() {
+        console.log($target);
+        console.log(this);
+        console.log(!$(this).has($target));
+        if (!$($target).closest('.confirm-del-text').is(this) && !$($target).closest('.del-text').length) {
+          $(this).addClass('d-none')
+        }
+      })
+    })
+
+    $('.confirm-del-text').on('click', async function(e) {
+      e.preventDefault()
+      const $rowText = $(this).parents('tr')
+      const id = $rowText.attr('data-id')
+      $rowText.find('.wrap-del-text').addClass('loader-del-text')
+      $('.loader-text-del').removeClass('d-none')
+      if (id) {
+        try {
+          const responsive = await axios.delete(`/utility/text`, {
+            data: { id },
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          });
+          const { messages } = responsive.data;
+          window.outputSuccessMessage(messages)
+          $rowText.remove()
+
+          const $wrap = $('.wrap-text-list')
+          if (!$wrap.find('table tbody tr').length) {
+            $wrap.html(`<div class="text-center">
+              <h4><em>Không có Text nào</em></h4>
+            </div>`)
+          }
+        } catch (error) {
+          $rowText.find('.wrap-del-text').removeClass('loader-del-text')
+          window.outputErrorMessage(error?.response?.data?.message)
+        }
+      }
+      $('.loader-text-del').addClass('d-none')
+    })
+
     async function loadDataFriend(hash) {
       $('.wrap-loader-friend').removeClass('d-none')
       if (hash === '#friend' && isHasFriend && allowLoadFriend) {
@@ -294,77 +344,6 @@ const Profile = (() => {
         $('#friend-area').find(`.nav-link[href="${hash}"]`).addClass('active')
       }
     }
-
-    // function sleep
-    // const sleep = m => new Promise(r => setTimeout(r, m))
-
-    // // function take a photo and return file type image
-    // async function takePicture() {
-    //   if (navigator.mediaDevices.getUserMedia) {
-    //     try {
-    //       const $wrapTake = $('.wrap-takephoto')
-    //       $wrapTake.removeClass('d-none')
-    //       // get video stream
-    //       const videoStream = await navigator.mediaDevices.getUserMedia({
-    //         video: true,
-    //         audio: false,
-    //       });
-
-    //       // show video stream
-    //       $wrapTake.find('video').each((i, vd) => {
-    //         if ('srcObject' in vd) {
-    //           vd.srcObject = videoStream;
-    //         } else {
-    //           vd.src = window.URL.createObjectURL(videoStream);
-    //         }
-    //       })
-    //       const snd = new Audio('/sounds/take-photo.mp3');
-    //       // count down
-    //       $('.count-down').removeClass('d-none')
-
-    //       // sleep 4s
-    //       await sleep(4000)
-
-    //       // take photo from video
-    //       const video = $wrapTake.find('video').get(0)
-    //       const canvas = document.createElement('canvas')
-    //       const context = canvas.getContext('2d');
-    //       canvas.width = video.videoWidth;
-    //       canvas.height = video.videoHeight;
-    //       context.drawImage(video, 0, 0);
-    //       const dataURL = canvas.toDataURL('image/jpeg');
-
-    //       // create file image
-    //       const file = dataURLtoFile(dataURL, 'capture.jpg')
-    //       canvas.className = 'res-capture ps-as'
-    //       $wrapTake.append(canvas)
-
-    //       await Promise.all([
-    //         snd.play(),
-    //         sleep(320)
-    //       ]);
-
-    //       // stop video stream after take photo
-    //       $('.count-down').addClass('d-none')
-    //       $wrapTake.addClass('d-none')
-    //       $wrapTake.find('canvas').remove()
-    //       videoStream.getVideoTracks()[0].stop()
-    //       $wrapTake.find('video').each((i, vd) => {
-    //         if ('srcObject' in vd) {
-    //           vd.srcObject = null;
-    //         } else {
-    //           vd.src = null;
-    //         }
-    //       })
-
-    //       // return file
-    //       return file
-    //     } catch (error) {
-    //       console.error(error);
-    //       window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam')
-    //     }
-    //   }
-    // }
 
     // re-init choose file avatar
     function reInitChooseFile() {

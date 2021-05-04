@@ -61,25 +61,36 @@ block contentMain
           #friend-invitation.tab-pane.fade.py-2(role='tabpanel', aria-labelledby='friend-invitation-tab')
             #friend-request-content.row
 
-    #text-created.container
-      h4 Text đã tạo
-      table.table.table-sm
-        thead
-          tr
-            td Tên Text
-            td Ngày tạo
-            td Lần sửa gần đây
-            td Xóa
-        tbody.text-dark
-          each text in texts
-            tr(data-id=text._id)
-              td
-                a(href=`/utility/text/${text._id}`, target="_blank")= text.name
-              td= text.createDate.toLocaleString()
-              td= text.modifyDate.toLocaleString()
-              td.text-center
-                button.btn.btn-icon.btn-red.confirm-del-text
-                  span.icomoon.icon-close
+    #text-created.container.ps-rv
+      h4.text-dark Text đã tạo
+      img.loader-text-del.d-none(src="/images/loader.svg", alt="loader")
+
+      .wrap-text-list
+        if (!texts.length)
+          .text-center
+            h4
+              em Không có Text nào
+        else
+          table.table.table-sm.text-center
+            thead
+              tr
+                td Tên Text
+                td Ngày tạo
+                td Lần sửa gần đây
+                td Xóa
+            tbody.text-dark
+              each text in texts
+                tr(data-id=text._id)
+                  td
+                    a(href=`/utility/text/${text._id}`, target="_blank")= text.name
+                  td= text.createDate.toLocaleString()
+                  td= text.modifyDate.toLocaleString()
+                  td.d-flex.justify-content-center.wrap-del-text
+                    button.btn.btn-icon.btn-red.del-text
+                      span.icomoon.icon-close
+                    button.btn.btn-icon.btn-red.confirm-del-text.d-none.ml-1
+                      span.icomoon.icon-checkmark
+
     #modal-crop-avatar.modal.fade(tabindex='-1', aria-labelledby='modal-crop-avatar', aria-hidden='true')
       .modal-dialog.modal-dialog-centered
         .modal-content

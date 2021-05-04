@@ -32,13 +32,30 @@
     animation-delay: (4 - $i)+s
   }
 }
-.confirm-del-text {
+.confirm-del-text,
+.del-text {
   width: 25px;
   height: 25px;
   padding: 5px;
   .icomoon {
     font-size: 13px;
   }
+}
+.wrap-del-text {
+  &.loader-del-text {
+    button {
+      pointer-events: none;
+      .icomoon {
+        color: $color-74;
+      }
+    }
+  }
+}
+.loader-text-del {
+  position: absolute;
+  top: -4px;
+  left: 112px;
+  max-width: 40px;
 }
 @keyframes time {
   0%,100% {
