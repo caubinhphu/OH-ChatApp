@@ -175,7 +175,7 @@ module.exports.putProfile = async (req, res, next) => {
 
   // validate info register
   const { error } = validateProfile({ name, birthday, gender, phone, address });
-
+  const texts = await Text.find({authorId: req.user.id}).sort({ _id: -1 })
   const errorText = [];
   if (error) {
     errorText.push(error.details[0].message);
@@ -192,7 +192,8 @@ module.exports.putProfile = async (req, res, next) => {
       titleSide: siteMes,
       errorText,
       member: fakeMember,
-      birthOfDate: fakeMember.birthday
+      birthOfDate: fakeMember.birthday,
+      texts
     });
   } else {
     // get member

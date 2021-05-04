@@ -116,7 +116,7 @@ const memberSchema = mongoose.Schema({
   }
 });
 
-// memberSchema.index({name: 'text'});
+// memberSchema.index({name: 'text', phone: 'text', address: 'text'});
 
 // get friends
 memberSchema.methods.getFriends = function () {
