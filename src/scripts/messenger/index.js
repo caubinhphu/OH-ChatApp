@@ -74,6 +74,7 @@ const Index = (async () => {
                 token: tokenSend,
               });
               window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true)
+              moveToTop(friendIdChatting)
               textNotify = textSended
             } else {
               textNotify = textNoSend
@@ -86,6 +87,7 @@ const Index = (async () => {
                 token: tokenSend,
               });
               window.createCallMsgLocal(friendIdChatting, command, '', false, true)
+              moveToTop(friendIdChatting)
             } else if (methodSend === 'confirm-popup') {
               const $popup = $('.confirm-popup')
               $popup.find('.msg-output').text(command)
@@ -299,6 +301,7 @@ const Index = (async () => {
               token: tokenSend,
             });
             window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true)
+            moveToTop(friendIdChatting)
             $popup.find('.msg-output').text('')
             $('.confirm-popup').addClass('d-none')
           }
@@ -770,6 +773,7 @@ const Index = (async () => {
           false,
           true
         )
+        moveToTop(friendIdChatting)
       });
       try {
         const res = await axios.post('/messenger/upload-file', formData, {
@@ -831,6 +835,7 @@ const Index = (async () => {
           false,
           true
         )
+        moveToTop(friendIdChatting)
       try {
         const res = await axios.post('/messenger/upload-file', formData, {
           headers: {

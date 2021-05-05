@@ -42435,6 +42435,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                         formData.append('files', file); // create message obj to show in client
 
                         window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                        moveToTop(friendIdChatting);
                       });
                       _context9.prev = 3;
                       _context9.next = 6;
@@ -42531,15 +42532,16 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                       formData.append('files', file); // create message obj to show in client
 
                       window.createCallMsgLocal(friendIdChatting, "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
-                      _context10.prev = 5;
-                      _context10.next = 8;
+                      moveToTop(friendIdChatting);
+                      _context10.prev = 6;
+                      _context10.next = 9;
                       return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/messenger/upload-file', formData, {
                         headers: {
                           'Content-Type': 'multipart/form-data'
                         }
                       });
 
-                    case 8:
+                    case 9:
                       res = _context10.sent;
                       // enabledInputFile()
                       $msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
@@ -42575,12 +42577,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                           $(ele).parents('.message').remove();
                         }
                       });
-                      _context10.next = 18;
+                      _context10.next = 19;
                       break;
 
-                    case 13:
-                      _context10.prev = 13;
-                      _context10.t0 = _context10["catch"](5);
+                    case 14:
+                      _context10.prev = 14;
+                      _context10.t0 = _context10["catch"](6);
                       _$msgFile2 = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
                       _$msgFile2.parents('.message').remove(); // enabledInputFile()
@@ -42590,12 +42592,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                         window.outputErrorMessage(_context10.t0.response.data.message);
                       }
 
-                    case 18:
+                    case 19:
                     case "end":
                       return _context10.stop();
                   }
                 }
-              }, _callee10, null, [[5, 13]]);
+              }, _callee10, null, [[6, 14]]);
             }));
 
             return function sendFileSingle(_x3) {
@@ -42639,6 +42641,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                     token: tokenSend
                   });
                   window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true);
+                  moveToTop(friendIdChatting);
                   textNotify = textSended;
                 } else {
                   textNotify = textNoSend;
@@ -42652,6 +42655,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                     token: tokenSend
                   });
                   window.createCallMsgLocal(friendIdChatting, command, '', false, true);
+                  moveToTop(friendIdChatting);
                 } else if (methodSend === 'confirm-popup') {
                   var $popup = $('.confirm-popup');
                   $popup.find('.msg-output').text(command);
@@ -42907,6 +42911,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                   token: tokenSend
                 });
                 window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true);
+                moveToTop(friendIdChatting);
                 $popup.find('.msg-output').text('');
                 $('.confirm-popup').addClass('d-none');
               }
