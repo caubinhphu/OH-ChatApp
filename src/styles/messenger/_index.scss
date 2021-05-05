@@ -265,7 +265,9 @@ textarea.form-control.msg-mini {
     }
   }
   &.un-read {
-    font-weight: 800;
+    small {
+      font-weight: 800;
+    }
   }
 }
 .popup-has-call,

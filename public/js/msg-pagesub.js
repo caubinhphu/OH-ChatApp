@@ -44702,7 +44702,7 @@ var Profile = function () {
     });
     $('.confirm-del-text').on('click', /*#__PURE__*/function () {
       var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
-        var $rowText, id, responsive, messages, _error$response, _error$response$data;
+        var $rowText, id, responsive, messages, $wrap, _error$response, _error$response$data;
 
         return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
@@ -44715,7 +44715,7 @@ var Profile = function () {
                 $('.loader-text-del').removeClass('d-none');
 
                 if (!id) {
-                  _context7.next = 18;
+                  _context7.next = 21;
                   break;
                 }
 
@@ -44736,24 +44736,30 @@ var Profile = function () {
                 messages = responsive.data.messages;
                 window.outputSuccessMessage(messages);
                 $rowText.remove();
-                _context7.next = 18;
+                $wrap = $('.wrap-text-list');
+
+                if (!$wrap.find('table tbody tr').length) {
+                  $wrap.html("<div class=\"text-center\">\n              <h4><em>Kh\xF4ng c\xF3 Text n\xE0o</em></h4>\n            </div>");
+                }
+
+                _context7.next = 21;
                 break;
 
-              case 15:
-                _context7.prev = 15;
+              case 17:
+                _context7.prev = 17;
                 _context7.t0 = _context7["catch"](6);
+                $rowText.find('.wrap-del-text').removeClass('loader-del-text');
                 window.outputErrorMessage(_context7.t0 === null || _context7.t0 === void 0 ? void 0 : (_error$response = _context7.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
 
-              case 18:
-                $rowText.find('.wrap-del-text').removeClass('loader-del-text');
+              case 21:
                 $('.loader-text-del').addClass('d-none');
 
-              case 20:
+              case 22:
               case "end":
                 return _context7.stop();
             }
           }
-        }, _callee7, this, [[6, 15]]);
+        }, _callee7, this, [[6, 17]]);
       }));
 
       return function (_x5) {

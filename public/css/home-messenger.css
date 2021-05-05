@@ -8340,7 +8340,7 @@ textarea.form-control.msg-mini {
   border-radius: 50%;
 }
 
-.last-msg.un-read {
+.last-msg.un-read small {
   font-weight: 800;
 }
 

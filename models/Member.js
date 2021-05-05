@@ -58,6 +58,10 @@ const memberSchema = mongoose.Schema({
       type: mongoose.Types.ObjectId,
       ref: 'GroupMessage',
     },
+    beRead: {
+      type: Boolean,
+      default: false
+    },
   }, ],
   friendRequests: [
     {
@@ -127,6 +131,22 @@ memberSchema.methods.getFriends = function () {
       avatar: friend._id.avatar,
       status: friend._id.status,
       url: friend._id.url,
+      latedMsgTime: friend.groupMessageId.messages.length ? friend.groupMessageId.messages[0].time : new Date()
+    }
+  }).sort((a, b) => {
+    return b.latedMsgTime - a.latedMsgTime
+  });
+};
+
+// get friends not sort
+memberSchema.methods.getFriendsNoSort = function () {
+  return this.friends.map((friend) => {
+    return {
+      id: friend._id.id,
+      name: friend._id.name,
+      avatar: friend._id.avatar,
+      status: friend._id.status,
+      url: friend._id.url,
     }
   });
 };
@@ -164,8 +184,11 @@ memberSchema.methods.getFriendsHaveMessage = function () {
       name: friend._id.name,
       avatar: friend._id.avatar,
       status: friend._id.status,
-      messages: friend.groupMessageId.messages
+      messages: friend.groupMessageId.messages,
+      latedMsgTime: friend.groupMessageId.messages.length ? friend.groupMessageId.messages[0].time : new Date()
     }
+  }).sort((a, b) => {
+    return b.latedMsgTime - a.latedMsgTime
   });
 };
 

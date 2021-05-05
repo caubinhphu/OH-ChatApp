@@ -22,7 +22,7 @@ const messageSchema = mongoose.Schema({
     refPath: 'externalModelType',
   },
   timeEndCall: Date,
-  fileName: String
+  fileName: String,
 });
 
 const Message = mongoose.model('Message', messageSchema);

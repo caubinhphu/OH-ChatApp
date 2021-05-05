@@ -114,13 +114,24 @@ async function removeFileUpload(messageIds) {
   }
 }
 
-
 // get index messenger page
 module.exports.getIndex = async (req, res, next) => {
   try {
-    const member = await Member.findById(req.user.id).populate('friends._id');
+    const member = await Member.findById(req.user.id)
+      .populate('friends._id')
+      .populate({
+        path: 'friends.groupMessageId',
+        populate: {
+          path: 'messages',
+          options: {
+            sort: { _id: -1},
+          },
+          perDocumentLimit: 1,
+        },
+      });
     if (member) {
       const friends = member.getFriends();
+      console.log(friends);
       if (friends.length > 0) {
         res.redirect(`/messenger/chat/${friends[0].url ? friends[0].url : friends[0].id}`);
       } else {
@@ -129,6 +140,81 @@ module.exports.getIndex = async (req, res, next) => {
           friends,
         });
       }
+    } else {
+      next(new Error(notMem));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// get view chat with friend
+module.exports.getChatFriend = async (req, res, next) => {
+  try {
+    const member = await Member.findById(req.user.id)
+      .populate('friends._id')
+      .populate({
+        path: 'friends.groupMessageId',
+        populate: {
+          path: 'messages',
+          options: {
+            sort: { _id: -1},
+          },
+          perDocumentLimit: msgPerLoad,
+        },
+      });
+    if (member) {
+      const friends = member.getFriendsHaveMessage();
+      const friendChat = friends.find(fr => fr.id === req.params.friendId || fr.url === req.params.friendId);
+
+      if (!friendChat) {
+        throw new Error(notMem)
+      }
+
+      // generate jwt token
+      const token = jwt.sign(
+        { data: { memberId: friendChat.id } },
+        process.env.JWT_SECRET
+      );
+
+      // set local time moment
+      moment.updateLocale('vi', {
+        relativeTime: {
+          m:  "1 phút",
+          h:  "1 giờ",
+          d:  "1 ngày",
+          w:  "1 tuần",
+          M:  "1 tháng",
+          y:  "1 năm",
+        }
+      })
+      moment.locale('vi')
+
+      // set status text
+      let statusText = '<strong class="text-success">Đang hoạt động</strong>'
+      if (friendChat.status !== 'online') {
+        const textTimeFrom = moment(friendChat.status).fromNow()
+        statusText = `<strong class="text-secondary">Hoạt động ${textTimeFrom}</strong>`
+      }
+
+      // format msg latest
+      friends.forEach(fr => {
+        if (fr.messages.length) {
+          fr.latestMessage = formatLatestMsg(fr.messages[0], member, fr)
+        }
+      })
+
+      // format list msg friend is chatting
+      const messagesActive = formatMessageList(friendChat.messages, member, friendChat)
+
+      res.render('messenger', {
+        titleSite: siteMes,
+        friends,
+        friendChat,
+        messagesActive,
+        token,
+        statusText
+      });
     } else {
       next(new Error(notMem));
     }
@@ -315,7 +401,7 @@ module.exports.getFriends = async (req, res) => {
     if (member) {
       let hasFriend = false
       member.friends = member.friends.filter(fr => fr._id)
-      const friends = member.getFriends();
+      const friends = member.getFriendsNoSort();
       if (friends.length === msgPerLoad) {
         hasFriend = true
       }
@@ -388,81 +474,6 @@ module.exports.getFriendInvitations = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: hasErrMsg });
-  }
-};
-
-// get view chat with friend
-module.exports.getChatFriend = async (req, res, next) => {
-  try {
-    const member = await Member.findById(req.user.id)
-      .populate('friends._id')
-      .populate({
-        path: 'friends.groupMessageId',
-        populate: {
-          path: 'messages',
-          options: {
-            sort: { _id: -1},
-          },
-          perDocumentLimit: msgPerLoad,
-        },
-      });
-    if (member) {
-      const friends = member.getFriendsHaveMessage();
-      const friendChat = friends.find(fr => fr.id === req.params.friendId || fr.url === req.params.friendId);
-
-      if (!friendChat) {
-        throw new Error(notMem)
-      }
-
-      // generate jwt token
-      const token = jwt.sign(
-        { data: { memberId: friendChat.id } },
-        process.env.JWT_SECRET
-      );
-
-      // set local time moment
-      moment.updateLocale('vi', {
-        relativeTime: {
-          m:  "1 phút",
-          h:  "1 giờ",
-          d:  "1 ngày",
-          w:  "1 tuần",
-          M:  "1 tháng",
-          y:  "1 năm",
-        }
-      })
-      moment.locale('vi')
-
-      // set status text
-      let statusText = '<strong class="text-success">Đang hoạt động</strong>'
-      if (friendChat.status !== 'online') {
-        const textTimeFrom = moment(friendChat.status).fromNow()
-        statusText = `<strong class="text-secondary">Hoạt động ${textTimeFrom}</strong>`
-      }
-
-      // format msg latest
-      friends.forEach(fr => {
-        if (fr.messages.length) {
-          fr.latestMessage = formatLatestMsg(fr.messages[0], member, fr)
-        }
-      })
-
-      // format list msg friend is chatting
-      const messagesActive = formatMessageList(friendChat.messages, member, friendChat)
-
-      res.render('messenger', {
-        titleSite: siteMes,
-        friends,
-        friendChat,
-        messagesActive,
-        token,
-        statusText
-      });
-    } else {
-      next(new Error(notMem));
-    }
-  } catch (error) {
-    next(error);
   }
 };
 

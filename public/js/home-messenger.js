@@ -42351,7 +42351,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, disableSendRec, sendFile, sendFileSingle, tokenSend, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
+  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, disableSendRec, moveToTop, sendFile, sendFileSingle, tokenSend, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
   return regeneratorRuntime.wrap(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
@@ -42393,7 +42393,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 108;
+            _context11.next = 109;
             break;
           }
 
@@ -42408,7 +42408,19 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           }; // event submit form chat
 
 
-          // function send file
+          moveToTop = function moveToTop(dataId) {
+            var isChangeActive = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            var $wrap = $('#main-left-friends');
+            var $item = $wrap.find(".friend-item[data-id=\"".concat(dataId, "\"]"));
+            $wrap.prepend($item);
+
+            if (isChangeActive) {
+              $wrap.find(".friend-item").removeClass('is-active');
+              $item.addClass('is-active');
+            }
+          }; // function send file
+
+
           sendFile = /*#__PURE__*/function () {
             var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
               var formData, idSession, res, $msgFile, _$msgFile;
@@ -42595,7 +42607,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
           chatMain.scrollTop = chatMain.scrollHeight;
           friendIdChatting = $('#main-right').attr('data-id');
-          _context11.prev = 38;
+          _context11.prev = 39;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -42746,31 +42758,31 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context11.next = 56;
+          _context11.next = 57;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 56:
+        case 57:
           voices = _context11.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context11.next = 60;
+            _context11.next = 61;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 60:
+        case 61:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context11.next = 72;
+            _context11.next = 73;
             break;
           }
 
@@ -42779,29 +42791,29 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           });
 
           if (!vVN) {
-            _context11.next = 67;
+            _context11.next = 68;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context11.next = 72;
+          _context11.next = 73;
           break;
 
-        case 67:
+        case 68:
           if (!vEN) {
-            _context11.next = 71;
+            _context11.next = 72;
             break;
           }
 
           voice = vEN;
-          _context11.next = 72;
+          _context11.next = 73;
           break;
 
-        case 71:
+        case 72:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 72:
+        case 73:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -42901,15 +42913,15 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
           }
 
-          _context11.next = 82;
+          _context11.next = 83;
           break;
 
-        case 79:
-          _context11.prev = 79;
-          _context11.t0 = _context11["catch"](38);
+        case 80:
+          _context11.prev = 80;
+          _context11.t0 = _context11["catch"](39);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 82:
+        case 83:
           msgForm.addEventListener('submit', /*#__PURE__*/function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
               var inputMsg;
@@ -42930,7 +42942,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                           token: tokenSend
                         }); // create message obj to show in client
 
-                        window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
+                        window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true);
+                        moveToTop(friendIdChatting); // scroll bottom
 
                         chatMain.scrollTop = chatMain.scrollHeight; // set value for input message
 
@@ -43410,6 +43423,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
               chatMain.scrollTop = chatMain.scrollHeight;
             }
 
+            moveToTop(senderId, friendIdChatting === senderId);
+
             if (msgObj.type && msgObj.type === 'file') {
               $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
             } else {
@@ -43459,12 +43474,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           });
 
-        case 108:
+        case 109:
         case "end":
           return _context11.stop();
       }
     }
-  }, _callee11, null, [[38, 79]]);
+  }, _callee11, null, [[39, 80]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);

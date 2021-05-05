@@ -334,6 +334,7 @@ const Index = (async () => {
 
         // create message obj to show in client
         window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true)
+        moveToTop(friendIdChatting)
 
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
@@ -693,6 +694,7 @@ const Index = (async () => {
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
       }
+      moveToTop(senderId, friendIdChatting === senderId)
       if (msgObj.type && msgObj.type === 'file') {
         $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
           `<small>${msgObj.username} đã gửi 1 đính kèm</small><small>1 phút</small>`
@@ -743,6 +745,16 @@ const Index = (async () => {
         $container.addClass('d-none')
       }
     });
+
+    function moveToTop(dataId, isChangeActive = true) {
+      const $wrap = $('#main-left-friends')
+      const $item = $wrap.find(`.friend-item[data-id="${dataId}"]`)
+      $wrap.prepend($item)
+      if (isChangeActive) {
+        $wrap.find(`.friend-item`).removeClass('is-active')
+        $item.addClass('is-active')
+      }
+    }
 
     // function send file
     async function sendFile() {
