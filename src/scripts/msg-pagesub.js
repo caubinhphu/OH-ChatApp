@@ -6,12 +6,12 @@ import './global/loading'
 import './global/output-message'
 import './global/emoji'
 import './global/chat-utils'
+import './messenger/common-chat'
 import './messenger/profile'
 import './messenger/setting'
-import './messenger/common-chat'
 import './messenger/messenger'
 import './messenger/header'
 import './messenger/member'
 import './messenger/search'
 
-console.log('page sub messenger');
+// console.log('page sub messenger');

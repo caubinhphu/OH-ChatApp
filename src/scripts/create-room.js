@@ -5,4 +5,4 @@ import './global/output-message'
 import './room/create-room'
 
 
-console.log('page create room');
+// console.log('page create room');

@@ -40814,7 +40814,8 @@ var CommonChat = function () {
   var classCallVideo = ' call-video';
   var classCallMissedVideo = ' call-missed-video';
   var msgForm = document.sendMsgForm;
-  var meId = $('#member-id').text(); // is page chat
+  var meId = $('#member-id').text();
+  window.soundRecord = new Audio('/sounds/record.mp3'); // is page chat
 
   if (isPageChat && msgForm) {
     // scroll bottom
@@ -41330,9 +41331,9 @@ var CommonChat = function () {
         scrollBottomChatBox();
 
         if (className !== 'wrap-msg-file') {
-          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>1 ph\xFAt</small>\n          "));
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n          "));
         } else {
-          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>\n          ");
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>v\xE0i gi\xE2y</small>\n          ");
         }
       } else {
         outputMessage({
@@ -41344,7 +41345,7 @@ var CommonChat = function () {
           timeCall: timeCall
         }, false);
         scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        ")).removeClass('un-read');
+        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n        ")).removeClass('un-read');
       }
     }
   }
@@ -41632,7 +41633,7 @@ var CommonChat = function () {
           switch (_context3.prev = _context3.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 17;
+                _context3.next = 18;
                 break;
               }
 
@@ -41662,6 +41663,8 @@ var CommonChat = function () {
               };
 
               window.localREC.onstop = function () {
+                window.soundRecord.play();
+
                 if (!window.cancelRec) {
                   var blob = new Blob(blobs, {
                     type: 'audio/webm'
@@ -41676,22 +41679,23 @@ var CommonChat = function () {
                 }
               };
 
+              window.soundRecord.play();
               window.localREC.start();
-              _context3.next = 17;
+              _context3.next = 18;
               break;
 
-            case 14:
-              _context3.prev = 14;
+            case 15:
+              _context3.prev = 15;
               _context3.t0 = _context3["catch"](1);
               // console.log(error);
               outputWarnMessage('Không thể ghi âm!');
 
-            case 17:
+            case 18:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[1, 14]]);
+      }, _callee3, null, [[1, 15]]);
     }));
     return _recorderVoice.apply(this, arguments);
   }
@@ -42049,6 +42053,7 @@ var Header = function () {
   var page = 1;
   var hasNoti = true;
   var allowLoadNotify = true;
+  var soundNotify = new Audio('/sounds/notification.mp3');
   $(document).on('click', '.noti-mana-btn', function (e) {
     e.preventDefault();
     var $parent = $(this).parents('.notify-item');
@@ -42240,6 +42245,7 @@ var Header = function () {
   });
   window.socket.on('msg-hasNotification', function (_ref4) {
     var notification = _ref4.notification;
+    soundNotify.play();
     var html = "\n      <div class=\"notify-item ps-rv un-read\" data-id=\"".concat(notification._id, "\">\n        <div class=\"noti-box ps-rv\">\n          <a class=\"ps-as\" href=\"").concat(notification.link, "/?idnotify=").concat(notification._id, "\">\n            <span class=\"sr-only\">").concat(notification.content, "</span>\n          </a>\n          <div class=\"wrap-noti-box p-2 d-flex align-items-center\">\n            <div class=\"noti-img\"><img class=\"rounded-circle avatar\" src=\"").concat(notification.image, "\" alt=\"oh-chat\" /></div>\n            <div class=\"ml-3\">\n              <span class=\"noti-content\">").concat(notification.content, "</span>\n              <small class=\"noti-time\">v\xE0i gi\xE2y tr\u01B0\u1EDBc</small></div>\n            </div>\n          </div>\n          <button class=\"noti-mana-btn btn btn-white btn-icon small-btn\">\n            <span class=\"icomoon icon-dots-three-horizontal\"></span>\n          </button>\n          <div class=\"noti-mana-box d-none\">\n            <div class=\"noti-mana-item d-flex align-items-center toggle-status-notify\">\n              <span class=\"icomoon icon-check-circle-o\"></span><span>\u0110\xE1nh d\u1EA5u l\xE0 \u0111\xE3 \u0111\u1ECDc</span>\n            </div>\n            <div class=\"noti-mana-item d-flex align-items-center del-status-notify\">\n              <span class=\"icomoon icon-times-circle-o\"></span>\n              <span>G\u1EE1 b\u1ECF th\xF4ng b\xE1o n\xE0y</span>\n              <button class=\"btn btn-icon btn-red confirm-del-noti d-none\"><span class=\"icomoon icon-checkmark\"></span></button>\n            </div>\n          </div>\n      </div>\n    ");
     var $box = $('#notify-drop');
 
@@ -42320,8 +42326,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-console.log('page home messenger');
+ // console.log('page home messenger');
 
 /***/ }),
 /* 506 */
@@ -42351,7 +42356,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, meId, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, disableSendRec, moveToTop, sendFile, sendFileSingle, tokenSend, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
+  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, meId, titleSite, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, disableSendRec, moveToTop, sendFile, sendFileSingle, soundMessage, tokenSend, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
   return regeneratorRuntime.wrap(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
@@ -42377,7 +42382,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           methodSend = $('#method-send').text();
           isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false;
           directiveChatText = $('#directive-chat-text').text();
-          meId = $('#member-id').text(); // let isTalking = false
+          meId = $('#member-id').text();
+          titleSite = document.title; // let isTalking = false
 
           speakFor = '';
           textNotify = '';
@@ -42394,7 +42400,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 112;
+            _context11.next = 115;
             break;
           }
 
@@ -42482,13 +42488,13 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                           $(ele).parents('.message').remove();
                         }
                       });
-                      _context9.next = 21;
+                      _context9.next = 20;
                       break;
 
                     case 13:
                       _context9.prev = 13;
                       _context9.t0 = _context9["catch"](3);
-                      console.dir(_context9.t0);
+                      // console.dir(error);
                       _$msgFile = $(".msg-file[data-session=\"".concat(idSession, "\"]"));
 
                       _$msgFile.parents('.message').remove();
@@ -42500,7 +42506,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                         window.outputErrorMessage(_context9.t0.response.data.message);
                       }
 
-                    case 21:
+                    case 20:
                     case "end":
                       return _context9.stop();
                   }
@@ -42606,6 +42612,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             };
           }();
 
+          soundMessage = new Audio('/sounds/message.mp3');
           tokenSend = msgForm.elements._token.value; // scroll bottom
 
           chatMain.scrollTop = chatMain.scrollHeight;
@@ -42616,7 +42623,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             status: true
           });
           $(".friend-item[data-id=\"".concat(friendIdChatting, "\"] .last-msg")).removeClass('un-read');
-          _context11.prev = 42;
+          _context11.prev = 44;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -42769,31 +42776,31 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context11.next = 60;
+          _context11.next = 62;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 60:
+        case 62:
           voices = _context11.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context11.next = 64;
+            _context11.next = 66;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 64:
+        case 66:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context11.next = 76;
+            _context11.next = 78;
             break;
           }
 
@@ -42802,29 +42809,29 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           });
 
           if (!vVN) {
-            _context11.next = 71;
+            _context11.next = 73;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context11.next = 76;
+          _context11.next = 78;
           break;
 
-        case 71:
+        case 73:
           if (!vEN) {
-            _context11.next = 75;
+            _context11.next = 77;
             break;
           }
 
           voice = vEN;
-          _context11.next = 76;
+          _context11.next = 78;
           break;
 
-        case 75:
+        case 77:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 76:
+        case 78:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -42832,6 +42839,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             if (speakFor === 'confirm') {
               beConfirmed = false;
               recognitionFor = 'confirm';
+              window.soundRecord.play();
               recognition.start();
             } else {// speakFor = ''
             }
@@ -42845,9 +42853,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
             recognitionHold.onresult = function (event) {
               var last = event.results.length - 1;
-              var command = event.results[last][0].transcript;
-              console.log(command);
-              console.log($('.send-rec').hasClass('disabled'));
+              var command = event.results[last][0].transcript; // console.log(command);
+              // console.log($('.send-rec').hasClass('disabled'));
 
               if (!$('.send-rec').hasClass('disabled')) {
                 var _last = event.results.length - 1;
@@ -42855,15 +42862,14 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                 var _command = event.results[_last][0].transcript;
 
                 if (_command) {
-                  console.log(_command);
-
+                  // console.log(command);
                   if (_command.toLowerCase() === directiveChatText.toLowerCase()) {
                     recognitionFor = 'msg';
                     disableSendRec();
                     isHoldStatus = false;
                     recognitionHold.stop();
-                    recognition.start();
-                    console.log('start');
+                    window.soundRecord.play();
+                    recognition.start(); // console.log('start');
                   }
                 }
               }
@@ -42899,6 +42905,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                   isHoldStatus = false;
                 }
 
+                window.soundRecord.play();
                 recognition.start();
               }
             });
@@ -42925,15 +42932,15 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
           }
 
-          _context11.next = 86;
+          _context11.next = 88;
           break;
 
-        case 83:
-          _context11.prev = 83;
-          _context11.t0 = _context11["catch"](42);
+        case 85:
+          _context11.prev = 85;
+          _context11.t0 = _context11["catch"](44);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 86:
+        case 88:
           msgForm.addEventListener('submit', /*#__PURE__*/function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
               var inputMsg;
@@ -43028,8 +43035,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
               var files = e.dataTransfer.files; // console.log(files);
 
               if (files.length) {
-                var html = '';
-                console.log(files);
+                var html = ''; // console.log(files);
 
                 _toConsumableArray(files).forEach(function (file) {
                   html += "\n              <div class=\"file-item\">\n                <span>".concat(file.name, "</span>\n                <button class=\"btn btn-icon btn-red remove-up-file\"><span class=\"icomoon icon-close\"></span></button>\n              </div>\n            ");
@@ -43407,11 +43413,10 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                 while (1) {
                   switch (_context8.prev = _context8.next) {
                     case 0:
-                      console.log(e.detail.blob);
-                      _context8.next = 3;
+                      _context8.next = 2;
                       return sendFileSingle(new File([e.detail.blob], 'recorder.webm'), true);
 
-                    case 3:
+                    case 2:
                     case "end":
                       return _context8.stop();
                   }
@@ -43422,11 +43427,30 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             return function (_x2) {
               return _ref9.apply(this, arguments);
             };
-          }()); // receive msg obj from server
+          }());
+          window.addEventListener('focus', function () {
+            if (window.timeIdTitle) {
+              clearInterval(window.timeIdTitle);
+              document.title = titleSite;
+              window.timeIdTitle = null;
+            }
+          }); // receive msg obj from server
 
           window.socket.on('msg-messenger', function (_ref10) {
             var senderId = _ref10.senderId,
                 msgObj = _ref10.msg;
+
+            if (!document.hasFocus()) {
+              soundMessage.play();
+              window.timeIdTitle = setInterval(function () {
+                if (document.title === titleSite) {
+                  document.title = "".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 tin nh\u1EAFn cho b\u1EA1n");
+                } else {
+                  document.title = titleSite;
+                }
+              }, 1500);
+            }
+
             var $itemFri = $(".friend-item[data-id=\"".concat(senderId, "\"]"));
 
             if (friendIdChatting === senderId) {
@@ -43447,9 +43471,9 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
 
             if (msgObj.type && msgObj.type === 'file') {
-              $itemFri.find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
+              $itemFri.find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>v\xE0i gi\xE2y</small>"));
             } else {
-              $itemFri.find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+              $itemFri.find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>v\xE0i gi\xE2y</small>"));
             }
           }); // receive signal friend is online
 
@@ -43495,12 +43519,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           });
 
-        case 112:
+        case 115:
         case "end":
           return _context11.stop();
       }
     }
-  }, _callee11, null, [[42, 83]]);
+  }, _callee11, null, [[44, 85]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);

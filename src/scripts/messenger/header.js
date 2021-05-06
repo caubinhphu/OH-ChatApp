@@ -5,6 +5,8 @@ const Header = (() => {
   let hasNoti = true
   let allowLoadNotify = true
 
+  const soundNotify = new Audio('/sounds/notification.mp3')
+
   $(document).on('click', '.noti-mana-btn', function(e) {
     e.preventDefault()
     const $parent = $(this).parents('.notify-item')
@@ -140,6 +142,7 @@ const Header = (() => {
   })
 
   window.socket.on('msg-hasNotification', ({ notification }) => {
+    soundNotify.play()
     const html = `
       <div class="notify-item ps-rv un-read" data-id="${notification._id}">
         <div class="noti-box ps-rv">

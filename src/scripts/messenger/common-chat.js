@@ -44,6 +44,8 @@ const CommonChat = (() => {
 
   const meId = $('#member-id').text()
 
+  window.soundRecord = new Audio('/sounds/record.mp3')
+
   // is page chat
   if (isPageChat && msgForm) {
     // scroll bottom
@@ -614,11 +616,11 @@ const CommonChat = (() => {
         scrollBottomChatBox()
         if (className !== 'wrap-msg-file') {
           $friItem.find('.last-msg').html(`
-            <small>Bạn: ${ msg }</small><small>1 phút</small>
+            <small>Bạn: ${ msg }</small><small>vài giây</small>
           `)
         } else {
           $friItem.find('.last-msg').html(`
-            <small>Bạn đã gửi 1 đính kèm</small><small>1 phút</small>
+            <small>Bạn đã gửi 1 đính kèm</small><small>vài giây</small>
           `)
         }
         
@@ -633,7 +635,7 @@ const CommonChat = (() => {
         }, false)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
-          <small>${ msg }</small><small>1 phút</small>
+          <small>${ msg }</small><small>vài giây</small>
         `).removeClass('un-read')
       }
     }
@@ -877,6 +879,7 @@ const CommonChat = (() => {
         window.localREC = new MediaRecorder(window.voiceRECStream, {mimeType: 'audio/webm;codecs=opus'});
         window.localREC.ondataavailable = (e) => blobs.push(e.data);
         window.localREC.onstop = () => {
+          window.soundRecord.play()
           if (!window.cancelRec) {
             const blob = new Blob(blobs, {type: 'audio/webm'});
             const event = new CustomEvent('endRecorderVoice', {
@@ -886,6 +889,7 @@ const CommonChat = (() => {
             window.dispatchEvent(event)
           }
         }
+        window.soundRecord.play()
         window.localREC.start();
       } catch (error) {
         // console.log(error);

@@ -21,6 +21,8 @@ const Messenger = (async () => {
   const isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false
   const directiveChatText = $('#directive-chat-text').text()
 
+  const titleSite = document.title
+
   // let isTalking = false
   let speakFor = ''
   let textNotify = ''
@@ -39,6 +41,7 @@ const Messenger = (async () => {
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
   const meId = $('#member-id').text()
+  const soundMessage = new Audio('/sounds/message.mp3')
 
   try {
     const grammar = '#JSGF V1.0;'
@@ -203,6 +206,7 @@ const Messenger = (async () => {
       if (speakFor === 'confirm') {
         beConfirmed = false
         recognitionFor = 'confirm'
+        window.soundRecord.play()
         recognition.start()
       } else {
         // speakFor = ''
@@ -229,6 +233,7 @@ const Messenger = (async () => {
               disableSendRec()
               isHoldStatus = false
               recognitionHold.stop()
+              window.soundRecord.play()
               recognition.start()
               // console.log('start');
             }
@@ -282,6 +287,7 @@ const Messenger = (async () => {
             recognitionHold.stop()
             isHoldStatus = false
           }
+          window.soundRecord.play()
           recognition.start()
         }
       })
@@ -331,6 +337,16 @@ const Messenger = (async () => {
 
   // receive msg obj from server
   window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
+    if (!document.hasFocus()) {
+      soundMessage.play()
+      window.timeIdTitle = setInterval(() => {
+        if (document.title === titleSite) {
+          document.title = `${msgObj.username} đã gửi 1 tin nhắn cho bạn`
+        } else {
+          document.title = titleSite
+        }
+      }, 1500);
+    }
     const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
     if ($(`.popup-chat-mini[data-id=${senderId}]`).length) {
       const $popup = $(`.popup-chat-mini[data-id=${senderId}]`)
@@ -870,6 +886,14 @@ const Messenger = (async () => {
     $popup.find('.video-friend-btn').on('click', () => {
       window.callFriend($popup.attr('data-id'), 'video')
     });
+
+    window.addEventListener('focus', () => {
+      if (window.timeIdTitle) {
+        clearInterval(window.timeIdTitle)
+        document.title = titleSite
+        window.timeIdTitle = null
+      }
+    })
   }
 
   // function create call msg local mini chat

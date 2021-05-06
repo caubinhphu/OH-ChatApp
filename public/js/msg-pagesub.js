@@ -40814,7 +40814,8 @@ var CommonChat = function () {
   var classCallVideo = ' call-video';
   var classCallMissedVideo = ' call-missed-video';
   var msgForm = document.sendMsgForm;
-  var meId = $('#member-id').text(); // is page chat
+  var meId = $('#member-id').text();
+  window.soundRecord = new Audio('/sounds/record.mp3'); // is page chat
 
   if (isPageChat && msgForm) {
     // scroll bottom
@@ -41330,9 +41331,9 @@ var CommonChat = function () {
         scrollBottomChatBox();
 
         if (className !== 'wrap-msg-file') {
-          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>1 ph\xFAt</small>\n          "));
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n          "));
         } else {
-          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>\n          ");
+          $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>v\xE0i gi\xE2y</small>\n          ");
         }
       } else {
         outputMessage({
@@ -41344,7 +41345,7 @@ var CommonChat = function () {
           timeCall: timeCall
         }, false);
         scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        ")).removeClass('un-read');
+        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n        ")).removeClass('un-read');
       }
     }
   }
@@ -41632,7 +41633,7 @@ var CommonChat = function () {
           switch (_context3.prev = _context3.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 17;
+                _context3.next = 18;
                 break;
               }
 
@@ -41662,6 +41663,8 @@ var CommonChat = function () {
               };
 
               window.localREC.onstop = function () {
+                window.soundRecord.play();
+
                 if (!window.cancelRec) {
                   var blob = new Blob(blobs, {
                     type: 'audio/webm'
@@ -41676,22 +41679,23 @@ var CommonChat = function () {
                 }
               };
 
+              window.soundRecord.play();
               window.localREC.start();
-              _context3.next = 17;
+              _context3.next = 18;
               break;
 
-            case 14:
-              _context3.prev = 14;
+            case 15:
+              _context3.prev = 15;
               _context3.t0 = _context3["catch"](1);
               // console.log(error);
               outputWarnMessage('Không thể ghi âm!');
 
-            case 17:
+            case 18:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[1, 14]]);
+      }, _callee3, null, [[1, 15]]);
     }));
     return _recorderVoice.apply(this, arguments);
   }
@@ -42049,6 +42053,7 @@ var Header = function () {
   var page = 1;
   var hasNoti = true;
   var allowLoadNotify = true;
+  var soundNotify = new Audio('/sounds/notification.mp3');
   $(document).on('click', '.noti-mana-btn', function (e) {
     e.preventDefault();
     var $parent = $(this).parents('.notify-item');
@@ -42240,6 +42245,7 @@ var Header = function () {
   });
   window.socket.on('msg-hasNotification', function (_ref4) {
     var notification = _ref4.notification;
+    soundNotify.play();
     var html = "\n      <div class=\"notify-item ps-rv un-read\" data-id=\"".concat(notification._id, "\">\n        <div class=\"noti-box ps-rv\">\n          <a class=\"ps-as\" href=\"").concat(notification.link, "/?idnotify=").concat(notification._id, "\">\n            <span class=\"sr-only\">").concat(notification.content, "</span>\n          </a>\n          <div class=\"wrap-noti-box p-2 d-flex align-items-center\">\n            <div class=\"noti-img\"><img class=\"rounded-circle avatar\" src=\"").concat(notification.image, "\" alt=\"oh-chat\" /></div>\n            <div class=\"ml-3\">\n              <span class=\"noti-content\">").concat(notification.content, "</span>\n              <small class=\"noti-time\">v\xE0i gi\xE2y tr\u01B0\u1EDBc</small></div>\n            </div>\n          </div>\n          <button class=\"noti-mana-btn btn btn-white btn-icon small-btn\">\n            <span class=\"icomoon icon-dots-three-horizontal\"></span>\n          </button>\n          <div class=\"noti-mana-box d-none\">\n            <div class=\"noti-mana-item d-flex align-items-center toggle-status-notify\">\n              <span class=\"icomoon icon-check-circle-o\"></span><span>\u0110\xE1nh d\u1EA5u l\xE0 \u0111\xE3 \u0111\u1ECDc</span>\n            </div>\n            <div class=\"noti-mana-item d-flex align-items-center del-status-notify\">\n              <span class=\"icomoon icon-times-circle-o\"></span>\n              <span>G\u1EE1 b\u1ECF th\xF4ng b\xE1o n\xE0y</span>\n              <button class=\"btn btn-icon btn-red confirm-del-noti d-none\"><span class=\"icomoon icon-checkmark\"></span></button>\n            </div>\n          </div>\n      </div>\n    ");
     var $box = $('#notify-drop');
 
@@ -43954,9 +43960,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_output_message__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(348);
 /* harmony import */ var _global_emoji__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(497);
 /* harmony import */ var _global_chat_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(502);
-/* harmony import */ var _messenger_profile__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(510);
-/* harmony import */ var _messenger_setting__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(513);
-/* harmony import */ var _messenger_common_chat__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(498);
+/* harmony import */ var _messenger_common_chat__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(498);
+/* harmony import */ var _messenger_profile__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(510);
+/* harmony import */ var _messenger_setting__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(513);
 /* harmony import */ var _messenger_messenger__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(514);
 /* harmony import */ var _messenger_header__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(501);
 /* harmony import */ var _messenger_member__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(515);
@@ -43975,8 +43981,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-console.log('page sub messenger');
+ // console.log('page sub messenger');
 
 /***/ }),
 /* 509 */
@@ -45133,6 +45138,7 @@ var Setting = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _
 
                   if (!$(this).hasClass('disabled')) {
                     $(this).addClass('disabled');
+                    window.soundRecord.play();
                     recognition.start();
                   }
                 });
@@ -45220,7 +45226,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, meId, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
+  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, titleSite, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, meId, soundMessage, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
 
   return regeneratorRuntime.wrap(function _callee15$(_context15) {
     while (1) {
@@ -45843,8 +45849,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       $popup.find('.video-friend-btn').on('click', function () {
                         window.callFriend($popup.attr('data-id'), 'video');
                       });
+                      window.addEventListener('focus', function () {
+                        if (window.timeIdTitle) {
+                          clearInterval(window.timeIdTitle);
+                          document.title = titleSite;
+                          window.timeIdTitle = null;
+                        }
+                      });
 
-                    case 24:
+                    case 25:
                     case "end":
                       return _context11.stop();
                   }
@@ -45890,7 +45903,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
           methodSend = $('#method-send').text();
           isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false;
-          directiveChatText = $('#directive-chat-text').text(); // let isTalking = false
+          directiveChatText = $('#directive-chat-text').text();
+          titleSite = document.title; // let isTalking = false
 
           speakFor = '';
           textNotify = '';
@@ -45906,7 +45920,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
           meId = $('#member-id').text();
-          _context15.prev = 41;
+          soundMessage = new Audio('/sounds/message.mp3');
+          _context15.prev = 43;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -46058,31 +46073,31 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context15.next = 59;
+          _context15.next = 61;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 59:
+        case 61:
           voices = _context15.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context15.next = 63;
+            _context15.next = 65;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 63:
+        case 65:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context15.next = 75;
+            _context15.next = 77;
             break;
           }
 
@@ -46091,29 +46106,29 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           });
 
           if (!vVN) {
-            _context15.next = 70;
+            _context15.next = 72;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context15.next = 75;
+          _context15.next = 77;
           break;
 
-        case 70:
+        case 72:
           if (!vEN) {
-            _context15.next = 74;
+            _context15.next = 76;
             break;
           }
 
           voice = vEN;
-          _context15.next = 75;
+          _context15.next = 77;
           break;
 
-        case 74:
+        case 76:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 75:
+        case 77:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -46121,6 +46136,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             if (speakFor === 'confirm') {
               beConfirmed = false;
               recognitionFor = 'confirm';
+              window.soundRecord.play();
               recognition.start();
             } else {// speakFor = ''
             }
@@ -46148,6 +46164,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                     disableSendRec();
                     isHoldStatus = false;
                     recognitionHold.stop();
+                    window.soundRecord.play();
                     recognition.start(); // console.log('start');
                   }
                 }
@@ -46197,6 +46214,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                   isHoldStatus = false;
                 }
 
+                window.soundRecord.play();
                 recognition.start();
               }
             });
@@ -46225,15 +46243,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             });
           }
 
-          _context15.next = 86;
+          _context15.next = 88;
           break;
 
-        case 83:
-          _context15.prev = 83;
-          _context15.t0 = _context15["catch"](41);
+        case 85:
+          _context15.prev = 85;
+          _context15.t0 = _context15["catch"](43);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 86:
+        case 88:
           // receive msg obj from server
           window.socket.on('msg-messenger', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
@@ -46244,10 +46262,22 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                   switch (_context.prev = _context.next) {
                     case 0:
                       senderId = _ref2.senderId, msgObj = _ref2.msg, token = _ref2.token;
+
+                      if (!document.hasFocus()) {
+                        soundMessage.play();
+                        window.timeIdTitle = setInterval(function () {
+                          if (document.title === titleSite) {
+                            document.title = "".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 tin nh\u1EAFn cho b\u1EA1n");
+                          } else {
+                            document.title = titleSite;
+                          }
+                        }, 1500);
+                      }
+
                       activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
 
                       if (!$(".popup-chat-mini[data-id=".concat(senderId, "]")).length) {
-                        _context.next = 10;
+                        _context.next = 11;
                         break;
                       }
 
@@ -46278,15 +46308,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         outputPreviewMsg($popup, msgObj.message);
                       }
 
-                      _context.next = 15;
+                      _context.next = 16;
                       break;
 
-                    case 10:
+                    case 11:
                       _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                      _context.next = 13;
+                      _context.next = 14;
                       return createMiniPopup(senderId, msgObj, token, _classIsActive);
 
-                    case 13:
+                    case 14:
                       window.socket.emit('msg-statusRead', {
                         senderId: senderId,
                         receiverId: meId,
@@ -46294,7 +46324,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       });
                       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 
-                    case 15:
+                    case 16:
                     case "end":
                       return _context.stop();
                   }
@@ -46638,12 +46668,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-        case 104:
+        case 106:
         case "end":
           return _context15.stop();
       }
     }
-  }, _callee15, null, [[41, 83]]);
+  }, _callee15, null, [[43, 85]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Messenger);

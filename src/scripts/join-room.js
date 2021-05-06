@@ -5,4 +5,4 @@ import './global/loading'
 import './global/output-message'
 import './room/join-room'
 
-console.log('page join room');
+// console.log('page join room');

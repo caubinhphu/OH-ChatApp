@@ -71,6 +71,7 @@ const Setting = (async () => {
           e.preventDefault()
           if (!$(this).hasClass('disabled')) {
             $(this).addClass('disabled')
+            window.soundRecord.play()
             recognition.start()
           }
         })

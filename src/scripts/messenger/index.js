@@ -26,6 +26,7 @@ const Index = (async () => {
   const directiveChatText = $('#directive-chat-text').text()
 
   const meId = $('#member-id').text()
+  const titleSite = document.title
 
   // let isTalking = false
   let speakFor = ''
@@ -45,6 +46,8 @@ const Index = (async () => {
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
   if (msgForm) {
+    const soundMessage = new Audio('/sounds/message.mp3')
+
     const tokenSend = msgForm.elements._token.value
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
@@ -225,6 +228,7 @@ const Index = (async () => {
         if (speakFor === 'confirm') {
           beConfirmed = false
           recognitionFor = 'confirm'
+          window.soundRecord.play()
           recognition.start()
         } else {
           // speakFor = ''
@@ -240,20 +244,21 @@ const Index = (async () => {
         recognitionHold.onresult = function(event) {
           const last = event.results.length - 1;
           const command = event.results[last][0].transcript;
-          console.log(command);
-          console.log($('.send-rec').hasClass('disabled'));
+          // console.log(command);
+          // console.log($('.send-rec').hasClass('disabled'));
           if (!$('.send-rec').hasClass('disabled')) {
             const last = event.results.length - 1;
             const command = event.results[last][0].transcript;
             if (command) {
-              console.log(command);
+              // console.log(command);
               if (command.toLowerCase() === directiveChatText.toLowerCase()) {
                 recognitionFor = 'msg'
                 disableSendRec()
                 isHoldStatus = false
                 recognitionHold.stop()
+                window.soundRecord.play()
                 recognition.start()
-                console.log('start');
+                // console.log('start');
               }
             }
           }
@@ -292,6 +297,7 @@ const Index = (async () => {
               recognitionHold.stop()
               isHoldStatus = false
             }
+            window.soundRecord.play()
             recognition.start()
           }
         })
@@ -414,7 +420,7 @@ const Index = (async () => {
         // console.log(files);
         if (files.length) {
           let html = '';
-          console.log(files);
+          // console.log(files);
           [...files].forEach((file) => {
             html += `
               <div class="file-item">
@@ -694,12 +700,30 @@ const Index = (async () => {
     }
 
     $(window).on('endRecorderVoice', async (e) => {
-      console.log(e.detail.blob);
+      // console.log(e.detail.blob);
       await sendFileSingle(new File([e.detail.blob], 'recorder.webm'), true)
+    })
+
+    window.addEventListener('focus', () => {
+      if (window.timeIdTitle) {
+        clearInterval(window.timeIdTitle)
+        document.title = titleSite
+        window.timeIdTitle = null
+      }
     })
 
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
+      if (!document.hasFocus()) {
+        soundMessage.play()
+        window.timeIdTitle = setInterval(() => {
+          if (document.title === titleSite) {
+            document.title = `${msgObj.username} đã gửi 1 tin nhắn cho bạn`
+          } else {
+            document.title = titleSite
+          }
+        }, 1500);
+      }
       const $itemFri = $(`.friend-item[data-id="${senderId}"]`)
       if (friendIdChatting === senderId) {
         // output message
@@ -721,11 +745,11 @@ const Index = (async () => {
       })
       if (msgObj.type && msgObj.type === 'file') {
         $itemFri.find('.last-msg').html(
-          `<small>${msgObj.username} đã gửi 1 đính kèm</small><small>1 phút</small>`
+          `<small>${msgObj.username} đã gửi 1 đính kèm</small><small>vài giây</small>`
         )
       } else {
         $itemFri.find('.last-msg').html(
-          `<small>${msgObj.message}</small><small>1 phút</small>`
+          `<small>${msgObj.message}</small><small>vài giây</small>`
         )
       }
     });
@@ -832,7 +856,7 @@ const Index = (async () => {
           }
         })
       } catch (error) {
-        console.dir(error);
+        // console.dir(error);
         const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
         $msgFile.parents('.message').remove()
         $('#send-file').val('')

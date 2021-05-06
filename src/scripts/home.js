@@ -4,4 +4,4 @@ import './global/loading'
 import './global/output-message'
 import './room/home'
 
-console.log('page home');
+// console.log('page home');

@@ -9,4 +9,4 @@ import './room/common-chat-room'
 import './room/chat-room-host'
 import './room/common-chat-room-video'
 
-console.log('page chat room host');
+// console.log('page chat room host');

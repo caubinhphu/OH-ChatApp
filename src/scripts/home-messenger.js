@@ -8,4 +8,4 @@ import './messenger/common-chat'
 import './messenger/header'
 import './messenger/index'
 
-console.log('page home messenger');
+// console.log('page home messenger');
