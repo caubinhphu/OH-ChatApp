@@ -180,6 +180,24 @@ module.exports.onNotification = async function (io, { notification }) {
   }
 }
 
+// receive signal has notification
+module.exports.onStatusRead = async function (io, { senderId, receiverId, status }) {
+  try {
+    const member = await Member.findById(receiverId)
+    if (member) {
+      const index = member.friends.findIndex(fr => fr._id.toString() === senderId)
+      if (index !== -1) {
+        member.friends[index].beRead = status
+        await member.save()
+      }
+    } else {
+      this.emit('error', 'Thành viên không tồn tại');
+    }
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
+
 // receive signal offer call peer of caller => send to receiver
 module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal, typeCall }) {
   try {

@@ -41344,7 +41344,7 @@ var CommonChat = function () {
           timeCall: timeCall
         }, false);
         scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
+        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        ")).removeClass('un-read');
       }
     }
   }
@@ -42351,7 +42351,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, disableSendRec, moveToTop, sendFile, sendFileSingle, tokenSend, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
+  var chatMain, dragZone, msgForm, hasMessenger, currentPageChat, allowLoadOld, oldSearchFriRes, classScBottom, finalFiles, isDragging, isDragZone, fileTake, holdRec, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, meId, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, disableSendRec, moveToTop, sendFile, sendFileSingle, tokenSend, friendIdChatting, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN;
   return regeneratorRuntime.wrap(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
@@ -42376,7 +42376,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           isChatMicVoice = $('#chat-mic-voice').text() === 'true' ? true : false;
           methodSend = $('#method-send').text();
           isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false;
-          directiveChatText = $('#directive-chat-text').text(); // let isTalking = false
+          directiveChatText = $('#directive-chat-text').text();
+          meId = $('#member-id').text(); // let isTalking = false
 
           speakFor = '';
           textNotify = '';
@@ -42393,7 +42394,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 109;
+            _context11.next = 112;
             break;
           }
 
@@ -42609,7 +42610,13 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
           chatMain.scrollTop = chatMain.scrollHeight;
           friendIdChatting = $('#main-right').attr('data-id');
-          _context11.prev = 39;
+          window.socket.emit('msg-statusRead', {
+            senderId: friendIdChatting,
+            receiverId: meId,
+            status: true
+          });
+          $(".friend-item[data-id=\"".concat(friendIdChatting, "\"] .last-msg")).removeClass('un-read');
+          _context11.prev = 42;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -42762,31 +42769,31 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context11.next = 57;
+          _context11.next = 60;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 57:
+        case 60:
           voices = _context11.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context11.next = 61;
+            _context11.next = 64;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 61:
+        case 64:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context11.next = 73;
+            _context11.next = 76;
             break;
           }
 
@@ -42795,29 +42802,29 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           });
 
           if (!vVN) {
-            _context11.next = 68;
+            _context11.next = 71;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context11.next = 73;
+          _context11.next = 76;
           break;
 
-        case 68:
+        case 71:
           if (!vEN) {
-            _context11.next = 72;
+            _context11.next = 75;
             break;
           }
 
           voice = vEN;
-          _context11.next = 73;
+          _context11.next = 76;
           break;
 
-        case 72:
+        case 75:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 73:
+        case 76:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -42918,15 +42925,15 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
           }
 
-          _context11.next = 83;
+          _context11.next = 86;
           break;
 
-        case 80:
-          _context11.prev = 80;
-          _context11.t0 = _context11["catch"](39);
+        case 83:
+          _context11.prev = 83;
+          _context11.t0 = _context11["catch"](42);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 83:
+        case 86:
           msgForm.addEventListener('submit', /*#__PURE__*/function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
               var inputMsg;
@@ -43420,20 +43427,29 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           window.socket.on('msg-messenger', function (_ref10) {
             var senderId = _ref10.senderId,
                 msgObj = _ref10.msg;
+            var $itemFri = $(".friend-item[data-id=\"".concat(senderId, "\"]"));
 
             if (friendIdChatting === senderId) {
               // output message
               window.outputMessage(msgObj); // scroll bottom
 
               chatMain.scrollTop = chatMain.scrollHeight;
+              $itemFri.find('.last-msg').removeClass('un-read');
+            } else {
+              $itemFri.find('.last-msg').addClass('un-read');
             }
 
             moveToTop(senderId, friendIdChatting === senderId);
+            window.socket.emit('msg-statusRead', {
+              senderId: senderId,
+              receiverId: meId,
+              status: friendIdChatting === senderId
+            });
 
             if (msgObj.type && msgObj.type === 'file') {
-              $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
+              $itemFri.find('.last-msg').html("<small>".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>1 ph\xFAt</small>"));
             } else {
-              $(".friend-item[data-id=\"".concat(senderId, "\"]")).find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
+              $itemFri.find('.last-msg').html("<small>".concat(msgObj.message, "</small><small>1 ph\xFAt</small>"));
             }
           }); // receive signal friend is online
 
@@ -43479,12 +43495,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           });
 
-        case 109:
+        case 112:
         case "end":
           return _context11.stop();
       }
     }
-  }, _callee11, null, [[39, 80]]);
+  }, _callee11, null, [[42, 83]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);

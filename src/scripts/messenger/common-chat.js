@@ -634,7 +634,7 @@ const CommonChat = (() => {
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
           <small>${ msg }</small><small>1 phút</small>
-        `)
+        `).removeClass('un-read')
       }
     }
   }

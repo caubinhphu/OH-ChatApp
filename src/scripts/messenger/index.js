@@ -25,6 +25,8 @@ const Index = (async () => {
   const isChatAssistant = $('#is-chat-ass').text() === 'true' ? true : false
   const directiveChatText = $('#directive-chat-text').text()
 
+  const meId = $('#member-id').text()
+
   // let isTalking = false
   let speakFor = ''
   let textNotify = ''
@@ -48,6 +50,14 @@ const Index = (async () => {
     chatMain.scrollTop = chatMain.scrollHeight;
 
     const friendIdChatting = $('#main-right').attr('data-id')
+
+    window.socket.emit('msg-statusRead', {
+      senderId: friendIdChatting,
+      receiverId: meId,
+      status: true
+    })
+
+    $(`.friend-item[data-id="${friendIdChatting}"] .last-msg`).removeClass('un-read')
 
     try {
       const grammar = '#JSGF V1.0;'
@@ -690,20 +700,31 @@ const Index = (async () => {
 
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
+      const $itemFri = $(`.friend-item[data-id="${senderId}"]`)
       if (friendIdChatting === senderId) {
         // output message
         window.outputMessage(msgObj);
 
         // scroll bottom
         chatMain.scrollTop = chatMain.scrollHeight;
+
+        $itemFri.find('.last-msg').removeClass('un-read')
+      } else {
+        $itemFri.find('.last-msg').addClass('un-read')
       }
       moveToTop(senderId, friendIdChatting === senderId)
+
+      window.socket.emit('msg-statusRead', {
+        senderId,
+        receiverId: meId,
+        status: friendIdChatting === senderId
+      })
       if (msgObj.type && msgObj.type === 'file') {
-        $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
+        $itemFri.find('.last-msg').html(
           `<small>${msgObj.username} đã gửi 1 đính kèm</small><small>1 phút</small>`
         )
       } else {
-        $(`.friend-item[data-id="${senderId}"]`).find('.last-msg').html(
+        $itemFri.find('.last-msg').html(
           `<small>${msgObj.message}</small><small>1 phút</small>`
         )
       }

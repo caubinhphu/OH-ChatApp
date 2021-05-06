@@ -131,7 +131,7 @@ module.exports.getIndex = async (req, res, next) => {
       });
     if (member) {
       const friends = member.getFriends();
-      console.log(friends);
+      // console.log(friends);
       if (friends.length > 0) {
         res.redirect(`/messenger/chat/${friends[0].url ? friends[0].url : friends[0].id}`);
       } else {
@@ -953,7 +953,7 @@ module.exports.putLanguageAssistant = async (req, res, next) => {
 module.exports.putMicChatMethod = async (req, res, next) => {
   // get info change email
   const { method, methodSend, isChatAss, directiveChatText } = req.body;
-  console.log(method, methodSend, isChatAss, directiveChatText);
+  // console.log(method, methodSend, isChatAss, directiveChatText);
   const meds = {
     'confirm-popup' : 1,
     'confirm-voice': 1,

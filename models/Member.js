@@ -58,7 +58,7 @@ const memberSchema = mongoose.Schema({
       type: mongoose.Types.ObjectId,
       ref: 'GroupMessage',
     },
-    beRead: {
+    beRead: { // member be read msg of friend
       type: Boolean,
       default: false
     },
@@ -185,7 +185,8 @@ memberSchema.methods.getFriendsHaveMessage = function () {
       avatar: friend._id.avatar,
       status: friend._id.status,
       messages: friend.groupMessageId.messages,
-      latedMsgTime: friend.groupMessageId.messages.length ? friend.groupMessageId.messages[0].time : new Date()
+      latedMsgTime: friend.groupMessageId.messages.length ? friend.groupMessageId.messages[0].time : new Date(),
+      beRead: friend.beRead
     }
   }).sort((a, b) => {
     return b.latedMsgTime - a.latedMsgTime

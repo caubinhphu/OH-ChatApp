@@ -130,6 +130,11 @@ const socket = function (io) {
       messengerController.onNotification.bind(this, io, data)()
     })
 
+    // receive signal status read msg
+    socket.on('msg-statusRead', function(data) {
+      messengerController.onStatusRead.bind(this, io, data)()
+    })
+
     // ------------------------ Text -----------------------------
     // receive event join text from client
     socket.on('join-text', utilitiesController.onJoinText)

@@ -38,6 +38,8 @@ const Messenger = (async () => {
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
+  const meId = $('#member-id').text()
+
   try {
     const grammar = '#JSGF V1.0;'
     const recognition = new SpeechRecognition();
@@ -349,12 +351,22 @@ const Messenger = (async () => {
         } else {
           window.scrollBottomChatBox($chatMain)
         }
+        window.socket.emit('msg-statusRead', {
+          senderId,
+          receiverId: meId,
+          status: classIsActive === 'is-active'
+        })
       } else if ($popup.hasClass(nClassNoAct)) {
         outputPreviewMsg($popup, msgObj.message);
       }
     } else {
       const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
       await createMiniPopup(senderId, msgObj, token, classIsActive)
+      window.socket.emit('msg-statusRead', {
+        senderId,
+        receiverId: meId,
+        status: classIsActive === 'is-active'
+      })
       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
     }
   });
@@ -832,6 +844,14 @@ const Messenger = (async () => {
       const chatMain = $popup.find(classChatMain).get(0)
       chatMain.scrollTop = chatMain.scrollHeight;
       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+      if ($popup.attr('data-unread') === '1') {
+        window.socket.emit('msg-statusRead', {
+          senderId,
+          receiverId: meId,
+          status: true
+        })
+        $popup.attr('data-unread', '0')
+      }
     });
 
     // close mini chat
@@ -996,8 +1016,14 @@ const Messenger = (async () => {
   }
 
   function outputPreviewMsg($popup, msg) {
+    $popup.attr('data-unread', '1')
     $popup.find('.preview-msg span').html(msg)
     $popup.find('.preview-msg').addClass('is-show')
+    window.socket.emit('msg-statusRead', {
+      senderId: $popup.attr('data-id'),
+      receiverId: meId,
+      status: false
+    })
     setTimeout(() => {
       $popup.find('.preview-msg').removeClass('is-show')
     }, 2000);

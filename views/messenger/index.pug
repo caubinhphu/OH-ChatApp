@@ -33,7 +33,7 @@ block contentMain
                   img.rounded-circle(src=friend.avatar, alt=friend.name, width="45px")
                 .friend-item-info.ml-2
                   strong= friend.name
-                  .last-msg.text-dark.un-read
+                  .last-msg.text-dark(class=`${friend.beRead ? '' : 'un-read'}`)
                     if (friend.latestMessage)
                       small= friend.latestMessage.msg
                       small= friend.latestMessage.timeFromNow

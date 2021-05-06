@@ -41344,7 +41344,7 @@ var CommonChat = function () {
           timeCall: timeCall
         }, false);
         scrollBottomChatBox();
-        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        "));
+        $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>1 ph\xFAt</small>\n        ")).removeClass('un-read');
       }
     }
   }
@@ -45220,7 +45220,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
-  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
+  var classChatMain, nClassCloseMini, classScroll, nClassNoAct, nClassAct, isDragging, isDragZone, fileTake, holdRec, oldSearchMiniRes, languageAssistant, isChatMicVoice, methodSend, isChatAssistant, directiveChatText, speakFor, textNotify, textCommand, beConfirmed, recognitionFor, isHoldStatus, textConfirm, textSended, textNoSend, textCancel, textYes, SpeechRecognition, SpeechGrammarList, meId, speak, grammar, recognition, recognitionHold, speechRecognitionList, synth, utterThis, voices, vEN, voice, vVN, disableSendRec, createMiniPopup, _createMiniPopup, createCallMsgLocalMiniChat, createCallMsgLocalMini, loadOldMsg, _loadOldMsg, outputPreviewMsg, sendFile, _sendFile, sendFileSingle, _sendFileSingle;
 
   return regeneratorRuntime.wrap(function _callee15$(_context15) {
     while (1) {
@@ -45416,8 +45416,14 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           };
 
           outputPreviewMsg = function _outputPreviewMsg($popup, msg) {
+            $popup.attr('data-unread', '1');
             $popup.find('.preview-msg span').html(msg);
             $popup.find('.preview-msg').addClass('is-show');
+            window.socket.emit('msg-statusRead', {
+              senderId: $popup.attr('data-id'),
+              receiverId: meId,
+              status: false
+            });
             setTimeout(function () {
               $popup.find('.preview-msg').removeClass('is-show');
             }, 2000);
@@ -45813,6 +45819,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         var chatMain = $popup.find(classChatMain).get(0);
                         chatMain.scrollTop = chatMain.scrollHeight;
                         window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+
+                        if ($popup.attr('data-unread') === '1') {
+                          window.socket.emit('msg-statusRead', {
+                            senderId: senderId,
+                            receiverId: meId,
+                            status: true
+                          });
+                          $popup.attr('data-unread', '0');
+                        }
                       }); // close mini chat
 
                       $popup.find('.close-chat-btn').on('click', function () {
@@ -45890,7 +45905,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           textYes = languageAssistant === 'vi' ? ['có', 'gửi', 'ok', 'ừ'] : ['yes', 'send', 'ok'];
           SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-          _context15.prev = 40;
+          meId = $('#member-id').text();
+          _context15.prev = 41;
 
           speak = function speak(str) {
             utterThis.text = str;
@@ -46042,31 +46058,31 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           synth = window.speechSynthesis;
           utterThis = new SpeechSynthesisUtterance();
-          _context15.next = 58;
+          _context15.next = 59;
           return new Promise(function (rs) {
             return setTimeout(function () {
               rs(synth.getVoices());
             }, 100);
           });
 
-        case 58:
+        case 59:
           voices = _context15.sent;
           vEN = voices.find(function (v) {
             return v.lang === 'en-US';
           });
 
           if (!(!vEN && languageAssistant !== 'vi')) {
-            _context15.next = 62;
+            _context15.next = 63;
             break;
           }
 
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 62:
+        case 63:
           voice = vEN;
 
           if (!(languageAssistant === 'vi')) {
-            _context15.next = 74;
+            _context15.next = 75;
             break;
           }
 
@@ -46075,29 +46091,29 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           });
 
           if (!vVN) {
-            _context15.next = 69;
+            _context15.next = 70;
             break;
           }
 
           // console.log(vVN);
           voice = vVN;
-          _context15.next = 74;
+          _context15.next = 75;
           break;
 
-        case 69:
+        case 70:
           if (!vEN) {
-            _context15.next = 73;
+            _context15.next = 74;
             break;
           }
 
           voice = vEN;
-          _context15.next = 74;
+          _context15.next = 75;
           break;
 
-        case 73:
+        case 74:
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
-        case 74:
+        case 75:
           utterThis.voice = voices[22];
           utterThis.lang = 'en';
 
@@ -46209,15 +46225,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             });
           }
 
-          _context15.next = 85;
+          _context15.next = 86;
           break;
 
-        case 82:
-          _context15.prev = 82;
-          _context15.t0 = _context15["catch"](40);
+        case 83:
+          _context15.prev = 83;
+          _context15.t0 = _context15["catch"](41);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 85:
+        case 86:
           // receive msg obj from server
           window.socket.on('msg-messenger', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
@@ -46252,11 +46268,17 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         } else {
                           window.scrollBottomChatBox($chatMain);
                         }
+
+                        window.socket.emit('msg-statusRead', {
+                          senderId: senderId,
+                          receiverId: meId,
+                          status: classIsActive === 'is-active'
+                        });
                       } else if ($popup.hasClass(nClassNoAct)) {
                         outputPreviewMsg($popup, msgObj.message);
                       }
 
-                      _context.next = 14;
+                      _context.next = 15;
                       break;
 
                     case 10:
@@ -46265,9 +46287,14 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       return createMiniPopup(senderId, msgObj, token, _classIsActive);
 
                     case 13:
+                      window.socket.emit('msg-statusRead', {
+                        senderId: senderId,
+                        receiverId: meId,
+                        status: _classIsActive === 'is-active'
+                      });
                       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 
-                    case 14:
+                    case 15:
                     case "end":
                       return _context.stop();
                   }
@@ -46611,12 +46638,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-        case 103:
+        case 104:
         case "end":
           return _context15.stop();
       }
     }
-  }, _callee15, null, [[40, 82]]);
+  }, _callee15, null, [[41, 83]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Messenger);
