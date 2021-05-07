@@ -39,7 +39,7 @@ const Header = (() => {
     e.preventDefault()
     const $itemNotify = $(this).parents('.notify-item')
     if ($itemNotify.length) {
-      $(this).addClass('is-load')
+      $itemNotify.addClass('is-load')
       try {
         await axios.put(`/messenger/notification-status`, { notifyId: $itemNotify.attr('data-id') })
         if ($itemNotify.hasClass('un-read')) {
@@ -52,7 +52,7 @@ const Header = (() => {
       } catch (error) {
         window.outputErrorMessage(error?.response?.data?.messages)
       }
-      $(this).removeClass('is-load')
+      $itemNotify.removeClass('is-load')
     }
   })
 
@@ -60,6 +60,7 @@ const Header = (() => {
     e.preventDefault()
     const $itemNotify = $(this).parents('.notify-item')
     if ($itemNotify.length) {
+      $itemNotify.addClass('is-load')
       try {
         const responsive = await axios.delete(`/messenger/delete-notification`, {
           data: {
@@ -79,6 +80,7 @@ const Header = (() => {
           </div>`)
         }
       } catch (error) {
+        $itemNotify.Class('is-load')
         window.outputErrorMessage(error?.response?.data?.messages)
       }
     }

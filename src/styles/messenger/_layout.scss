@@ -517,6 +517,13 @@ label.send-file,
       display: flex;
     }
   }
+  &.is-load {
+    pointer-events: none;
+    opacity: .6;
+    .noti-mana-loader {
+      display: block;
+    }
+  }
 }
 .noti-box {
   border-radius: 5px;
@@ -558,7 +565,7 @@ label.send-file,
   right: 63px;
   top: 50%;
   box-shadow: 0 0 5px $color-0c;
-  transform: translateY(-50%)
+  transform: translateY(-50%);
 }
 .noti-mana-item {
   align-items: center;
@@ -586,19 +593,13 @@ label.send-file,
     font-size: 13px;
   }
 }
-.toggle-status-notify {
-  img {
-    display: none;
-    position: absolute;
-    max-width: 40px;
-    right: 0;
-  }
-  &.is-load {
-    pointer-events: none;
-    img {
-      display: block;
-    }
-  }
+.noti-mana-loader {
+  display: none;
+  position: absolute;
+  max-width: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 #member-notify-btn {
   &.un-read {

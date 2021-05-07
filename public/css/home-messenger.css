@@ -7883,6 +7883,14 @@ label.send-file:hover .icomoon,
   display: flex;
 }
 
+.notify-item.is-load {
+  pointer-events: none;
+}
+
+.notify-item.is-load .noti-mana-loader {
+  display: block;
+}
+
 .noti-box {
   border-radius: 5px;
   padding-right: 15px;
@@ -7962,19 +7970,13 @@ label.send-file:hover .icomoon,
   font-size: 13px;
 }
 
-.toggle-status-notify img {
+.noti-mana-loader {
   display: none;
   position: absolute;
-  max-width: 40px;
-  right: 0;
-}
-
-.toggle-status-notify.is-load {
-  pointer-events: none;
-}
-
-.toggle-status-notify.is-load img {
-  display: block;
+  max-width: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #member-notify-btn.un-read .icon-bell {

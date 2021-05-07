@@ -42097,7 +42097,7 @@ var Header = function () {
                 break;
               }
 
-              $(this).addClass('is-load');
+              $itemNotify.addClass('is-load');
               _context.prev = 4;
               _context.next = 7;
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/messenger/notification-status", {
@@ -42122,7 +42122,7 @@ var Header = function () {
               window.outputErrorMessage(_context.t0 === null || _context.t0 === void 0 ? void 0 : (_error$response = _context.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.messages);
 
             case 13:
-              $(this).removeClass('is-load');
+              $itemNotify.removeClass('is-load');
 
             case 14:
             case "end":
@@ -42148,19 +42148,20 @@ var Header = function () {
               $itemNotify = $(this).parents('.notify-item');
 
               if (!$itemNotify.length) {
-                _context2.next = 17;
+                _context2.next = 19;
                 break;
               }
 
-              _context2.prev = 3;
-              _context2.next = 6;
+              $itemNotify.addClass('is-load');
+              _context2.prev = 4;
+              _context2.next = 7;
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/messenger/delete-notification", {
                 data: {
                   notifyId: $itemNotify.attr('data-id')
                 }
               });
 
-            case 6:
+            case 7:
               responsive = _context2.sent;
               messages = responsive.data.messages;
               window.outputSuccessMessage(messages);
@@ -42171,20 +42172,21 @@ var Header = function () {
                 $box.html("<div class=\"text-center text-secondary\">\n            <h4 class=\"mb-0\">Kh\xF4ng c\xF3 th\xF4ng b\xE1o n\xE0o</h4>\n          </div>");
               }
 
-              _context2.next = 17;
+              _context2.next = 19;
               break;
 
-            case 14:
-              _context2.prev = 14;
-              _context2.t0 = _context2["catch"](3);
+            case 15:
+              _context2.prev = 15;
+              _context2.t0 = _context2["catch"](4);
+              $itemNotify.Class('is-load');
               window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.messages);
 
-            case 17:
+            case 19:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, this, [[3, 14]]);
+      }, _callee2, this, [[4, 15]]);
     }));
 
     return function (_x2) {

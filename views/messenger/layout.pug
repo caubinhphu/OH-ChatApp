@@ -60,13 +60,13 @@ block header
               button.noti-mana-btn.btn.btn-white.btn-icon.small-btn
                 span.icomoon.icon-dots-three-horizontal
               .noti-mana-box.d-none
+                img.noti-mana-loader(src="/images/loader.svg" alt="loader")
                 .noti-mana-item.d-flex.align-items-center.toggle-status-notify
                   span.icomoon.icon-check-circle-o
                   if (notify.beRead)
                     span Đánh dấu là chưa đọc
                   else
                     span Đánh dấu là đã đọc
-                  img(src="/images/loader.svg" alt="loader")
                 .noti-mana-item.d-flex.align-items-center.del-status-notify
                   span.icomoon.icon-times-circle-o
                   span Gỡ bỏ thông báo này
