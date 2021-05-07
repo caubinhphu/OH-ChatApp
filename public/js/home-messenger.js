@@ -42241,8 +42241,10 @@ var Header = function () {
     }, _callee3, this, [[3, 15]]);
   })));
   $('#member-notify-btn').on('click', function () {
-    if ($(this).hasClass('un-read')) {
-      $(this).removeClass('un-read');
+    var $parent = $(this).parents('#notification');
+
+    if ($parent.hasClass('un-read')) {
+      $parent.removeClass('un-read');
     }
   });
   window.socket.on('msg-hasNotification', function (_ref4) {
@@ -42257,8 +42259,8 @@ var Header = function () {
       $box.prepend(html);
     }
 
-    if (!$('#member-notify-btn').hasClass('un-read')) {
-      $('#member-notify-btn').addClass('un-read');
+    if (!$('#notification').hasClass('un-read')) {
+      $('#notification').addClass('un-read');
     }
   });
 }();

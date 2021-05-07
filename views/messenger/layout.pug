@@ -34,8 +34,8 @@ block header
         a(href="/messenger/profile")
           img.rounded-circle.mr-1.avatar(src=memberAvatar, alt=`${memberName}`, width="30px")
           span= memberName
-      #notification.mx-2
-        button#member-notify-btn.btn.btn-icon.small-btn(class=`${countNotify ? 'un-read' : ''}`,type="button", data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
+      #notification.mx-2.ps-rv(class=`${countNotify ? 'un-read' : ''}`)
+        button#member-notify-btn.btn.btn-icon.small-btn(type="button", data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
           span.icomoon.icon-bell
       #info
         button#member-info-btn.btn.btn-icon.small-btn(type="button", data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")

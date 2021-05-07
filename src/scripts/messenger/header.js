@@ -138,8 +138,9 @@ const Header = (() => {
   });
 
   $('#member-notify-btn').on('click', function() {
-    if ($(this).hasClass('un-read')) {
-      $(this).removeClass('un-read')
+    const $parent = $(this).parents('#notification')
+    if ($parent.hasClass('un-read')) {
+      $parent.removeClass('un-read')
     }
   })
 
@@ -179,8 +180,8 @@ const Header = (() => {
     } else {
       $box.prepend(html)
     }
-    if (!$('#member-notify-btn').hasClass('un-read')) {
-      $('#member-notify-btn').addClass('un-read')
+    if (!$('#notification').hasClass('un-read')) {
+      $('#notification').addClass('un-read')
     }
   })
 })()

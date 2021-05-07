@@ -601,11 +601,22 @@ label.send-file,
   left: 50%;
   transform: translate(-50%, -50%);
 }
-#member-notify-btn {
+#notification {
   &.un-read {
     .icon-bell {
       animation: ring 4s .7s ease-in-out infinite;
       transform-origin: 50% 4px;
+    }
+    &::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background-color: $color-7f;
+      position: absolute;
+      top: 5px;
+      right: 9px;
+      border-radius: 50%;
+      z-index: 2;
     }
   }
 }

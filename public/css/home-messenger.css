@@ -7885,6 +7885,7 @@ label.send-file:hover .icomoon,
 
 .notify-item.is-load {
   pointer-events: none;
+  opacity: .6;
 }
 
 .notify-item.is-load .noti-mana-loader {
@@ -7979,9 +7980,21 @@ label.send-file:hover .icomoon,
   transform: translate(-50%, -50%);
 }
 
-#member-notify-btn.un-read .icon-bell {
+#notification.un-read .icon-bell {
   animation: ring 4s .7s ease-in-out infinite;
   transform-origin: 50% 4px;
+}
+
+#notification.un-read::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #22c0c9;
+  position: absolute;
+  top: 5px;
+  right: 9px;
+  border-radius: 50%;
+  z-index: 2;
 }
 
 @media only screen and (max-width: 850px) {
