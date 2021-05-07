@@ -46129,8 +46129,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
         case 77:
-          utterThis.voice = voices[22];
-          utterThis.lang = 'en';
+          utterThis.voice = voice;
+          utterThis.lang = languageAssistant;
+
+          utterThis.onerror = function () {
+            window.outputErrorMessage('Ngôn ngữ không hỗ trợ!');
+          };
 
           utterThis.onend = function () {
             if (speakFor === 'confirm') {
@@ -46243,15 +46247,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             });
           }
 
-          _context15.next = 88;
+          _context15.next = 89;
           break;
 
-        case 85:
-          _context15.prev = 85;
+        case 86:
+          _context15.prev = 86;
           _context15.t0 = _context15["catch"](43);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 88:
+        case 89:
           // receive msg obj from server
           window.socket.on('msg-messenger', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
@@ -46668,12 +46672,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           window.createCallMsgLocalMini = createCallMsgLocalMini;
 
-        case 106:
+        case 107:
         case "end":
           return _context15.stop();
       }
     }
-  }, _callee15, null, [[43, 85]]);
+  }, _callee15, null, [[43, 86]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Messenger);

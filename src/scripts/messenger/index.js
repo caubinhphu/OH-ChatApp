@@ -221,8 +221,18 @@ const Index = (async () => {
           }
         }
       }
-      utterThis.voice = voices[22];
-      utterThis.lang = 'en';
+      utterThis.voice = voice;
+      utterThis.lang = languageAssistant;
+
+      utterThis.onerror = () => {
+        window.outputErrorMessage('Ngôn ngữ không hỗ trợ!')
+        disableSendRec(false)
+        speakFor = ''
+        textNotify = ''
+        recognitionFor = 'msg'
+        beConfirmed = false
+        textCommand = ''
+      }
 
       utterThis.onend = () => {
         if (speakFor === 'confirm') {

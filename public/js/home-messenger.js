@@ -42400,7 +42400,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
 
           if (!msgForm) {
-            _context11.next = 115;
+            _context11.next = 116;
             break;
           }
 
@@ -42832,8 +42832,18 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
           throw new Error('Ngôn ngữ không hỗ trợ!');
 
         case 78:
-          utterThis.voice = voices[22];
-          utterThis.lang = 'en';
+          utterThis.voice = voice;
+          utterThis.lang = languageAssistant;
+
+          utterThis.onerror = function () {
+            window.outputErrorMessage('Ngôn ngữ không hỗ trợ!');
+            disableSendRec(false);
+            speakFor = '';
+            textNotify = '';
+            recognitionFor = 'msg';
+            beConfirmed = false;
+            textCommand = '';
+          };
 
           utterThis.onend = function () {
             if (speakFor === 'confirm') {
@@ -42932,15 +42942,15 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             });
           }
 
-          _context11.next = 88;
+          _context11.next = 89;
           break;
 
-        case 85:
-          _context11.prev = 85;
+        case 86:
+          _context11.prev = 86;
           _context11.t0 = _context11["catch"](44);
           window.outputErrorMessage('Trình duyệt không hỡ trợ chức năng này');
 
-        case 88:
+        case 89:
           msgForm.addEventListener('submit', /*#__PURE__*/function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
               var inputMsg;
@@ -43519,12 +43529,12 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             }
           });
 
-        case 115:
+        case 116:
         case "end":
           return _context11.stop();
       }
     }
-  }, _callee11, null, [[44, 85]]);
+  }, _callee11, null, [[44, 86]]);
 }))();
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Index);
