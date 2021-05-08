@@ -79,7 +79,7 @@ const CommonChatRoom = (() => {
         `
         finalFiles.push(file)
       })
-      console.log(finalFiles);
+      // console.log(finalFiles);
       $('.files-upload-box').append(html);
       // disabledInputFile()
       this.value = ''
@@ -99,23 +99,32 @@ const CommonChatRoom = (() => {
     }
   })
 
-  dragZone.addEventListener('dragenter', e => {
+  dragZone.addEventListener('dragenter', function(e) {
     e.preventDefault();
     e.stopPropagation()
-    isDragZone = true
+    if(e.dataTransfer.types && e.dataTransfer.types[0] === 'Files') {
+      isDragZone = true
+      $(this).addClass('is-dragover')
+    }
   })
 
-  dragZone.addEventListener('dragleave', e => {
+  dragZone.addEventListener('dragleave', function(e) {
     e.preventDefault();
     e.stopPropagation()
     isDragZone = false
+    if (!e.relatedTarget) {
+      $(this).addClass('d-none').removeClass('is-dragover')
+      isDragging = 0;
+    } else if (!$(this).has(e.relatedTarget).length) {
+      $(this).removeClass('is-dragover')
+    }
   })
 
   dragZone.addEventListener('drop', function(e) {
     e.preventDefault();
     if (!$(this).hasClass('unable-chat')) {
       const { files } = e.dataTransfer
-      console.log(files);
+      // console.log(files);
       if (files.length) {
         let html = '';
         [...files].forEach((file) => {
@@ -130,17 +139,19 @@ const CommonChatRoom = (() => {
         $('.files-upload-box').append(html);
         // disabledInputFile()
       }
-      console.log(finalFiles);
+      // console.log(finalFiles);
     }
   })
 
   document.addEventListener('dragover', e => {
     e.preventDefault();
     e.stopPropagation()
-    if (!$(dragZone).hasClass('unable-chat')) {
-      isDragging++;
-      if (isDragging === 1) {
-        $('.dragzone').removeClass('d-none')
+    if(e.dataTransfer.types && e.dataTransfer.types[0] === 'Files') {
+      if (!$(dragZone).hasClass('unable-chat')) {
+        isDragging++;
+        if (isDragging === 1) {
+          $('.dragzone').removeClass('d-none')
+        }
       }
     }
   })
@@ -148,7 +159,7 @@ const CommonChatRoom = (() => {
   document.addEventListener('dragleave', e => {
     e.preventDefault();
     e.stopPropagation()
-    if (!isDragZone) {
+    if (!isDragZone && !e.relatedTarget) {
       $('.dragzone').addClass('d-none')
       isDragging = 0;
     }
@@ -180,7 +191,7 @@ const CommonChatRoom = (() => {
       $('#send-file').val('')
       finalFiles = []
       // enabledInputFile()
-      console.log(res);
+      // console.log(res);
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.each((i, ele) => {
         const file = res.data.fileUrls.find(f => f.name === $(ele).text())
@@ -200,7 +211,7 @@ const CommonChatRoom = (() => {
         }
       })
     } catch (error) {
-      console.dir(error);
+      // console.dir(error);
       const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
       $msgFile.parents('.message').remove()
       $('#send-file').val('')

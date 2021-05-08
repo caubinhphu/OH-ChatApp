@@ -418,9 +418,11 @@ const Messenger = (async () => {
   document.addEventListener('dragover', e => {
     e.preventDefault();
     e.stopPropagation()
-    isDragging++;
-    if (isDragging === 1) {
-      $('.popup-chat-mini.is-active .dragzone').removeClass('d-none')
+    if(e.dataTransfer.types && e.dataTransfer.types[0] === 'Files') {
+      isDragging++;
+      if (isDragging === 1) {
+        $('.popup-chat-mini.is-active .dragzone').removeClass('d-none')
+      }
     }
   })
 
@@ -428,7 +430,7 @@ const Messenger = (async () => {
     e.preventDefault();
     e.stopPropagation()
     // console.log(e.target);
-    if (!isDragZone) {
+    if (!isDragZone && !e.relatedTarget) {
       $('.dragzone').addClass('d-none')
       isDragging = 0;
     }
@@ -790,13 +792,22 @@ const Messenger = (async () => {
     $popup.find('.dragzone').get(0).addEventListener('dragenter', e => {
       e.preventDefault();
       e.stopPropagation()
-      isDragZone = true
+      if(e.dataTransfer.types && e.dataTransfer.types[0] === 'Files') {
+        isDragZone = true
+        $(this).addClass('is-dragover')
+      }
     })
   
     $popup.find('.dragzone').get(0).addEventListener('dragleave', e => {
       e.preventDefault();
       e.stopPropagation()
       isDragZone = false
+      if (!e.relatedTarget) {
+        $(this).addClass('d-none').removeClass('is-dragover')
+        isDragging = 0;
+      } else if (!$(this).has(e.relatedTarget).length) {
+        $(this).removeClass('is-dragover')
+      }
     })
   
     $popup.find('.dragzone').get(0).addEventListener('drop', function(e) {

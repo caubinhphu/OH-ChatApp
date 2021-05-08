@@ -7699,6 +7699,12 @@ label.send-file:hover .icomoon,
 
 .dragzone .drag-inner .icomoon {
   font-size: 50px;
+  transition: all .25s;
+  display: inline-block;
+}
+
+.dragzone.is-dragover .drag-inner .icomoon {
+  transform: scale(1.5);
 }
 
 .photo-pre img {
@@ -7989,7 +7995,7 @@ label.send-file:hover .icomoon,
   content: "";
   width: 10px;
   height: 10px;
-  background-color: #22c0c9;
+  background-color: #7f3074;
   position: absolute;
   top: 5px;
   right: 9px;

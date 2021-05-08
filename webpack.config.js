@@ -11,14 +11,14 @@ const babelPolyfill = 'babel-polyfill'
 
 module.exports = {
   entry: {
-    // home: [
-    //   babelPolyfill,
-    //   './src/scripts/home.js',
-    //   './src/styles/app-meeting.scss',
-    // ],
+    home: [
+      babelPolyfill,
+      './src/scripts/home.js',
+      './src/styles/app-meeting.scss',
+    ],
     // 'create-room': [babelPolyfill, './src/scripts/create-room.js'],
     // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
-    // 'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
+    'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
     // 'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
     'home-messenger': [
       babelPolyfill,
@@ -27,7 +27,7 @@ module.exports = {
     ],
     'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
     // 'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
-    'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
+    // 'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),

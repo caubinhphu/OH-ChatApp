@@ -5968,6 +5968,12 @@ a.text-dark:hover, a.text-dark:focus {
   padding: 5px;
 }
 
+.btn.disabled {
+  color: #747474 !important;
+  pointer-events: none;
+  cursor: no-drop;
+}
+
 .btn-link {
   color: #22c0c9;
   border-radius: 0;
@@ -6130,6 +6136,26 @@ a.text-dark:hover, a.text-dark:focus {
 
 .btn-icon.btn-red:hover::after {
   box-shadow: inset 0 0 0 45px #c8102e;
+}
+
+.btn-icon.btn-white {
+  color: #102131;
+}
+
+.btn-icon.btn-white:after {
+  box-shadow: inset 0 0 0 0 #f2f2f2;
+}
+
+.btn-icon.btn-white:hover {
+  color: #102131;
+}
+
+.btn-icon.btn-white:hover span {
+  color: #102131;
+}
+
+.btn-icon.btn-white:hover::after {
+  box-shadow: inset 0 0 0 45px #f2f2f2;
 }
 
 .btn-icon.btn-disabled {
@@ -6462,6 +6488,14 @@ a.text-dark:hover, a.text-dark:focus {
 
 .icon-file-text:before {
   content: "\E932";
+}
+
+.icon-dots-three-horizontal:before {
+  content: "\E933";
+}
+
+.icon-checkmark:before {
+  content: "\E934";
 }
 
 input:-webkit-autofill {
@@ -7291,6 +7325,12 @@ input:-webkit-autofill {
 
 .dragzone .drag-inner .icomoon {
   font-size: 50px;
+  transition: all .25s;
+  display: inline-block;
+}
+
+.dragzone.is-dragover .drag-inner .icomoon {
+  transform: scale(1.5);
 }
 
 label.send-file.disabled {
