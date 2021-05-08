@@ -326,6 +326,13 @@ const CommonChatRoom = (() => {
     }
   })
 
+  $(document).on('click', (e) => {
+    if (!$(e.target).closest('.chat-m-sub-box').length && !$(e.target).closest('.chat-mana-sub').length) {
+      $('.chat-mana-sub').removeClass('is-active')
+      $('.chat-m-sub-box').addClass('d-none')
+    }
+  })
+
   // disconnect for self
   document
     .querySelector('#disconnect-btn')
@@ -392,6 +399,9 @@ const CommonChatRoom = (() => {
       $(showConId).addClass('no-show');
       $(conShowPopClass).removeClass('is-active');
       $('.control-area').removeClass('is-active');
+      $('.sub-mana-box').addClass('d-none')
+      $('.sub-mana-box').addClass('d-none')
+      $('.chat-mana-sub, .users-mana-sub').addClass('is-active')
     });
   }
 

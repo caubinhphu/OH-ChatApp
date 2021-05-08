@@ -43088,9 +43088,8 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             isDragZone = false;
 
             if (!e.relatedTarget) {
-              $(this).addClass('d-none');
+              $(this).addClass('d-none').removeClass('is-dragover');
               isDragging = 0;
-              $(this).removeClass('is-dragover');
             } else if (!$(this).has(e.relatedTarget).length) {
               $(this).removeClass('is-dragover');
             }

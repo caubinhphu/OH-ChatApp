@@ -20,12 +20,12 @@ module.exports = {
     // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
     'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
     // 'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
-    'home-messenger': [
-      babelPolyfill,
-      './src/scripts/home-messenger.js',
-      './src/styles/app-messenger.scss',
-    ],
-    'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
+    // 'home-messenger': [
+    //   babelPolyfill,
+    //   './src/scripts/home-messenger.js',
+    //   './src/styles/app-messenger.scss',
+    // ],
+    // 'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
     // 'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
     // 'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },

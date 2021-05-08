@@ -45793,11 +45793,11 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         isDragZone = false;
 
                         if (!e.relatedTarget) {
-                          $(_this).addClass('d-none');
+                          $(_this).addClass('d-none').removeClass('is-dragover');
                           isDragging = 0;
+                        } else if (!$(_this).has(e.relatedTarget).length) {
+                          $(_this).removeClass('is-dragover');
                         }
-
-                        $(_this).removeClass('is-dragover');
                       });
                       $popup.find('.dragzone').get(0).addEventListener('drop', function (e) {
                         e.preventDefault();

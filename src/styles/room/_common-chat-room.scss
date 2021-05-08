@@ -276,6 +276,7 @@
   bottom: 58px;
   background-color: white;
   border-radius: 12px;
+  box-shadow: 1px 1px 10px $color-74;
   // padding-top: 12px;
   // padding-bottom: 12px;
   width: max-content;
@@ -295,6 +296,7 @@
   .control-no-show-pop {
     color: $color-0c;
     padding: 15px 30px;
+    border-radius: 10px;
     &:hover {
       background-color: $color-de;
       transform: none;
@@ -524,12 +526,13 @@
 .sub-mana-box {
   position: absolute;
   right: 45px;
-  background: $color-0c;
+  background-color: $color-0c;
   border-radius: 10px;
   z-index: 2;
   top: 0;
   width: 200px;
   padding: 10px;
+  box-shadow: 1px 1px 10px $color-74;
 }
 .sub-mana-item {
   display: block;

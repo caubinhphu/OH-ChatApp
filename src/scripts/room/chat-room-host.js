@@ -138,6 +138,13 @@ const ChatRoomHost = (() => {
     }
   })
 
+  $(document).on('click', (e) => {
+    if (!$(e.target).closest('.user-m-sub-box').length && !$(e.target).closest('.users-mana-sub').length) {
+      $('.users-mana-sub').removeClass('is-active')
+      $('.user-m-sub-box').addClass('d-none')
+    }
+  })
+
   // output room info
   function outputRoomInfo(roomInfo, socketId) {
     // room name, password and input copy

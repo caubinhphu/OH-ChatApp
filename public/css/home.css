@@ -6949,6 +6949,7 @@ input:-webkit-autofill {
   bottom: 58px;
   background-color: white;
   border-radius: 12px;
+  box-shadow: 1px 1px 10px #747474;
   width: max-content;
 }
 
@@ -6960,6 +6961,7 @@ input:-webkit-autofill {
 .wrap-control-meet .control-no-show-pop {
   color: #0c1a2f;
   padding: 15px 30px;
+  border-radius: 10px;
 }
 
 .wrap-control-meet .control-show-pop:hover,
@@ -7207,12 +7209,13 @@ input:-webkit-autofill {
 .sub-mana-box {
   position: absolute;
   right: 45px;
-  background: #0c1a2f;
+  background-color: #0c1a2f;
   border-radius: 10px;
   z-index: 2;
   top: 0;
   width: 200px;
   padding: 10px;
+  box-shadow: 1px 1px 10px #747474;
 }
 
 .sub-mana-item {
