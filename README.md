@@ -4,6 +4,7 @@
   - [ExpressJs](https://expressjs.com)
   - [MongoDB](https://www.mongodb.com/)
   - [PugJs](https://pugjs.org/api/getting-started.html)
+  - [SCSS](https://sass-lang.com/)
   - [MomentJs](https://momentjs.com/)
   - [JWT](https://jwt.io/)
   - [MongooseJs](https://mongoosejs.com/)
@@ -89,4 +90,21 @@
   - Messenger
     - Chat (message, audio, video)
     - Các hoạt động liên quan đến kết bạn
+</details>
+<details>
+  <summary>Version 3.1.0 (08/05/2021)</summary>
+  Chức năng thêm:
+  
+  - Meeting
+    - Gửi file
+    - Export chat, thành viên
+    - Nâng cấp quản lý phòng
+    - Quay màn hình
+    - Tạo Text
+  - Messenger
+    - Gửi file
+    - Trợ lý nhắn tin
+    - Quên mật khẩu
+    - Chụp ảnh, ghi âm
+    - Thông báo
 </details>
