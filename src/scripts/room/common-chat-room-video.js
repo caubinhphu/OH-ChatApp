@@ -5,6 +5,7 @@ const CommonChatRoomVideo = (() => {
 
   // client join the room -> call all client diff (in the room) and add in the peers
   const peers = []; // peers connect, each peer is peer-to-peer
+  window.p = peers
   const btnVideo = document.getElementById('btn-video-connect');
   const btnAudio = document.getElementById('btn-audio-connect');
   const meetingShow = document.getElementById('meeting-show');
@@ -233,6 +234,8 @@ const CommonChatRoomVideo = (() => {
 
     // peer.on('data', (data) => console.log(data.toString()));
 
+    peer.on('error', (err) => console.log(err.code));
+
     peer.on('stream', (stream) => {
       // console.log('call stream');
       if (stream.getVideoTracks().length >= 2) {
@@ -284,6 +287,8 @@ const CommonChatRoomVideo = (() => {
     // peer.on('close', () => {
     //   console.log('answer close');
     // });
+
+    peer.on('error', (err) => { console.log(err.code) });
 
     peer.on('signal', (signal) => {
       // console.log('answer signal');
@@ -457,7 +462,10 @@ const CommonChatRoomVideo = (() => {
 
   // output leave room for stream
   function outputLeaveRoomForStream(id) {
-    meetingShow.querySelector(`div[data-id="${id}"]`).remove();
+    const item =  meetingShow.querySelector(`div[data-id="${id}"]`)
+    if (item) {
+      item.remove();
+    }
   }
 
   // handle turn on / turn off audio

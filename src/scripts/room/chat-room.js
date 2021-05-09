@@ -2,6 +2,7 @@ const ChatRoom = (() => {
   const msgForm = document.sendMsgForm; // form chat
   const roomName = document.getElementById('room-info-name-room'); // room name
   const participants = document.getElementById('room-users'); // participants area
+
   // receive info change status room (management of host) from server
   socket.on('changeStatusRoom', ({ key, value }) => {
     if (key === 'allowChat') {

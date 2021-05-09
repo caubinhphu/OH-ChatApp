@@ -45883,6 +45883,7 @@ var CommonChatRoom = function () {
     location.href = "/join/?room=".concat(qs.get('room'));
   }
 
+  $('.export-chat-link').attr('href', "/export-chat/?token=".concat(token));
   var joinSound = new Audio('/sounds/join-room.mp3');
   var leaveSound = new Audio('/sounds/leave-room.mp3'); // get token from query string
   // const qs = new URLSearchParams(location.search);
@@ -46170,7 +46171,7 @@ var CommonChatRoom = function () {
         outputInfoMessage(msgObj.message);
         joinSound.play();
       } else if (msgObj.username === 'OH Bot - Leave') {
-        console.log(msgObj);
+        // console.log(msgObj);
         outputInfoMessage(msgObj.message);
         leaveSound.play();
       } else {
@@ -47603,6 +47604,7 @@ var CommonChatRoomVideo = function () {
   // client join the room -> call all client diff (in the room) and add in the peers
   var peers = []; // peers connect, each peer is peer-to-peer
 
+  window.p = peers;
   var btnVideo = document.getElementById('btn-video-connect');
   var btnAudio = document.getElementById('btn-audio-connect');
   var meetingShow = document.getElementById('meeting-show');
@@ -47798,6 +47800,9 @@ var CommonChatRoomVideo = function () {
     // });
     // peer.on('data', (data) => console.log(data.toString()));
 
+    peer.on('error', function (err) {
+      return console.log(err.code);
+    });
     peer.on('stream', function (stream) {
       // console.log('call stream');
       if (stream.getVideoTracks().length >= 2) {
@@ -47843,6 +47848,9 @@ var CommonChatRoomVideo = function () {
     //   console.log('answer close');
     // });
 
+    peer.on('error', function (err) {
+      console.log(err.code);
+    });
     peer.on('signal', function (signal) {
       // console.log('answer signal');
       socket.emit('answerStream', {
@@ -48038,7 +48046,11 @@ var CommonChatRoomVideo = function () {
 
 
   function outputLeaveRoomForStream(id) {
-    meetingShow.querySelector("div[data-id=\"".concat(id, "\"]")).remove();
+    var item = meetingShow.querySelector("div[data-id=\"".concat(id, "\"]"));
+
+    if (item) {
+      item.remove();
+    }
   } // handle turn on / turn off audio
 
 
@@ -50612,7 +50624,8 @@ var ChatRoomHost = function () {
   // });
 
   var token = sessionStorage.getItem('token') || '';
-  var reqRoomSound = new Audio('/sounds/req-join.mp3'); // receive room manager info from server
+  var reqRoomSound = new Audio('/sounds/req-join.mp3');
+  $('.export-users-link').attr('href', "/export-users/?token=".concat(token)); // receive room manager info from server
 
   socket.on('roomManager', function (manager) {
     outputRoomManager(manager);
@@ -50678,7 +50691,10 @@ var ChatRoomHost = function () {
 
       if (!$('#users-area').hasClass('is-active')) {
         $('.control-show-pop[data-control="user"]').addClass('has-unread');
-        $('.open-popup-icon').addClass('has-unread');
+
+        if ($(window).width() < 768) {
+          $('.open-popup-icon').addClass('has-unread');
+        }
       }
     } else {
       waitingRoomUsers.innerHTML = '';

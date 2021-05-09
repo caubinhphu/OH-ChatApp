@@ -19,6 +19,8 @@ const CommonChatRoom = (() => {
     location.href = `/join/?room=${qs.get('room')}`
   }
 
+  $('.export-chat-link').attr('href', `/export-chat/?token=${token}`)
+
   const joinSound = new Audio('/sounds/join-room.mp3')
   const leaveSound = new Audio('/sounds/leave-room.mp3')
 
@@ -268,7 +270,7 @@ const CommonChatRoom = (() => {
         outputInfoMessage(msgObj.message);
         joinSound.play()
       } else if (msgObj.username === 'OH Bot - Leave') {
-        console.log(msgObj);
+        // console.log(msgObj);
         outputInfoMessage(msgObj.message);
         leaveSound.play()
       } else {

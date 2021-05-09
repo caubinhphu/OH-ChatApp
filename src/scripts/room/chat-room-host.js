@@ -17,6 +17,8 @@ const ChatRoomHost = (() => {
 
   const reqRoomSound = new Audio('/sounds/req-join.mp3')
 
+  $('.export-users-link').attr('href', `/export-users/?token=${token}`)
+
   // receive room manager info from server
   socket.on('roomManager', (manager) => {
     outputRoomManager(manager);
@@ -112,7 +114,9 @@ const ChatRoomHost = (() => {
       // set un-read
       if (!$('#users-area').hasClass('is-active')) {
         $('.control-show-pop[data-control="user"]').addClass('has-unread');
-        $('.open-popup-icon').addClass('has-unread');
+        if ($(window).width() < 768) {
+          $('.open-popup-icon').addClass('has-unread');
+        }
       }
     } else {
       waitingRoomUsers.innerHTML = '';

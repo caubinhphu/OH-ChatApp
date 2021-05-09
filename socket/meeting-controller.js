@@ -746,8 +746,13 @@ module.exports.onDisconnect = async function (io, reason) {
           // remove user from this room
           // room.removeUserById(user.id);
 
-          user.timeLeave = new Date()
-          await user.save()
+          const userInRoom = room.users.find(u => u.id.toString() === user.id.toString())
+          if (userInRoom) {
+            userInRoom.timeLeave = new Date()
+            userInRoom.save()
+          }
+          // user.timeLeave = new Date()
+          // await user.save()
 
           // await User.deleteOne({ _id: user._id });
           // send message notify for remaining users in the room
@@ -756,7 +761,7 @@ module.exports.onDisconnect = async function (io, reason) {
             formatMessage(botName + ' - Leave', `${user.name} đã rời phòng`, botAvatar)
           );
 
-          if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
+          if (room.users.some(u => !u.timeLeave && u.id.toString() !== user.id.toString())) {
             // update room info => send room info (name & password & users)
             this.to(room.roomId).emit('roomInfo', {
               nameRoom: room.roomId,
@@ -850,7 +855,12 @@ module.exports.onDisconnect = async function (io, reason) {
             if (host && host.host) {
               // remove user in the room
               // const user = room.removeUserById(reason.userId);
-              const userBeKick = await User.findById(reason.userId)
+              // const userBeKick = await User.findById(reason.userId)
+              const userBeKick = room.users.find(u => u.id.toString() === reason.userId.toString())
+              // if (userBeKick) {
+              //   userBeKick.timeLeave = new Date()
+              //   userBeKick.save()
+              // }
 
               if (userBeKick) {
                 // save the room
@@ -894,10 +904,9 @@ module.exports.onDisconnect = async function (io, reason) {
             // room.removeUserById(user.id);
             // await room.save();
             // await User.deleteOne({ _id: user._id });
-            user.timeLeave = new Date()
-            user.markModified('timeLeave')
-
-            await user.save()
+            const userInRoom = room.users.find(u => u.id.toString() === user.id.toString())
+            userInRoom.timeLeave = new Date()
+            await userInRoom.save()
 
             // send message notify for remaining users in the room
             this.to(room.roomId).emit(
@@ -905,7 +914,7 @@ module.exports.onDisconnect = async function (io, reason) {
               formatMessage(botName + ' - Leave', `${user.name} đã rời phòng`, botAvatar)
             );
             // if not exists user in the room => delete this room
-            if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
+            if (room.users.some(u => !u.timeLeave && u.id.toString() !== user.id.toString())) {
               // update room info => send room info (name & password & users)
                this.to(room.roomId).emit('roomInfo', {
                 nameRoom: room.roomId,
