@@ -71,7 +71,7 @@ module.exports.onCreateRoom = async function ({
     );
 
     // send token to client
-    this.emit('createRoomCompleted', token);
+    this.emit('createRoomCompleted', { token, roomId });
   } catch (err) {
     this.emit('error', 'Phòng đã tồn tại, xin hãy tải lại trang!');
   }
@@ -122,7 +122,7 @@ module.exports.onJoinRoom = async function (
           );
 
           // send token to client
-          this.emit('joinRoomSuccess', token);
+          this.emit('joinRoomSuccess', { token, roomId });
         } catch (err) {
           this.emit('error', err.message);
         }
@@ -345,7 +345,7 @@ module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
           await room.save();
 
           // generate token
-          const token = jwt.sign(
+          const tokenJoin = jwt.sign(
             {
               data: { userId: user.id, roomId: room.roomId },
             },
@@ -353,7 +353,7 @@ module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
           );
 
           // send token to client request join room
-          io.to(user.socketId).emit('joinRoomSuccess', token);
+          io.to(user.socketId).emit('joinRoomSuccess', { token: tokenJoin, room: room.roomId });
         } else {
           this.emit('error', 'Thành viên này đã rời phòng chờ');
         }
@@ -768,6 +768,9 @@ module.exports.onDisconnect = async function (io, reason) {
               userId: user.socketId,
             });
           } else {
+            // delete the room
+            await Room.deleteOne({ roomId: room.roomId });
+
             // if not exists user in the room => delete this room
             // get socketId of users in waiting room to notify for them
             const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
@@ -782,8 +785,6 @@ module.exports.onDisconnect = async function (io, reason) {
 
             // delete messages in room
             await Message.deleteMany({ _id: { $in: room.messages } });
-            // delete the room
-            await Room.deleteOne({ roomId: room.roomId });
 
             // notify end room for user in waiting room
             socketIdsWaitingRoom.forEach((socketId) => {
@@ -804,6 +805,9 @@ module.exports.onDisconnect = async function (io, reason) {
             );
             const host = room.getUser('id', dataToken.userId);
             if (host && host.host) {
+              // delete the room
+              await Room.deleteOne({ roomId: room.roomId });
+
               // get socketId of users in waiting room to notify for them
               const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
 
@@ -818,9 +822,6 @@ module.exports.onDisconnect = async function (io, reason) {
 
               // delete messages in room
               await Message.deleteMany({ _id: { $in: room.messages } });
-
-              // delete the room
-              await Room.deleteOne({ roomId: room.roomId });
 
               // notify end room for user in waiting room
               socketIdsWaitingRoom.forEach((socketId) => {
@@ -882,60 +883,60 @@ module.exports.onDisconnect = async function (io, reason) {
           }
         } else {
           // close page
-          // if (!user.allowJoin && !user.timeLeave) {
-          //   // remove user from this room
-          //   // room.removeUserById(user.id);
-          //   // await room.save();
-          //   // await User.deleteOne({ _id: user._id });
-          //   user.timeLeave = new Date()
-          //   user.markModified('timeLeave')
+          if (!user.allowJoin && !user.timeLeave) {
+            // remove user from this room
+            // room.removeUserById(user.id);
+            // await room.save();
+            // await User.deleteOne({ _id: user._id });
+            user.timeLeave = new Date()
+            user.markModified('timeLeave')
 
-          //   await user.save()
+            await user.save()
 
-          //   // send message notify for remaining users in the room
-          //   this.to(room.roomId).emit(
-          //     'message',
-          //     formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
-          //   );
-          //   // if not exists user in the room => delete this room
-          //   if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
-          //     // update room info => send room info (name & password & users)
-          //      this.to(room.roomId).emit('roomInfo', {
-          //       nameRoom: room.roomId,
-          //       password: room.password,
-          //       users: room.getRoomUsersInfo(),
-          //     });
-          //     this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
-          //       userId: user.socketId,
-          //     });
-          //   } else {
-          //     // get socketId of users in waiting room to notify for them
-          //     const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
+            // send message notify for remaining users in the room
+            this.to(room.roomId).emit(
+              'message',
+              formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
+            );
+            // if not exists user in the room => delete this room
+            if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
+              // update room info => send room info (name & password & users)
+               this.to(room.roomId).emit('roomInfo', {
+                nameRoom: room.roomId,
+                password: room.password,
+                users: room.getRoomUsersInfo(),
+              });
+              this.to(room.roomId).broadcast.emit('infoLeaveRoomForStream', {
+                userId: user.socketId,
+              });
+            } else {
+              // delete the room
+              await Room.deleteOne({ roomId: room.roomId });
 
-          //     // delete users in waiting room
-          //     await User.deleteMany({ _id: { $in: room.waitingRoom } });
+              // get socketId of users in waiting room to notify for them
+              const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
 
-          //     // delete users in room
-          //     await User.deleteMany({ _id: { $in: room.users } });
+              // delete users in waiting room
+              await User.deleteMany({ _id: { $in: room.waitingRoom } });
 
-          //    // delete file upload
-                // await removeFileUpload(room.messages)
+              // delete users in room
+              await User.deleteMany({ _id: { $in: room.users } });
 
-          //    // delete messages in room
-          //       await Message.deleteMany({ _id: { $in: room.messages } });
+              // delete file upload
+              await removeFileUpload(room.messages)
 
-          //     // delete the room
-          //     await Room.deleteOne({ roomId: room.roomId });
+              // delete messages in room
+              await Message.deleteMany({ _id: { $in: room.messages } });
 
-          //     // notify end room for user in waiting room
-          //     socketIdsWaitingRoom.forEach((socketId) => {
-          //       io.to(socketId).emit(
-          //         'joinRoomBlocked',
-          //         'Phòng bạn yêu cầu đã kết thúc chat!'
-          //       );
-          //     });
-          //   }
-          // }
+              // notify end room for user in waiting room
+              socketIdsWaitingRoom.forEach((socketId) => {
+                io.to(socketId).emit(
+                  'joinRoomBlocked',
+                  'Phòng bạn yêu cầu đã kết thúc chat!'
+                );
+              });
+            }
+          }
         }
       } else {
         this.emit('error', 'Phòng không tồn tại, xin hãy kiểm tra lại');

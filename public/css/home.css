@@ -6639,9 +6639,10 @@ input:-webkit-autofill {
 #leave-modal-main {
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 2px 2px 12px;
-  width: 600px;
-  padding: 10px;
+  box-shadow: 1px 1px 7px;
+  width: calc(100% - 20px);
+  padding: 20px;
+  max-width: 500px;
 }
 
 #leave-modal-main span {

@@ -29,8 +29,9 @@ const CreateRoom = (()=> {
   });
 
   // receive access token from server when create room successful
-  socket.on('createRoomCompleted', (token) => {
-    location.href = `/host/chat?token=${token}`;
+  socket.on('createRoomCompleted', ({ token, roomId }) => {
+    sessionStorage.setItem('token', token)
+    location.href = `/host/chat?room=${roomId}`;
   });
 
   // receive error message from server when has error

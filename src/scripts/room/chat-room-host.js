@@ -13,6 +13,8 @@ const ChatRoomHost = (() => {
   //   document.querySelector('#room-info-password-room').innerHTML = `${password}`;
   // });
 
+  const token = sessionStorage.getItem('token') || ''
+
   // receive room manager info from server
   socket.on('roomManager', (manager) => {
     outputRoomManager(manager);
@@ -45,7 +47,7 @@ const ChatRoomHost = (() => {
       socket.emit('changeManagement', {
         value: this.value,
         status: this.checked,
-        token: qs.get('token'),
+        token
       });
     });
   });
@@ -56,7 +58,7 @@ const ChatRoomHost = (() => {
     .addEventListener('click', function () {
       socket.emit('disconnectRequest', {
         typeLeave: 'all',
-        token: qs.get('token'),
+        token
       });
       showLoader()
     });
@@ -117,14 +119,14 @@ const ChatRoomHost = (() => {
   allowJoinBtn.addEventListener('click', function () {
     socket.emit('allowJoinRoom', {
       userId: this.dataset.id,
-      token: qs.get('token'),
+      token
     });
   });
 
   noAllowJoinBtn.addEventListener('click', function () {
     socket.emit('notAllowJoinRoom', {
       userId: this.dataset.id,
-      token: qs.get('token'),
+      token
     });
   });
 
@@ -197,7 +199,7 @@ const ChatRoomHost = (() => {
     socket.emit('disconnectRequest', {
       typeLeave: 'kicked',
       userId: this.dataset.id,
-      token: qs.get('token'),
+      token
     });
   });
 

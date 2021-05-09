@@ -10,9 +10,17 @@ const CommonChatRoom = (() => {
   // socket.io
   const socket = io();
   window.socket = socket
-  // get token from query string
+
   const qs = new URLSearchParams(location.search);
-  window.qs = qs
+
+  const token = sessionStorage.getItem('token') || ''
+
+  if (!token) {
+    location.href = `/join/?room=${qs.get('room')}`
+  }
+  // get token from query string
+  // const qs = new URLSearchParams(location.search);
+  // window.qs = qs
 
   let finalFiles = []
   let isDragging = 0;
@@ -40,7 +48,7 @@ const CommonChatRoom = (() => {
       // send message to server
       socket.emit('messageChat', {
         message: inputMsg.value,
-        token: qs.get('token'),
+        token,
       });
 
       // create message obj to show in client
@@ -204,7 +212,7 @@ const CommonChatRoom = (() => {
             type: 'file',
             nameFile: file.name,
             resourceType: file.resourceType,
-            token: qs.get('token'),
+            token,
           });
         } else {
           $(ele).parents('.message').remove()
@@ -344,7 +352,7 @@ const CommonChatRoom = (() => {
     });
 
   socket.emit('joinChat', {
-    token: qs.get('token'),
+    token,
   });
 
 
@@ -473,7 +481,7 @@ const CommonChatRoom = (() => {
     // send message to server
     socket.emit('messageChat', {
       message: url,
-      token: qs.get('token'),
+      token,
     });
 
     // create message obj to show in client
@@ -511,6 +519,17 @@ const CommonChatRoom = (() => {
     copyText('#link-info');
     outputSuccessMessage('Sao chép thông tin phòng thành công')
   });
+
+  window.addEventListener('beforeunload', function (e) {
+    // Cancel the event
+    e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+    // Chrome requires returnValue to be set
+    e.returnValue = '';
+  });
+
+  window.addEventListener('unload', _ => {
+    sessionStorage.removeItem('token')
+  })
 })()
 
 export default CommonChatRoom
