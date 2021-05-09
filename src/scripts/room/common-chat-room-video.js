@@ -389,6 +389,8 @@ const CommonChatRoomVideo = (() => {
           }
         })
       }
+    } else {
+      frequency($('.wrap-my-video'), stream)
     }
   }
 
@@ -457,6 +459,8 @@ const CommonChatRoomVideo = (() => {
           }
         })
       }
+    } else {
+      stopFrequency($('.wrap-my-video'))
     }
   }
 
@@ -675,6 +679,8 @@ const CommonChatRoomVideo = (() => {
 
         // add audio track for stream of local stream
         localStream.addTrack(audioStream.getAudioTracks()[0]);
+
+        outputAudio();
       } catch (error) {
         outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
       }
@@ -899,6 +905,44 @@ const CommonChatRoomVideo = (() => {
 
     return (hasDesktop || hasVoice) ? destination.stream.getAudioTracks() : [];
   };
+
+  function frequency($meetingPart, stream) {
+    $meetingPart.find('.mic-frequency').addClass('is-turn-on')
+    const audioContext = window.AudioContext || window.webkitAudioContext
+    const frequencyData = new Uint8Array(128)
+    const $allRepeatedEls = $meetingPart.find('.frequency')
+    const totalEls = 3;
+
+    if (audioContext) {
+      const audioAPI = new audioContext(); // Web Audio API is available.
+
+      const audioSource = audioAPI.createMediaStreamSource(stream);
+      const analyserNode = audioAPI.createAnalyser();
+      analyserNode.fftSize = 2048;
+      audioSource.connect(analyserNode);
+
+      const id = setInterval(() => {
+        analyserNode.getByteFrequencyData(frequencyData);
+        for (let i = 0; i < totalEls; i++) {
+          // range is 0 - 255 * 1.2 / 100 =~ 0-3
+          const rang = Math.floor( i / totalEls * frequencyData.length ); // find equal distance in haystack
+          const FREQ = frequencyData[ rang ] / 255;
+          // console.log(FREQ)
+          const height = 4 + FREQ * 15
+          $allRepeatedEls.eq(i).css('height', `${height}px`)
+        }
+      }, 60)
+      $meetingPart.attr('data-fre', id)
+    } else {
+      window.outputErrorMessage('Trình duyệt không hỗ trợ!')
+    }
+  }
+
+  function stopFrequency($meetingPart) {
+    $meetingPart.find('.mic-frequency').removeClass('is-turn-on')
+    $meetingPart.find('.frequency').css('height', `4px`)
+    clearInterval($meetingPart.attr('data-fre'))
+  }
 
   // pin meeting
   $(document).on('click', '.pin-btn', function (e) {

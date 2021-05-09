@@ -14,7 +14,7 @@
   max-width: calc(100vw - 15px);
   img {
     max-width: 100px;
-    border-radius: 20%;
+    border-radius: 50%;
   }
   video {
     width: 100%;
@@ -661,6 +661,30 @@ label.send-file {
   margin-left: 10px;
   font-size: 20px;
   color: $color-0c !important;
+}
+.mic-frequency {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  line-height: 1;
+  &.is-turn-on {
+    .wrap-frequency {
+      display: block;
+    }
+    .icomoon {
+      display: none;
+    }
+  }
+}
+.wrap-frequency {
+  display: none;
+}
+.frequency {
+  width: 4px;
+  height: 4px;
+  background: red;
+  margin: 1px;
+  border-radius: 5px;
 }
 @media only screen and (max-width: 1024px) {
   .popup {

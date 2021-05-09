@@ -47961,6 +47961,8 @@ var CommonChatRoomVideo = function () {
           }
         });
       }
+    } else {
+      frequency($('.wrap-my-video'), stream);
     }
   } // output stop video
 
@@ -48041,6 +48043,8 @@ var CommonChatRoomVideo = function () {
           }
         });
       }
+    } else {
+      stopFrequency($('.wrap-my-video'));
     }
   } // output leave room for stream
 
@@ -48398,7 +48402,7 @@ var CommonChatRoomVideo = function () {
               allowMic = _ref9.allowMic;
 
               if (!allowMic) {
-                _context3.next = 19;
+                _context3.next = 20;
                 break;
               }
 
@@ -48423,27 +48427,28 @@ var CommonChatRoomVideo = function () {
               }); // add audio track for stream of local stream
 
               localStream.addTrack(audioStream.getAudioTracks()[0]);
-              _context3.next = 17;
+              outputAudio();
+              _context3.next = 18;
               break;
 
-            case 14:
-              _context3.prev = 14;
+            case 15:
+              _context3.prev = 15;
               _context3.t0 = _context3["catch"](2);
               outputWarnMessage('Bạn đã chặn quyền sử dụng microphone');
 
-            case 17:
-              _context3.next = 20;
+            case 18:
+              _context3.next = 21;
               break;
 
-            case 19:
+            case 20:
               outputErrorMessage('Host đã tắt tính năng microphone');
 
-            case 20:
+            case 21:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[2, 14]]);
+      }, _callee3, null, [[2, 15]]);
     }));
 
     return function (_x3) {
@@ -48695,7 +48700,46 @@ var CommonChatRoomVideo = function () {
     return hasDesktop || hasVoice ? destination.stream.getAudioTracks() : [];
   }
 
-  ; // pin meeting
+  ;
+
+  function frequency($meetingPart, stream) {
+    $meetingPart.find('.mic-frequency').addClass('is-turn-on');
+    var audioContext = window.AudioContext || window.webkitAudioContext;
+    var frequencyData = new Uint8Array(128);
+    var $allRepeatedEls = $meetingPart.find('.frequency');
+    var totalEls = 3;
+
+    if (audioContext) {
+      var audioAPI = new audioContext(); // Web Audio API is available.
+
+      var audioSource = audioAPI.createMediaStreamSource(stream);
+      var analyserNode = audioAPI.createAnalyser();
+      analyserNode.fftSize = 2048;
+      audioSource.connect(analyserNode);
+      var id = setInterval(function () {
+        analyserNode.getByteFrequencyData(frequencyData);
+
+        for (var i = 0; i < totalEls; i++) {
+          // range is 0 - 255 * 1.2 / 100 =~ 0-3
+          var rang = Math.floor(i / totalEls * frequencyData.length); // find equal distance in haystack
+
+          var FREQ = frequencyData[rang] / 255; // console.log(FREQ)
+
+          var height = 4 + FREQ * 20;
+          $allRepeatedEls.eq(i).css('height', "".concat(height, "px"));
+        }
+      }, 60);
+      $meetingPart.attr('data-fre', id);
+    } else {
+      window.outputErrorMessage('Trình duyệt không hỗ trợ!');
+    }
+  }
+
+  function stopFrequency($meetingPart) {
+    $meetingPart.find('.mic-frequency').removeClass('is-turn-on');
+    clearInterval($meetingPart.attr('data-fre'));
+  } // pin meeting
+
 
   $(document).on('click', '.pin-btn', function (e) {
     $('.meeting-part').removeClass('is-pin'); // remove all pin
