@@ -15,6 +15,8 @@ const ChatRoomHost = (() => {
 
   const token = sessionStorage.getItem('token') || ''
 
+  const reqRoomSound = new Audio('/sounds/req-join.mp3')
+
   // receive room manager info from server
   socket.on('roomManager', (manager) => {
     outputRoomManager(manager);
@@ -22,6 +24,7 @@ const ChatRoomHost = (() => {
 
   // receive message from server when leave all for host
   socket.on('leaveAllCompleteForHost', (msg) => {
+    window.notConfirmClose = true
     if (msg === 'OK') {
       location.href = '/';
     } else {
@@ -105,6 +108,7 @@ const ChatRoomHost = (() => {
         }
       );
 
+      reqRoomSound.play()
       // set un-read
       if (!$('#users-area').hasClass('is-active')) {
         $('.control-show-pop[data-control="user"]').addClass('has-unread');

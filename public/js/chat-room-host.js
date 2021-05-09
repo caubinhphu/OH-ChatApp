@@ -45881,10 +45881,12 @@ var CommonChatRoom = function () {
 
   if (!token) {
     location.href = "/join/?room=".concat(qs.get('room'));
-  } // get token from query string
+  }
+
+  var joinSound = new Audio('/sounds/join-room.mp3');
+  var leaveSound = new Audio('/sounds/leave-room.mp3'); // get token from query string
   // const qs = new URLSearchParams(location.search);
   // window.qs = qs
-
 
   var finalFiles = [];
   var isDragging = 0;
@@ -46164,8 +46166,13 @@ var CommonChatRoom = function () {
       div.className = 'message text-right';
       div.innerHTML = "<small class=\"message-time\" style=\"display:".concat(btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline', "\">").concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg-me ").concat(classMsg, "\">\n          <small class=\"message-content mx-0\">").concat(content, "</small>\n        </div>\n      <div>");
     } else {
-      if (msgObj.username === 'OH Bot') {
+      if (msgObj.username === 'OH Bot - Join') {
         outputInfoMessage(msgObj.message);
+        joinSound.play();
+      } else if (msgObj.username === 'OH Bot - Leave') {
+        console.log(msgObj);
+        outputInfoMessage(msgObj.message);
+        leaveSound.play();
       } else {
         div.className = 'message';
         div.innerHTML = "<small class=\"message-time\" style=\"display:".concat(btnChangeStatusTime.dataset.status === 'off' ? 'none' : 'inline', "\">").concat(msgObj.time, "</small>\n          <div>\n            <div class=\"msg\">\n              <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"OH\" />\n              <small class=\"message-name\">").concat(msgObj.username, "</small>\n              <small class=\"message-content\">\n                ").concat(content, "\n              </small>\n            </div>\n          </div>"); // set un-read
@@ -46190,6 +46197,8 @@ var CommonChatRoom = function () {
   }); // receive message from server when leave
 
   socket.on('leaveComplete', function (msg) {
+    window.notConfirmClose = true;
+
     if (msg === 'OK') {
       location.href = '/';
     } else {
@@ -46420,7 +46429,11 @@ var CommonChatRoom = function () {
     outputSuccessMessage('Sao chép thông tin phòng thành công');
   });
   window.addEventListener('beforeunload', function (e) {
-    // Cancel the event
+    if (window.notConfirmClose) {
+      return false;
+    } // Cancel the event
+
+
     e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
     // Chrome requires returnValue to be set
 
@@ -50598,13 +50611,16 @@ var ChatRoomHost = function () {
   //   document.querySelector('#room-info-password-room').innerHTML = `${password}`;
   // });
 
-  var token = sessionStorage.getItem('token') || ''; // receive room manager info from server
+  var token = sessionStorage.getItem('token') || '';
+  var reqRoomSound = new Audio('/sounds/req-join.mp3'); // receive room manager info from server
 
   socket.on('roomManager', function (manager) {
     outputRoomManager(manager);
   }); // receive message from server when leave all for host
 
   socket.on('leaveAllCompleteForHost', function (msg) {
+    window.notConfirmClose = true;
+
     if (msg === 'OK') {
       location.href = '/';
     } else {
@@ -50656,8 +50672,9 @@ var ChatRoomHost = function () {
         btn.addEventListener('click', function () {
           noAllowJoinBtn.dataset.id = this.dataset.id;
         });
-      }); // set un-read
+      });
 
+      reqRoomSound.play(); // set un-read
 
       if (!$('#users-area').hasClass('is-active')) {
         $('.control-show-pop[data-control="user"]').addClass('has-unread');

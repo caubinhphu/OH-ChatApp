@@ -206,7 +206,7 @@ module.exports.onJoinChat = async function (io, { token }) {
         // emit welcome room
         this.emit(
           'message',
-          formatMessage(botName, 'Chào mừng đến với OH chat', botAvatar)
+          formatMessage(botName + ' - Join', 'Chào mừng đến với OH chat', botAvatar)
         );
 
         // set socket chat for the user
@@ -219,7 +219,7 @@ module.exports.onJoinChat = async function (io, { token }) {
         this.to(room.roomId).emit(
           'message',
           formatMessage(
-            botName,
+            botName + ' - Join',
             `${user.name} đã tham gia vào phòng`,
             botAvatar
           )
@@ -753,7 +753,7 @@ module.exports.onDisconnect = async function (io, reason) {
           // send message notify for remaining users in the room
           this.to(room.roomId).emit(
             'message',
-            formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
+            formatMessage(botName + ' - Leave', `${user.name} đã rời phòng`, botAvatar)
           );
 
           if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {
@@ -863,6 +863,12 @@ module.exports.onDisconnect = async function (io, reason) {
 
                 // send message to user is kicked out the room
                 io.to(userBeKick.socketId).emit('kickedOutRoom', 'OK');
+
+                this.to(room.roomId).emit(
+                  'message',
+                  formatMessage(botName + ' - Leave', `${userBeKick.name} đã rời phòng`, botAvatar)
+                );
+                this.emit('message', formatMessage(botName + ' - Leave', `${userBeKick.name} đã rời phòng`, botAvatar))
               }
 
               // update room info => send room info (name & password & users)
@@ -896,7 +902,7 @@ module.exports.onDisconnect = async function (io, reason) {
             // send message notify for remaining users in the room
             this.to(room.roomId).emit(
               'message',
-              formatMessage(botName, `${user.name} đã rời phòng`, botAvatar)
+              formatMessage(botName + ' - Leave', `${user.name} đã rời phòng`, botAvatar)
             );
             // if not exists user in the room => delete this room
             if (room.users.some(u => !u.timeLeave && u.id !== user.id)) {

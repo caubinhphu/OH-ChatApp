@@ -18,6 +18,10 @@ const CommonChatRoom = (() => {
   if (!token) {
     location.href = `/join/?room=${qs.get('room')}`
   }
+
+  const joinSound = new Audio('/sounds/join-room.mp3')
+  const leaveSound = new Audio('/sounds/leave-room.mp3')
+
   // get token from query string
   // const qs = new URLSearchParams(location.search);
   // window.qs = qs
@@ -260,8 +264,13 @@ const CommonChatRoom = (() => {
         </div>
       <div>`;
     } else {
-      if (msgObj.username === 'OH Bot') {
+      if (msgObj.username === 'OH Bot - Join') {
         outputInfoMessage(msgObj.message);
+        joinSound.play()
+      } else if (msgObj.username === 'OH Bot - Leave') {
+        console.log(msgObj);
+        outputInfoMessage(msgObj.message);
+        leaveSound.play()
       } else {
         div.className = 'message';
         div.innerHTML = `<small class="message-time" style="display:${
@@ -298,6 +307,7 @@ const CommonChatRoom = (() => {
 
   // receive message from server when leave
   socket.on('leaveComplete', (msg) => {
+    window.notConfirmClose = true
     if (msg === 'OK') {
       location.href = '/';
     } else {
@@ -521,6 +531,9 @@ const CommonChatRoom = (() => {
   });
 
   window.addEventListener('beforeunload', function (e) {
+    if (window.notConfirmClose) {
+      return false
+    }
     // Cancel the event
     e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
     // Chrome requires returnValue to be set

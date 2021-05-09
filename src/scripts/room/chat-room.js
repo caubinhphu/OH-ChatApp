@@ -24,6 +24,7 @@ const ChatRoom = (() => {
 
   // receive message from server when leave all
   socket.on('leaveAllComplete', (msg) => {
+    window.notConfirmClose = true
     if (msg === 'OK') {
       outputLeaveRoom(
         'Host đã kết thúc chat cho tất cả mọi người, quay lại trang chủ'
@@ -36,6 +37,7 @@ const ChatRoom = (() => {
 
   // receive message kicked out the room
   socket.on('kickedOutRoom', (msg) => {
+    window.notConfirmClose = true
     if (msg === 'OK') {
       outputLeaveRoom('Host đã đá bạn ra khỏi phòng!');
       fiveSecond();
