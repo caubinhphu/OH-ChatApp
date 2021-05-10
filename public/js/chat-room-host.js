@@ -48032,7 +48032,6 @@ var CommonChatRoomVideo = function () {
 
   function outputStopAudio() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'my_video';
-    console.log(id);
 
     if (id !== 'my_video') {
       var $meetingItem = $(".meeting-part[data-id=\"".concat(id, "\"]"));
@@ -48178,7 +48177,7 @@ var CommonChatRoomVideo = function () {
           switch (_context8.prev = _context8.next) {
             case 0:
               if (!canClickRecBtn) {
-                _context8.next = 34;
+                _context8.next = 35;
                 break;
               }
 
@@ -48187,12 +48186,12 @@ var CommonChatRoomVideo = function () {
               $recBtn.find('.control-no-show-pop').css('cursor', 'no-drop');
 
               if (!$recBtn.hasClass('state-off')) {
-                _context8.next = 31;
+                _context8.next = 32;
                 break;
               }
 
               if (!navigator.mediaDevices.getDisplayMedia) {
-                _context8.next = 29;
+                _context8.next = 30;
                 break;
               }
 
@@ -48214,8 +48213,9 @@ var CommonChatRoomVideo = function () {
             case 12:
               voiceRECStream = _context8.sent;
               $recBtn.removeClass('state-off');
-              $recBtn.find('.ctrl-label').html('Dừng quay màn hình (Alt + V)');
+              $recBtn.find('.ctrl-label').html('Dừng quay màn hình (Alt + R)');
               $('html').addClass('recoding');
+              desktopRECStream.getVideoTracks()[0].onended = stopRec;
               tracks = [].concat(_toConsumableArray(desktopRECStream.getVideoTracks()), _toConsumableArray(mergeAudioStreams(desktopRECStream, voiceRECStream)));
               localRECStream = new MediaStream(tracks);
               blobs = [];
@@ -48254,32 +48254,32 @@ var CommonChatRoomVideo = function () {
               }));
               localREC.start();
               $('.rec').removeClass('d-none');
-              _context8.next = 29;
+              _context8.next = 30;
               break;
 
-            case 26:
-              _context8.prev = 26;
+            case 27:
+              _context8.prev = 27;
               _context8.t0 = _context8["catch"](6);
               // console.log(error);
               outputWarnMessage('Không thể quay màn hình!');
 
-            case 29:
-              _context8.next = 32;
+            case 30:
+              _context8.next = 33;
               break;
 
-            case 31:
+            case 32:
               stopRec();
 
-            case 32:
+            case 33:
               canClickRecBtn = true;
               $recBtn.find('.control-no-show-pop').css('cursor', 'pointer');
 
-            case 34:
+            case 35:
             case "end":
               return _context8.stop();
           }
         }
-      }, _callee8, null, [[6, 26]]);
+      }, _callee8, null, [[6, 27]]);
     }));
     return _handleRecordingScreen.apply(this, arguments);
   }
@@ -48609,7 +48609,7 @@ var CommonChatRoomVideo = function () {
 
     localRECStream = null;
     $recBtn.addClass('state-off');
-    $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
+    $recBtn.find('.ctrl-label').html('Quay màn hình (Alt + R)');
     $('.rec').addClass('d-none');
     $('html').removeClass('recoding');
   }
@@ -48741,7 +48741,6 @@ var CommonChatRoomVideo = function () {
   }
 
   function stopFrequency($meetingPart) {
-    console.log($meetingPart.find('.mic-frequency'));
     $meetingPart.find('.mic-frequency').removeClass('is-turn-on');
     $meetingPart.find('.frequency').css('height', "4px");
     clearInterval($meetingPart.attr('data-fre'));

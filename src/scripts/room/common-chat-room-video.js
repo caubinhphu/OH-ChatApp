@@ -571,8 +571,10 @@ const CommonChatRoomVideo = (() => {
             });
 
             $recBtn.removeClass('state-off')
-            $recBtn.find('.ctrl-label').html('Dừng quay màn hình (Alt + V)');
+            $recBtn.find('.ctrl-label').html('Dừng quay màn hình (Alt + R)');
             $('html').addClass('recoding')
+
+            desktopRECStream.getVideoTracks()[0].onended = stopRec;
 
             const tracks = [
               ...desktopRECStream.getVideoTracks(),
@@ -834,7 +836,7 @@ const CommonChatRoomVideo = (() => {
 
     localRECStream = null;
     $recBtn.addClass('state-off')
-    $recBtn.find('.popup').html('Quay màn hình (Alt + V)');
+    $recBtn.find('.ctrl-label').html('Quay màn hình (Alt + R)');
     $('.rec').addClass('d-none')
     $('html').removeClass('recoding')
   }
