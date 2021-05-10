@@ -145,6 +145,9 @@ const CommonChatRoomVideo = (() => {
     }
   });
 
+  // receive signal stop audio from a client in the room
+  window.socket.on('stopAudio', outputStopAudio);
+
   // receive signal stop video from a client in the room
   window.socket.on('stopVideo', outputStopVideo);
 
@@ -210,6 +213,16 @@ const CommonChatRoomVideo = (() => {
         <strong>${name}</strong>
         <div class="wrap-pin text-primary m-2 pin-btn" title="Pin">
           <span class="icomoon icon-arrows-alt"></span>
+        </div>
+      </div>
+      <div class="mic-frequency">
+        <span class="icomoon icon-mic_off text-danger"></span>
+        <div class="wrap-frequency">
+          <div class="d-flex align-items-end">
+            <div class="frequency"></div>
+            <div class="frequency"></div>
+            <div class="frequency"></div>
+          </div>
         </div>
       </div>
     </div>`;
@@ -388,6 +401,7 @@ const CommonChatRoomVideo = (() => {
             vd.src = window.URL.createObjectURL(stream);
           }
         })
+        frequency($meetingItem, stream)
       }
     } else {
       frequency($('.wrap-my-video'), stream)
@@ -458,6 +472,7 @@ const CommonChatRoomVideo = (() => {
             vd.src = null;
           }
         })
+        stopFrequency($meetingItem)
       }
     } else {
       stopFrequency($('.wrap-my-video'))
@@ -745,7 +760,7 @@ const CommonChatRoomVideo = (() => {
     // remove audio track of stream in local stream
     localStream.removeTrack(localStream.getAudioTracks()[0]);
 
-    // output stop my video
+    // output stop my audio
     socket.emit('stopAudioStream');
     outputStopAudio();
   }

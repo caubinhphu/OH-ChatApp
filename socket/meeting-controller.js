@@ -595,6 +595,21 @@ module.exports.onStopVideoStream = async function () {
   }
 };
 
+// receive signal stop audio stream from a client
+module.exports.onStopAudioStream = async function () {
+  try {
+    const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id });
+      if (room) {
+        this.to(room.roomId).broadcast.emit('stopAudio', this.id);
+      }
+    }
+  } catch (error) {
+    this.emit('error', hasErr);
+  }
+};
+
 // receive signal check can turn on mic from a client
 module.exports.onCheckCanTurnOnMic = async function () {
   try {

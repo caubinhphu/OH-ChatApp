@@ -47730,7 +47730,9 @@ var CommonChatRoomVideo = function () {
       // set answer signal for the peer
       itemPeer.peer.signal(signal);
     }
-  }); // receive signal stop video from a client in the room
+  }); // receive signal stop audio from a client in the room
+
+  window.socket.on('stopAudio', outputStopAudio); // receive signal stop video from a client in the room
 
   window.socket.on('stopVideo', outputStopVideo); // receive signal stop share screen from a client in the room
 
@@ -47782,7 +47784,7 @@ var CommonChatRoomVideo = function () {
       var div = document.createElement('div');
       div.className = 'meeting-part ps-rv';
       div.dataset.id = id;
-      div.innerHTML = "<div class=\"ps-as over-hidden d-flex align-items-center justify-content-center\">\n      <img src=\"".concat(avatar, "\">\n      <video name=\"video\" autoplay style=\"display:none\" ").concat(id ? '' : 'muted', "></video>\n      <video name=\"audio\" autoplay ").concat(id ? '' : 'muted', " class=\"d-none\"></video>\n      <div class=\"meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3\">\n        <strong>").concat(name, "</strong>\n        <div class=\"wrap-pin text-primary m-2 pin-btn\" title=\"Pin\">\n          <span class=\"icomoon icon-arrows-alt\"></span>\n        </div>\n      </div>\n    </div>");
+      div.innerHTML = "<div class=\"ps-as over-hidden d-flex align-items-center justify-content-center\">\n      <img src=\"".concat(avatar, "\">\n      <video name=\"video\" autoplay style=\"display:none\" ").concat(id ? '' : 'muted', "></video>\n      <video name=\"audio\" autoplay ").concat(id ? '' : 'muted', " class=\"d-none\"></video>\n      <div class=\"meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3\">\n        <strong>").concat(name, "</strong>\n        <div class=\"wrap-pin text-primary m-2 pin-btn\" title=\"Pin\">\n          <span class=\"icomoon icon-arrows-alt\"></span>\n        </div>\n      </div>\n      <div class=\"mic-frequency\">\n        <span class=\"icomoon icon-mic_off text-danger\"></span>\n        <div class=\"wrap-frequency\">\n          <div class=\"d-flex align-items-end\">\n            <div class=\"frequency\"></div>\n            <div class=\"frequency\"></div>\n            <div class=\"frequency\"></div>\n          </div>\n        </div>\n      </div>\n    </div>");
       meetingShow.appendChild(div);
     }
   } // create new peer
@@ -47960,6 +47962,7 @@ var CommonChatRoomVideo = function () {
             vd.src = window.URL.createObjectURL(stream);
           }
         });
+        frequency($meetingItem, stream);
       }
     } else {
       frequency($('.wrap-my-video'), stream);
@@ -48029,6 +48032,7 @@ var CommonChatRoomVideo = function () {
 
   function outputStopAudio() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'my_video';
+    console.log(id);
 
     if (id !== 'my_video') {
       var $meetingItem = $(".meeting-part[data-id=\"".concat(id, "\"]"));
@@ -48042,6 +48046,7 @@ var CommonChatRoomVideo = function () {
             vd.src = null;
           }
         });
+        stopFrequency($meetingItem);
       }
     } else {
       stopFrequency($('.wrap-my-video'));
@@ -48532,7 +48537,7 @@ var CommonChatRoomVideo = function () {
       peer.peer.removeTrack(localStream.getAudioTracks()[0], localStream);
     }); // remove audio track of stream in local stream
 
-    localStream.removeTrack(localStream.getAudioTracks()[0]); // output stop my video
+    localStream.removeTrack(localStream.getAudioTracks()[0]); // output stop my audio
 
     socket.emit('stopAudioStream');
     outputStopAudio();
@@ -48725,7 +48730,7 @@ var CommonChatRoomVideo = function () {
 
           var FREQ = frequencyData[rang] / 255; // console.log(FREQ)
 
-          var height = 4 + FREQ * 20;
+          var height = 4 + FREQ * 15;
           $allRepeatedEls.eq(i).css('height', "".concat(height, "px"));
         }
       }, 60);
@@ -48736,7 +48741,9 @@ var CommonChatRoomVideo = function () {
   }
 
   function stopFrequency($meetingPart) {
+    console.log($meetingPart.find('.mic-frequency'));
     $meetingPart.find('.mic-frequency').removeClass('is-turn-on');
+    $meetingPart.find('.frequency').css('height', "4px");
     clearInterval($meetingPart.attr('data-fre'));
   } // pin meeting
 
