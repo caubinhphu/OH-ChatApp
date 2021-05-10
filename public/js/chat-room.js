@@ -46238,6 +46238,23 @@ var CommonChatRoom = function () {
       $('.chat-mana-sub').removeClass('is-active');
       $('.chat-m-sub-box').addClass('d-none');
     }
+  });
+  $('.btn-raise-hand').on('click', function (e) {
+    e.preventDefault();
+    var isRaising = $(this).hasClass('is-raising');
+    socket.emit('raiseHand', {
+      raise: !isRaising
+    });
+
+    if (isRaising) {
+      // un raise hand
+      $(this).find('.ctrl-label').text('Giơ tay');
+      $(this).removeClass('is-raising');
+    } else {
+      // raise hand
+      $(this).find('.ctrl-label').text('Bỏ tay xuống');
+      $(this).addClass('is-raising');
+    }
   }); // disconnect for self
 
   document.querySelector('#disconnect-btn').addEventListener('click', function () {
@@ -50698,6 +50715,10 @@ __webpack_require__.r(__webpack_exports__);
 
   socket.on('roomInfo', function (roomInfo) {
     outputRoomInfo(roomInfo, socket.id);
+  }); // receive room info users from server
+
+  socket.on('roomInfoUsers', function (roomInfo) {
+    outputRoomInfoUsers(roomInfo, socket.id);
   }); // receive message from server when leave all
 
   socket.on('leaveAllComplete', function (msg) {
@@ -50740,18 +50761,24 @@ __webpack_require__.r(__webpack_exports__);
     $('#room-info-password-room').html(roomInfo.password);
     $('#link-info').val("".concat(location.origin, "/meeting/?room=").concat(roomInfo.nameRoom, "&pass=").concat(roomInfo.password)); // amount participants
 
-    $('.amount-participants').html("(".concat(roomInfo.users.length, ")")); // participants
+    $('.amount-participants').html("(".concat(roomInfo.users.length, ")"));
+    outputRoomInfoUsers(roomInfo, socketId);
+  }
 
+  function outputRoomInfoUsers(roomInfo, socketId) {
+    // participants
     participants.innerHTML = roomInfo.users.sort(function (user1, user2) {
       if (user1.socketId === socketId) return -1;
       if (user2.socketId === socketId) return 1;
+      if (user1.raiseHand) return -1;
+      if (user2.raiseHand) return 1;
       if (user1.host) return -1;
       if (user2.host) return 1;
       return user1.name.localeCompare(user2.name, 'en', {
         sensitivity: 'base'
       });
     }).map(function (user) {
-      return "<div class=\"room-user p-2 d-flex justify-content-between ps-rv\">\n        <div class=\"pr-3\">\n          <img class=\"room-user-avatar\" src=\"".concat(user.avatar, "\" alt=\"u\" />\n          <span class=\"room-user-name ml-2\">\n            ").concat(user.name, "\n            ").concat(user.socketId === socketId ? ' (Bạn)' : '', "\n            ").concat(user.host ? ' (Host)' : '', "\n          </span>\n        </div>\n        <div class=\"mic-frequency\">\n          <span class=\"icomoon icon-mic_off text-danger\"></span>\n          <div class=\"wrap-frequency\">\n            <div class=\"d-flex align-items-end\">\n              <div class=\"frequency\"></div>\n              <div class=\"frequency\"></div>\n              <div class=\"frequency\"></div>\n            </div>\n          </div>\n        </div>\n      </div>");
+      return "<div class=\"room-user p-2 d-flex justify-content-between ps-rv\" data-id=\"".concat(user.socketId, "\">\n        <div class=\"pr-3\">\n          <img class=\"room-user-avatar\" src=\"").concat(user.avatar, "\" alt=\"u\" />\n          <span class=\"room-user-name ml-2\">\n            ").concat(user.name, "\n            ").concat(user.socketId === socketId ? ' (Bạn)' : '', "\n            ").concat(user.host ? ' (Host)' : '', "\n          </span>\n        </div>\n        <div class=\"raise-hand ").concat(user.raiseHand ? '' : 'd-none', "\">\n          <span class=\"icomoon icon-hand\"></span>\n        </div>\n        <div class=\"mic-frequency\">\n          <span class=\"icomoon icon-mic_off text-danger\"></span>\n          <div class=\"wrap-frequency\">\n            <div class=\"d-flex align-items-end\">\n              <div class=\"frequency\"></div>\n              <div class=\"frequency\"></div>\n              <div class=\"frequency\"></div>\n            </div>\n          </div>\n        </div>\n      </div>");
     }).join('');
   } // output leave room all modal
 

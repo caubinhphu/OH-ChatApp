@@ -83,6 +83,11 @@ const socket = function (io) {
     // receive signal check can record screen from a client
     socket.on('checkAllowRecord', roomController.onCheckAllowRecord);
 
+    // receive signal raise hand from a client
+    socket.on('raiseHand', function(data) {
+      roomController.onRaiseHand.bind(this, io, data)()
+    });
+
     // receive event require disconnect from client
     socket.on('disconnectRequest', roomController.onDisconnectRequest);
 

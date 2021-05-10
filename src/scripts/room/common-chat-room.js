@@ -353,6 +353,21 @@ const CommonChatRoom = (() => {
     }
   })
 
+  $('.btn-raise-hand').on('click', function(e) {
+    e.preventDefault()
+    const isRaising = $(this).hasClass('is-raising')
+    socket.emit('raiseHand', { raise: !isRaising })
+    if (isRaising) {
+      // un raise hand
+      $(this).find('.ctrl-label').text('Giơ tay')
+      $(this).removeClass('is-raising')
+    } else {
+      // raise hand
+      $(this).find('.ctrl-label').text('Bỏ tay xuống')
+      $(this).addClass('is-raising')
+    }
+  })
+
   // disconnect for self
   document
     .querySelector('#disconnect-btn')

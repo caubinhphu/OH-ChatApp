@@ -46,6 +46,11 @@ const ChatRoomHost = (() => {
     outputRoomInfo(roomInfo, socket.id);
   });
 
+  // receive room info users from server
+  socket.on('roomInfoUsers', (roomInfo) => {
+    outputRoomInfoUsers(roomInfo, socket.id);
+  });
+
   // event change management
   document.getElementsByName('management').forEach((checkbox) => {
     checkbox.addEventListener('change', function () {
@@ -164,38 +169,47 @@ const ChatRoomHost = (() => {
 
     // amount participants
     $('.amount-participants').html(`(${roomInfo.users.length})`);
+    outputRoomInfoUsers(roomInfo, socketId)
+  }
+
+  function outputRoomInfoUsers(roomInfo, socketId) {
     // participants
     participants.innerHTML = roomInfo.users
-      .sort((user1, user2) => {
-        if (user1.socketId === socketId) return -1;
-        if (user2.socketId === socketId) return 1;
-        return user1.name.localeCompare(user2.name, 'en', {
-          sensitivity: 'base',
-        });
-      })
-      .map((user) => {
-        return `<div class="room-user p-2 d-flex justify-content-between ps-rv" data-id="${user.socketId}">
-        <div class="pr-3">
-          <img class="room-user-avatar" src="${user.avatar}" alt="u" />
-          <span class="room-user-name ml-2">
-            ${user.name}
-            ${user.socketId === socketId ? ' (Bạn)(Host)' : ''}
-          </span>
-        </div>
-        <div class="mic-frequency">
-          <span class="icomoon icon-mic_off text-danger"></span>
-          <div class="wrap-frequency">
-            <div class="d-flex align-items-end">
-              <div class="frequency"></div>
-              <div class="frequency"></div>
-              <div class="frequency"></div>
-            </div>
+    .sort((user1, user2) => {
+      if (user1.socketId === socketId) return -1;
+      if (user2.socketId === socketId) return 1;
+      if (user1.raiseHand) return -1
+      if (user2.raiseHand) return 1
+      return user1.name.localeCompare(user2.name, 'en', {
+        sensitivity: 'base',
+      });
+    })
+    .map((user) => {
+      return `<div class="room-user p-2 d-flex justify-content-between ps-rv room-user-host" data-id="${user.socketId}">
+      <div class="pr-3">
+        <img class="room-user-avatar" src="${user.avatar}" alt="u" />
+        <span class="room-user-name ml-2">
+          ${user.name}
+          ${user.socketId === socketId ? ' (Bạn)(Host)' : ''}
+        </span>
+      </div>
+      <div class="raise-hand ${user.raiseHand ? '' : 'd-none'}">
+        <span class="icomoon icon-hand"></span>
+      </div>
+      <div class="mic-frequency">
+        <span class="icomoon icon-mic_off text-danger"></span>
+        <div class="wrap-frequency">
+          <div class="d-flex align-items-end">
+            <div class="frequency"></div>
+            <div class="frequency"></div>
+            <div class="frequency"></div>
           </div>
         </div>
-        ${user.socketId !== socketId ? outputKickBtn(user.id) : ''}
-      </div>`;
-      })
-      .join('');
+      </div>
+      ${user.socketId !== socketId ? outputKickBtn(user.id) : ''}
+    </div>`;
+    })
+    .join('');
 
     [...document.getElementsByClassName('kick-user-btn')].forEach((btn) => {
       btn.addEventListener('click', function () {
@@ -205,7 +219,7 @@ const ChatRoomHost = (() => {
   }
 
   function outputKickBtn(userId) {
-    return `<div>
+    return `<div class="wrap-kick-user">
     <button class="btn btn-default btn-sm text-danger kick-user-btn" title="Kick khỏi phòng" data-toggle="modal"
       data-target="#confirm-kick-user-modal" data-id="${userId}">
         <span class="icomoon icon-times-circle-o"></span>

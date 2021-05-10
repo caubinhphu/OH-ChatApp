@@ -23,6 +23,11 @@ const ChatRoom = (() => {
     outputRoomInfo(roomInfo, socket.id);
   });
 
+  // receive room info users from server
+  socket.on('roomInfoUsers', (roomInfo) => {
+    outputRoomInfoUsers(roomInfo, socket.id);
+  });
+
   // receive message from server when leave all
   socket.on('leaveAllComplete', (msg) => {
     window.notConfirmClose = true
@@ -78,11 +83,17 @@ const ChatRoom = (() => {
 
     // amount participants
     $('.amount-participants').html(`(${roomInfo.users.length})`);
+    outputRoomInfoUsers(roomInfo, socketId)
+  }
+
+  function outputRoomInfoUsers(roomInfo, socketId) {
     // participants
     participants.innerHTML = roomInfo.users
       .sort((user1, user2) => {
         if (user1.socketId === socketId) return -1;
         if (user2.socketId === socketId) return 1;
+        if (user1.raiseHand) return -1
+        if (user2.raiseHand) return 1
         if (user1.host) return -1;
         if (user2.host) return 1;
         return user1.name.localeCompare(user2.name, 'en', {
@@ -98,6 +109,9 @@ const ChatRoom = (() => {
             ${user.socketId === socketId ? ' (Bạn)' : ''}
             ${user.host ? ' (Host)' : ''}
           </span>
+        </div>
+        <div class="raise-hand ${user.raiseHand ? '' : 'd-none'}">
+          <span class="icomoon icon-hand"></span>
         </div>
         <div class="mic-frequency">
           <span class="icomoon icon-mic_off text-danger"></span>

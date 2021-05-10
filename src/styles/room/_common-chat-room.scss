@@ -195,13 +195,54 @@
   line-height: 23px;
 }
 .room-user {
+  border-radius: 5px;
+  overflow: hidden;
   .mic-frequency {
     right: 5px;
     left: auto;
     bottom: 50%;
     transform: translateY(50%);
+    transition: opacity .25s;
     &.is-turn-on {
       transform: none;
+    }
+  }
+  &:hover {
+    background-color: $color-e6;
+    &.room-user-host:not(:first-child) {
+      .wrap-kick-user {
+        transform: translate(0,-50%);
+      }
+      .mic-frequency {
+        opacity: 0;
+      }
+    }
+  }
+  .raise-hand {
+    position: absolute;
+    right: 30px;
+    left: auto;
+    bottom: 50%;
+    transform: translateY(50%);
+    transition: opacity .25s;
+    .icomoon {
+      color: $color-ff;
+    }
+  }
+}
+.wrap-kick-user {
+  position: absolute;
+  right: 0;
+  transform: translate(40px,-50%);
+  transition: all .25s;
+  z-index: 2;
+  top: 50%;
+  .icomoon {
+    font-size: 20px;
+  }
+  .kick-user-btn {
+    &:hover {
+      transform: scale(1.1);
     }
   }
 }
@@ -698,6 +739,11 @@ label.send-file {
   background: red;
   margin: 1px;
   border-radius: 5px;
+}
+.btn-raise-hand {
+  .icomoon {
+    color: $color-ff;
+  }
 }
 @media only screen and (max-width: 1024px) {
   .popup {

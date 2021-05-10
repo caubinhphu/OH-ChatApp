@@ -23,7 +23,11 @@ const userSchema = new mongoose.Schema({
     default: '/images/default-avatar.jpg',
   },
   timeJoin: Date,
-  timeLeave: Date
+  timeLeave: Date,
+  raiseHand: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const User = mongoose.model('User', userSchema);

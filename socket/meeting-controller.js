@@ -721,6 +721,30 @@ module.exports.onCheckAllowRecord = async function () {
   }
 };
 
+// receive signal check can record screen from a client
+module.exports.onRaiseHand = async function (io, { raise }) {
+  try {
+    const user = await User.findOne({ socketId: this.id });
+    if (user) {
+      const room = await Room.findOne({ users: user._id }).populate('users');
+      if (room) {
+        const userInRoom = room.users.find(u => u.id.toString() === user.id.toString())
+        if (userInRoom) {
+          userInRoom.raiseHand = raise
+          await userInRoom.save()
+
+          // update room info => send room info (name & password & users)
+          io.to(room.roomId).emit('roomInfoUsers', {
+            users: room.getRoomUsersInfo()
+          });
+        }
+      }
+    }
+  } catch (error) {
+    this.emit('error', hasErr);
+  }
+};
+
 // receive event require disconnect from client
 module.exports.onDisconnectRequest = function (reason) {
   // emit disconnect

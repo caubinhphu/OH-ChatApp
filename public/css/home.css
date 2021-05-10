@@ -6498,6 +6498,10 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E934";
 }
 
+.icon-hand:before {
+  content: "\E935";
+}
+
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   -o-transition: background-color 5000s ease-in-out 0s;
@@ -6870,15 +6874,63 @@ input:-webkit-autofill {
   line-height: 23px;
 }
 
+.room-user {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
 .room-user .mic-frequency {
   right: 5px;
   left: auto;
   bottom: 50%;
   transform: translateY(50%);
+  transition: opacity .25s;
 }
 
 .room-user .mic-frequency.is-turn-on {
   transform: none;
+}
+
+.room-user:hover {
+  background-color: #e6eff6;
+}
+
+.room-user:hover.room-user-host:not(:first-child) .wrap-kick-user {
+  transform: translate(0, -50%);
+}
+
+.room-user:hover.room-user-host:not(:first-child) .mic-frequency {
+  opacity: 0;
+}
+
+.room-user .raise-hand {
+  position: absolute;
+  right: 30px;
+  left: auto;
+  bottom: 50%;
+  transform: translateY(50%);
+  transition: opacity .25s;
+}
+
+.room-user .raise-hand .icomoon {
+  color: #ffad5b;
+}
+
+.wrap-kick-user {
+  position: absolute;
+  right: 0;
+  transform: translate(40px, -50%);
+  transition: all .25s;
+  z-index: 2;
+  top: 50%;
+}
+
+.wrap-kick-user .icomoon {
+  font-size: 20px;
+}
+
+.wrap-kick-user .kick-user-btn:hover {
+  transform: scale(1.1);
 }
 
 .message-avatar,
@@ -7393,6 +7445,10 @@ label.send-file.disabled .icomoon {
   background: red;
   margin: 1px;
   border-radius: 5px;
+}
+
+.btn-raise-hand .icomoon {
+  color: #ffad5b;
 }
 
 @media only screen and (max-width: 1024px) {

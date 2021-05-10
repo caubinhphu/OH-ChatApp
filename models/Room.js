@@ -108,6 +108,7 @@ roomSchema.methods.getRoomUsersInfo = function () {
         socketId: user.socketId,
         host: user.host,
         avatar: user.avatar,
+        raiseHand: user.raiseHand
       };
     });
 };
