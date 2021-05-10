@@ -6596,7 +6596,8 @@ input:-webkit-autofill {
 #chat-company {
   border-bottom: 1px dotted #22c0c9;
   text-align: center;
-  font-size: 25px;
+  font-size: 30px;
+  font-weight: bold;
   font-family: "Itim", cursive;
 }
 
@@ -6803,6 +6804,10 @@ input:-webkit-autofill {
   background-color: transparent;
 }
 
+.wrap-pin .icomoon {
+  font-size: 20px;
+}
+
 .wrap-conts {
   transform: none;
 }
@@ -6863,6 +6868,17 @@ input:-webkit-autofill {
   margin-left: auto;
   text-align: left;
   line-height: 23px;
+}
+
+.room-user .mic-frequency {
+  right: 5px;
+  left: auto;
+  bottom: 50%;
+  transform: translateY(50%);
+}
+
+.room-user .mic-frequency.is-turn-on {
+  transform: none;
 }
 
 .message-avatar,

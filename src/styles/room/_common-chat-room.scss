@@ -132,6 +132,9 @@
   &:hover {
     background-color: transparent;
   }
+  .icomoon {
+    font-size: 20px;
+  }
 }
 
 .wrap-conts {
@@ -191,7 +194,17 @@
   text-align: left;
   line-height: 23px;
 }
-
+.room-user {
+  .mic-frequency {
+    right: 5px;
+    left: auto;
+    bottom: 50%;
+    transform: translateY(50%);
+    &.is-turn-on {
+      transform: none;
+    }
+  }
+}
 .message-avatar,
 .room-user-avatar,
 .waiting-room-user-avatar {

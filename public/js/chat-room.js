@@ -47963,9 +47963,20 @@ var CommonChatRoomVideo = function () {
           }
         });
         frequency($meetingItem, stream);
+        var $roomUser = $(".room-user[data-id=\"".concat(id, "\"]"));
+
+        if ($roomUser.length) {
+          frequency($roomUser, stream);
+        }
       }
     } else {
       frequency($('.wrap-my-video'), stream);
+
+      var _$roomUser = $(".room-user[data-id=\"".concat(socket.id, "\"]"));
+
+      if (_$roomUser.length) {
+        frequency(_$roomUser, stream);
+      }
     }
   } // output stop video
 
@@ -48046,9 +48057,20 @@ var CommonChatRoomVideo = function () {
           }
         });
         stopFrequency($meetingItem);
+        var $roomUser = $(".room-user[data-id=\"".concat(id, "\"]"));
+
+        if ($roomUser.length) {
+          stopFrequency($roomUser);
+        }
       }
     } else {
       stopFrequency($('.wrap-my-video'));
+
+      var _$roomUser2 = $(".room-user[data-id=\"".concat(socket.id, "\"]"));
+
+      if (_$roomUser2.length) {
+        stopFrequency(_$roomUser2);
+      }
     }
   } // output leave room for stream
 
@@ -50729,7 +50751,7 @@ __webpack_require__.r(__webpack_exports__);
         sensitivity: 'base'
       });
     }).map(function (user) {
-      return "<div class=\"room-user p-2 d-flex justify-content-between\">\n        <div>\n          <img class=\"room-user-avatar\" src=\"".concat(user.avatar, "\" alt=\"u\" />\n          <span class=\"room-user-name ml-2\">").concat(user.name).concat(user.socketId === socketId ? ' (Bạn)' : '').concat(user.host ? ' (Host)' : '', "</span>\n        </div>\n      </div>");
+      return "<div class=\"room-user p-2 d-flex justify-content-between ps-rv\">\n        <div class=\"pr-3\">\n          <img class=\"room-user-avatar\" src=\"".concat(user.avatar, "\" alt=\"u\" />\n          <span class=\"room-user-name ml-2\">\n            ").concat(user.name, "\n            ").concat(user.socketId === socketId ? ' (Bạn)' : '', "\n            ").concat(user.host ? ' (Host)' : '', "\n          </span>\n        </div>\n        <div class=\"mic-frequency\">\n          <span class=\"icomoon icon-mic_off text-danger\"></span>\n          <div class=\"wrap-frequency\">\n            <div class=\"d-flex align-items-end\">\n              <div class=\"frequency\"></div>\n              <div class=\"frequency\"></div>\n              <div class=\"frequency\"></div>\n            </div>\n          </div>\n        </div>\n      </div>");
     }).join('');
   } // output leave room all modal
 

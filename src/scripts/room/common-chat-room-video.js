@@ -402,9 +402,17 @@ const CommonChatRoomVideo = (() => {
           }
         })
         frequency($meetingItem, stream)
+        const $roomUser = $(`.room-user[data-id="${id}"]`)
+        if ($roomUser.length) {
+          frequency($roomUser, stream)
+        }
       }
     } else {
       frequency($('.wrap-my-video'), stream)
+      const $roomUser = $(`.room-user[data-id="${socket.id}"]`)
+      if ($roomUser.length) {
+        frequency($roomUser, stream)
+      }
     }
   }
 
@@ -473,9 +481,17 @@ const CommonChatRoomVideo = (() => {
           }
         })
         stopFrequency($meetingItem)
+        const $roomUser = $(`.room-user[data-id="${id}"]`)
+        if ($roomUser.length) {
+          stopFrequency($roomUser)
+        }
       }
     } else {
       stopFrequency($('.wrap-my-video'))
+      const $roomUser = $(`.room-user[data-id="${socket.id}"]`)
+      if ($roomUser.length) {
+        stopFrequency($roomUser)
+      }
     }
   }
 

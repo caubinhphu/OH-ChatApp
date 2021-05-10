@@ -174,12 +174,23 @@ const ChatRoomHost = (() => {
         });
       })
       .map((user) => {
-        return `<div class="room-user p-2 d-flex justify-content-between">
-        <div>
+        return `<div class="room-user p-2 d-flex justify-content-between ps-rv" data-id="${user.socketId}">
+        <div class="pr-3">
           <img class="room-user-avatar" src="${user.avatar}" alt="u" />
-          <span class="room-user-name ml-2">${user.name}${
-        user.socketId === socketId ? ' (Bạn)(Host)' : ''
-      }</span>
+          <span class="room-user-name ml-2">
+            ${user.name}
+            ${user.socketId === socketId ? ' (Bạn)(Host)' : ''}
+          </span>
+        </div>
+        <div class="mic-frequency">
+          <span class="icomoon icon-mic_off text-danger"></span>
+          <div class="wrap-frequency">
+            <div class="d-flex align-items-end">
+              <div class="frequency"></div>
+              <div class="frequency"></div>
+              <div class="frequency"></div>
+            </div>
+          </div>
         </div>
         ${user.socketId !== socketId ? outputKickBtn(user.id) : ''}
       </div>`;
