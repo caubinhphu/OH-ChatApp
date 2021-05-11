@@ -572,8 +572,13 @@ module.exports.putAddFriend = async (req, res) => {
       const indexReq = member.friendRequests.findIndex(fr => fr.toString() === me.id)
       const indexInv = me.friendInvitations.findIndex(fr => fr.toString() === memberId)
       if (indexReq !== -1 && indexInv !== -1) {
+        const message = await Message.create({
+          time: new Date(),
+          type: 'start',
+          memberSendId: me.id
+        })
         const groupMessage = await GroupMessage.create({
-          messages: []
+          messages: [message.id]
         });
         me.friends.push({
           _id: memberId,

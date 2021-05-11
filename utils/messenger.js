@@ -72,6 +72,13 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.class = 'call-msg call-outgoing call-video call-video'
     }
   } else if (msg.type === 'text') {
+  } else if (msg.type === 'start') {
+    msgFormat.content = `
+      <img src="${friend.avatar}" alt="${friend.name}"/>
+      <h4>${friend.name}</h4>
+      <div>Các bạn đã trở thành bạn của nhau</div>
+    `
+    msgFormat.class = 'msg-start'
   } else {
     msgFormat.fileName = msg.fileName
   }
@@ -128,6 +135,8 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
     } else {
       msg = `Bạn đã bỏ lỡ cuộc gọi của ${friend.name}`
     }
+  } else if (latestMsgObj.type === 'start') {
+    msg = 'Các bạn đã trở thành bạn bè'
   } else {
     if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = 'Bạn đã gửi 1 đính kèm'

@@ -514,6 +514,12 @@ const Index = (async () => {
 
 
           const htmlMsgs = messages.map(msg => {
+            if (msg.class === 'msg-start') {
+              return  `
+                <div class="message text-center ${msg.class}">
+                  ${msg.content}
+                </div>`
+            }
             const timeEndCall = msg.timeCall ? `<small class="time-call">${msg.timeCall}</small>` : ''
             if (msg.me) {
               let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`

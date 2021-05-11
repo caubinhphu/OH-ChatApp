@@ -121,6 +121,21 @@
     color: $color-10;
     text-align: right;
   }
+  &.msg-start {
+    img {
+      max-width: 65px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    h4 {
+      margin-bottom: 0;
+      font-weight: 600;
+    }
+    div {
+      color: $color-7f;
+      font-size: 15px;
+    }
+  }
 }
 
 .msg {
