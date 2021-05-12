@@ -655,15 +655,15 @@ const Messenger = (async () => {
       </div>
       <div class="chat-mini-bottom">
         <div class="files-upload-box d-flex justify-content-center flex-wrap"></div>
-        <form class="d-flex ps-rv">
-          <label class="btn btn-default send-file m-0 p-2" for="send-file-${senderId}">
+        <form class="d-flex ps-rv align-items-center">
+          <label class="btn btn-default send-file m-0 p-2" for="send-file-${senderId}" title="Chọn tệp">
             <span class="icomoon icon-insert_drive_file"></span>
           </label>
           <input class="d-none send-file-input" id="send-file-${senderId}" type="file" name="file" multiple="multiple">
-          <button class="btn btn-default send-take-photo m-0 p-2" data-toggle="modal" data-target="#modal-take-photo">
+          <button class="btn btn-default send-take-photo m-0 p-2" data-toggle="modal" data-target="#modal-take-photo" title="Chụp ảnh">
             <span class="icomoon icon-camera"></span>
           </button>
-          <button class="btn btn-default send-rec m-0 p-2 ps-rv">
+          <button class="btn btn-default send-rec m-0 p-2 ps-rv" title="Ghi âm">
             <span class="icomoon icon-mic"></span>
             <div class="rec-bar d-none">
               <div class="d-flex align-items-center justify-content-around">
@@ -672,12 +672,12 @@ const Messenger = (async () => {
               </div>
             </div>
           </button>
-          <button class="btn btn-default open-emojis" type="button">&#128512;</button>
+          <button class="btn btn-default open-emojis" type="button" title="Biểu tượng cảm xúc">&#128512;</button>
           <input type="hidden" name="_token" value="${token}">
             <div class="flex-fill wrap-msg-box ps-rv">
               <textarea class="form-control msg-mini" type="text" name="message" placeholder="Nhập tin nhắn" autocomplete="off"></textarea>
             </div>
-            <button class="btn btn-default text-secondary">
+            <button class="btn btn-default text-secondary" title="Gửi">
               <span class="icomoon icon-send"></span>
             </button>
           <div class="confirm-popup ps-rv d-none">
@@ -1002,7 +1002,7 @@ const Messenger = (async () => {
             let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
             if (msg.fileName) {
               if (msg.type === 'image') {
-                contentHtml = `<small class="message-content mx-0"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
+                contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
               } else if (msg.type === 'video') {
                 contentHtml = `<small class="message-content mx-0 d-flex"><video class="pre-video" controls src="${msg.content}"></video/></small>`  
               } else if (msg.type === 'audio') {
@@ -1027,7 +1027,7 @@ const Messenger = (async () => {
           let contentHtml = `<small class="message-content">${msg.content}</small>`
           if (msg.fileName) {
             if (msg.type === 'image') {
-              contentHtml = `<small class="message-content"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
+              contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
             } else if (msg.type === 'video') {
               contentHtml = `<small class="message-content d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
             } else if (msg.type === 'audio') {
@@ -1110,7 +1110,7 @@ const Messenger = (async () => {
         if (file) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
           if (file.resourceType === 'image') {
-            $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+            $(ele).parents('.message-content').html(`<a href="${file.url}" target="_blank" title="${file.name}"><img class="pre-img" src="${file.url}" alt="${file.name}" /></a>`)
           } else if (file.resourceType === 'video') {
             $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${file.url}"></video>`)
           } else if (file.resourceType === 'aduio') {
@@ -1170,7 +1170,7 @@ const Messenger = (async () => {
         if (fileFind) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
           if (fileFind.resourceType === 'image') {
-            $(ele).parents('.message-content').html(`<img class="pre-img" src="${fileFind.url}" alt="${fileFind.name}" />`)
+            $(ele).parents('.message-content').html(`<a href="${fileFind.url}" target="_blank" title="${fileFind.name}"><img class="pre-img" src="${fileFind.url}" alt="${fileFind.name}" /></a>`)
           } else if (fileFind.resourceType === 'video') {
             if (audio) {
               $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${fileFind.url}"><audio/>`)

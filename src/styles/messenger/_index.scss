@@ -69,7 +69,10 @@
 .friend-item-info > small {
   color: #6c757d;
 }
-
+.open-emojis {
+  padding-left: 5px;
+  padding-right: 5px;
+}
 .message {
   width: 100%;
   height: max-content;
@@ -80,6 +83,14 @@
     &:hover {
       color: $color-10;
       text-decoration: none;
+    }
+  }
+  .msg-me {
+    a {
+      color: white;
+      &:hover {
+        color: $white;
+      }
     }
   }
   &.call-msg {
@@ -160,8 +171,17 @@
   line-height: 23px;
   display: flex;
   align-items: center;
+  .message-content {
+    color: $white;
+  }
 }
-
+.send-file,
+.send-take-photo,
+.send-rec {
+  &:hover {
+    color: $black;
+  }
+}
 .message-avatar {
   width: 25px;
   height: 25px;

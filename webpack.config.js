@@ -16,18 +16,18 @@ module.exports = {
       './src/scripts/home.js',
       './src/styles/app-meeting.scss',
     ],
-    'create-room': [babelPolyfill, './src/scripts/create-room.js'],
-    'join-room': [babelPolyfill, './src/scripts/join-room.js'],
-    'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
-    'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
+    // 'create-room': [babelPolyfill, './src/scripts/create-room.js'],
+    // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
+    // 'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
+    // 'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
     'home-messenger': [
       babelPolyfill,
       './src/scripts/home-messenger.js',
       './src/styles/app-messenger.scss',
     ],
     'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
-    'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
-    'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
+    // 'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
+    // 'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -55,7 +55,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 url: false,
-                minimize: true,
+                minimize: false,
               },
             },
             // Compiles Sass to CSS
@@ -69,7 +69,7 @@ module.exports = {
                 sourceMap: true,
                 sourceMapContents: true,
                 url: false,
-                minimize: true,
+                minimize: false,
               },
             },
           ],
@@ -94,12 +94,12 @@ module.exports = {
     }),
     new webpack.LoaderOptionsPlugin({
       optimization: {
-        minimizer: [new UglifyJSPlugin()],
-        minimizer: true,
+        // minimizer: [new UglifyJSPlugin()],
+        minimizer: false,
       },
     }),
   ],
   optimization: {
-    minimize: true,
+    minimize: false,
   },
 };

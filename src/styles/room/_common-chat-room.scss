@@ -173,6 +173,14 @@
       text-decoration: none;
     }
   }
+  .msg-me {
+    a {
+      color: white;
+      &:hover {
+        color: $white;
+      }
+    }
+  }
 }
 
 .msg {
@@ -193,6 +201,9 @@
   margin-left: auto;
   text-align: left;
   line-height: 23px;
+  .message-content {
+    color: $white;
+  }
 }
 .room-user {
   border-radius: 5px;
@@ -593,20 +604,16 @@
   cursor: pointer;
   padding: 5px 0;
   border-radius: 10px;
+  color: $white;
   &:hover {
-    background-color: $gray-900;
+    background-color: $color-22;
     text-decoration: none;
-    color: inherit;
-  }
-}
-#chat-area {
-  .icon-insert_drive_file {
-    color: $color-22;
+    color: $white;
   }
 }
 .files-upload-box {
   .file-item {
-    height: 40px;
+    height: 34px;
     width: 90px;
     background: $color-22;
     margin: 5px;
@@ -615,14 +622,15 @@
     align-items: center;
     padding: 0 5px;
     position: relative;
-    span {
+    > span {
       overflow: hidden;
       -webkit-line-clamp: 1;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       max-width: 248px;
       word-break: break-all;
-      color: $color-10;
+      color: $white;
+      line-height: 18px;
     }
     button {
       position: absolute;
@@ -703,11 +711,19 @@
   }
 }
 label.send-file {
+  .icomoon {
+    color: $color-22;
+  }
   &.disabled {
     cursor: no-drop;
     opacity: .5;
     .icomoon {
       color: $color-0c;
+    }
+  }
+  &:hover {
+    .icomoon {
+      color: $black;
     }
   }
 }

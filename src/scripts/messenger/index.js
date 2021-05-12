@@ -525,7 +525,7 @@ const Index = (async () => {
               let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
               if (msg.fileName) {
                 if (msg.type === 'image') {
-                  contentHtml = `<small class="message-content mx-0"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
+                  contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
                 } else if (msg.type === 'video') {
                   contentHtml = `<small class="message-content mx-0 d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
                 } else if (msg.type === 'audio') {
@@ -550,7 +550,7 @@ const Index = (async () => {
             let contentHtml = `<small class="message-content">${msg.content}</small>`
             if (msg.fileName) {
               if (msg.type === 'image') {
-                contentHtml = `<small class="message-content"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></small>`  
+                contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
               } else if (msg.type === 'video') {
                 contentHtml = `<small class="message-content d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
               } else if (msg.type === 'audio') {
@@ -862,7 +862,7 @@ const Index = (async () => {
           if (file) {
             $(ele).parents('.wrap-msg-file').addClass('load-done')
             if (file.resourceType === 'image') {
-              $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+              $(ele).parents('.message-content').html(`<a href="${file.url}" target="_blank" title="${file.name}"><img class="pre-img" src="${file.url}" alt="${file.name}" /></a>`)
             } else if (file.resourceType === 'video') {
               $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${file.url}"></video>`)
             } else if (file.resourceType === 'audio') {
@@ -921,7 +921,7 @@ const Index = (async () => {
           if (file) {
             $(ele).parents('.wrap-msg-file').addClass('load-done')
             if (file.resourceType === 'image') {
-              $(ele).parents('.message-content').html(`<img class="pre-img" src="${file.url}" alt="${file.name}" />`)
+              $(ele).parents('.message-content').html(`<a href="${file.url}" target="_blank" title="${file.name}"><img class="pre-img" src="${file.url}" alt="${file.name}" /></a>`)
             } else if (file.resourceType === 'video') {
               if (audio) {
                 $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${file.url}"><audio/>`)

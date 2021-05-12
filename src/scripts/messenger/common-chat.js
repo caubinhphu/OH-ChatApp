@@ -689,7 +689,7 @@ const CommonChat = (() => {
     if (isValidHttpUrl(msgObj.message)) {
       if (msgObj.type === 'file') {
         if (msgObj.resourceType === 'image') {
-          content = `<img class="pre-img" src="${msgObj.message}" alt="${msgObj.nameFile}" />`  
+          content = `<a href="${msgObj.message}" target="_blank" title="${msgObj.nameFile}"><img class="pre-img" src="${msgObj.message}" alt="${msgObj.nameFile}" /></a>`  
         } else if (msgObj.resourceType === 'video') {
           content = `<video class="pre-video" controls src="${msgObj.message}"></video>`  
           classAdd = 'd-flex'

@@ -209,6 +209,22 @@
       }
     }
   }
+  &.btn-outline-white {
+    background-color: transparent;
+    color: $white;
+    &:after {
+      box-shadow: inset 0 0 0 1px $white;
+    }
+    &:hover {
+      color: $white;
+      span {
+        color: $white;
+      }
+      &::after {
+        box-shadow: inset 0 0 0 45px $color-22;
+      }
+    }
+  }
   &.btn-disabled {
     color: $color-74;
     cursor: no-drop;

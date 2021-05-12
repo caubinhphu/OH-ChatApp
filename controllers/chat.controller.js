@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 // upload file
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 500000, files: 5 },
+  limits: { fileSize: 1000000, files: 5 },
   fileFilter: (req, file, cb) => {
     // ext type
     const extTypes = /js/;
@@ -52,7 +52,7 @@ module.exports.uploadFile = async (req, res) => {
       if (err.code === 'LIMIT_FILE_COUNT') {
         messageError = 'Chỉ được gửi tối đa 5 tệp cùng một lúc'
       } else if(err.code === 'LIMIT_FILE_SIZE') {
-        messageError = 'Kích thước tệp không vượt quá 100KB'
+        messageError = 'Kích thước tệp không vượt quá 1MB'
       } else {
         messageError = err.message
       }

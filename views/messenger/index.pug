@@ -85,7 +85,8 @@ block contentMain
                           if (msg.fileName)
                             small.message-content.mx-0.d-flex
                               if (msg.type === 'image')
-                                img.pre-img(src=msg.content, alt=msg.fileName)
+                                a(href=msg.content, target="_blank", title=msg.fileName)
+                                  img.pre-img(src=msg.content, alt=msg.fileName)
                               else if (msg.type === 'video')
                                 video.pre-video(src=msg.content, controls)
                               else if (msg.type === 'audio')
@@ -108,7 +109,8 @@ block contentMain
                           if (msg.fileName)
                             small.message-content.d-flex
                               if (msg.type === 'image')
-                                img.pre-img(src=msg.content, alt=msg.fileName)
+                                a(href=msg.content, target="_blank", title=msg.fileName)
+                                  img.pre-img(src=msg.content, alt=msg.fileName)
                               else if (msg.type === 'video')
                                 video.pre-video(src=msg.content, controls)
                               else if (msg.type === 'audio')
@@ -125,23 +127,23 @@ block contentMain
 
           #main-right-top-chat-input.mb-1.px-2.wrap-chat-input.ps-rv
             .files-upload-box.d-flex.justify-content-center.flex-wrap
-            form.d-flex.ps-rv(name="sendMsgForm", method="post")
-              label.btn.btn-default.send-file.m-0.p-2(for="send-file")
+            form.d-flex.align-items-center.ps-rv(name="sendMsgForm", method="post")
+              label.btn.btn-default.send-file.m-0.p-2(for="send-file", title="Chọn tệp")
                 span.icomoon.icon-insert_drive_file
               input#send-file.d-none(type="file", name="file", multiple)
-              button.btn.btn-default.send-take-photo.m-0.p-2(data-toggle="modal", data-target="#modal-take-photo")
+              button.btn.btn-default.send-take-photo.m-0.p-2(data-toggle="modal", data-target="#modal-take-photo", title="Chụp ảnh")
                 span.icomoon.icon-camera
-              button.btn.btn-default.send-rec.m-0.p-2.ps-rv
+              button.btn.btn-default.send-rec.m-0.p-2.ps-rv(title="Ghi âm")
                 span.icomoon.icon-mic
                 .rec-bar.d-none
                   .d-flex.align-items-center.justify-content-around
                     span.icomoon.icon-close.rec-cancel
                     span.rec-time 0:00
-              button.btn.btn-default.open-emojis(type="button") &#128512;
+              button.btn.btn-default.open-emojis(type="button", title="Biểu tương cảm xúc") &#128512;
               input(type="hidden", name="_token", value=token)
               .flex-fill.wrap-msg-box.ps-rv
                 textarea#msg.form-control(name="message", placeholder="Nhập tin nhắn", autocomplete="off")
-              button.btn.btn-default.text-secondary
+              button.btn.btn-default.text-secondary(title="Gửi")
                 span.icomoon.icon-send
               .confirm-popup.ps-rv.d-none
                 .msg-output
