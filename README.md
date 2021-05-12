@@ -92,7 +92,7 @@
     - Các hoạt động liên quan đến kết bạn
 </details>
 <details>
-  <summary>Version 3.1.0 (08/05/2021)</summary>
+  <summary>Version 3.1.0 (12/05/2021)</summary>
   Chức năng thêm:
   
   - Meeting
@@ -101,10 +101,13 @@
     - Nâng cấp quản lý phòng
     - Quay màn hình
     - Tạo Text
+    - Giơ tay
+    - Tần số audio chat
   - Messenger
     - Gửi file
     - Trợ lý nhắn tin
     - Quên mật khẩu
     - Chụp ảnh, ghi âm
     - Thông báo
+    - Tin nhắn bắt đầu
 </details>
