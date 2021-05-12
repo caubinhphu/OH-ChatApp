@@ -367,10 +367,11 @@ module.exports.uploadFile = async (req, res) => {
               path.basename(file.filename, path.extname(file.filename)),
               'ohchat/upload'
             );
+            const isAudio = /audio/.test(file.mimetype)
             fileUrls.push({
               name: file.originalname,
               url: result.secure_url,
-              resourceType: result.resource_type
+              resourceType: isAudio ? 'audio' : result.resource_type
             })
           }));
 
@@ -381,6 +382,7 @@ module.exports.uploadFile = async (req, res) => {
           return res.status(400).json({ message: notMem });
         }
       } catch (error) {
+        console.log(error);
         return res.status(400).json({ message: 'Gửi file thất bại' });
       }
     }

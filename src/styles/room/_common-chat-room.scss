@@ -622,7 +622,7 @@
     align-items: center;
     padding: 0 5px;
     position: relative;
-    > span {
+    & > span {
       overflow: hidden;
       -webkit-line-clamp: 1;
       display: -webkit-box;

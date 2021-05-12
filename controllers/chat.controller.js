@@ -59,6 +59,7 @@ module.exports.uploadFile = async (req, res) => {
       return res.status(400).json({ message: messageError });
     } else {
       try {
+        console.log(req.files);
         // console.log(req.user.id);
         // const member = await Member.findById(req.user.id);
         // if (member) {
@@ -71,10 +72,11 @@ module.exports.uploadFile = async (req, res) => {
               path.basename(file.filename, path.extname(file.filename)),
               'ohchat/upload'
             );
+            const isAudio = /audio/.test(file.mimetype)
             fileUrls.push({
               name: file.originalname,
               url: result.secure_url,
-              resourceType: result.resource_type
+              resourceType: isAudio ? 'audio' : result.resource_type
             })
           }));
 

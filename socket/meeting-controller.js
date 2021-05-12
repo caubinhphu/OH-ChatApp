@@ -1019,7 +1019,7 @@ async function removeFileUpload(messageIds) {
             publicIds.resRaws.push('ohchat/upload/' + id[0])
           } else if (msg.type === 'image') {
             publicIds.resImages.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
-          } else if (msg.type === 'video') {
+          } else if (msg.type === 'video' || msg.type === 'audio') {
             publicIds.resVideos.push('ohchat/upload/' + path.basename(id[0], path.extname(id[0])))
           }
         }

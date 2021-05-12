@@ -1113,7 +1113,7 @@ const Messenger = (async () => {
             $(ele).parents('.message-content').html(`<a href="${file.url}" target="_blank" title="${file.name}"><img class="pre-img" src="${file.url}" alt="${file.name}" /></a>`)
           } else if (file.resourceType === 'video') {
             $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${file.url}"></video>`)
-          } else if (file.resourceType === 'aduio') {
+          } else if (file.resourceType === 'audio') {
             $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${file.url}"></audio>`)
           } else {
             ele.href = file.url
