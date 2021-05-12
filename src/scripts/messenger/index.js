@@ -588,7 +588,7 @@ const Index = (async () => {
       } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
         $(classScBottom).addClass('is-show');
       } else {
-        $(classScBottom).removeClass('is-show');
+        $(classScBottom).removeClass('is-show is-has-new-msg');
       }
     });
 
@@ -756,8 +756,12 @@ const Index = (async () => {
         // output message
         window.outputMessage(msgObj);
 
-        // scroll bottom
-        chatMain.scrollTop = chatMain.scrollHeight;
+        if ($(classScBottom).hasClass('is-show')) {
+          $(classScBottom).addClass('is-has-new-msg')          
+        } else {
+          // scroll bottom
+          chatMain.scrollTop = chatMain.scrollHeight;
+        }
 
         $itemFri.find('.last-msg').removeClass('un-read')
       } else {

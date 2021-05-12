@@ -70,7 +70,8 @@ block contentMain
           .wrap-msg-box.ps-rv.flex-fill
             .wrap-loader-chat.d-none
               img(src="/images/loader.svg", alt="loader")
-            .scroll-bottom
+            .scroll-bottom.text-center
+              .has-new-msg Tin nhắn mới
               span.icomoon.icon-circle-down
             #main-right-chat-content.p-2.h-100
               each msg in messagesActive

@@ -36,8 +36,12 @@ const CommonChatRoom = (() => {
     // output message
     outputMessage(msgObj);
 
-    // scroll bottom
-    chatMain.scrollTop = chatMain.scrollHeight;
+    if ($('.scroll-bottom').hasClass('is-show')) {
+      $('.scroll-bottom').addClass('is-has-new-msg')
+    } else {
+      // scroll bottom
+      chatMain.scrollTop = chatMain.scrollHeight;
+    }
   });
 
   // event submit form chat
@@ -482,7 +486,7 @@ const CommonChatRoom = (() => {
     if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
       $('#chat-area .scroll-bottom').addClass('is-show');
     } else {
-      $('#chat-area .scroll-bottom').removeClass('is-show');
+      $('#chat-area .scroll-bottom').removeClass('is-show is-has-new-msg');
     }
   });
 

@@ -420,13 +420,28 @@
   transition: all .2s;
   z-index: 9;
   line-height: 27px;
-  color: $color-7f;
+  color: $black;
+  .icomoon {
+    transition: all .25s;
+    display: inline-block;
+  }
   &:hover {
-    transform: translateX(-50%) scale(1.1);
+    .icomoon {
+      font-size: 30px;
+    }
   }
   &.is-show {
     display: block;
   }
+  &.is-has-new-msg {
+    .has-new-msg {
+      display: block;
+    }
+    .icomoon {
+      animation: bounce2 5s infinite;
+    }
+  }
+
 }
 .popup {
   position: absolute;

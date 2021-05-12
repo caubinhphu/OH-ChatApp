@@ -364,8 +364,12 @@ const Messenger = (async () => {
 
       window.outputMessage(msgObj, false, $chatMain);
 
-      // scroll bottom
-      window.scrollBottomChatBox($chatMain)
+      if ($popup.find(classScroll).hasClass('is-show')) {
+        $popup.find(classScroll).addClass('is-has-new-msg')
+      } else {
+        // scroll bottom
+        window.scrollBottomChatBox($chatMain)
+      }
 
       if ($popup.hasClass(nClassCloseMini)) {
         $popup.removeClass(nClassCloseMini)
@@ -620,7 +624,7 @@ const Messenger = (async () => {
           <img src="/images/loader.svg" alt="loader" />
         </div>
       </div>
-      <div class="scroll-bottom"><span class="icomoon icon-circle-down"></span></div>
+      <div class="scroll-bottom text-center"><div class="has-new-msg">Tin nhắn mới</div><span class="icomoon icon-circle-down"></span></div>
       <img class="avatar-mini-2" src="${msgObj.avatar}" alt="${msgObj.username}" title="${msgObj.username}" />
       <div class="preview-msg">
         <span></span>
@@ -853,7 +857,7 @@ const Messenger = (async () => {
       } else if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
         $popup.find(classScroll).addClass('is-show');
       } else {
-        $popup.find(classScroll).removeClass('is-show');
+        $popup.find(classScroll).removeClass('is-show is-has-new-msg');
       }
     });
 
