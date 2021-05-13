@@ -441,6 +441,11 @@
       animation: bounce2 5s infinite;
     }
   }
+  .has-new-msg {
+    display: none;
+    line-height: 1;
+    font-size: 15px;
+  }
 
 }
 .popup {
