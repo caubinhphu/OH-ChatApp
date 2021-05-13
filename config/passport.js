@@ -108,7 +108,7 @@ module.exports.facebook = (passport) => {
             );
             if (profile.photos) {
               // download
-              download(profile.photos[0].value, pathFile, () => { /* */ });
+              await download(profile.photos[0].value, pathFile, () => { /* */ });
 
               // upload
               const result = await cloudinary.upload(
