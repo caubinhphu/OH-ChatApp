@@ -102,7 +102,7 @@ module.exports.facebook = (passport) => {
             let avatar = '/images/default-avatar.jpg';
             const pathFile = path.join(
               __dirname,
-              '..',
+              // '..',
               'public/images/user/avatar',
               profile.id + '.jpg'
             );
@@ -159,7 +159,7 @@ module.exports.google = (passport) => {
             let avatar = '/images/default-avatar.jpg';
             const pathFile = path.join(
               __dirname,
-              '..',
+              // '..',
               'public/images/user/avatar',
               profile.id + '.jpg'
             );
