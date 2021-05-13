@@ -106,6 +106,7 @@ module.exports.facebook = (passport) => {
               'public/images/user/avatar',
               profile.id + '.jpg'
             );
+            console.log(pathFile);
             if (profile.photos) {
               // download
               download(profile.photos[0].value, pathFile, () => { /* */ });
