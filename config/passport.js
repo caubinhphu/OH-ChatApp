@@ -102,11 +102,10 @@ module.exports.facebook = (passport) => {
             let avatar = '/images/default-avatar.jpg';
             const pathFile = path.join(
               __dirname,
-              // '..',
+              '..',
               'public/images/user/avatar',
               profile.id + '.jpg'
             );
-            console.log(pathFile);
             if (profile.photos) {
               // download
               download(profile.photos[0].value, pathFile, () => { /* */ });
@@ -160,14 +159,13 @@ module.exports.google = (passport) => {
             let avatar = '/images/default-avatar.jpg';
             const pathFile = path.join(
               __dirname,
-              // '..',
+              '..',
               'public/images/user/avatar',
               profile.id + '.jpg'
             );
             if (profile.photos) {
               // download
-              download(profile.photos[0].value, pathFile, () => {/* */});
-
+              await download(profile.photos[0].value, pathFile, () => {});
               // upload
               const result = await cloudinary.upload(
                 pathFile,
@@ -204,9 +202,19 @@ module.exports.google = (passport) => {
 
 // down load file from an uri
 function download(uri, filename, callback) {
-  request.head(uri, function (err, res, body) {
-    // console.log('content-type:', res.headers['content-type']);
-    // console.log('content-length:', res.headers['content-length']);
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-  });
+  return new Promise((resolve, rejects) => {
+     request.head(uri, function (err, res, body) {
+       if (err) {
+         rejects(err)
+       } else {
+         // console.log('content-type:', res.headers['content-type']);
+        // console.log('content-length:', res.headers['content-length']);
+        request(uri).pipe(fs.createWriteStream(filename))
+          .on('close', () => resolve(callback))
+          .on('error', (error) => {
+            rejects(error)
+          });
+       }
+    });
+  })
 }
