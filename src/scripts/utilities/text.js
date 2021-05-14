@@ -31,7 +31,7 @@ const Text = (async () => {
   quill.enable(false)
 
   socket.on('text-loadData', ({ data }) => {
-    console.log(data);
+    // console.log(data);
     quill.setContents(data)
   })
 
@@ -110,7 +110,7 @@ const Text = (async () => {
 
         socket.emit('text-name-s', { name, textId })
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         window.outputErrorMessage(error?.response?.data?.message)
       }
     }

@@ -59,7 +59,7 @@ module.exports.uploadFile = async (req, res) => {
       return res.status(400).json({ message: messageError });
     } else {
       try {
-        console.log(req.files);
+        // console.log(req.files);
         // console.log(req.user.id);
         // const member = await Member.findById(req.user.id);
         // if (member) {

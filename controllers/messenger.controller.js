@@ -382,7 +382,7 @@ module.exports.uploadFile = async (req, res) => {
           return res.status(400).json({ message: notMem });
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(400).json({ message: 'Gửi file thất bại' });
       }
     }

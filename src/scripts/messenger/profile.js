@@ -119,7 +119,7 @@ const Profile = (() => {
           $('.wrap-loader').addClass('d-none')
           $('#modal-crop-avatar').modal('hide')
           reInitChooseFile()
-          console.log('finish');
+          // console.log('finish');
           // finish
           // check status
           const data = JSON.parse(this.responseText);
@@ -203,9 +203,9 @@ const Profile = (() => {
     $(document).on('click', (e) => {
       const $target = $(e.target)
       $('.confirm-del-text').each(function() {
-        console.log($target);
-        console.log(this);
-        console.log(!$(this).has($target));
+        // console.log($target);
+        // console.log(this);
+        // console.log(!$(this).has($target));
         if (!$($target).closest('.confirm-del-text').is(this) && !$($target).closest('.del-text').length) {
           $(this).addClass('d-none')
         }

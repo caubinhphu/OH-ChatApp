@@ -222,7 +222,7 @@ const ChatRoomHost = (() => {
         if ($(this).hasClass('is-allow')) {
           $(this).removeClass('is-allow')
           this.title = 'Cho phép giao tiếp'
-          console.log(this.dataset.id);
+          // console.log(this.dataset.id);
           window.socket.emit('toggleAllowCommunication', {
             userId: this.dataset.id,
             isAllow: false

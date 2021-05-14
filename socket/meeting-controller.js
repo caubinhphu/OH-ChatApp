@@ -901,7 +901,7 @@ module.exports.onDisconnect = async function (io, reason) {
               this.emit('error', 'Bạn không phải host, bạn không có quyền này');
             }
           } catch (err) {
-            console.log(err);
+            // console.log(err);
             this.emit('error', 'Access token không hợp lệ!');
           }
         } else if (reason.typeLeave === 'kicked') {

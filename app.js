@@ -108,7 +108,7 @@ app.use('/no-support', (req, res) => {
 // handle error middleware
 app.use((err, req, res, next) => {
   if (err) {
-    console.log(err);
+    // console.log(err);
   }
   res.status(500);
   // res.send(err.message);
