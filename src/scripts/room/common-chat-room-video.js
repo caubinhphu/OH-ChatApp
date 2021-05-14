@@ -209,9 +209,9 @@ const CommonChatRoomVideo = (() => {
         id ? '' : 'muted'
       }></video>
       <video name="audio" autoplay ${id ? '' : 'muted'} class="d-none"></video>
-      <div class="meeting-part-pin-ctrl justify-content-between align-items-center text-primary px-3">
+      <div class="meeting-part-pin-ctrl justify-content-between align-items-center text-white px-3">
         <strong>${name}</strong>
-        <div class="wrap-pin text-primary m-2 pin-btn" title="Pin">
+        <div class="wrap-pin text-white m-2 pin-btn" title="Pin">
           <span class="icomoon icon-arrows-alt"></span>
         </div>
       </div>
@@ -681,7 +681,7 @@ const CommonChatRoomVideo = (() => {
         console.log(error);
       }
     } else if (unAllowShare) {
-      outputWarnMessage('Host đã tắt tính năng chia sẻ màn hình')
+      outputErrorMessage('Host đã tắt tính năng chia sẻ màn hình')
     } else {
       outputWarnMessage('Bạn không thể chia sẻ do có người đang chia sẻ')
     }

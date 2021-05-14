@@ -88,6 +88,11 @@ const socket = function (io) {
       roomController.onRaiseHand.bind(this, io, data)()
     });
 
+    // receive signal toggle allow communication from a client
+    socket.on('toggleAllowCommunication', function(data) {
+      roomController.onToggleAllowCommunication.bind(this, io, data)()
+    });
+
     // receive event require disconnect from client
     socket.on('disconnectRequest', roomController.onDisconnectRequest);
 

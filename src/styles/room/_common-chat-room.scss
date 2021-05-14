@@ -224,7 +224,8 @@
       .wrap-kick-user {
         transform: translate(0,-50%);
       }
-      .mic-frequency {
+      .mic-frequency,
+      .raise-hand {
         opacity: 0;
       }
     }
@@ -244,7 +245,7 @@
 .wrap-kick-user {
   position: absolute;
   right: 0;
-  transform: translate(40px,-50%);
+  transform: translate(67px, -50%);
   transition: all .25s;
   z-index: 2;
   top: 50%;
@@ -256,7 +257,22 @@
       transform: scale(1.1);
     }
   }
+  .toggle-communicate {
+    color: $danger;
+    &:not(.is-allow) {
+      color: $success;
+      .icomoon {
+        &::before {
+          content: '\e936';
+        }
+      }
+    }
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 }
+
 .message-avatar,
 .room-user-avatar,
 .waiting-room-user-avatar {

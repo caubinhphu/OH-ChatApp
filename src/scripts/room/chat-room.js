@@ -18,6 +18,16 @@ const ChatRoom = (() => {
     }
   });
 
+  // receive info change status room (management of host) from server
+  socket.on('changeAllowCommunication', ({ isAllow }) => {
+    outputChatInput(isAllow);
+    window.outputAllowRec(isAllow)
+    window.outputAllowShare(isAllow)
+    window.outputAllowMic(isAllow)
+    window.outputAllowVideo(isAllow)
+
+  });
+
   // receive room info from server
   socket.on('roomInfo', (roomInfo) => {
     outputRoomInfo(roomInfo, socket.id);

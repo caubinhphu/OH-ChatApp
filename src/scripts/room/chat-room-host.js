@@ -206,7 +206,7 @@ const ChatRoomHost = (() => {
           </div>
         </div>
       </div>
-      ${user.socketId !== socketId ? outputKickBtn(user.id) : ''}
+      ${user.socketId !== socketId ? outputKickBtn(user.id, user.allowCommunication) : ''}
     </div>`;
     })
     .join('');
@@ -216,10 +216,36 @@ const ChatRoomHost = (() => {
         kickUserBtn.dataset.id = this.dataset.id;
       });
     });
+
+    [...document.getElementsByClassName('toggle-communicate')].forEach((btn) => {
+      btn.addEventListener('click', function () {
+        if ($(this).hasClass('is-allow')) {
+          $(this).removeClass('is-allow')
+          this.title = 'Cho phép giao tiếp'
+          console.log(this.dataset.id);
+          window.socket.emit('toggleAllowCommunication', {
+            userId: this.dataset.id,
+            isAllow: false
+          })
+        } else {
+          $(this).addClass('is-allow')
+          this.title = 'Chặn giao tiếp'
+          window.socket.emit('toggleAllowCommunication', {
+            userId: this.dataset.id,
+            isAllow: true
+          })
+        }
+      });
+    });
   }
 
-  function outputKickBtn(userId) {
-    return `<div class="wrap-kick-user">
+  function outputKickBtn(userId, allowCommunication) {
+    return `<div class="wrap-kick-user d-flex">
+    <button class="btn btn-default btn-sm toggle-communicate mr-2 ${allowCommunication ? 'is-allow' : ''}"
+      title="${allowCommunication ? 'Chặn giao tiếp' : 'Cho phép giao tiếp'}" data-id="${userId}"
+    >
+      <span class="icomoon icon-sms_failed"></span>
+    </button>
     <button class="btn btn-default btn-sm text-danger kick-user-btn" title="Kick khỏi phòng" data-toggle="modal"
       data-target="#confirm-kick-user-modal" data-id="${userId}">
         <span class="icomoon icon-times-circle-o"></span>

@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
   raiseHand: {
     type: Boolean,
     default: false
+  },
+  allowCommunication: {
+    type: Boolean,
+    default: true
   }
 });
 

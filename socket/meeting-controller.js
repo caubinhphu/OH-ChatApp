@@ -617,7 +617,7 @@ module.exports.onCheckCanTurnOnMic = async function () {
     if (user) {
       const room = await Room.findOne({ users: user._id });
       if (room) {
-        if (user.host || room.status.allowMic) {
+        if (user.host || (room.status.allowMic  && user.allowCommunication)) {
           this.emit('isCanTurnOnMic', { allowMic: true });
         } else {
           this.emit('isCanTurnOnMic', { allowMic: false })
@@ -636,7 +636,7 @@ module.exports.onCheckCanTurnOnVideo = async function () {
     if (user) {
       const room = await Room.findOne({ users: user._id });
       if (room) {
-        if (user.host || room.status.allowVideo) {
+        if (user.host || (room.status.allowVideo && user.allowCommunication)) {
           this.emit('isCanTurnOnVideo', { allowVideo: true });
         } else {
           this.emit('isCanTurnOnVideo', { allowVideo: false })
@@ -657,7 +657,7 @@ module.exports.onCheckCanShareScreen = async function () {
       if (room) {
         if (room.status.isShareScreen) {
           this.emit('isCanShareScreen', { isShareScreen: true });
-        } else if (user.host || room.status.allowShare) {
+        } else if (user.host || (room.status.allowShare && user.allowCommunication)) {
           this.emit('isCanShareScreen', { isShareScreen: false });
         } else {
           this.emit('isCanShareScreen', { isShareScreen: true, unAllowShare: true })
@@ -709,7 +709,7 @@ module.exports.onCheckAllowRecord = async function () {
     if (user) {
       const room = await Room.findOne({ users: user._id });
       if (room) {
-        if (user.host || room.status.allowRec) {
+        if (user.host || (room.status.allowRec && user.allowCommunication)) {
           this.emit('resultCheckRecord', { canRec: true })
         } else {
           this.emit('resultCheckRecord', { canRec: false })
@@ -738,6 +738,24 @@ module.exports.onRaiseHand = async function (io, { raise }) {
             users: room.getRoomUsersInfo()
           });
         }
+      }
+    }
+  } catch (error) {
+    this.emit('error', hasErr);
+  }
+};
+
+// receive signal toggle allow communication from a client
+module.exports.onToggleAllowCommunication = async function (io, { userId, isAllow }) {
+  try {
+    const user = await User.findById(userId);
+    if (user && typeof isAllow === 'boolean') {
+      const room = await Room.findOne({ users: user._id }).populate('users');
+      if (room) {
+        user.allowCommunication = isAllow
+        await user.save()
+
+        io.to(user.socketId).emit('changeAllowCommunication', { isAllow })
       }
     }
   } catch (error) {
