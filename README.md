@@ -111,3 +111,10 @@
     - Thông báo
     - Tin nhắn bắt đầu
 </details>
+<details>
+  <summary>Version 3.1.1 (14/05/2021)</summary>
+  Chức năng thêm:
+  
+  - Meeting
+    - Chặn giao tiếp từng thành viên
+</details>
