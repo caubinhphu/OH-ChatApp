@@ -8,7 +8,7 @@ block header
     #header-left.d-flex.align-items-center
       #logo
         a(href="/messenger", title="OH chat - Messenger")
-          img(src="/images/logo-mini.png", alt="oh-chat", width="40px")
+          img.max-w-40(src="/images/logo-mini.png", alt="oh-chat")
       #search.ml-1.ps-rv.show-loader
         form.form-search-box(action="/messenger/search", method="get") 
           label.sr-only(for="box-search") Search
@@ -32,7 +32,7 @@ block header
     #header-right.d-flex.align-items-center
       #user
         a(href="/messenger/profile")
-          img.rounded-circle.mr-1.avatar(src=memberAvatar, alt=`${memberName}`, width="30px")
+          img.rounded-circle.mr-1.avatar.max-w-30(src=memberAvatar, alt=`${memberName}`)
           span= memberName
       #notification.mx-2.ps-rv(class=`${countNotify ? 'un-read' : ''}`)
         button#member-notify-btn.btn.btn-icon.small-btn.btn-outline-white(type="button", data-toggle="collapse", data-target="#notify-drop", aria-controls="notify-drop")
@@ -40,7 +40,7 @@ block header
       #info
         button#member-info-btn.btn.btn-icon.small-btn.btn-outline-white(type="button", data-toggle="collapse", data-target="#info-drop", aria-controls="info-drop")
           span.icomoon.icon-chevron-down
-      #notify-drop.collapse.p-3(data-parent="#header-right", style="z-index: 1000")
+      #notify-drop.collapse.p-3.z-1000(data-parent="#header-right")
         if (notifies.length)
           each notify in notifies
             .notify-item.ps-rv(data-id=notify._id, class=`${notify.beRead ? '' : 'un-read'}`)
@@ -78,11 +78,11 @@ block header
           .text-center.text-secondary
             h4.mb-0 Không có thông báo nào
 
-      #info-drop.collapse(data-parent="#header-right", style="z-index: 1000")
+      #info-drop.collapse.z-1000(data-parent="#header-right")
         .p-3
           a.p-2.d-flex(href="/messenger/profile")
             div
-              img.rounded-circle.avatar(src=memberAvatar, alt="oh-chat", width="55px")
+              img.rounded-circle.avatar.max-w-55(src=memberAvatar, alt="oh-chat")
             .ml-3
               span#member-id.d-none= memberId
               span#lang-assistant.d-none= langAss

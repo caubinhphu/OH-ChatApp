@@ -8,6 +8,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const methodOverride = require('method-override');
+const compression = require('compression')
 
 // init server
 const app = express();
@@ -23,6 +24,9 @@ const io = require('socket.io')(server);
 
 // port of server
 const PORT = process.env.PORT || 3000;
+
+// gzip compression
+app.use(compression())
 
 // set public folder
 app.use(express.static(path.join(__dirname, 'public')));

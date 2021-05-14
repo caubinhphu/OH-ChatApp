@@ -256,7 +256,7 @@ const Profile = (() => {
             friends.map(friend => {
               return `<div class="col-md-6 wrap-fri-item" data-id="${friend.id}">
               <div class="d-flex align-items-center border p-2 rounded my-2">
-                <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
+                <img class="rounded-circle max-w-80" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
                   <strong class="name-member">${friend.name}</strong>
                 </a>
@@ -284,7 +284,7 @@ const Profile = (() => {
             friends.map(friend => {
               return `<div class="col-md-6 wrap-fri-item" data-id="${friend.id}">
               <div class="d-flex align-items-center border p-2 rounded my-2">
-                <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
+                <img class="rounded-circle max-w-80" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
                   <strong class="name-member">${friend.name}</strong>
                 </a>
@@ -312,7 +312,7 @@ const Profile = (() => {
             friends.map(friend => {
               return `<div class="col-md-6 wrap-fri-item" data-id="${friend.id}">
               <div class="d-flex align-items-center border p-2 rounded my-2">
-                <img class="rounded-circle" alt="${friend.name}" width="80px" height="80px" src="${friend.avatar}" title="${friend.name}" />
+                <img class="rounded-circle max-w-80" alt="${friend.name}" src="${friend.avatar}" title="${friend.name}" />
                 <a class="flex-fill mx-2" href="/messenger/member/${friend.url ? friend.url : friend.id}" title="${friend.name}">
                   <strong class="name-member">${friend.name}</strong>
                 </a>

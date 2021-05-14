@@ -4,22 +4,22 @@ block contentMain
   .content-area.d-flex.justify-content-center.align-items-center
     #main-area
       #chat-company.p-3
-        img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
+        img.mr-2(src="/images/logo-mini.png", alt="OH")
         span.text-secondary OH Chat
       #login-area.py-3.px-2
         h1.text-center ĐĂNG KÝ TÀI KHOẢN
         form(action="/login/register", method="POST", name="formRegister")
           .form-group.d-flex.justify-content-center
-            label(for="name", style="width: 160px") Họ tên
+            label.w-160(for="name") Họ tên
             input#name.form-control.form-control-sm(type="text", name="name", required, placeholder="Nhập họ tên", value=name?name:"", title="Họ tên dài không quá 40 ký tự")
           .form-group.d-flex.justify-content-center
-            label(for="email", style="width: 160px") Email
+            label.w-160(for="email") Email
             input#email.form-control.form-control-sm(type="email", name="email", required, placeholder="Nhập email", value=email?email:"")
           .form-group.d-flex.justify-content-center
-            label(for="password", style="width: 160px") Mật khẩu
+            label.w-160(for="password") Mật khẩu
             input#password.form-control.form-control-sm(type="password", name="password", required, placeholder="Nhập mật khẩu", title="Mật khẩu dài ít nhất 6 ký tự")
           .form-group.d-flex.justify-content-center
-            label(for="password2", style="width: 160px") Xác nhận MK
+            label.w-160(for="password2") Xác nhận MK
             input#password2.form-control.form-control-sm(type="password", name="password2", required, placeholder="Nhập lại mật khẩu")
           .form-group.d-flex.justify-content-end
             a.btn.btn-link.mr-1(href="/", role="button") Đăng nhập

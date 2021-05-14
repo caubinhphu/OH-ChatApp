@@ -8,7 +8,7 @@ block contentMain
     #info-area.my-2
       .container.d-md-flex.align-items-md-center.bg-light.p-3.justify-content-md-center.wrap-info-member
         .text-center.d-flex.align-items-center.justify-content-center.flex-md-column
-          img.rounded-circle.img-thumbnail.avatar(src=member.avatar, alt=`${member.name}`, width="150px")
+          img.rounded-circle.img-thumbnail.avatar.max-w-150(src=member.avatar, alt=`${member.name}`)
           .form-group.mt-md-2.ml-2.ml-md-0.mb-0
             button.btn(data-toggle="modal", data-target="#modal-crop-avatar") Đổi ảnh đại diện
         .mt-2.mt-md-0.pl-md-5
@@ -17,16 +17,16 @@ block contentMain
             input(type="hidden", name="fake-avatar", value=member.avatar)
             //- input(type="hidden", name="fake-email", value=member.email)
             .form-group.d-flex
-              label.text-secondary(for="name", style="width: 130px") Họ tên
+              label.text-secondary.w-130(for="name") Họ tên
               input#name.form-control.form-control-sm(type="text", name="name", value=member.name, required)
             //- .form-group.d-flex
-            //-   label.text-secondary(for="email", style="width: 130px") Email
+            //-   label.text-secondary(for="email") Email
             //-   input#email.form-control.form-control-sm(type="text", disabled, value=member.email)
             .form-group.d-flex
-              label.text-secondary(for="birthday", style="width: 130px") Ngày sinh
+              label.text-secondary.w-130(for="birthday") Ngày sinh
               input#birthday.form-control.form-control-sm(type="date", name="birthday", value=birthOfDate)
             .form-group.d-flex
-              label.text-secondary(style="width: 130px") Giới tính
+              label.text-secondary.w-130 Giới tính
               .form-check.form-check-inline
                 .custom-control.custom-radio.my-1.ml-3
                   input#male.custom-control-input(type="radio", name="gender", value="1", checked=member.gender)
@@ -35,10 +35,10 @@ block contentMain
                   input#female.custom-control-input(type="radio", name="gender", value="0", checked=!member.gender)
                   label.custom-control-label(for="female") Nữ
             .form-group.d-flex
-              label.text-secondary(for="phone", style="width: 130px") Điện thoại
+              label.text-secondary.w-130(for="phone") Điện thoại
               input#phone.form-control.form-control-sm(type="text", name="phone", value=member.phone)
             .form-group.d-flex
-              label.text-secondary(for="address", style="width: 130px") Địa chỉ
+              label.text-secondary.w-130(for="address") Địa chỉ
               input#address.form-control.form-control-sm(type="text", name="address", value=member.address)
             .text-right
               button.btn(type="submit") Lưu

@@ -4,17 +4,17 @@ block contentMain
   .content-area.d-flex.justify-content-center.align-items-center
     #main-area
       #chat-company.p-3
-        img.mr-2(src="/images/logo-mini.png", alt="OH", width="80px")
+        img.mr-2(src="/images/logo-mini.png", alt="OH")
         span.text-secondary OH Chat
       #login-area.p-3
         if(loginError) 
           em.text-danger.mb-2= loginError
         form(action="/login", method="POST", name="formLogin")
           .form-group.d-flex.justify-content-center
-            label(for="email", style="width: 100px") Email
+            label.w-100v2(for="email") Email
             input#email.form-control.form-control-sm(type="email", name="email", required, value=email?email:"")
           .form-group.d-flex.justify-content-center
-            label(for="password", style="width: 100px") Mật khẩu
+            label.w-100v2(for="password") Mật khẩu
             input#password.form-control.form-control-sm(type="password", name="password", required)
           .form-group.d-flex.justify-content-end
               a.btn.btn-link.mr-2(href="/login/register", role="button") Đăng ký

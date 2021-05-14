@@ -80,13 +80,13 @@ block contentMain
                         form(action="/messenger/setting/password", method="post", name="formSettingPassword")
                           input(type="hidden", name="_method" value="PUT")
                           .form-group.d-flex
-                            label.text-secondary(for="password0", style="width: 140px") Mật khẩu cũ
+                            label.w-140.text-secondary(for="password0") Mật khẩu cũ
                             input#password0.form-control.form-control-sm(type="password", name="password0", required)
                           .form-group.d-flex
-                            label.text-secondary(for="password", style="width: 140px") Mật khẩu mới
+                            label.w-140.text-secondary(for="password") Mật khẩu mới
                             input#password.form-control.form-control-sm(type="password", name="password", required)
                           .form-group.d-flex
-                            label.text-secondary(for="password2", style="width: 140px") Xác nhật MK
+                            label.w-140.text-secondary(for="password2") Xác nhật MK
                             input#password2.form-control.form-control-sm(type="password", name="password2", required)
                           .d-flex.align-items-center.justify-content-between
                             button.btn(type="submit") Lưu thay đổi
@@ -103,7 +103,7 @@ block contentMain
                       form(action="/messenger/setting/url", method="post", name="formSettingUrl")
                         input(type="hidden", name="_method" value="PUT")
                         .form-group.d-flex
-                          label.text-secondary(for="url", style="width: 140px") Url
+                          label.w-140.text-secondary(for="url") Url
                           input#url.form-control.form-control-sm(type="text", name="url", required, value=`${member.url || member.id}`)
                         div
                           button.btn(type="submit") Lưu thay đổi
