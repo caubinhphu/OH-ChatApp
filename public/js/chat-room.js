@@ -45903,10 +45903,22 @@ var CommonChatRoom = function () {
       // scroll bottom
       chatMain.scrollTop = chatMain.scrollHeight;
     }
+  });
+  socket.on('hasRaiseHand', function (_ref) {
+    var name = _ref.name;
+    window.outputInfoMessage("".concat(name, " \u0111ang gi\u01A1 tay"));
+
+    if (!$('#users-area').hasClass('is-active')) {
+      $('.control-show-pop[data-control="user"]').addClass('has-unread');
+
+      if ($(window).width() < 768) {
+        $('.open-popup-icon').addClass('has-unread');
+      }
+    }
   }); // event submit form chat
 
   msgForm.addEventListener('submit', /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
       var inputMsg, msgObj;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -45956,7 +45968,7 @@ var CommonChatRoom = function () {
     }));
 
     return function (_x) {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }());
   $(document).on('change', '#send-file', function () {

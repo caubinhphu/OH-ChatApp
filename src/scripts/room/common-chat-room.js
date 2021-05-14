@@ -44,6 +44,16 @@ const CommonChatRoom = (() => {
     }
   });
 
+  socket.on('hasRaiseHand', ({ name }) => {
+    window.outputInfoMessage(`${name} đang giơ tay`)
+    if (!$('#users-area').hasClass('is-active')) {
+      $('.control-show-pop[data-control="user"]').addClass('has-unread');
+      if ($(window).width() < 768) {
+        $('.open-popup-icon').addClass('has-unread');
+      }
+    }
+  })
+
   // event submit form chat
   msgForm.addEventListener('submit', async (e) => {
     // stop submit form

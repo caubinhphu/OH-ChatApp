@@ -733,10 +733,13 @@ module.exports.onRaiseHand = async function (io, { raise }) {
           userInRoom.raiseHand = raise
           await userInRoom.save()
 
-          // update room info => send room info (name & password & users)
           io.to(room.roomId).emit('roomInfoUsers', {
             users: room.getRoomUsersInfo()
           });
+
+          if (raise) {
+            this.to(room.roomId).emit('hasRaiseHand', { name: user.name });
+          }
         }
       }
     }

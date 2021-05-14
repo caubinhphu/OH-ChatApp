@@ -6952,7 +6952,8 @@ input:-webkit-autofill {
   transform: translate(0, -50%);
 }
 
-.room-user:hover.room-user-host:not(:first-child) .mic-frequency {
+.room-user:hover.room-user-host:not(:first-child) .mic-frequency,
+.room-user:hover.room-user-host:not(:first-child) .raise-hand {
   opacity: 0;
 }
 
