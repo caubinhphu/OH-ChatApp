@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const { readFile  } = require('fs');
+const { join  } = require('path');
 
 const key = require('../config/key');
 
@@ -10,6 +12,7 @@ const sendMail = require('../utils/send-mail');
 const { validateRegister, validateEmail, validateResetPassword } = require('../validation/login.validation');
 
 const Member = require('../models/Member');
+const { rejects } = require('assert');
 
 const mesUrl = '/messenger'
 
@@ -82,11 +85,20 @@ module.exports.postRegister = async (req, res, next) => {
       });
 
       // send email verify account
-      const html = `<h2>OH chat</h2>
-        <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi</p>
-        <p>Hãy chọn <a href='${key.host}/login/verify/${verifyToken.toString(
-        'hex'
-      )}'>vào đây</a> để xác nhận tài khoản của bạn</p>`;
+      let html = await new Promise((resolve, rejects) => {
+        readFile(join(__dirname, '..', 'mail/mail.html'), 'utf8', (err, data) => {
+          if (err) {
+            rejects(err)
+          } else {
+            resolve(data)
+          }
+        })
+      })
+      html = html.replace('{{content}}', 'Cảm ơn bạn đã đăng ký tài khoản với chúng tôi<br /><br /> Bấm vào nút "Xác nhận" để xác nhận tài khoản của bạn')
+      html = html.replace('{{link}}', `${key.host}/login/verify/${verifyToken.toString('hex')}`)
+      html = html.replace('{{srcLink}}', 'https://res.cloudinary.com/haitrando/image/upload/v1621047385/ohchat/verify-btn_sjwyoo.jpg')
+      html = html.replace('{{width}}', '95')
+      html = html.replace('{{height}}', '33')
       const info = await sendMail(email, 'Xác nhận tài khoản', html);
     } catch (err) {
       next(err);
@@ -203,10 +215,21 @@ module.exports.postForgetPassword1 = async (req, res, next) => {
         await member.save()
 
         // send email verify account
-        const html = `<h2>OH chat</h2>
-          <p>Xác nhận email thành công</p>
-          <p>Hãy chọn <a href='${key.host}/login/forget-verify/${token}'>vào đây</a> để đổi mật khẩu</p>`;
-        const info = await sendMail(email, 'Xác nhận tài khoản', html);
+        let html = await new Promise((resolve, rejects) => {
+          readFile(join(__dirname, '..', 'mail/mail.html'), 'utf8', (err, data) => {
+            if (err) {
+              rejects(err)
+            } else {
+              resolve(data)
+            }
+          })
+        })
+        html = html.replace('{{content}}', 'Xác nhận email thành công')
+        html = html.replace('{{link}}', `${key.host}/login/forget-verify/${token}`)
+        html = html.replace('{{srcLink}}', 'https://res.cloudinary.com/haitrando/image/upload/v1621047384/ohchat/change-pass-btn_f7g4vd.jpg')
+        html = html.replace('{{width}}', '117')
+        html = html.replace('{{height}}', '33')
+        const info = await sendMail(email, 'Đổi mật khẩu', html);
       }
     } catch (err) {
       return next(err);
