@@ -128,7 +128,7 @@ module.exports.onJoinRoom = async function (
         }
       } else if (room.status.state === 'locked') {
         // room is locked
-        this.emit('error', 'Phòng đã bị host khóa, không thể tham gia');
+        this.emit('error', 'Phòng đã bị chủ phòng khóa, không thể tham gia');
       } else if (room.status.state === 'waiting') {
         // room is waiting
         // create and save a new user
@@ -167,7 +167,7 @@ module.exports.onJoinRoom = async function (
 
         // emit notify to client
         this.emit('toWaitingRoom', {
-          msg: 'Phòng đang ở chế độ phòng chờ, cần chờ host phê duyệt',
+          msg: 'Phòng đang ở chế độ phòng chờ, cần chờ chủ phòng phê duyệt',
           roomId: room.roomId,
           userId: user.id,
         });
@@ -305,7 +305,7 @@ module.exports.onMessageChat = async function ({ token, message, type, nameFile,
           await room.save()
         } else {
           // not allowed chat
-          this.emit('error', 'Chat bị cấm bởi host');
+          this.emit('error', 'Trò chuyện bị cấm bởi chủ phòng');
         }
       } else {
         // not exists participant
@@ -363,7 +363,7 @@ module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
           waitingRoom: room.getWaitingRoom(),
         });
       } else {
-        this.emit('error', 'Bạn không phải host, bạn không có quyền này');
+        this.emit('error', 'Bạn không phải chủ phòng, bạn không có quyền này');
       }
     } else {
       this.emit('error', 'Phòng không tồn tại, hãy kiểm tra lại');
@@ -402,7 +402,7 @@ module.exports.onNotAllowJoinRoom = async function (io, { userId, token }) {
           // send token to client request join room
           io.to(user.socketId).emit(
             'joinRoomBlocked',
-            'Yêu cầu tham gia phòng của bạn không được host chấp nhận!'
+            'Yêu cầu tham gia phòng của bạn không được chủ phòng chấp nhận!'
           );
         } else {
           this.emit('error', 'Thành viên này đã rời phòng chờ');
@@ -413,7 +413,7 @@ module.exports.onNotAllowJoinRoom = async function (io, { userId, token }) {
           waitingRoom: room.getWaitingRoom(),
         });
       } else {
-        this.emit('error', 'Bạn không phải host, bạn không có quyền này');
+        this.emit('error', 'Bạn không phải chủ phòng, bạn không có quyền này');
       }
     } else {
       this.emit('error', 'Phòng không tồn tại, hãy kiểm tra lại');
@@ -513,7 +513,7 @@ module.exports.onChangeManagement = async function ({ token, value, status }) {
           });
         }
       } else {
-        this.emit('error', 'Bạn không phải host, bạn không có quyền này');
+        this.emit('error', 'Bạn không phải chủ phòng, bạn không có quyền này');
       }
     } else {
       this.emit('error', 'Phòng không tồn tại, hãy kiểm tra lại');
@@ -898,7 +898,7 @@ module.exports.onDisconnect = async function (io, reason) {
               this.emit('leaveAllCompleteForHost', 'OK');
               this.to(room.roomId).emit('leaveAllComplete', 'OK');
             } else {
-              this.emit('error', 'Bạn không phải host, bạn không có quyền này');
+              this.emit('error', 'Bạn không phải chủ phòng, bạn không có quyền này');
             }
           } catch (err) {
             // console.log(err);
@@ -952,7 +952,7 @@ module.exports.onDisconnect = async function (io, reason) {
                 userId: userBeKick.socketId,
               });
             } else {
-              this.emit('error', 'Bạn không phải host, bạn không có quyền này');
+              this.emit('error', 'Bạn không phải chủ phòng, bạn không có quyền này');
             }
           } catch (err) {
             this.emit('error', 'Access token không hợp lệ!');

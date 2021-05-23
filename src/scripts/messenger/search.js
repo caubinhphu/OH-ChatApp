@@ -20,7 +20,7 @@ const Search = (() => {
           let subHtml = ''
           if (member.relatedWithMe === 'friend') {
             subHtml = `
-              <a class="btn mb-1" href="/messenger/chat/${member.url ? member.url : member._id}">Chat</a>
+              <a class="btn mb-1" href="/messenger/chat/${member.url ? member.url : member._id}">Nhắn tin</a>
               <button class="des-friend btn btn-red" data-id="${member._id}">Hủy kết bạn</button>
             `
           } else if (member.relatedWithMe === 'request') {

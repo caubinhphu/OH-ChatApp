@@ -25,7 +25,7 @@ block contentMain
                     option(value="vi", selected=(member.setting.languageAssistant === 'vi')) Tiếng Việt
                     option(value="en", selected=(member.setting.languageAssistant === 'en')) Tiếng Anh
                   button.btn(type="submit") Lưu
-                h4.text-dark Chat bằng microphone
+                h4.text-dark Nhắn tin bằng microphone
                 form.d-flex.align-items-center(action="/messenger/setting/chat-mic", method="post", name="formSettingChatMic")
                   input(type="hidden", name="_method" value="PUT")
                   .mr-3
@@ -44,7 +44,7 @@ block contentMain
                         option(value="auto-send", selected=(member.setting.methodSend === 'auto-send')) Tự động gửi
                       .custom-control.custom-checkbox
                         input#turn-on-ass-voice.custom-control-input(type="checkbox", name="isChatAss", value="true", checked=member.setting.isChatAssistant)
-                        label.custom-control-label(for="turn-on-ass-voice") Chat bằng trợ lý
+                        label.custom-control-label(for="turn-on-ass-voice") Nhắn tin bằng trợ lý
                       .wrap-directive(class=`${member.setting.isChatAssistant ? '' : 'd-none'}`)
                         label.text-dark Chỉ thị nhắn tin
                         input#directive-hidden(type="hidden", name="directiveChatText", value=member.setting.directiveChatText, required)

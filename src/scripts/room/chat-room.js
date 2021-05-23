@@ -43,7 +43,7 @@ const ChatRoom = (() => {
     window.notConfirmClose = true
     if (msg === 'OK') {
       outputLeaveRoom(
-        'Host đã kết thúc chat cho tất cả mọi người, quay lại trang chủ'
+        'Chủ phòng đã kết thúc phòng họp, quay lại trang chủ'
       );
       fiveSecond();
     } else {
@@ -55,7 +55,7 @@ const ChatRoom = (() => {
   socket.on('kickedOutRoom', (msg) => {
     window.notConfirmClose = true
     if (msg === 'OK') {
-      outputLeaveRoom('Host đã đá bạn ra khỏi phòng!');
+      outputLeaveRoom('Chủ phòng đã đá bạn ra khỏi phòng!');
       fiveSecond();
     }
   });
@@ -78,7 +78,7 @@ const ChatRoom = (() => {
       $('.dragzone').removeClass('unable-chat')
     } else {
       // not allow chat
-      msgForm.innerHTML = `<div class="chat-disabled-text">Chat bị cấm bởi host</div>`;
+      msgForm.innerHTML = `<div class="chat-disabled-text">Nhắn tin bị cấm bởi chủ phòng</div>`;
       $('.dragzone').addClass('unable-chat')
     }
   }
@@ -117,7 +117,7 @@ const ChatRoom = (() => {
           <span class="room-user-name ml-2">
             ${user.name}
             ${user.socketId === socketId ? ' (Bạn)' : ''}
-            ${user.host ? ' (Host)' : ''}
+            ${user.host ? ' (Chủ phòng)' : ''}
           </span>
         </div>
         <div class="raise-hand ${user.raiseHand ? '' : 'd-none'}">

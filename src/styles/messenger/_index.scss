@@ -98,11 +98,15 @@
       font-family: $icomoon;
       margin-right: 10px;
     }
+    .msg, 
+    .msg-me {
+      display: block;
+    }
   }
   &.call-outgoing {
     .message-content::before {
       content: "\e92b";
-      color: $color-7f;
+      color: $color-14;
     }
   }
   &.call-incoming {
@@ -129,7 +133,7 @@
   }
   .time-call {
     display: block;
-    color: $color-10;
+    color: $color-de;
     text-align: right;
   }
   &.msg-start {
@@ -242,7 +246,7 @@ textarea.form-control.msg-mini {
   transition: all .2s;
   z-index: 9;
   line-height: 27px;
-  color: $black;
+  color: $color-14;
   .icomoon {
     transition: all .25s;
     display: inline-block;

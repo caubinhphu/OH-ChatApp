@@ -5,9 +5,9 @@ block contentMain
     #main-messenger.d-flex.ps-rv
       #main-left.p-3.d-flex.flex-column
         #main-left-top.d-flex.justify-content-between.align-items-center
-          h4.mb-0 Chat
+          h4.mb-0 Nhắn tin
           #room.d-flex.align-items-center.justify-content-center
-            span.text-secondary.mr-3 Phòng chat 
+            span.text-secondary.mr-3 Phòng họp 
             a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng")
               span.icomoon.icon-plus
             a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
@@ -79,7 +79,7 @@ block contentMain
                   .message.text-center(class=msg.class) !{msg.content}
                 else
                   if (msg.me)
-                    .message.text-right
+                    .message.text-right(class=msg.class)
                       small.message-time= msg.time
                       div
                         .msg-me

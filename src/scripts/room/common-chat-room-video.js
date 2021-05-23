@@ -633,7 +633,7 @@ const CommonChatRoomVideo = (() => {
     if (canRec) {
       await handleRecordingScreen()
     } else {
-      window.outputErrorMessage('Host đã tắt tính năng quay màn hình')
+      window.outputErrorMessage('Chủ phòng đã tắt tính năng quay màn hình')
     }
   })
 
@@ -681,7 +681,7 @@ const CommonChatRoomVideo = (() => {
         console.log(error);
       }
     } else if (unAllowShare) {
-      outputErrorMessage('Host đã tắt tính năng chia sẻ màn hình')
+      outputErrorMessage('Chủ phòng đã tắt tính năng chia sẻ màn hình')
     } else {
       outputWarnMessage('Bạn không thể chia sẻ do có người đang chia sẻ')
     }
@@ -718,7 +718,7 @@ const CommonChatRoomVideo = (() => {
         outputWarnMessage('Bạn đã chặn quyền sử dụng microphone')
       }
     } else {
-      outputErrorMessage('Host đã tắt tính năng microphone')
+      outputErrorMessage('Chủ phòng đã tắt tính năng microphone')
     }
   })
 
@@ -754,7 +754,7 @@ const CommonChatRoomVideo = (() => {
         outputWarnMessage('Bạn đã chặn quyền sử dụng camera')
       }
     } else {
-      outputErrorMessage('Host đã tắt tính năng camera')
+      outputErrorMessage('Chủ phòng đã tắt tính năng camera')
     }
   })
 
@@ -859,9 +859,9 @@ const CommonChatRoomVideo = (() => {
 
   function outputAllowRec(value) {
     if (value) {
-      window.outputInfoMessage('Host đã bật tính năng quay màn hình')
+      window.outputInfoMessage('Chủ phòng đã bật tính năng quay màn hình')
     } else {
-      window.outputErrorMessage('Host đã tắt tính năng quay màn hình')
+      window.outputErrorMessage('Chủ phòng đã tắt tính năng quay màn hình')
       if ($('html.recoding').length) {
         stopRec()
       }
@@ -871,9 +871,9 @@ const CommonChatRoomVideo = (() => {
 
   function outputAllowShare(value) {
     if (value) {
-      window.outputInfoMessage('Host đã bật tính năng chia sẻ màn hình')
+      window.outputInfoMessage('Chủ phòng đã bật tính năng chia sẻ màn hình')
     } else {
-      window.outputErrorMessage('Host đã tắt tính năng chia sẻ màn hình')
+      window.outputErrorMessage('Chủ phòng đã tắt tính năng chia sẻ màn hình')
       if ($('html.sharing').length) {
         stopMyShareScreen()
       }
@@ -883,9 +883,9 @@ const CommonChatRoomVideo = (() => {
 
   function outputAllowMic(value) {
     if (value) {
-      window.outputInfoMessage('Host đã bật tính năng microphone')
+      window.outputInfoMessage('Chủ phòng đã bật tính năng microphone')
     } else {
-      window.outputErrorMessage('Host đã tắt tính năng microphone')
+      window.outputErrorMessage('Chủ phòng đã tắt tính năng microphone')
       if ($('html.turn-on-audio').length) {
         stopAudio()
       }
@@ -895,9 +895,9 @@ const CommonChatRoomVideo = (() => {
 
   function outputAllowVideo(value) {
     if (value) {
-      window.outputInfoMessage('Host đã bật tính năng camera')
+      window.outputInfoMessage('Chủ phòng đã bật tính năng camera')
     } else {
-      window.outputErrorMessage('Host đã tắt tính năng camera')
+      window.outputErrorMessage('Chủ phòng đã tắt tính năng camera')
       if ($('html.turn-on-video').length) {
         stopVideo()
       }

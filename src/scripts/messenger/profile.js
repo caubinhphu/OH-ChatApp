@@ -261,7 +261,7 @@ const Profile = (() => {
                   <strong class="name-member">${friend.name}</strong>
                 </a>
                 <div class="d-flex flex-column fri-item-ctrl">
-                  <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Chat</a>
+                  <a href="/messenger/${friend.url ? friend.url : friend.id}" class="btn">Nhắn tin</a>
                   <button class="btn btn-red mt-1 des-friend" data-id="${friend.id}">
                     Hủy kết bạn
                   </button>

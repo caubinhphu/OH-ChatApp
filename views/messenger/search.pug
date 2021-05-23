@@ -13,7 +13,7 @@ block contentMain
                 strong.name-member= member.name
               .d-flex.flex-column.fri-item-ctrl.align-items-stretch
                 if (member.relatedWithMe === 'friend')
-                  a.btn.mb-1(href=`/messenger/chat/${member.url ? member.url : member._id}`) Chat
+                  a.btn.mb-1(href=`/messenger/chat/${member.url ? member.url : member._id}`) Nhắn tin
                   button.des-friend.btn.btn-red(data-id=member._id) Hủy kết bạn
                 else if (member.relatedWithMe === 'request')
                   button.des-req-friend.btn.btn-red(data-id=member._id) Hủy yêu cầu

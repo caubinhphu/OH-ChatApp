@@ -1005,7 +1005,7 @@ module.exports.getMemberInfo = async (req, res, next) => {
     }
 
     const me = await Member.findById(req.user.id);
-    if (member && me) {
+    if (member && member.active && me) {
       let statusFriend = ''
       if (me.friends.find(fr => fr.id === member.id)) {
         statusFriend = 'friend'
@@ -1079,6 +1079,7 @@ module.exports.getSearch = async (req, res) => {
       const friends = await Member.find(
         {
           _id: { $in: me.friends },
+          active: true,
           $text: { $search: q }
         },
         {
@@ -1092,6 +1093,7 @@ module.exports.getSearch = async (req, res) => {
       const members = await Member.find(
         {
           _id: { $nin: friends, $ne: me._id },
+          active: true,
           $text: { $search: q }
         },
         {
@@ -1133,6 +1135,7 @@ module.exports.getSearchMain = async (req, res, next) => {
       let members = await Member.find(
         {
           _id: { $ne: me._id },
+          active: true,
           $text: { $search: q }
         },
         {

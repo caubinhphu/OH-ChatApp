@@ -190,7 +190,7 @@ const ChatRoomHost = (() => {
         <img class="room-user-avatar" src="${user.avatar}" alt="u" />
         <span class="room-user-name ml-2">
           ${user.name}
-          ${user.socketId === socketId ? ' (Bạn)(Host)' : ''}
+          ${user.socketId === socketId ? ' (Bạn)(Chủ phòng)' : ''}
         </span>
       </div>
       <div class="raise-hand ${user.raiseHand ? '' : 'd-none'}">

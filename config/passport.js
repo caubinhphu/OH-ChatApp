@@ -125,6 +125,7 @@ module.exports.facebook = (passport) => {
               avatar,
               type: 'facebook',
               OAuthId: profile.id,
+              active: true
             });
           }
 
@@ -182,6 +183,7 @@ module.exports.google = (passport) => {
               avatar,
               type: 'google',
               OAuthId: profile.id,
+              active: true
             });
             return done(null, member, { message: loginSuccText });
           } else {
