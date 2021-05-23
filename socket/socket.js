@@ -109,13 +109,13 @@ const socket = function (io) {
     })
 
     // receive message from client
-    socket.on('msg-messageChat', function (data) {
-      messengerController.onMessageChat.bind(this, io, data)()
+    socket.on('msg-messageChat', function (data, callback) {
+      messengerController.onMessageChat.bind(this, io, data, callback)()
     });
 
     // receive signal offer call peer of caller => send to receiver
-    socket.on('msg-offerStream', function(data) {
-      messengerController.onOfferSignal.bind(this, io, data)()
+    socket.on('msg-offerStream', function(data, callback) {
+      messengerController.onOfferSignal.bind(this, io, data, callback)()
     })
 
     // receive signal answer call peer of receiver => send to caller

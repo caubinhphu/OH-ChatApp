@@ -82,11 +82,20 @@ const Index = (async () => {
             beConfirmed = true
             speakFor = 'notification'
             if (textYes.includes(command.toLowerCase())) {
+              const tmpId = new Date().valueOf()
               window.socket.emit('msg-messageChat', {
                 message: textCommand,
                 token: tokenSend,
+              }, res => {
+                if (res.status === 'ok') {
+                  window.addMorelMsgLocal({
+                    tmpId,
+                    realId: res.msgId,
+                    type: 'text'
+                  })
+                }
               });
-              window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true)
+              window.createCallMsgLocal(friendIdChatting, textCommand, '', false, true, tmpId)
               moveToTop(friendIdChatting)
               textNotify = textSended
             } else {
@@ -95,11 +104,20 @@ const Index = (async () => {
             textCommand = ''
           } else {
             if (methodSend === 'auto-send') {
+              const tmpId = new Date().valueOf()
               window.socket.emit('msg-messageChat', {
                 message: command,
                 token: tokenSend,
+              }, res => {
+                if (res.status === 'ok') {
+                  window.addMorelMsgLocal({
+                    tmpId,
+                    realId: res.msgId,
+                    type: 'text'
+                  })
+                }
               });
-              window.createCallMsgLocal(friendIdChatting, command, '', false, true)
+              window.createCallMsgLocal(friendIdChatting, command, '', false, true, tmpId)
               moveToTop(friendIdChatting)
             } else if (methodSend === 'confirm-popup') {
               const $popup = $('.confirm-popup')
@@ -322,11 +340,20 @@ const Index = (async () => {
           const $popup = $('.confirm-popup')
           const text = $popup.find('.msg-output').text()
           if (text) {
+            const tmpId = new Date().valueOf()
             window.socket.emit('msg-messageChat', {
               message: text,
               token: tokenSend,
+            }, res => {
+              if (res.status === 'ok') {
+                window.addMorelMsgLocal({
+                  tmpId,
+                  realId: res.msgId,
+                  type: 'text'
+                })
+              }
             });
-            window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true)
+            window.createCallMsgLocal(friendIdChatting, window.escapeHtml(text), '', false, true, tmpId)
             moveToTop(friendIdChatting)
             $popup.find('.msg-output').text('')
             $('.confirm-popup').addClass('d-none')
@@ -355,14 +382,23 @@ const Index = (async () => {
       const inputMsg = e.target.elements.message;
 
       if (inputMsg.value !== '') {
+        const tmpId = new Date().valueOf()
         // send message to server
         window.window.socket.emit('msg-messageChat', {
           message: inputMsg.value,
           token: tokenSend,
+        }, res => {
+          if (res.status === 'ok') {
+            window.addMorelMsgLocal({
+              tmpId,
+              realId: res.msgId,
+              type: 'text'
+            })
+          }
         });
 
         // create message obj to show in client
-        window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true)
+        window.createCallMsgLocal(friendIdChatting, window.escapeHtml(inputMsg.value), '', false, true, tmpId)
         moveToTop(friendIdChatting)
 
         // scroll bottom
@@ -879,7 +915,8 @@ const Index = (async () => {
           `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
           'wrap-msg-file',
           false,
-          true
+          true,
+          new Date().valueOf()
         )
         moveToTop(friendIdChatting)
       });
@@ -894,6 +931,7 @@ const Index = (async () => {
         // enabledInputFile()
         const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
         $msgFile.each((i, ele) => {
+          const $parent = $(ele).parents('.message')
           const file = res.data.fileUrls.find(f => f.name === $(ele).text())
           if (file) {
             $(ele).parents('.wrap-msg-file').addClass('load-done')
@@ -913,6 +951,14 @@ const Index = (async () => {
               nameFile: file.name,
               resourceType: file.resourceType,
               token: tokenSend
+            }, res => {
+              if (res.status === 'ok') {
+                window.addMorelMsgLocal({
+                  tmpId: $parent.attr('data-id'),
+                  realId: res.msgId,
+                  type: 'file'
+                })
+              }
             });
           } else {
             $(ele).parents('.message').remove()
@@ -941,7 +987,8 @@ const Index = (async () => {
           `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
           'wrap-msg-file',
           false,
-          true
+          true,
+          new Date().valueOf()
         )
         moveToTop(friendIdChatting)
       try {
@@ -953,6 +1000,7 @@ const Index = (async () => {
         // enabledInputFile()
         const $msgFile = $(`.msg-file[data-session="${idSession}"]`)
         $msgFile.each((i, ele) => {
+          const $parent = $(ele).parents('.message')
           const file = res.data.fileUrls.find(f => f.name === $(ele).text())
           if (file) {
             $(ele).parents('.wrap-msg-file').addClass('load-done')
@@ -974,6 +1022,14 @@ const Index = (async () => {
               nameFile: file.name,
               resourceType: audio ? 'audio' : file.resourceType,
               token: tokenSend
+            }, res => {
+              if (res.status === 'ok') {
+                window.addMorelMsgLocal({
+                  tmpId: $parent.attr('data-id'),
+                  realId: res.msgId,
+                  type: 'file'
+                })
+              }
             });
           } else {
             $(ele).parents('.message').remove()

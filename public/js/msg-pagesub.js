@@ -39997,6 +39997,7 @@ var CommonChat = function () {
   var classCallMissedVideo = ' call-missed-video';
   var msgForm = document.sendMsgForm;
   var meId = $('#member-id').text();
+  var msgCallId = '';
   window.soundRecord = new Audio('/sounds/record.mp3'); // is page chat
 
   if (isPageChat && msgForm) {
@@ -40067,10 +40068,18 @@ var CommonChat = function () {
 
     if (isPageChat) {
       // create msg end call local
-      createCallMsgLocal(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
+      createCallMsgLocal(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId);
+      addMorelMsgCallLocal({
+        msgId: msgCallId,
+        type: 'call'
+      });
     } else {
       // create msg end call local
-      window.createCallMsgLocalMiniChat(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''));
+      window.createCallMsgLocalMiniChat(window.callerId, callMissText, classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId);
+      addMorelMsgCallLocal({
+        msgId: msgCallId,
+        type: 'call'
+      });
     }
   }); // close popup miss call
 
@@ -40086,6 +40095,44 @@ var CommonChat = function () {
       callerId: meId,
       signal: signalOffer,
       typeCall: window.typeCall
+    }, function (res) {
+      if (res.status === 'ok') {
+        msgCallId = res.msgId; // receive signal send signal call to receiver done
+
+        window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
+        window.callOutGoSound.loop = true;
+        window.callOutGoSound.play();
+        window.timeStartCall = new Date();
+        window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
+        window.sendSignalCallDone = true;
+        window.timeoutCallId = setTimeout(function () {
+          // call timeout
+          window.sendSignalCallDone = false;
+          window.isCall = false;
+          window.timeStartCall = undefined;
+          window.windowCall.close();
+          window.windowCall = undefined;
+          window.focus();
+          $(classOvCalling).addClass('d-none'); // send signal call timeout to server => receiver
+
+          socket.emit('msg-callTimeout', {
+            callerId: res.callerId,
+            receiverId: res.receiverId,
+            typeCall: window.typeCall
+          });
+          window.outputInfoMessage('Không trả lời');
+
+          if (isPageChat) {
+            createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+            addMorelMsgCallLocal({
+              msgId: msgCallId,
+              type: 'call'
+            });
+          } else {
+            window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+          }
+        }, callTimeout);
+      }
     });
   }); // receive signal answer from sub window receiver => send to server => caller
 
@@ -40126,10 +40173,18 @@ var CommonChat = function () {
 
         if (isPageChat) {
           // create msg local
-          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
+          createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
         } else {
           // create msg local
-          window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true);
+          window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
         }
       } else {
         // connect peer fail
@@ -40158,10 +40213,18 @@ var CommonChat = function () {
 
         if (isPageChat) {
           // create msg local
-          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
+          createCallMsgLocal(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
         } else {
           // create msg local
-          window.createCallMsgLocalMiniChat(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true);
+          window.createCallMsgLocalMiniChat(window.callerId, callTextReceiver, classCallCome + (window.typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
         }
       } else {
         window.outputErrorMessage(error);
@@ -40193,9 +40256,17 @@ var CommonChat = function () {
       });
 
       if (isPageChat) {
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       } else {
-        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       }
     }
   }); // receive signal has call from friend
@@ -40205,7 +40276,8 @@ var CommonChat = function () {
         callerId = _ref.callerId,
         callerName = _ref.callerName,
         callerAvatar = _ref.callerAvatar,
-        typeCall = _ref.typeCall;
+        typeCall = _ref.typeCall,
+        msgId = _ref.msgId;
     window.callInComSound = new Audio('/sounds/call-incoming.ogg');
     window.callInComSound.loop = true;
     window.callInComSound.play();
@@ -40214,7 +40286,8 @@ var CommonChat = function () {
     window.callerId = callerId;
     window.typeCall = typeCall;
     window.timeStartCall = new Date();
-    window.isRefuseCall = false; // set IU
+    window.isRefuseCall = false;
+    msgCallId = msgId; // set IU
 
     var $popup = $(classPoHasCall);
     $popup.find('.wrap-pop-has-call').removeClass('miss-call');
@@ -40256,40 +40329,6 @@ var CommonChat = function () {
     window.focus();
     $(classOvCalling).addClass('d-none');
     window.outputErrorMessage(msg);
-  }); // receive signal send signal call to receiver done
-
-  socket.on('msg-doneSendSignalCall', function (_ref4) {
-    var callerId = _ref4.callerId,
-        receiverId = _ref4.receiverId;
-    window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
-    window.callOutGoSound.loop = true;
-    window.callOutGoSound.play();
-    window.timeStartCall = new Date();
-    window.windowCall.dispatchEvent(new CustomEvent('isCalling'));
-    window.sendSignalCallDone = true;
-    window.timeoutCallId = setTimeout(function () {
-      // call timeout
-      window.sendSignalCallDone = false;
-      window.isCall = false;
-      window.timeStartCall = undefined;
-      window.windowCall.close();
-      window.windowCall = undefined;
-      window.focus();
-      $(classOvCalling).addClass('d-none'); // send signal call timeout to server => receiver
-
-      socket.emit('msg-callTimeout', {
-        callerId: callerId,
-        receiverId: receiverId,
-        typeCall: window.typeCall
-      });
-      window.outputInfoMessage('Không trả lời');
-
-      if (isPageChat) {
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
-      } else {
-        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
-      }
-    }, callTimeout);
   }); // receive signal refuse call
 
   socket.on('msg-receiverRefuseCall', function () {
@@ -40312,17 +40351,25 @@ var CommonChat = function () {
 
       if (isPageChat) {
         // create msg end call local
-        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+        createCallMsgLocal(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       } else {
         // create msg end call local
-        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true);
+        window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       }
     }
   }); // receive signal miss call from server (caller)
 
-  socket.on('msg-missedCall', function (_ref5) {
-    var callerId = _ref5.callerId,
-        typeCall = _ref5.typeCall;
+  socket.on('msg-missedCall', function (_ref4) {
+    var callerId = _ref4.callerId,
+        typeCall = _ref4.typeCall;
 
     if (!window.isRefuseCall) {
       if (window.callInComSound) {
@@ -40334,18 +40381,26 @@ var CommonChat = function () {
       $popup.find(idBtnCallBack).attr('data-callerid', callerId);
 
       if (isPageChat) {
-        createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
+        createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       } else {
-        window.createCallMsgLocalMiniChat(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''));
+        window.createCallMsgLocalMiniChat(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       }
     }
   }); // receive signal end call from server (it self end call)
 
-  socket.on('msg-endCall', function (_ref6) {
-    var callerId = _ref6.callerId,
-        receiverId = _ref6.receiverId,
-        sender = _ref6.sender,
-        typeCall = _ref6.typeCall;
+  socket.on('msg-endCall', function (_ref5) {
+    var callerId = _ref5.callerId,
+        receiverId = _ref5.receiverId,
+        sender = _ref5.sender,
+        typeCall = _ref5.typeCall;
     window.isCall = false;
     window.outputInfoMessage('Cuộc gọi kết thúc');
 
@@ -40354,9 +40409,17 @@ var CommonChat = function () {
       window.windowReceive = undefined;
 
       if (isPageChat) {
-        createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
+        createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       } else {
-        window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true);
+        window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       }
     } else if (sender === 'receiver') {
       // computer of caller
@@ -40364,9 +40427,40 @@ var CommonChat = function () {
       window.windowCall = undefined;
 
       if (isPageChat) {
-        createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
+        createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
       } else {
-        window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true);
+        window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        });
+      }
+    }
+  });
+  socket.on('msg-updateMessage', function (_ref6) {
+    var messageId = _ref6.messageId,
+        friendId = _ref6.friendId;
+    console.log(messageId, friendId);
+    var $message = $(".message[data-id=\"".concat(messageId, "\"]"));
+    console.log($message);
+
+    if ($message.length) {
+      $message.attr('class', 'message deleted');
+      $message.find('.msg .message-content').html('Tin nhắn đã bị xóa');
+      $message.find('.time-call').remove();
+
+      if ($('#main').hasClass('chat-page')) {
+        if ($message.is(':last-child')) {
+          var $friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+
+          if ($friItem.length) {
+            $friItem.find('.last-msg').html("\n              <div class=\"last-msg text-dark\">\n                <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n              </div>\n            ");
+          }
+        }
       }
     }
   }); // close sub window when close or refetch browser
@@ -40508,7 +40602,7 @@ var CommonChat = function () {
   });
   $(document).on('click', '.confirm-del-msg', /*#__PURE__*/function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-      var $itemMessage;
+      var $itemMessage, token;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -40518,18 +40612,39 @@ var CommonChat = function () {
 
               if ($itemMessage.length) {
                 $itemMessage.addClass('is-load');
-                socket.emit('msg-deleteMessage', {
-                  messageId: $itemMessage.attr('data-id')
-                }, function (res) {
-                  if (res.status === 'ok') {
-                    $itemMessage.find('.more-msg').remove();
-                    $itemMessage.find('.wrap-msg-mana').remove();
-                    $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>');
-                    $itemMessage.attr('class', 'message deleted text-right');
-                  } else {
-                    $itemMessage.removeClass('is-load');
-                  }
-                });
+                token = '';
+
+                if ($('#main').hasClass('chat-page')) {
+                  token = document.sendMsgForm.elements._token.value;
+                } else if ($('.popup-chat-mini.is-active').length) {
+                  token = $('.popup-chat-mini.is-active').find('input[name="_token"]').val();
+                }
+
+                if (token) {
+                  socket.emit('msg-deleteMessage', {
+                    messageId: $itemMessage.attr('data-id'),
+                    token: token
+                  }, function (res) {
+                    if (res.status === 'ok') {
+                      $itemMessage.find('.more-msg').remove();
+                      $itemMessage.find('.wrap-msg-mana').remove();
+                      $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>');
+                      $itemMessage.attr('class', 'message deleted text-right');
+
+                      if ($('#main').hasClass('chat-page')) {
+                        if ($itemMessage.is(':last-child')) {
+                          var $friItem = $($(".friend-item[data-id=\"".concat($('#main-right').attr('data-id'), "\"]")));
+
+                          if ($friItem.length) {
+                            $friItem.find('.last-msg').html("\n                    <div class=\"last-msg text-dark\">\n                      <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                    </div>\n                  ");
+                          }
+                        }
+                      }
+                    } else {
+                      $itemMessage.removeClass('is-load');
+                    }
+                  });
+                }
               }
 
             case 3:
@@ -40543,27 +40658,10 @@ var CommonChat = function () {
     return function (_x) {
       return _ref8.apply(this, arguments);
     };
-  }()); // $(document).on('click', '.toggle-status-notify', async function (e) {
-  //   e.preventDefault()
-  //   const $itemNotify = $(this).parents('.notify-item')
-  //   if ($itemNotify.length) {
-  //     $itemNotify.addClass('is-load')
-  //     try {
-  //       await axios.put(`/messenger/notification-status`, { notifyId: $itemNotify.attr('data-id') })
-  //       if ($itemNotify.hasClass('un-read')) {
-  //         $itemNotify.removeClass('un-read')
-  //         $(this).find('span:last-child').text('Đánh dấu là đã đọc')
-  //       } else {
-  //         $itemNotify.addClass('un-read')
-  //         $(this).find('span:last-child').text('Đánh dấu là chưa đọc')
-  //       }
-  //     } catch (error) {
-  //       window.outputErrorMessage(error?.response?.data?.messages)
-  //     }
-  //     $itemNotify.removeClass('is-load')
-  //   }
-  // })
-
+  }());
+  $(document).on('click', '.edit-msg', function (e) {
+    e.preventDefault();
+  });
   /**
    * Function create and append call message to local
    * @param {string} friendId friend id
@@ -40578,6 +40676,7 @@ var CommonChat = function () {
     var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var tmpId = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
     var $friItem = $(".friend-item[data-id=\"".concat(friendId, "\"]"));
     var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
     var timeCall = null;
@@ -40595,7 +40694,8 @@ var CommonChat = function () {
           username: 'Me',
           message: msg,
           className: className,
-          timeCall: timeCall
+          timeCall: timeCall,
+          id: tmpId
         }, true);
         scrollBottomChatBox();
 
@@ -40611,7 +40711,8 @@ var CommonChat = function () {
           message: msg,
           avatar: $friItem.find('img').attr('src'),
           className: className,
-          timeCall: timeCall
+          timeCall: timeCall,
+          id: tmpId
         }, false);
         scrollBottomChatBox();
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n        ")).removeClass('un-read');
@@ -40668,6 +40769,7 @@ var CommonChat = function () {
     var me = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var $chatBox = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var div = document.createElement('div');
+    $(div).attr('data-id', msgObj.id);
     var classAdd = '';
     var content = msgObj.message;
 
@@ -40690,10 +40792,10 @@ var CommonChat = function () {
     }
 
     if (me) {
-      div.className = "message text-right ".concat(msgObj.className);
-      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me\">\n            <small class=\"message-content mx-0 ").concat(classAdd, "\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
+      div.className = "message text-right ".concat(msgObj.className ? msgObj.className : '');
+      div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me ps-rv\">\n            <small class=\"message-content mx-0 ").concat(classAdd, "\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
-      div.className = "message ".concat(msgObj.className);
+      div.className = "message ".concat(msgObj.className ? msgObj.className : '');
       div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n      <div>\n        <div class=\"msg\">\n          <img class=\"message-avatar\" src=\"").concat(msgObj.avatar, "\" alt=\"").concat(msgObj.username, "\" />\n          <small class=\"message-content ").concat(classAdd, "\">").concat(content, "</small>\n          ").concat(msgObj.timeCall || '', "\n        </div>\n      </div>");
     } // append message
 
@@ -40706,6 +40808,44 @@ var CommonChat = function () {
   }
 
   window.outputMessage = outputMessage;
+
+  function addMorelMsgLocal(_ref9) {
+    var tmpId = _ref9.tmpId,
+        realId = _ref9.realId,
+        type = _ref9.type;
+    var $message = $(".message[data-id=\"".concat(tmpId, "\"]"));
+
+    if ($message.length) {
+      $message.attr('data-id', realId);
+      var editText = '';
+
+      if (type === 'text') {
+        editText = "\n        <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n          <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n        </div>\n        ";
+      }
+
+      var moreMsg = "\n        <div class=\"more-msg\">\n          <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n          <span class=\"icomoon icon-dots-three-vertical\"></span>\n        </button>\n        </div>\n        <div class=\"wrap-msg-mana d-none\">\n          <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n          ".concat(editText, "\n          <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n            <span class=\"icomoon icon-times-circle-o\"></span>\n            <span>X\xF3a tin nh\u1EAFn</span>\n            <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n              <span class=\"icomoon icon-checkmark\"></span>\n            </button>\n          </div>\n        </div>\n      ");
+      $message.find('.msg-me').prepend(moreMsg);
+    }
+  }
+
+  window.addMorelMsgLocal = addMorelMsgLocal;
+
+  function addMorelMsgCallLocal(_ref10) {
+    var msgId = _ref10.msgId,
+        type = _ref10.type;
+    var $message = $(".message[data-id=\"".concat(msgId, "\"]"));
+
+    if ($message.length) {
+      var editText = '';
+
+      if (type === 'text') {
+        editText = "\n        <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n          <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n        </div>\n        ";
+      }
+
+      var moreMsg = "\n        <div class=\"more-msg\">\n          <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n          <span class=\"icomoon icon-dots-three-vertical\"></span>\n        </button>\n        </div>\n        <div class=\"wrap-msg-mana d-none\">\n          <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n          ".concat(editText, "\n          <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n            <span class=\"icomoon icon-times-circle-o\"></span>\n            <span>X\xF3a tin nh\u1EAFn</span>\n            <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n              <span class=\"icomoon icon-checkmark\"></span>\n            </button>\n          </div>\n        </div>\n      ");
+      $message.find('.msg-me').prepend(moreMsg);
+    }
+  }
 
   function isValidHttpUrl(string) {
     var url;
@@ -45393,7 +45533,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       idSession = new Date().valueOf();
                       formData.append('files', file); // create message obj to show in client
 
-                      createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                      createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true, new Date().valueOf());
                       _context14.prev = 5;
                       _context14.next = 8;
                       return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messenger/upload-file', formData, {
@@ -45409,6 +45549,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       // enabledInputFile()
                       $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
                       $msgFile.each(function (i, ele) {
+                        var $parent = $(ele).parents('.message');
                         var fileFind = res.data.fileUrls.find(function (f) {
                           return f.name === $(ele).text();
                         });
@@ -45435,6 +45576,14 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                             nameFile: fileFind.name,
                             resourceType: audio ? 'audio' : fileFind.resourceType,
                             token: $popup.find('input[name="_token"]').val()
+                          }, function (res) {
+                            if (res.status === 'ok') {
+                              window.addMorelMsgLocal({
+                                tmpId: $parent.attr('data-id'),
+                                realId: res.msgId,
+                                type: 'file'
+                              });
+                            }
                           });
                         } else {
                           $(ele).parents('.message').remove();
@@ -45485,7 +45634,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       finalFiles.forEach(function (file) {
                         formData.append('files', file); // create message obj to show in client
 
-                        createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true);
+                        createCallMsgLocalMini($popup.attr('data-id'), "<a class=\"msg-file\" target=\"_blank\" data-session=\"".concat(idSession, "\" href=\"#\">").concat(file.name, "</a>"), 'wrap-msg-file', false, true, new Date().valueOf());
                       });
                       _context13.prev = 3;
                       _context13.next = 6;
@@ -45502,6 +45651,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       // enabledInputFile()
                       $msgFile = $popup.find(".msg-file[data-session=\"".concat(idSession, "\"]"));
                       $msgFile.each(function (i, ele) {
+                        var $parent = $(ele).parents('.message');
                         var file = res.data.fileUrls.find(function (f) {
                           return f.name === $(ele).text();
                         });
@@ -45526,6 +45676,14 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                             nameFile: file.name,
                             resourceType: file.resourceType,
                             token: $popup.find('input[name="_token"]').val()
+                          }, function (res) {
+                            if (res.status === 'ok') {
+                              window.addMorelMsgLocal({
+                                tmpId: $parent.attr('data-id'),
+                                realId: res.msgId,
+                                type: 'file'
+                              });
+                            }
                           });
                         } else {
                           $(ele).parents('.message').remove();
@@ -45703,6 +45861,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
             var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
             var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+            var tmpId = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
             var $chatBox = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
             var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
             var timeCall = null;
@@ -45720,7 +45879,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                   username: 'Me',
                   message: msg,
                   className: className,
-                  timeCall: timeCall
+                  timeCall: timeCall,
+                  id: tmpId
                 }, true, $chatBox.find(classChatMain));
                 window.scrollBottomChatBox($chatBox.find(classChatMain));
               } else {
@@ -45730,7 +45890,8 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                   message: msg,
                   avatar: $chatBox.find('.avatar-mini').attr('src'),
                   className: className,
-                  timeCall: timeCall
+                  timeCall: timeCall,
+                  id: tmpId
                 }, false, $chatBox.find(classChatMain));
                 window.scrollBottomChatBox($chatBox.find(classChatMain));
               }
@@ -45742,10 +45903,11 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
             var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
             var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+            var tmpId = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
             var $popup = $(".popup-chat-mini[data-id=".concat(friendId, "]"));
 
             if ($popup.length) {
-              createCallMsgLocalMini(friendId, msg, className, isCallEnd, me);
+              createCallMsgLocalMini(friendId, msg, className, isCallEnd, me, tmpId);
 
               if ($popup.hasClass(nClassNoAct)) {
                 outputPreviewMsg($popup, msg);
@@ -45780,7 +45942,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                       $popup.find('form').on('submit', /*#__PURE__*/function () {
                         var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
-                          var inputMsg;
+                          var inputMsg, tmpId;
                           return regeneratorRuntime.wrap(function _callee8$(_context8) {
                             while (1) {
                               switch (_context8.prev = _context8.next) {
@@ -45792,13 +45954,22 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                                   inputMsg = e.target.elements.message;
 
                                   if (inputMsg.value !== '') {
-                                    // send message to server
+                                    tmpId = new Date().valueOf(); // send message to server
+
                                     window.socket.emit('msg-messageChat', {
                                       message: inputMsg.value,
                                       token: e.target.elements._token.value
+                                    }, function (res) {
+                                      if (res.status === 'ok') {
+                                        window.addMorelMsgLocal({
+                                          tmpId: tmpId,
+                                          realId: res.msgId,
+                                          type: 'text'
+                                        });
+                                      }
                                     }); // create message obj to show in client
 
-                                    createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true); // scroll bottom
+                                    createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true, tmpId); // scroll bottom
                                     // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
                                     // set value for input message
 
@@ -46119,11 +46290,20 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                 speakFor = 'notification';
 
                 if (textYes.includes(command.toLowerCase())) {
+                  var tmpId = new Date().valueOf();
                   window.socket.emit('msg-messageChat', {
                     message: textCommand,
                     token: $popup.find('input[name="_token"]').val()
+                  }, function (res) {
+                    if (res.status === 'ok') {
+                      window.addMorelMsgLocal({
+                        tmpId: tmpId,
+                        realId: res.msgId,
+                        type: 'text'
+                      });
+                    }
                   });
-                  window.createCallMsgLocalMini($popup.attr('data-id'), textCommand, '', false, true);
+                  window.createCallMsgLocalMini($popup.attr('data-id'), textCommand, '', false, true, tmpId);
                   textNotify = textSended;
                 } else {
                   textNotify = textNoSend;
@@ -46132,15 +46312,25 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                 textCommand = '';
               } else {
                 if (methodSend === 'auto-send') {
-                  window.socket.emit('msg-messageChat', {
-                    message: command,
-                    token: tokenSend
-                  });
+                  // window.socket.emit('msg-messageChat', {
+                  //   message: command,
+                  //   token: tokenSend,
+                  // });
+                  var _tmpId = new Date().valueOf();
+
                   window.socket.emit('msg-messageChat', {
                     message: command,
                     token: $popup.find('input[name="_token"]').val()
+                  }, function (res) {
+                    if (res.status === 'ok') {
+                      window.addMorelMsgLocal({
+                        tmpId: _tmpId,
+                        realId: res.msgId,
+                        type: 'text'
+                      });
+                    }
                   });
-                  window.createCallMsgLocalMini($popup.attr('data-id'), command, '', false, true);
+                  window.createCallMsgLocalMini($popup.attr('data-id'), command, '', false, true, _tmpId);
                 } else if (methodSend === 'confirm-popup') {
                   var $popupConfirm = $popup.find('.confirm-popup');
                   $popupConfirm.find('.msg-output').text(command);
@@ -46412,12 +46602,21 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
               var text = $popupConfirm.find('.msg-output').text();
 
               if (text) {
+                var tmpId = new Date().valueOf();
                 window.socket.emit('msg-messageChat', {
                   message: text,
                   token: $popup.find('input[name="_token"]').val()
+                }, function (res) {
+                  if (res.status === 'ok') {
+                    window.addMorelMsgLocal({
+                      tmpId: tmpId,
+                      realId: res.msgId,
+                      type: 'text'
+                    });
+                  }
                 }); // create message obj to show in client
 
-                createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(text), '', false, true);
+                createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(text), '', false, true, tmpId);
                 $popupConfirm.find('.msg-output').text('');
                 $popupConfirm.addClass('d-none');
               }

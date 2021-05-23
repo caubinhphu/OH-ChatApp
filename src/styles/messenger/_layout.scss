@@ -431,6 +431,7 @@ label.send-file,
   &.load-done {
     .msg-me {
       pointer-events: auto;
+      overflow: visible;
       &::after {
         content: none;
       }

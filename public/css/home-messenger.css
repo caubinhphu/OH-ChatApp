@@ -7891,6 +7891,7 @@ label.send-file:hover .icomoon,
 
 .wrap-msg-file.load-done .msg-me {
   pointer-events: auto;
+  overflow: visible;
 }
 
 .wrap-msg-file.load-done .msg-me::after {

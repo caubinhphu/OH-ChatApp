@@ -43,6 +43,7 @@ const CommonChat = (() => {
   const msgForm = document.sendMsgForm;
 
   const meId = $('#member-id').text()
+  let msgCallId = ''
 
   window.soundRecord = new Audio('/sounds/record.mp3')
 
@@ -117,15 +118,29 @@ const CommonChat = (() => {
       createCallMsgLocal(
         window.callerId,
         callMissText,
-        classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : '')
+        classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''),
+        false, 
+        false,
+        msgCallId
       )
+      addMorelMsgCallLocal({
+        msgId: msgCallId,
+        type: 'call'
+      })
     } else {
       // create msg end call local
       window.createCallMsgLocalMiniChat(
         window.callerId,
         callMissText,
-        classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : '')
+        classCallMissed + (window.typeCall === 'video' ? classCallMissedVideo : ''),
+        false,
+        false,
+        msgCallId
       )
+      addMorelMsgCallLocal({
+        msgId: msgCallId,
+        type: 'call'
+      })
     }
   })
 
@@ -143,6 +158,60 @@ const CommonChat = (() => {
       callerId: meId,
       signal: signalOffer,
       typeCall: window.typeCall
+    }, res => {
+      if (res.status === 'ok') {
+        msgCallId = res.msgId
+
+        // receive signal send signal call to receiver done
+        window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
+        window.callOutGoSound.loop = true
+        window.callOutGoSound.play()
+        window.timeStartCall = new Date()
+        window.windowCall.dispatchEvent(new CustomEvent('isCalling'))
+        window.sendSignalCallDone = true
+        window.timeoutCallId = setTimeout(() => {
+          // call timeout
+          window.sendSignalCallDone = false
+          window.isCall = false
+          window.timeStartCall = undefined
+          window.windowCall.close()
+          window.windowCall = undefined
+          window.focus()
+          $(classOvCalling).addClass('d-none')
+
+          // send signal call timeout to server => receiver
+          socket.emit('msg-callTimeout', {
+            callerId: res.callerId,
+            receiverId: res.receiverId,
+            typeCall: window.typeCall
+          })
+
+          window.outputInfoMessage('Không trả lời')
+          if (isPageChat) {
+            createCallMsgLocal(
+              window.receiverId,
+              callTextCaller,
+              classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+              false,
+              true,
+              msgCallId
+            )
+            addMorelMsgCallLocal({
+              msgId: msgCallId,
+              type: 'call'
+            })
+          } else {
+            window.createCallMsgLocalMiniChat(
+              window.receiverId,
+              callTextCaller,
+              classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
+              false,
+              true,
+              msgCallId
+            )
+          }
+        }, callTimeout);
+      }
     });
   })
 
@@ -188,8 +257,13 @@ const CommonChat = (() => {
             callTextCaller,
             classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
             true,
-            true
+            true,
+            msgCallId
           )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
         } else {
           // create msg local
           window.createCallMsgLocalMiniChat(
@@ -197,8 +271,13 @@ const CommonChat = (() => {
             callTextCaller,
             classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
             true,
-            true
+            true,
+            msgCallId
           )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
         }
       } else {
         // connect peer fail
@@ -231,16 +310,28 @@ const CommonChat = (() => {
             window.callerId,
             callTextReceiver,
             classCallCome + (window.typeCall === 'video' ? classCallVideo : ''),
-            true
+            true,
+            false,
+            msgCallId
           )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
         } else {
           // create msg local
           window.createCallMsgLocalMiniChat(
             window.callerId,
             callTextReceiver,
             classCallCome + (window.typeCall === 'video' ? classCallVideo : ''),
-            true
+            true,
+            false,
+            msgCallId
           )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
         }
       } else {
         window.outputErrorMessage(error)
@@ -275,22 +366,32 @@ const CommonChat = (() => {
           callTextCaller,
           classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
           false,
-          true
+          true,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       } else {
         window.createCallMsgLocalMiniChat(
           window.receiverId,
           callTextCaller,
           classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
           false,
-          true
+          true,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       }
     }
   })
 
   // receive signal has call from friend
- socket.on('msg-hasCallMedia', ({ signal, callerId, callerName, callerAvatar, typeCall }) => {
+ socket.on('msg-hasCallMedia', ({ signal, callerId, callerName, callerAvatar, typeCall, msgId }) => {
     window.callInComSound = new Audio('/sounds/call-incoming.ogg');
     window.callInComSound.loop = true
     window.callInComSound.play()
@@ -299,6 +400,8 @@ const CommonChat = (() => {
     window.typeCall = typeCall
     window.timeStartCall = new Date()
     window.isRefuseCall = false
+
+    msgCallId = msgId
 
     // set IU
     const $popup = $(classPoHasCall)
@@ -341,52 +444,6 @@ const CommonChat = (() => {
     window.outputErrorMessage(msg)
   })
 
-  // receive signal send signal call to receiver done
-  socket.on('msg-doneSendSignalCall', ({ callerId, receiverId }) => {
-    window.callOutGoSound = new Audio('/sounds/call-outgoing.ogg');
-    window.callOutGoSound.loop = true
-    window.callOutGoSound.play()
-    window.timeStartCall = new Date()
-    window.windowCall.dispatchEvent(new CustomEvent('isCalling'))
-    window.sendSignalCallDone = true
-    window.timeoutCallId = setTimeout(() => {
-      // call timeout
-      window.sendSignalCallDone = false
-      window.isCall = false
-      window.timeStartCall = undefined
-      window.windowCall.close()
-      window.windowCall = undefined
-      window.focus()
-      $(classOvCalling).addClass('d-none')
-
-      // send signal call timeout to server => receiver
-     socket.emit('msg-callTimeout', {
-        callerId,
-        receiverId,
-        typeCall: window.typeCall
-      })
-
-      window.outputInfoMessage('Không trả lời')
-      if (isPageChat) {
-        createCallMsgLocal(
-          window.receiverId,
-          callTextCaller,
-          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
-          false,
-          true
-        )
-      } else {
-        window.createCallMsgLocalMiniChat(
-          window.receiverId,
-          callTextCaller,
-          classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
-          false,
-          true
-        )
-      }
-    }, callTimeout);
-  })
-
   // receive signal refuse call
   socket.on('msg-receiverRefuseCall', () => {
     if (window.windowCall) {
@@ -412,8 +469,13 @@ const CommonChat = (() => {
           callTextCaller,
           classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
           false,
-          true
+          true,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       } else {
         // create msg end call local
         window.createCallMsgLocalMiniChat(
@@ -421,8 +483,13 @@ const CommonChat = (() => {
           callTextCaller,
           classCallOut + (window.typeCall === 'video' ? classCallVideo : ''),
           false,
-          true
+          true,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       }
     }
   })
@@ -441,14 +508,28 @@ const CommonChat = (() => {
         createCallMsgLocal(
           callerId,
           callMissText,
-          classCallMissed + (typeCall === 'video' ? classCallMissedVideo : '')
+          classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''),
+          false,
+          false,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       } else {
         window.createCallMsgLocalMiniChat(
           callerId,
           callMissText,
-          classCallMissed + (typeCall === 'video' ? classCallMissedVideo : '')
+          classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''),
+          false,
+          false,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       }
     }
   })
@@ -465,15 +546,27 @@ const CommonChat = (() => {
           callerId,
           callTextReceiver,
           classCallCome + (typeCall === 'video' ? classCallVideo : ''),
-          true
+          true,
+          false,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       } else {
         window.createCallMsgLocalMiniChat(
           callerId,
           callTextReceiver,
           classCallCome + (typeCall === 'video' ? classCallVideo : ''),
-          true
+          true,
+          false,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       }
     } else if (sender === 'receiver') {
       // computer of caller
@@ -485,16 +578,50 @@ const CommonChat = (() => {
           callTextCaller,
           classCallOut + (typeCall === 'video' ? classCallVideo : ''),
           true,
-          true
+          true,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
       } else {
         window.createCallMsgLocalMiniChat(
           receiverId,
           callTextCaller,
           classCallOut + (typeCall === 'video' ? classCallVideo : ''),
           true,
-          true
+          true,
+          msgCallId
         )
+        addMorelMsgCallLocal({
+          msgId: msgCallId,
+          type: 'call'
+        })
+      }
+    }
+  })
+
+  socket.on('msg-updateMessage', ({ messageId, friendId }) => {
+    console.log(messageId, friendId);
+   
+    const $message = $(`.message[data-id="${messageId}"]`)
+    console.log($message);
+    if ($message.length) {
+      $message.attr('class', 'message deleted')
+      $message.find('.msg .message-content').html('Tin nhắn đã bị xóa')
+      $message.find('.time-call').remove()
+      if ($('#main').hasClass('chat-page')) {
+        if ($message.is(':last-child')) {
+          const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
+          if ($friItem.length) {
+            $friItem.find('.last-msg').html(`
+              <div class="last-msg text-dark">
+                <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
+              </div>
+            `)
+          }
+         }
       }
     }
   })
@@ -622,42 +749,47 @@ const CommonChat = (() => {
     const $itemMessage = $(this).parents('.message')
     if ($itemMessage.length) {
       $itemMessage.addClass('is-load')
-      socket.emit('msg-deleteMessage', {
-        messageId: $itemMessage.attr('data-id')
-      }, (res) => {
-        if (res.status === 'ok') {
-          $itemMessage.find('.more-msg').remove()
-          $itemMessage.find('.wrap-msg-mana').remove()
-          $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>')
-          $itemMessage.attr('class', 'message deleted text-right')
-        } else {
-          $itemMessage.removeClass('is-load')
-        }
-      })
+      let token = ''
+      if ($('#main').hasClass('chat-page')) {
+        token = document.sendMsgForm.elements._token.value
+      } else if ($('.popup-chat-mini.is-active').length) {
+        token = $('.popup-chat-mini.is-active').find('input[name="_token"]').val()
+      }
+      if (token) {
+        socket.emit('msg-deleteMessage', {
+          messageId: $itemMessage.attr('data-id'),
+          token
+        }, (res) => {
+          if (res.status === 'ok') {
+            $itemMessage.find('.more-msg').remove()
+            $itemMessage.find('.wrap-msg-mana').remove()
+            $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>')
+            $itemMessage.attr('class', 'message deleted text-right')
+
+            if ($('#main').hasClass('chat-page')) {
+              if ($itemMessage.is(':last-child')) {
+                const $friItem = $(($(`.friend-item[data-id="${$('#main-right').attr('data-id')}"]`)))
+                if ($friItem.length) {
+                  $friItem.find('.last-msg').html(`
+                    <div class="last-msg text-dark">
+                      <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
+                    </div>
+                  `)
+                }
+              }
+            }
+          } else {
+            $itemMessage.removeClass('is-load')
+          }
+        })
+      }
     }
   })
 
+  $(document).on('click', '.edit-msg', function (e) {
+    e.preventDefault()
+  })
 
-  // $(document).on('click', '.toggle-status-notify', async function (e) {
-  //   e.preventDefault()
-  //   const $itemNotify = $(this).parents('.notify-item')
-  //   if ($itemNotify.length) {
-  //     $itemNotify.addClass('is-load')
-  //     try {
-  //       await axios.put(`/messenger/notification-status`, { notifyId: $itemNotify.attr('data-id') })
-  //       if ($itemNotify.hasClass('un-read')) {
-  //         $itemNotify.removeClass('un-read')
-  //         $(this).find('span:last-child').text('Đánh dấu là đã đọc')
-  //       } else {
-  //         $itemNotify.addClass('un-read')
-  //         $(this).find('span:last-child').text('Đánh dấu là chưa đọc')
-  //       }
-  //     } catch (error) {
-  //       window.outputErrorMessage(error?.response?.data?.messages)
-  //     }
-  //     $itemNotify.removeClass('is-load')
-  //   }
-  // })
 
 
   /**
@@ -668,7 +800,7 @@ const CommonChat = (() => {
    * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
-  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false) {
+  function createCallMsgLocal(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '') {
     const $friItem = $(`.friend-item[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
     let timeCall = null
@@ -684,7 +816,8 @@ const CommonChat = (() => {
           username: 'Me',
           message: msg,
           className,
-          timeCall
+          timeCall,
+          id: tmpId
         }, true)
         scrollBottomChatBox()
         if (className !== 'wrap-msg-file') {
@@ -704,7 +837,8 @@ const CommonChat = (() => {
           message: msg,
           avatar: $friItem.find('img').attr('src'),
           className,
-          timeCall
+          timeCall,
+          id: tmpId
         }, false)
         scrollBottomChatBox()
         $friItem.find('.last-msg').html(`
@@ -757,6 +891,7 @@ const CommonChat = (() => {
    */
   function outputMessage(msgObj, me = false, $chatBox = null) {
     const div = document.createElement('div');
+    $(div).attr('data-id', msgObj.id)
     let classAdd = ''
     let content = msgObj.message
     if (isValidHttpUrl(msgObj.message)) {
@@ -778,16 +913,16 @@ const CommonChat = (() => {
       }
     }
     if (me) {
-      div.className = `message text-right ${msgObj.className}`;
+      div.className = `message text-right ${msgObj.className ? msgObj.className : ''}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
         <div>
-          <div class="msg-me">
+          <div class="msg-me ps-rv">
             <small class="message-content mx-0 ${classAdd}">${content}</small>
             ${ msgObj.timeCall || '' }
           </div>
         <div>`;
     } else {
-      div.className = `message ${msgObj.className}`;
+      div.className = `message ${msgObj.className ? msgObj.className : ''}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
       <div>
         <div class="msg">
@@ -806,6 +941,76 @@ const CommonChat = (() => {
     }
   }
   window.outputMessage = outputMessage
+
+  function addMorelMsgLocal({ tmpId, realId, type }) {
+    const $message = $(`.message[data-id="${tmpId}"]`)
+    if ($message.length) {
+      $message.attr('data-id', realId)
+      let editText = ''
+      if (type === 'text') {
+        editText = `
+        <div class="msg-mana-item d-flex align-items-center edit-msg">
+          <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
+        </div>
+        `
+      }
+      const moreMsg = `
+        <div class="more-msg">
+          <button class="btn btn-icon btn-white xs-btn" title="Xem thêm">
+          <span class="icomoon icon-dots-three-vertical"></span>
+        </button>
+        </div>
+        <div class="wrap-msg-mana d-none">
+          <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
+          ${editText}
+          <div class="msg-mana-item d-flex align-items-center del-msg">
+            <span class="icomoon icon-times-circle-o"></span>
+            <span>Xóa tin nhắn</span>
+            <button class="btn btn-icon btn-red confirm-del-msg d-none xs-btn" title="Xóa tin nhắn">
+              <span class="icomoon icon-checkmark"></span>
+            </button>
+          </div>
+        </div>
+      `
+
+      $message.find('.msg-me').prepend(moreMsg)
+    }
+  }
+  window.addMorelMsgLocal = addMorelMsgLocal
+
+  function addMorelMsgCallLocal({ msgId, type }) {
+    const $message = $(`.message[data-id="${msgId}"]`)
+    if ($message.length) {
+      let editText = ''
+      if (type === 'text') {
+        editText = `
+        <div class="msg-mana-item d-flex align-items-center edit-msg">
+          <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
+        </div>
+        `
+      }
+      const moreMsg = `
+        <div class="more-msg">
+          <button class="btn btn-icon btn-white xs-btn" title="Xem thêm">
+          <span class="icomoon icon-dots-three-vertical"></span>
+        </button>
+        </div>
+        <div class="wrap-msg-mana d-none">
+          <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
+          ${editText}
+          <div class="msg-mana-item d-flex align-items-center del-msg">
+            <span class="icomoon icon-times-circle-o"></span>
+            <span>Xóa tin nhắn</span>
+            <button class="btn btn-icon btn-red confirm-del-msg d-none xs-btn" title="Xóa tin nhắn">
+              <span class="icomoon icon-checkmark"></span>
+            </button>
+          </div>
+        </div>
+      `
+
+      $message.find('.msg-me').prepend(moreMsg)
+    }
+  }
 
   function isValidHttpUrl(string) {
     let url;

@@ -96,7 +96,7 @@ module.exports.onMemberOnline = async function (io, { memberId }) {
 };
 
 // receive msg chat of friend
-module.exports.onMessageChat = async function (io, { message, token, type, nameFile, resourceType }) {
+module.exports.onMessageChat = async function (io, { message, token, type, nameFile, resourceType }, callback) {
   try {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
@@ -133,6 +133,12 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
             memberSendId: me.id,
             type: type === 'file' ? resourceType : 'text',
             fileName: type === 'file' ? nameFile : ''
+          })
+          msg.id = messageObj.id.toString()
+
+          callback({
+            status: 'ok',
+            msgId: msg.id
           })
           // push msg to group and save group
           friendRelated.groupMessageId.messages.push(messageObj)
@@ -201,8 +207,9 @@ module.exports.onStatusRead = async function (io, { senderId, receiverId, status
 }
 
 // receive signal delete message from a client
-module.exports.onDeleteMessage = async function (io, { messageId }, callBack) {
+module.exports.onDeleteMessage = async function (io, { messageId, token }, callBack) {
   try {
+    const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
     const member = await Member.findOne({ socketId: this.id })
     if (member && messageId) {
       const message = await Message.findById(messageId)
@@ -232,17 +239,27 @@ module.exports.onDeleteMessage = async function (io, { messageId }, callBack) {
         callBack({
           status: 'ok'
         })
+
+        if (dataToken.memberId && dataToken.memberId.match(/^[0-9a-fA-F]{24}$/)) {
+          const friend = await Member.findById(dataToken.memberId)
+          if (friend && friend.status === 'online' && friend.socketId) {
+            io.to(friend.socketId).emit('msg-updateMessage', {
+              messageId,
+              friendId: member.id.toString()
+            })
+          }
+        }
       }
     } else {
       this.emit('error', 'Thành viên không tồn tại');
     }
-  } catch (error) {
+  } catch (error) { 
     this.emit('error', error.message);
   }
 }
 
 // receive signal offer call peer of caller => send to receiver
-module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal, typeCall }) {
+module.exports.onOfferSignal = async function (io, { receiverId, callerId, signal, typeCall }, callback) {
   try {
     // get caller and receiver
     const callerMem = await getCallerMemAndInfo(callerId, receiverId)
@@ -279,14 +296,22 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
             receiverMem.groupMessageId.messages.push(messageObj)
             await receiverMem.groupMessageId.save()
 
+            callback({
+              status: 'ok',
+              msgId: messageObj.id.toString(),
+              callerId,
+              receiverId
+            })
+
             io.to(receiverMem._id.socketId).emit('msg-hasCallMedia', {
               signal,
               callerId,
               callerName: callerMem.name,
               callerAvatar: callerMem.avatar,
-              typeCall
+              typeCall,
+              msgId: messageObj.id.toString()
             })
-            this.emit('msg-doneSendSignalCall', { callerId, receiverId })
+            // this.emit('msg-doneSendSignalCall', { callerId, receiverId })
           }
         }
       } else {

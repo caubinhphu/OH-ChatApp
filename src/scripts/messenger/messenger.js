@@ -62,11 +62,20 @@ const Messenger = (async () => {
           beConfirmed = true
           speakFor = 'notification'
           if (textYes.includes(command.toLowerCase())) {
+            const tmpId = new Date().valueOf()
             window.socket.emit('msg-messageChat', {
               message: textCommand,
               token: $popup.find('input[name="_token"]').val(),
+            }, res => {
+              if (res.status === 'ok') {
+                window.addMorelMsgLocal({
+                  tmpId,
+                  realId: res.msgId,
+                  type: 'text'
+                })
+              }
             });
-            window.createCallMsgLocalMini($popup.attr('data-id'), textCommand, '', false, true)
+            window.createCallMsgLocalMini($popup.attr('data-id'), textCommand, '', false, true, tmpId)
             textNotify = textSended
           } else {
             textNotify = textNoSend
@@ -74,15 +83,24 @@ const Messenger = (async () => {
           textCommand = ''
         } else {
           if (methodSend === 'auto-send') {
-            window.socket.emit('msg-messageChat', {
-              message: command,
-              token: tokenSend,
-            });
+            // window.socket.emit('msg-messageChat', {
+            //   message: command,
+            //   token: tokenSend,
+            // });
+            const tmpId = new Date().valueOf()
             window.socket.emit('msg-messageChat', {
               message: command,
               token: $popup.find('input[name="_token"]').val()
+            }, res => {
+              if (res.status === 'ok') {
+                window.addMorelMsgLocal({
+                  tmpId,
+                  realId: res.msgId,
+                  type: 'text'
+                })
+              }
             });
-            window.createCallMsgLocalMini($popup.attr('data-id'), command, '', false, true)
+            window.createCallMsgLocalMini($popup.attr('data-id'), command, '', false, true, tmpId)
           } else if (methodSend === 'confirm-popup') {
             const $popupConfirm = $popup.find('.confirm-popup')
             $popupConfirm.find('.msg-output').text(command)
@@ -314,12 +332,21 @@ const Messenger = (async () => {
         const $popup = $popupConfirm.parents('.popup-chat-mini')
         const text = $popupConfirm.find('.msg-output').text()
         if (text) {
+          const tmpId = new Date().valueOf()
           window.socket.emit('msg-messageChat', {
             message: text,
             token: $popup.find('input[name="_token"]').val(),
+          }, res => {
+            if (res.status === 'ok') {
+              window.addMorelMsgLocal({
+                tmpId,
+                realId: res.msgId,
+                type: 'text'
+              })
+            }
           });
           // create message obj to show in client
-          createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(text), '', false, true)
+          createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(text), '', false, true, tmpId)
           $popupConfirm.find('.msg-output').text('')
           $popupConfirm.addClass('d-none')
         }
@@ -719,14 +746,23 @@ const Messenger = (async () => {
       const inputMsg = e.target.elements.message;
 
       if (inputMsg.value !== '') {
+        const tmpId = new Date().valueOf()
         // send message to server
         window.socket.emit('msg-messageChat', {
           message: inputMsg.value,
           token: e.target.elements._token.value,
+        }, res => {
+          if (res.status === 'ok') {
+            window.addMorelMsgLocal({
+              tmpId,
+              realId: res.msgId,
+              type: 'text'
+            })
+          }
         });
 
         // create message obj to show in client
-        createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true)
+        createCallMsgLocalMini($popup.attr('data-id'), window.escapeHtml(inputMsg.value), '', false, true, tmpId)
 
         // scroll bottom
         // $chatMain.get(0).scrollTop = $chatMain.get(0).scrollHeight;
@@ -922,10 +958,10 @@ const Messenger = (async () => {
   }
 
   // function create call msg local mini chat
-  function createCallMsgLocalMiniChat(friendId, msg = '', className = '', isCallEnd = false, me = false) {
+  function createCallMsgLocalMiniChat(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '') {
     const $popup = $(`.popup-chat-mini[data-id=${friendId}]`)
     if ($popup.length) {
-      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me)
+      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me, tmpId)
       if ($popup.hasClass(nClassNoAct)) {
         outputPreviewMsg($popup, msg);
       }
@@ -941,7 +977,7 @@ const Messenger = (async () => {
    * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
-  function createCallMsgLocalMini(friendId, msg = '', className = '', isCallEnd = false, me = false) {
+  function createCallMsgLocalMini(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '') {
     const $chatBox = $(`.popup-chat-mini[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
     let timeCall = null
@@ -957,7 +993,8 @@ const Messenger = (async () => {
           username: 'Me',
           message: msg,
           className,
-          timeCall
+          timeCall,
+          id: tmpId
         }, true, $chatBox.find(classChatMain))
         window.scrollBottomChatBox($chatBox.find(classChatMain))
       } else {
@@ -967,7 +1004,8 @@ const Messenger = (async () => {
           message: msg,
           avatar: $chatBox.find('.avatar-mini').attr('src'),
           className,
-          timeCall
+          timeCall,
+          id: tmpId
         }, false, $chatBox.find(classChatMain))
         window.scrollBottomChatBox($chatBox.find(classChatMain))
       }
@@ -1126,7 +1164,8 @@ const Messenger = (async () => {
         `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
         'wrap-msg-file',
         false,
-        true
+        true,
+        new Date().valueOf()
       )
     });
     try {
@@ -1140,6 +1179,7 @@ const Messenger = (async () => {
       // enabledInputFile()
       const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
       $msgFile.each((i, ele) => {
+        const $parent = $(ele).parents('.message')
         const file = res.data.fileUrls.find(f => f.name === $(ele).text())
         if (file) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
@@ -1159,6 +1199,14 @@ const Messenger = (async () => {
             nameFile: file.name,
             resourceType: file.resourceType,
             token: $popup.find('input[name="_token"]').val()
+          }, res => {
+            if (res.status === 'ok') {
+              window.addMorelMsgLocal({
+                tmpId: $parent.attr('data-id'),
+                realId: res.msgId,
+                type: 'file'
+              })
+            }
           });
         } else {
           $(ele).parents('.message').remove()
@@ -1187,7 +1235,8 @@ const Messenger = (async () => {
       `<a class="msg-file" target="_blank" data-session="${idSession}" href="#">${file.name}</a>`,
       'wrap-msg-file',
       false,
-      true
+      true,
+      new Date().valueOf()
     )
     try {
       const res = await axios.post('/messenger/upload-file', formData, {
@@ -1200,6 +1249,7 @@ const Messenger = (async () => {
       // enabledInputFile()
       const $msgFile = $popup.find(`.msg-file[data-session="${idSession}"]`)
       $msgFile.each((i, ele) => {
+        const $parent = $(ele).parents('.message')
         const fileFind = res.data.fileUrls.find(f => f.name === $(ele).text())
         if (fileFind) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
@@ -1221,6 +1271,14 @@ const Messenger = (async () => {
             nameFile: fileFind.name,
             resourceType: audio ? 'audio' : fileFind.resourceType,
             token: $popup.find('input[name="_token"]').val()
+          }, res => {
+            if (res.status === 'ok') {
+              window.addMorelMsgLocal({
+                tmpId: $parent.attr('data-id'),
+                realId: res.msgId,
+                type: 'file'
+              })
+            }
           });
         } else {
           $(ele).parents('.message').remove()
