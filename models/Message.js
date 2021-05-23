@@ -11,7 +11,7 @@ const messageSchema = mongoose.Schema({
   },
   type: {
     type: String,
-    default: 'text', // [start, text, raw, image, video, audio, call-audio, call-audio-refuse, call-video, call-video-refuse]
+    default: 'text', // [start, text, raw, image, video, audio, call-audio, call-audio-refuse, call-video, call-video-refuse, deleted, edited]
   },
   externalModelType:{
     type: String,
@@ -22,7 +22,7 @@ const messageSchema = mongoose.Schema({
     refPath: 'externalModelType',
   },
   timeEndCall: Date,
-  fileName: String,
+  fileName: String
 });
 
 const Message = mongoose.model('Message', messageSchema);

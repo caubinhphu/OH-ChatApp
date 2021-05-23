@@ -245,6 +245,34 @@ const Profile = (() => {
       $('.loader-text-del').addClass('d-none')
     })
 
+    $('.create-new-text').on('click', async (e) => {
+      e.preventDefault()
+      try {
+        const response = await axios.post('/utility/text', {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      const url = `${location.origin}/utility/text/${response.data.textId}`
+      window.open(url)
+      } catch (error) {
+        if (error.response.status === 401) {
+          window.outputErrorMessage('Bạn cần đăng nhập để thưc hiện chức năng này')
+        } else {
+          window.outputErrorMessage('Không tạo được Text mới')
+        }
+      }
+    })
+
+    $('.copy-link-text').on('click', function(e) {
+      e.preventDefault()
+      const $ele = $(this).nextAll('.link-text-box')
+      $ele.select()
+      document.execCommand('copy')
+      window.outputSuccessMessage('Sao chép thành công')
+    })
+
     async function loadDataFriend(hash) {
       $('.wrap-loader-friend').removeClass('d-none')
       if (hash === '#friend' && isHasFriend && allowLoadFriend) {

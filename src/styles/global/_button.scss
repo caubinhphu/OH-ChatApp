@@ -155,6 +155,12 @@
     width: 36px;
     height: 36px;
   }
+  &.xs-btn {
+    width: 25px;
+    height: 25px;
+    padding: 5px;
+    font-size: 13px;
+  }
   &.btn-purple {
     color: $color-7f;
     &::after {

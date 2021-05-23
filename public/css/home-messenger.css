@@ -6822,6 +6822,13 @@ background: #ccc;
   height: 36px;
 }
 
+.btn-icon.xs-btn {
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  font-size: 13px;
+}
+
 .btn-icon.btn-purple {
   color: #7f3074;
 }
@@ -7265,6 +7272,10 @@ background: #ccc;
 
 .icon-sms_failed:before {
   content: "\E937";
+}
+
+.icon-link:before {
+  content: "\E938";
 }
 
 input:-webkit-autofill {
@@ -8274,6 +8285,25 @@ label.send-file:hover .icomoon,
   text-decoration: none;
 }
 
+.message.deleted .msg-me,
+.message.deleted .msg {
+  background-color: #747474;
+}
+
+.message.deleted .message-content {
+  color: #fff;
+  font-style: italic;
+}
+
+.message.is-load {
+  pointer-events: none;
+  opacity: .6;
+}
+
+.message.is-load .msg-mana-loader {
+  display: block;
+}
+
 .message .msg-me a {
   color: white;
 }
@@ -8294,7 +8324,7 @@ label.send-file:hover .icomoon,
 
 .message.call-outgoing .message-content::before {
   content: "\E92B";
-  color: #7f3074;
+  color: #14a76c;
 }
 
 .message.call-incoming .message-content::before {
@@ -8337,6 +8367,10 @@ label.send-file:hover .icomoon,
   font-size: 15px;
 }
 
+.message:hover .more-msg, .message.is-more .more-msg {
+  display: block;
+}
+
 .msg {
   width: max-content;
   max-width: 100%;
@@ -8363,6 +8397,69 @@ label.send-file:hover .icomoon,
 
 .msg-me .message-content {
   color: #fff;
+}
+
+.more-msg {
+  display: none;
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.wrap-msg-mana {
+  position: absolute;
+  right: calc(100% + 40px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  padding: 5px;
+  z-index: 2;
+  border-radius: 5px;
+  top: 50%;
+  box-shadow: 0 0 5px #0c1a2f;
+  width: 200px;
+}
+
+.msg-mana-item {
+  align-items: center;
+  border-radius: 5px;
+  padding: 4px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: #0c1a2f;
+}
+
+.msg-mana-item .icomoon:not(.icon-checkmark) {
+  margin-right: 10px;
+}
+
+.msg-mana-item:hover {
+  background: #f2f2f2;
+}
+
+.msg-mana-item:last-child {
+  margin-bottom: 0;
+}
+
+.confirm-del-msg {
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  margin-left: auto;
+}
+
+.confirm-del-msg .icomoon {
+  font-size: 13px;
+}
+
+.msg-mana-loader {
+  display: none;
+  position: absolute;
+  max-width: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .send-file:hover,
@@ -8752,15 +8849,29 @@ textarea.form-control.msg-mini {
 }
 
 .confirm-del-text,
-.del-text {
+.del-text,
+.copy-link-text {
   width: 25px;
   height: 25px;
   padding: 5px;
 }
 
 .confirm-del-text .icomoon,
-.del-text .icomoon {
+.del-text .icomoon,
+.copy-link-text .icomoon {
   font-size: 13px;
+}
+
+.link-text-box {
+  width: 1px;
+  height: 1px;
+  resize: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
 }
 
 .wrap-del-text.loader-del-text button {

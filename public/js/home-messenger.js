@@ -40477,6 +40477,93 @@ var CommonChat = function () {
       $('.loader-search-box').addClass('d-none');
     }
   });
+  $(document).on('click', '.more-msg .btn', function (e) {
+    e.preventDefault();
+    var $parent = $(this).parents('.message');
+
+    if (!$parent.hasClass('is-more')) {
+      $('.message').removeClass('is-more');
+      $('.wrap-msg-mana').addClass('d-none');
+      $parent.addClass('is-more');
+      $parent.find('.wrap-msg-mana').removeClass('d-none');
+    } else {
+      $parent.removeClass('is-more');
+      $parent.find('.wrap-msg-mana').addClass('d-none');
+      $parent.find('.confirm-del-msg').addClass('d-none');
+    }
+  }); // click outside more msg
+
+  $(document).on('click', function (e) {
+    var $container = $(".message.is-more .wrap-msg-mana");
+
+    if (!$(e.target).closest('.wrap-msg-mana').is($container) && !$(e.target).closest('.more-msg').hasClass('more-msg')) {
+      $container.parents('.message').removeClass('is-more');
+      $container.addClass('d-none');
+      $container.find('.confirm-del-msg').addClass('d-none');
+    }
+  });
+  $(document).on('click', '.del-msg', function (e) {
+    e.preventDefault();
+    $(this).find('.confirm-del-msg').removeClass('d-none');
+  });
+  $(document).on('click', '.confirm-del-msg', /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+      var $itemMessage;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              e.preventDefault();
+              $itemMessage = $(this).parents('.message');
+
+              if ($itemMessage.length) {
+                $itemMessage.addClass('is-load');
+                socket.emit('msg-deleteMessage', {
+                  messageId: $itemMessage.attr('data-id')
+                }, function (res) {
+                  if (res.status === 'ok') {
+                    $itemMessage.find('.more-msg').remove();
+                    $itemMessage.find('.wrap-msg-mana').remove();
+                    $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>');
+                    $itemMessage.attr('class', 'message deleted text-right');
+                  } else {
+                    $itemMessage.removeClass('is-load');
+                  }
+                });
+              }
+
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, this);
+    }));
+
+    return function (_x) {
+      return _ref8.apply(this, arguments);
+    };
+  }()); // $(document).on('click', '.toggle-status-notify', async function (e) {
+  //   e.preventDefault()
+  //   const $itemNotify = $(this).parents('.notify-item')
+  //   if ($itemNotify.length) {
+  //     $itemNotify.addClass('is-load')
+  //     try {
+  //       await axios.put(`/messenger/notification-status`, { notifyId: $itemNotify.attr('data-id') })
+  //       if ($itemNotify.hasClass('un-read')) {
+  //         $itemNotify.removeClass('un-read')
+  //         $(this).find('span:last-child').text('Đánh dấu là đã đọc')
+  //       } else {
+  //         $itemNotify.addClass('un-read')
+  //         $(this).find('span:last-child').text('Đánh dấu là chưa đọc')
+  //       }
+  //     } catch (error) {
+  //       window.outputErrorMessage(error?.response?.data?.messages)
+  //     }
+  //     $itemNotify.removeClass('is-load')
+  //   }
+  // })
+
   /**
    * Function create and append call message to local
    * @param {string} friendId friend id
@@ -40682,7 +40769,7 @@ var CommonChat = function () {
   }
 
   function _takePicture() {
-    _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var $modal,
           $wrapTake,
           videoStream,
@@ -40692,31 +40779,31 @@ var CommonChat = function () {
           context,
           dataURL,
           file,
-          _args2 = arguments;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          _args3 = arguments;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              $modal = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : $('#modal-take-photo');
+              $modal = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : $('#modal-take-photo');
 
               if (!navigator.mediaDevices.getUserMedia) {
-                _context2.next = 39;
+                _context3.next = 39;
                 break;
               }
 
-              _context2.prev = 2;
+              _context3.prev = 2;
               $('#is-taking').removeClass('d-none');
               $wrapTake = $modal.find('.wrap-takephoto');
               $wrapTake.removeClass('d-none'); // get video stream
 
-              _context2.next = 8;
+              _context3.next = 8;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
             case 8:
-              videoStream = _context2.sent;
+              videoStream = _context3.sent;
               // show video stream
               $wrapTake.find('video').each(function (i, vd) {
                 if ('srcObject' in vd) {
@@ -40729,7 +40816,7 @@ var CommonChat = function () {
 
               $modal.find('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context2.next = 14;
+              _context3.next = 14;
               return sleep(4000);
 
             case 14:
@@ -40745,7 +40832,7 @@ var CommonChat = function () {
               file = dataURLtoFile(dataURL, 'capture.jpg');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context2.next = 26;
+              _context3.next = 26;
               return Promise.all([snd.play(), sleep(320)]);
 
             case 26:
@@ -40763,23 +40850,23 @@ var CommonChat = function () {
               });
               $('#is-taking').addClass('d-none'); // return file
 
-              return _context2.abrupt("return", {
+              return _context3.abrupt("return", {
                 file: file,
                 dataURL: dataURL
               });
 
             case 35:
-              _context2.prev = 35;
-              _context2.t0 = _context2["catch"](2);
+              _context3.prev = 35;
+              _context3.t0 = _context3["catch"](2);
               $('#is-taking').addClass('d-none');
               window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
 
             case 39:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, null, [[2, 35]]);
+      }, _callee3, null, [[2, 35]]);
     }));
     return _takePicture.apply(this, arguments);
   }
@@ -40803,31 +40890,31 @@ var CommonChat = function () {
   } // handle recorder voice
 
 
-  function recorderVoice(_x) {
+  function recorderVoice(_x2) {
     return _recorderVoice.apply(this, arguments);
   }
 
   function _recorderVoice() {
-    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3($recBar) {
+    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4($recBar) {
       var time, blobs;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 18;
+                _context4.next = 18;
                 break;
               }
 
-              _context3.prev = 1;
-              _context3.next = 4;
+              _context4.prev = 1;
+              _context4.next = 4;
               return navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
               });
 
             case 4:
-              window.voiceRECStream = _context3.sent;
+              window.voiceRECStream = _context4.sent;
               time = 1;
               window.timeRec = setInterval(function () {
                 var m = Math.floor(time / 60);
@@ -40863,21 +40950,21 @@ var CommonChat = function () {
 
               window.soundRecord.play();
               window.localREC.start();
-              _context3.next = 18;
+              _context4.next = 18;
               break;
 
             case 15:
-              _context3.prev = 15;
-              _context3.t0 = _context3["catch"](1);
+              _context4.prev = 15;
+              _context4.t0 = _context4["catch"](1);
               // console.log(error);
               outputWarnMessage('Không thể ghi âm!');
 
             case 18:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, null, [[1, 15]]);
+      }, _callee4, null, [[1, 15]]);
     }));
     return _recorderVoice.apply(this, arguments);
   }
@@ -43163,7 +43250,19 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                           _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
                         }
 
-                        return "\n                <div class=\"message text-right ".concat(msg["class"], "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me\">\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
+                        var moreMsg = '';
+
+                        if (msg.type !== 'deleted') {
+                          var editText = '';
+
+                          if (msg.type === 'text') {
+                            editText = "\n                  <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n                    <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n                  </div>\n                  ";
+                          }
+
+                          moreMsg = "\n                  <div class=\"more-msg\">\n                    <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n                    <span class=\"icomoon icon-dots-three-vertical\"></span>\n                  </button>\n                  </div>\n                  <div class=\"wrap-msg-mana d-none\">\n                    <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n                    ".concat(editText, "\n                    <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n                      <span class=\"icomoon icon-times-circle-o\"></span>\n                      <span>X\xF3a tin nh\u1EAFn</span>\n                      <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n                        <span class=\"icomoon icon-checkmark\"></span>\n                      </button>\n                    </div>\n                  </div>\n                ");
+                        }
+
+                        return "\n                <div class=\"message text-right ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me ps-rv\">\n                      ").concat(moreMsg, "\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
                       }
 
                       var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
@@ -43182,7 +43281,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                         contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
                       }
 
-                      return "\n              <div class=\"message ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    ").concat(contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                      return "\n              <div class=\"message ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg\">\n                    <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                    ").concat(contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
                     }).join(''); // prepend msg list and hold position scroll top of chat box
 
                     curScrollPos = this.scrollTop;

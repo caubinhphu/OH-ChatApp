@@ -33,13 +33,25 @@
   }
 }
 .confirm-del-text,
-.del-text {
+.del-text,
+.copy-link-text {
   width: 25px;
   height: 25px;
   padding: 5px;
   .icomoon {
     font-size: 13px;
   }
+}
+.link-text-box {
+  width: 1px;
+  height: 1px;
+  resize: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
 }
 .wrap-del-text {
   &.loader-del-text {

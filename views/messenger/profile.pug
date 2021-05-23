@@ -62,8 +62,10 @@ block contentMain
             #friend-request-content.row
 
     #text-created.container.ps-rv
-      h4.text-dark Text đã tạo
-      img.loader-text-del.d-none(src="/images/loader.svg", alt="loader")
+      .ps-rv.d-flex.justify-content-between.align-items-center
+        h4.text-dark Text đã tạo
+        img.loader-text-del.d-none(src="/images/loader.svg", alt="loader")
+        button.btn.btn-link.create-new-text Tạo Text mới
 
       .wrap-text-list
         if (!texts.length)
@@ -82,7 +84,11 @@ block contentMain
               each text in texts
                 tr(data-id=text._id)
                   td
-                    a(href=`/utility/text/${text._id}`, target="_blank")= text.name
+                    .d-flex.align-items-center.justify-content-center
+                      button.btn.btn-icon.copy-link-text.btn-green.mr-2(title="Sao chép đường dẫn")
+                        span.icomoon.icon-link
+                      input.link-text-box(type="text", value=`${keyHost}/utility/text/${text._id}`)
+                      a(href=`/utility/text/${text._id}`, target="_blank")= text.name
                   td= text.createDate.toLocaleString()
                   td= text.modifyDate.toLocaleString()
                   td.d-flex.justify-content-center.wrap-del-text

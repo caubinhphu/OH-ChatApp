@@ -40477,6 +40477,93 @@ var CommonChat = function () {
       $('.loader-search-box').addClass('d-none');
     }
   });
+  $(document).on('click', '.more-msg .btn', function (e) {
+    e.preventDefault();
+    var $parent = $(this).parents('.message');
+
+    if (!$parent.hasClass('is-more')) {
+      $('.message').removeClass('is-more');
+      $('.wrap-msg-mana').addClass('d-none');
+      $parent.addClass('is-more');
+      $parent.find('.wrap-msg-mana').removeClass('d-none');
+    } else {
+      $parent.removeClass('is-more');
+      $parent.find('.wrap-msg-mana').addClass('d-none');
+      $parent.find('.confirm-del-msg').addClass('d-none');
+    }
+  }); // click outside more msg
+
+  $(document).on('click', function (e) {
+    var $container = $(".message.is-more .wrap-msg-mana");
+
+    if (!$(e.target).closest('.wrap-msg-mana').is($container) && !$(e.target).closest('.more-msg').hasClass('more-msg')) {
+      $container.parents('.message').removeClass('is-more');
+      $container.addClass('d-none');
+      $container.find('.confirm-del-msg').addClass('d-none');
+    }
+  });
+  $(document).on('click', '.del-msg', function (e) {
+    e.preventDefault();
+    $(this).find('.confirm-del-msg').removeClass('d-none');
+  });
+  $(document).on('click', '.confirm-del-msg', /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+      var $itemMessage;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              e.preventDefault();
+              $itemMessage = $(this).parents('.message');
+
+              if ($itemMessage.length) {
+                $itemMessage.addClass('is-load');
+                socket.emit('msg-deleteMessage', {
+                  messageId: $itemMessage.attr('data-id')
+                }, function (res) {
+                  if (res.status === 'ok') {
+                    $itemMessage.find('.more-msg').remove();
+                    $itemMessage.find('.wrap-msg-mana').remove();
+                    $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>');
+                    $itemMessage.attr('class', 'message deleted text-right');
+                  } else {
+                    $itemMessage.removeClass('is-load');
+                  }
+                });
+              }
+
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, this);
+    }));
+
+    return function (_x) {
+      return _ref8.apply(this, arguments);
+    };
+  }()); // $(document).on('click', '.toggle-status-notify', async function (e) {
+  //   e.preventDefault()
+  //   const $itemNotify = $(this).parents('.notify-item')
+  //   if ($itemNotify.length) {
+  //     $itemNotify.addClass('is-load')
+  //     try {
+  //       await axios.put(`/messenger/notification-status`, { notifyId: $itemNotify.attr('data-id') })
+  //       if ($itemNotify.hasClass('un-read')) {
+  //         $itemNotify.removeClass('un-read')
+  //         $(this).find('span:last-child').text('Đánh dấu là đã đọc')
+  //       } else {
+  //         $itemNotify.addClass('un-read')
+  //         $(this).find('span:last-child').text('Đánh dấu là chưa đọc')
+  //       }
+  //     } catch (error) {
+  //       window.outputErrorMessage(error?.response?.data?.messages)
+  //     }
+  //     $itemNotify.removeClass('is-load')
+  //   }
+  // })
+
   /**
    * Function create and append call message to local
    * @param {string} friendId friend id
@@ -40682,7 +40769,7 @@ var CommonChat = function () {
   }
 
   function _takePicture() {
-    _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    _takePicture = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       var $modal,
           $wrapTake,
           videoStream,
@@ -40692,31 +40779,31 @@ var CommonChat = function () {
           context,
           dataURL,
           file,
-          _args2 = arguments;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          _args3 = arguments;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              $modal = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : $('#modal-take-photo');
+              $modal = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : $('#modal-take-photo');
 
               if (!navigator.mediaDevices.getUserMedia) {
-                _context2.next = 39;
+                _context3.next = 39;
                 break;
               }
 
-              _context2.prev = 2;
+              _context3.prev = 2;
               $('#is-taking').removeClass('d-none');
               $wrapTake = $modal.find('.wrap-takephoto');
               $wrapTake.removeClass('d-none'); // get video stream
 
-              _context2.next = 8;
+              _context3.next = 8;
               return navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
               });
 
             case 8:
-              videoStream = _context2.sent;
+              videoStream = _context3.sent;
               // show video stream
               $wrapTake.find('video').each(function (i, vd) {
                 if ('srcObject' in vd) {
@@ -40729,7 +40816,7 @@ var CommonChat = function () {
 
               $modal.find('.count-down').removeClass('d-none'); // sleep 4s
 
-              _context2.next = 14;
+              _context3.next = 14;
               return sleep(4000);
 
             case 14:
@@ -40745,7 +40832,7 @@ var CommonChat = function () {
               file = dataURLtoFile(dataURL, 'capture.jpg');
               canvas.className = 'res-capture ps-as';
               $wrapTake.append(canvas);
-              _context2.next = 26;
+              _context3.next = 26;
               return Promise.all([snd.play(), sleep(320)]);
 
             case 26:
@@ -40763,23 +40850,23 @@ var CommonChat = function () {
               });
               $('#is-taking').addClass('d-none'); // return file
 
-              return _context2.abrupt("return", {
+              return _context3.abrupt("return", {
                 file: file,
                 dataURL: dataURL
               });
 
             case 35:
-              _context2.prev = 35;
-              _context2.t0 = _context2["catch"](2);
+              _context3.prev = 35;
+              _context3.t0 = _context3["catch"](2);
               $('#is-taking').addClass('d-none');
               window.outputWarnMessage('Bạn đã chặn quyền sử dụng webcam');
 
             case 39:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, null, [[2, 35]]);
+      }, _callee3, null, [[2, 35]]);
     }));
     return _takePicture.apply(this, arguments);
   }
@@ -40803,31 +40890,31 @@ var CommonChat = function () {
   } // handle recorder voice
 
 
-  function recorderVoice(_x) {
+  function recorderVoice(_x2) {
     return _recorderVoice.apply(this, arguments);
   }
 
   function _recorderVoice() {
-    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3($recBar) {
+    _recorderVoice = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4($recBar) {
       var time, blobs;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               if (!navigator.mediaDevices.getUserMedia) {
-                _context3.next = 18;
+                _context4.next = 18;
                 break;
               }
 
-              _context3.prev = 1;
-              _context3.next = 4;
+              _context4.prev = 1;
+              _context4.next = 4;
               return navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
               });
 
             case 4:
-              window.voiceRECStream = _context3.sent;
+              window.voiceRECStream = _context4.sent;
               time = 1;
               window.timeRec = setInterval(function () {
                 var m = Math.floor(time / 60);
@@ -40863,21 +40950,21 @@ var CommonChat = function () {
 
               window.soundRecord.play();
               window.localREC.start();
-              _context3.next = 18;
+              _context4.next = 18;
               break;
 
             case 15:
-              _context3.prev = 15;
-              _context3.t0 = _context3["catch"](1);
+              _context4.prev = 15;
+              _context4.t0 = _context4["catch"](1);
               // console.log(error);
               outputWarnMessage('Không thể ghi âm!');
 
             case 18:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, null, [[1, 15]]);
+      }, _callee4, null, [[1, 15]]);
     }));
     return _recorderVoice.apply(this, arguments);
   }
@@ -44279,115 +44366,115 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var Profile = function () {
   if ($('#main.profile-page').length) {
     var loadDataFriend = /*#__PURE__*/function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(hash) {
+      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(hash) {
         var responsive, _responsive$data, friends, hasFriend, _error$response2, _error$response2$data, requests, _requests$data, _friends, _hasFriend, _error$response3, _error$response3$data, invitations, _invitations$data, _friends2, _hasFriend2, _error$response4, _error$response4$data;
 
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 $('.wrap-loader-friend').removeClass('d-none');
 
                 if (!(hash === '#friend' && isHasFriend && allowLoadFriend)) {
-                  _context8.next = 19;
+                  _context9.next = 19;
                   break;
                 }
 
                 allowLoadFriend = false;
-                _context8.prev = 3;
-                _context8.next = 6;
+                _context9.prev = 3;
+                _context9.next = 6;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friends?page=".concat(pageFriend));
 
               case 6:
-                responsive = _context8.sent;
+                responsive = _context9.sent;
                 _responsive$data = responsive.data, friends = _responsive$data.friends, hasFriend = _responsive$data.hasFriend;
                 $(friendContent).append(friends.map(function (friend) {
-                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle max-w-80\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Chat</a>\n                  <button class=\"btn btn-red mt-1 des-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y k\u1EBFt b\u1EA1n\n                  </button>\n                </div>\n              </div>\n            </div>");
+                  return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle max-w-80\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <a href=\"/messenger/").concat(friend.url ? friend.url : friend.id, "\" class=\"btn\">Nh\u1EAFn tin</a>\n                  <button class=\"btn btn-red mt-1 des-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y k\u1EBFt b\u1EA1n\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriend = hasFriend;
                 pageFriend++;
-                _context8.next = 16;
+                _context9.next = 16;
                 break;
 
               case 13:
-                _context8.prev = 13;
-                _context8.t0 = _context8["catch"](3);
-                window.outputErrorMessage(_context8.t0 === null || _context8.t0 === void 0 ? void 0 : (_error$response2 = _context8.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
+                _context9.prev = 13;
+                _context9.t0 = _context9["catch"](3);
+                window.outputErrorMessage(_context9.t0 === null || _context9.t0 === void 0 ? void 0 : (_error$response2 = _context9.t0.response) === null || _error$response2 === void 0 ? void 0 : (_error$response2$data = _error$response2.data) === null || _error$response2$data === void 0 ? void 0 : _error$response2$data.message);
 
               case 16:
                 allowLoadFriend = true;
-                _context8.next = 49;
+                _context9.next = 49;
                 break;
 
               case 19:
                 if (!(hash === '#friend-request' && isHasFriendRequest && allowLoadFriendRequest)) {
-                  _context8.next = 35;
+                  _context9.next = 35;
                   break;
                 }
 
-                _context8.prev = 20;
-                _context8.next = 23;
+                _context9.prev = 20;
+                _context9.next = 23;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-request?page=".concat(pageFriendRequest));
 
               case 23:
-                requests = _context8.sent;
+                requests = _context9.sent;
                 _requests$data = requests.data, _friends = _requests$data.friends, _hasFriend = _requests$data.hasFriend;
                 $(friendRequest).append(_friends.map(function (friend) {
                   return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle max-w-80\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn btn-red mt-1 des-req-friend\" data-id=\"").concat(friend.id, "\">\n                    H\u1EE7y y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendRequest = _hasFriend;
                 pageFriendRequest++;
-                _context8.next = 33;
+                _context9.next = 33;
                 break;
 
               case 30:
-                _context8.prev = 30;
-                _context8.t1 = _context8["catch"](20);
-                window.outputErrorMessage(_context8.t1 === null || _context8.t1 === void 0 ? void 0 : (_error$response3 = _context8.t1.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.message);
+                _context9.prev = 30;
+                _context9.t1 = _context9["catch"](20);
+                window.outputErrorMessage(_context9.t1 === null || _context9.t1 === void 0 ? void 0 : (_error$response3 = _context9.t1.response) === null || _error$response3 === void 0 ? void 0 : (_error$response3$data = _error$response3.data) === null || _error$response3$data === void 0 ? void 0 : _error$response3$data.message);
 
               case 33:
-                _context8.next = 49;
+                _context9.next = 49;
                 break;
 
               case 35:
                 if (!(hash === '#friend-invitation' && isHasFriendInvitation && allowLoadFriendInvitation)) {
-                  _context8.next = 49;
+                  _context9.next = 49;
                   break;
                 }
 
-                _context8.prev = 36;
-                _context8.next = 39;
+                _context9.prev = 36;
+                _context9.next = 39;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messenger/profile/friend-invitation?page=".concat(pageFriendInvitation));
 
               case 39:
-                invitations = _context8.sent;
+                invitations = _context9.sent;
                 _invitations$data = invitations.data, _friends2 = _invitations$data.friends, _hasFriend2 = _invitations$data.hasFriend;
                 $(friendInvitation).append(_friends2.map(function (friend) {
                   return "<div class=\"col-md-6 wrap-fri-item\" data-id=\"".concat(friend.id, "\">\n              <div class=\"d-flex align-items-center border p-2 rounded my-2\">\n                <img class=\"rounded-circle max-w-80\" alt=\"").concat(friend.name, "\" src=\"").concat(friend.avatar, "\" title=\"").concat(friend.name, "\" />\n                <a class=\"flex-fill mx-2\" href=\"/messenger/member/").concat(friend.url ? friend.url : friend.id, "\" title=\"").concat(friend.name, "\">\n                  <strong class=\"name-member\">").concat(friend.name, "</strong>\n                </a>\n                <div class=\"d-flex flex-column fri-item-ctrl\">\n                  <button class=\"btn mt-1 accept-inv-friend\" data-id=\"").concat(friend.id, "\">Ch\u1EA5p nh\u1EADn</button>\n                  <button class=\"btn btn-red mt-1 del-inv-friend\" data-id=\"").concat(friend.id, "\">\n                    X\xF3a y\xEAu c\u1EA7u\n                  </button>\n                </div>\n              </div>\n            </div>");
                 }).join(''));
                 isHasFriendInvitation = _hasFriend2;
                 pageFriendInvitation++;
-                _context8.next = 49;
+                _context9.next = 49;
                 break;
 
               case 46:
-                _context8.prev = 46;
-                _context8.t2 = _context8["catch"](36);
-                window.outputErrorMessage(_context8.t2 === null || _context8.t2 === void 0 ? void 0 : (_error$response4 = _context8.t2.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.message);
+                _context9.prev = 46;
+                _context9.t2 = _context9["catch"](36);
+                window.outputErrorMessage(_context9.t2 === null || _context9.t2 === void 0 ? void 0 : (_error$response4 = _context9.t2.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.message);
 
               case 49:
                 $('.wrap-loader-friend').addClass('d-none');
 
               case 50:
               case "end":
-                return _context8.stop();
+                return _context9.stop();
             }
           }
-        }, _callee8, null, [[3, 13], [20, 30], [36, 46]]);
+        }, _callee9, null, [[3, 13], [20, 30], [36, 46]]);
       }));
 
-      return function loadDataFriend(_x6) {
-        return _ref8.apply(this, arguments);
+      return function loadDataFriend(_x7) {
+        return _ref9.apply(this, arguments);
       };
     }();
 
@@ -44773,6 +44860,59 @@ var Profile = function () {
         return _ref7.apply(this, arguments);
       };
     }());
+    $('.create-new-text').on('click', /*#__PURE__*/function () {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(e) {
+        var response, url;
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                e.preventDefault();
+                _context8.prev = 1;
+                _context8.next = 4;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/utility/text', {}, {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  }
+                });
+
+              case 4:
+                response = _context8.sent;
+                url = "".concat(location.origin, "/utility/text/").concat(response.data.textId);
+                window.open(url);
+                _context8.next = 12;
+                break;
+
+              case 9:
+                _context8.prev = 9;
+                _context8.t0 = _context8["catch"](1);
+
+                if (_context8.t0.response.status === 401) {
+                  window.outputErrorMessage('Bạn cần đăng nhập để thưc hiện chức năng này');
+                } else {
+                  window.outputErrorMessage('Không tạo được Text mới');
+                }
+
+              case 12:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, null, [[1, 9]]);
+      }));
+
+      return function (_x6) {
+        return _ref8.apply(this, arguments);
+      };
+    }());
+    $('.copy-link-text').on('click', function (e) {
+      e.preventDefault();
+      var $ele = $(this).nextAll('.link-text-box');
+      $ele.select();
+      document.execCommand('copy');
+      window.outputSuccessMessage('Sao chép thành công');
+    });
     window.loadDataFriend = loadDataFriend;
   }
 }();
@@ -45495,7 +45635,19 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                             _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
                           }
 
-                          return "\n              <div class=\"message text-right ".concat(msg["class"], "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me\">\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                          var moreMsg = '';
+
+                          if (msg.type !== 'deleted') {
+                            var editText = '';
+
+                            if (msg.type === 'text') {
+                              editText = "\n                <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n                  <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n                </div>\n                ";
+                            }
+
+                            moreMsg = "\n                <div class=\"more-msg\">\n                  <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n                  <span class=\"icomoon icon-dots-three-vertical\"></span>\n                </button>\n                </div>\n                <div class=\"wrap-msg-mana d-none\">\n                  <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n                  ".concat(editText, "\n                  <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n                    <span class=\"icomoon icon-times-circle-o\"></span>\n                    <span>X\xF3a tin nh\u1EAFn</span>\n                    <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-checkmark\"></span>\n                    </button>\n                  </div>\n                </div>\n              ");
+                          }
+
+                          return "\n              <div class=\"message text-right ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me ps-rv\">\n                    ").concat(moreMsg, "\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
                         }
 
                         var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
@@ -45514,7 +45666,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                           contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\">").concat(msg.content, "</a></small>");
                         }
 
-                        return "\n            <div class=\"message ".concat(msg["class"], "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  ").concat(contentHtml, "\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
+                        return "\n            <div class=\"message ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n              <small class=\"message-time\">").concat(msg.time, "</small>\n              <div>\n                <div class=\"msg\">\n                  <img class=\"message-avatar\" src=\"").concat(msg.avatar, "\" alt=\"").concat(msg.name, "\">\n                  ").concat(contentHtml, "\n                  ").concat(timeEndCall, "\n                </div>\n              </div>\n            </div>");
                       }).join(''); // prepend msg list and hold position scroll top of chat box
 
                       chatMain = $popup.find(classChatMain).get(0);
@@ -47249,7 +47401,7 @@ var Search = function () {
                 var subHtml = '';
 
                 if (member.relatedWithMe === 'friend') {
-                  subHtml = "\n              <a class=\"btn mb-1\" href=\"/messenger/chat/".concat(member.url ? member.url : member._id, "\">Chat</a>\n              <button class=\"des-friend btn btn-red\" data-id=\"").concat(member._id, "\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n            ");
+                  subHtml = "\n              <a class=\"btn mb-1\" href=\"/messenger/chat/".concat(member.url ? member.url : member._id, "\">Nh\u1EAFn tin</a>\n              <button class=\"des-friend btn btn-red\" data-id=\"").concat(member._id, "\">H\u1EE7y k\u1EBFt b\u1EA1n</button>\n            ");
                 } else if (member.relatedWithMe === 'request') {
                   subHtml = "\n              <button class=\"des-req-friend btn btn-red\" data-id=\"".concat(member._id, "\">H\u1EE7y y\xEAu c\u1EA7u</button>\n            ");
                 } else if (member.relatedWithMe === 'invitation') {

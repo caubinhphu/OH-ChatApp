@@ -587,6 +587,79 @@ const CommonChat = (() => {
     }
   });
 
+  $(document).on('click', '.more-msg .btn', function(e) {
+    e.preventDefault()
+    const $parent = $(this).parents('.message')
+    if (!$parent.hasClass('is-more')) {
+      $('.message').removeClass('is-more')
+      $('.wrap-msg-mana').addClass('d-none')
+      $parent.addClass('is-more')
+      $parent.find('.wrap-msg-mana').removeClass('d-none')
+    } else {
+      $parent.removeClass('is-more')
+      $parent.find('.wrap-msg-mana').addClass('d-none')
+      $parent.find('.confirm-del-msg').addClass('d-none')
+    }
+  })
+
+  // click outside more msg
+  $(document).on('click', function(e) {
+    const $container = $(".message.is-more .wrap-msg-mana");
+    if (!$(e.target).closest('.wrap-msg-mana').is($container) && !$(e.target).closest('.more-msg').hasClass('more-msg')) {
+      $container.parents('.message').removeClass('is-more')
+      $container.addClass('d-none')
+      $container.find('.confirm-del-msg').addClass('d-none')
+    }
+  });
+
+  $(document).on('click', '.del-msg', function (e) {
+    e.preventDefault()
+    $(this).find('.confirm-del-msg').removeClass('d-none')
+  })
+
+  $(document).on('click', '.confirm-del-msg', async function (e) {
+    e.preventDefault()
+    const $itemMessage = $(this).parents('.message')
+    if ($itemMessage.length) {
+      $itemMessage.addClass('is-load')
+      socket.emit('msg-deleteMessage', {
+        messageId: $itemMessage.attr('data-id')
+      }, (res) => {
+        if (res.status === 'ok') {
+          $itemMessage.find('.more-msg').remove()
+          $itemMessage.find('.wrap-msg-mana').remove()
+          $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>')
+          $itemMessage.attr('class', 'message deleted text-right')
+        } else {
+          $itemMessage.removeClass('is-load')
+        }
+      })
+    }
+  })
+
+
+  // $(document).on('click', '.toggle-status-notify', async function (e) {
+  //   e.preventDefault()
+  //   const $itemNotify = $(this).parents('.notify-item')
+  //   if ($itemNotify.length) {
+  //     $itemNotify.addClass('is-load')
+  //     try {
+  //       await axios.put(`/messenger/notification-status`, { notifyId: $itemNotify.attr('data-id') })
+  //       if ($itemNotify.hasClass('un-read')) {
+  //         $itemNotify.removeClass('un-read')
+  //         $(this).find('span:last-child').text('Đánh dấu là đã đọc')
+  //       } else {
+  //         $itemNotify.addClass('un-read')
+  //         $(this).find('span:last-child').text('Đánh dấu là chưa đọc')
+  //       }
+  //     } catch (error) {
+  //       window.outputErrorMessage(error?.response?.data?.messages)
+  //     }
+  //     $itemNotify.removeClass('is-load')
+  //   }
+  // })
+
+
   /**
    * Function create and append call message to local
    * @param {string} friendId friend id

@@ -148,6 +148,11 @@ const socket = function (io) {
       messengerController.onStatusRead.bind(this, io, data)()
     })
 
+    // receive signal delete message from a client
+    socket.on('msg-deleteMessage', function(data, callBack) {
+      messengerController.onDeleteMessage.bind(this, io, data, callBack)()
+    });
+
     // ------------------------ Text -----------------------------
     // receive event join text from client
     socket.on('join-text', utilitiesController.onJoinText)

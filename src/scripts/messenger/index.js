@@ -536,11 +536,43 @@ const Index = (async () => {
               } else if (msg.isLink) {
                 contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
               }
+
+              let moreMsg = ''
+              if (msg.type !== 'deleted') {
+                let editText = ''
+                if (msg.type === 'text') {
+                  editText = `
+                  <div class="msg-mana-item d-flex align-items-center edit-msg">
+                    <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
+                  </div>
+                  `
+                }
+                moreMsg = `
+                  <div class="more-msg">
+                    <button class="btn btn-icon btn-white xs-btn" title="Xem thêm">
+                    <span class="icomoon icon-dots-three-vertical"></span>
+                  </button>
+                  </div>
+                  <div class="wrap-msg-mana d-none">
+                    <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
+                    ${editText}
+                    <div class="msg-mana-item d-flex align-items-center del-msg">
+                      <span class="icomoon icon-times-circle-o"></span>
+                      <span>Xóa tin nhắn</span>
+                      <button class="btn btn-icon btn-red confirm-del-msg d-none xs-btn" title="Xóa tin nhắn">
+                        <span class="icomoon icon-checkmark"></span>
+                      </button>
+                    </div>
+                  </div>
+                `
+              }
+
               return `
-                <div class="message text-right ${msg.class}">
+                <div class="message text-right ${msg.class}" data-id="${msg.id}">
                   <small class="message-time">${msg.time}</small>
                   <div>
-                    <div class="msg-me">
+                    <div class="msg-me ps-rv">
+                      ${ moreMsg }
                       ${ contentHtml }
                       ${ timeEndCall }
                     </div>
@@ -562,7 +594,7 @@ const Index = (async () => {
               contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
             }
             return `
-              <div class="message ${msg.class}">
+              <div class="message ${msg.class}" data-id="${msg.id}">
                 <small class="message-time">${msg.time}</small>
                 <div>
                   <div class="msg">

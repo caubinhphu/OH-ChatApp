@@ -85,6 +85,23 @@
       text-decoration: none;
     }
   }
+  &.deleted {
+    .msg-me,
+    .msg {
+      background-color: $color-74;
+    }
+    .message-content {
+      color: $white;
+      font-style: italic;
+    }
+  }
+  &.is-load {
+    pointer-events: none;
+    opacity: .6;
+    .msg-mana-loader {
+      display: block;
+    }
+  }
   .msg-me {
     a {
       color: white;
@@ -151,6 +168,12 @@
       font-size: 15px;
     }
   }
+  &:hover,
+  &.is-more {
+    .more-msg {
+      display: block;
+    }
+  }
 }
 
 .msg {
@@ -178,6 +201,60 @@
   .message-content {
     color: $white;
   }
+}
+.more-msg {
+  display: none;
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.wrap-msg-mana {
+  position: absolute;
+  right: calc(100% + 40px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: $white;
+  padding: 5px;
+  z-index: 2;
+  border-radius: 5px;
+  top: 50%;
+  box-shadow: 0 0 5px $color-0c;
+  width: 200px;
+}
+.msg-mana-item {
+  align-items: center;
+  border-radius: 5px;
+  padding: 4px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: $color-0c;
+  .icomoon:not(.icon-checkmark) {
+    margin-right: 10px;
+  }
+  &:hover {
+    background: #f2f2f2;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.confirm-del-msg {
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  margin-left: auto;
+  .icomoon {
+    font-size: 13px;
+  }
+}
+.msg-mana-loader {
+  display: none;
+  position: absolute;
+  max-width: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .send-file,
 .send-take-photo,

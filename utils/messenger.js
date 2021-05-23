@@ -71,6 +71,9 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.content = 'Cuộc gọi video đi'
       msgFormat.class = 'call-msg call-outgoing call-video call-video'
     }
+  } else if (msg.type === 'deleted') {
+    msgFormat.content = 'Tin nhắn đã bị xóa'
+    msgFormat.class = 'deleted'
   } else if (msg.type === 'text') {
   } else if (msg.type === 'start') {
     msgFormat.content = `

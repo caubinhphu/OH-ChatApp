@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const Member = require('../models/Member');
 const Message = require('../models/Message');
@@ -6,6 +7,7 @@ const GroupMessage = require('../models/GroupMessage');
 
 
 const formatMessage = require('../utils/message');
+const cloudinary = require('../utils/cloudinary');
 
 /**
  * Function get caller member and its info
@@ -189,6 +191,47 @@ module.exports.onStatusRead = async function (io, { senderId, receiverId, status
       if (index !== -1) {
         member.friends[index].beRead = status
         await member.save()
+      }
+    } else {
+      this.emit('error', 'Thành viên không tồn tại');
+    }
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
+
+// receive signal delete message from a client
+module.exports.onDeleteMessage = async function (io, { messageId }, callBack) {
+  try {
+    const member = await Member.findOne({ socketId: this.id })
+    if (member && messageId) {
+      const message = await Message.findById(messageId)
+      if (message && message.memberSendId.toString() === member.id.toString()) {
+        let publicId = null
+        let typeRes = ''
+        const id = message.content.match(/files.*$/g)
+        if (message.type === 'raw') {
+          publicId = 'ohchat/upload/' + id[0]
+          typeRes = 'raw'
+          message.fileName = ''
+        } else if (message.type === 'image') {
+          publicId = 'ohchat/upload/' + path.basename(id[0], path.extname(id[0]))
+          typeRes = 'image'
+          message.fileName = ''
+        } else if (message.type === 'video' || message.type === 'audio') {
+          publicId = 'ohchat/upload/' + path.basename(id[0], path.extname(id[0]))
+          typeRes = 'video'
+          message.fileName = ''
+        }
+        if (publicId) {
+          await cloudinary.deleteTypeResources([publicId], typeRes)
+        }
+        message.content = ''
+        message.type = 'deleted'
+        await message.save()
+        callBack({
+          status: 'ok'
+        })
       }
     } else {
       this.emit('error', 'Thành viên không tồn tại');

@@ -8,9 +8,9 @@ block contentMain
           h4.mb-0 Nhắn tin
           #room.d-flex.align-items-center.justify-content-center
             span.text-secondary.mr-3 Phòng họp 
-            a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng")
+            a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng", target="_blank")
               span.icomoon.icon-plus
-            a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng")
+            a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng", target="_blank")
               span.icomoon.icon-sign-in
         #main-left-search.mt-2
           form.ps-rv.form-search-friend
@@ -79,10 +79,25 @@ block contentMain
                   .message.text-center(class=msg.class) !{msg.content}
                 else
                   if (msg.me)
-                    .message.text-right(class=msg.class)
+                    .message.text-right(class=msg.class, data-id=`${msg.id}`)
                       small.message-time= msg.time
                       div
-                        .msg-me
+                        .msg-me.ps-rv
+                          if (msg.class !== 'deleted')
+                            .more-msg
+                              button.btn.btn-icon.btn-white.xs-btn(title="Xem thêm")
+                                span.icomoon.icon-dots-three-vertical
+                            .wrap-msg-mana.d-none
+                              img.msg-mana-loader(src='/images/loader.svg', alt='loader')
+                              if (msg.type === 'text')
+                                .msg-mana-item.d-flex.align-items-center.edit-msg
+                                  span.icomoon.icon-icon-edit
+                                  span Sửa tin nhắn
+                              .msg-mana-item.d-flex.align-items-center.del-msg
+                                span.icomoon.icon-times-circle-o
+                                span Xóa tin nhắn
+                                button.btn.btn-icon.btn-red.confirm-del-msg.d-none.xs-btn(title="Xóa tin nhắn")
+                                  span.icomoon.icon-checkmark
                           if (msg.fileName)
                             small.message-content.mx-0.d-flex
                               if (msg.type === 'image')
@@ -102,7 +117,7 @@ block contentMain
                           if (msg.timeCall)
                             small.time-call= msg.timeCall
                   else
-                    .message(class=msg.class)
+                    .message(class=msg.class, data-id=`${msg.id}`)
                       small.message-time= msg.time
                       div
                         .msg

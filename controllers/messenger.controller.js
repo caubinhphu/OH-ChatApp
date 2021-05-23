@@ -234,7 +234,8 @@ module.exports.getProfile = async (req, res, next) => {
         titleSite: siteMes,
         member,
         birthOfDate,
-        texts
+        texts,
+        keyHost: key.host
       });
     } else {
       req.flash('error', notMem);
