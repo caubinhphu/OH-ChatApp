@@ -153,6 +153,11 @@ const socket = function (io) {
       messengerController.onDeleteMessage.bind(this, io, data, callBack)()
     });
 
+    // receive signal edit message from a client
+    socket.on('msg-editMessage', function(data, callBack) {
+      messengerController.onEditMessage.bind(this, io, data, callBack)()
+    });
+
     // ------------------------ Text -----------------------------
     // receive event join text from client
     socket.on('join-text', utilitiesController.onJoinText)

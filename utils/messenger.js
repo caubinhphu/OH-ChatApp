@@ -74,7 +74,7 @@ const formatMsg = function (msg, me, friend) {
   } else if (msg.type === 'deleted') {
     msgFormat.content = 'Tin nhắn đã bị xóa'
     msgFormat.class = 'deleted'
-  } else if (msg.type === 'text') {
+  } else if (msg.type === 'text' || msg.type === 'edited') {
   } else if (msg.type === 'start') {
     msgFormat.content = `
       <img src="${friend.avatar}" alt="${friend.name}"/>
@@ -124,7 +124,7 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
     msg += 'Bạn: '
   }
 
-  if (latestMsgObj.type === 'text') {
+  if (latestMsgObj.type === 'text' || latestMsgObj.type === 'edited') {
     msg += latestMsgObj.content
   } else if (latestMsgObj.type === 'call-audio' || latestMsgObj.type === 'call-video') {
     if (me.id === latestMsgObj.memberSendId.toString()) {
@@ -140,6 +140,8 @@ const formatLatestMsg = function (latestMsgObj, me, friend) {
     }
   } else if (latestMsgObj.type === 'start') {
     msg = 'Các bạn đã trở thành bạn bè'
+  } else if (latestMsgObj.type === 'deleted') {
+    msg = 'Tin nhắn đã bị xóa'
   } else {
     if (me.id === latestMsgObj.memberSendId.toString()) {
       msg = 'Bạn đã gửi 1 đính kèm'

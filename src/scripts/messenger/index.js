@@ -576,7 +576,7 @@ const Index = (async () => {
               let moreMsg = ''
               if (msg.type !== 'deleted') {
                 let editText = ''
-                if (msg.type === 'text') {
+                if (msg.type === 'text' || msg.type === 'edited') {
                   editText = `
                   <div class="msg-mana-item d-flex align-items-center edit-msg">
                     <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
@@ -604,7 +604,7 @@ const Index = (async () => {
               }
 
               return `
-                <div class="message text-right ${msg.class}" data-id="${msg.id}">
+                <div class="message text-right ml-auto ${msg.class}" data-id="${msg.id}">
                   <small class="message-time">${msg.time}</small>
                   <div>
                     <div class="msg-me ps-rv">

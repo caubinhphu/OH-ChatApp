@@ -40443,22 +40443,40 @@ var CommonChat = function () {
   });
   socket.on('msg-updateMessage', function (_ref6) {
     var messageId = _ref6.messageId,
-        friendId = _ref6.friendId;
-    console.log(messageId, friendId);
+        friendId = _ref6.friendId,
+        type = _ref6.type,
+        content = _ref6.content;
     var $message = $(".message[data-id=\"".concat(messageId, "\"]"));
-    console.log($message);
 
     if ($message.length) {
-      $message.attr('class', 'message deleted');
-      $message.find('.msg .message-content').html('Tin nhắn đã bị xóa');
-      $message.find('.time-call').remove();
+      if (type === 'delete') {
+        $message.attr('class', 'message deleted');
+        $message.find('.msg .message-content').html('Tin nhắn đã bị xóa');
+        $message.find('.time-call').remove();
 
-      if ($('#main').hasClass('chat-page')) {
-        if ($message.is(':last-child')) {
-          var $friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+        if (isPageChat) {
+          if ($message.is(':last-child')) {
+            var $friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
 
-          if ($friItem.length) {
-            $friItem.find('.last-msg').html("\n              <div class=\"last-msg text-dark\">\n                <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n              </div>\n            ");
+            if ($friItem.length) {
+              $friItem.find('.last-msg').html("\n                <div class=\"last-msg text-dark\">\n                  <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                </div>\n              ");
+            }
+          }
+        }
+      } else if (type === 'edit') {
+        if (isValidHttpUrl(content)) {
+          $message.find('.message-content').html("<a href=\"".concat(content, "\" target=\"_blank\">").concat(content, "</a>"));
+        } else {
+          $message.find('.message-content').html(content);
+        }
+
+        if (isPageChat) {
+          if ($message.is(':last-child')) {
+            var _$friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+
+            if (_$friItem.length) {
+              _$friItem.find('.last-msg').html("\n                <div class=\"last-msg text-dark\">\n                  <small>".concat(content, "</small><small>v\xE0i gi\xE2y</small>\n                </div>\n              "));
+            }
           }
         }
       }
@@ -40631,7 +40649,7 @@ var CommonChat = function () {
                       $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>');
                       $itemMessage.attr('class', 'message deleted text-right');
 
-                      if ($('#main').hasClass('chat-page')) {
+                      if (isPageChat) {
                         if ($itemMessage.is(':last-child')) {
                           var $friItem = $($(".friend-item[data-id=\"".concat($('#main-right').attr('data-id'), "\"]")));
 
@@ -40661,7 +40679,90 @@ var CommonChat = function () {
   }());
   $(document).on('click', '.edit-msg', function (e) {
     e.preventDefault();
+    var $parent = $(this).parents('.message');
+    var $msg = $parent.find('.msg-me');
+    $msg.before("\n      <div class=\"edit-box ps-rv ml-auto\">\n        <img class=\"edit-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n        <textarea>".concat($msg.find('.message-content').text(), "</textarea>\n        <div class=\"edit-ctrl d-flex justify-content-end\">\n          <div class=\"ctrl d-flex\">\n            <button class=\"btn btn-icon xs-btn btn-default mr-2 edit-cancel\" title=\"H\u1EE7y\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n            <button class=\"btn btn-icon xs-btn btn-default edit-save\" title=\"L\u01B0u\">\n              <span class=\"icomoon icon-checkmark\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n    "));
+    $msg.addClass('d-none');
+    setTimeout(function () {
+      $msg.find('textarea').focus();
+    }, 200);
   });
+  $(document).on('click', '.edit-cancel', function (e) {
+    e.preventDefault();
+    cancelEditMsg($(this).parents('.message'));
+  });
+  $(document).on('click', '.edit-save', function (e) {
+    e.preventDefault();
+    var $parent = $(this).parents('.message');
+    var $boxEdit = $parent.find('textarea');
+
+    if ($boxEdit.val()) {
+      saveEditMsg($parent);
+    } else {
+      cancelEditMsg($parent);
+    }
+  });
+  $(document).on('keydown', '.edit-box textarea', function (e) {
+    var code = e.keyCode || e.which;
+
+    if (code === 27) {
+      e.preventDefault();
+      cancelEditMsg($(this).parents('.message'));
+    } else if (code === 13 && !e.shiftKey) {
+      e.preventDefault();
+      saveEditMsg($(this).parents('.message'));
+    }
+  });
+
+  function cancelEditMsg($message) {
+    $message.find('.edit-box').removeClass('load');
+    $message.find('.edit-box').remove();
+    $message.find('.msg-me').removeClass('d-none');
+  }
+
+  function saveEditMsg($message) {
+    $message.find('.edit-box').addClass('load');
+    var content = $message.find('textarea').val();
+    var token = '';
+
+    if (isPageChat) {
+      token = document.sendMsgForm.elements._token.value;
+    } else if ($('.popup-chat-mini.is-active').length) {
+      token = $('.popup-chat-mini.is-active').find('input[name="_token"]').val();
+    }
+
+    if (token && content) {
+      socket.emit('msg-editMessage', {
+        messageId: $message.attr('data-id'),
+        content: content,
+        token: token
+      }, function (res) {
+        if (res.status === 'ok') {
+          if (isValidHttpUrl(content)) {
+            $message.find('.message-content').html("<a href=\"".concat(content, "\" target=\"_blank\">").concat(content, "</a>"));
+          } else {
+            $message.find('.message-content').html(content);
+          }
+
+          if (isPageChat) {
+            if ($message.is(':last-child')) {
+              var $friItem = $($(".friend-item[data-id=\"".concat($('#main-right').attr('data-id'), "\"]")));
+
+              if ($friItem.length) {
+                $friItem.find('.last-msg').html("\n                  <div class=\"last-msg text-dark\">\n                    <small>".concat(content, "</small><small>v\xE0i gi\xE2y</small>\n                  </div>\n                "));
+              }
+            }
+          }
+
+          cancelEditMsg($message);
+        } else {
+          cancelEditMsg($message);
+        }
+      });
+    } else {
+      cancelEditMsg($message);
+    }
+  }
   /**
    * Function create and append call message to local
    * @param {string} friendId friend id
@@ -40670,6 +40771,7 @@ var CommonChat = function () {
    * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
+
 
   function createCallMsgLocal(friendId) {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -40792,7 +40894,7 @@ var CommonChat = function () {
     }
 
     if (me) {
-      div.className = "message text-right ".concat(msgObj.className ? msgObj.className : '');
+      div.className = "message text-right ml-auto ".concat(msgObj.className ? msgObj.className : '');
       div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me ps-rv\">\n            <small class=\"message-content mx-0 ").concat(classAdd, "\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
       div.className = "message ".concat(msgObj.className ? msgObj.className : '');
@@ -45798,14 +45900,14 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                           if (msg.type !== 'deleted') {
                             var editText = '';
 
-                            if (msg.type === 'text') {
+                            if (msg.type === 'text' || msg.type === 'edited') {
                               editText = "\n                <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n                  <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n                </div>\n                ";
                             }
 
                             moreMsg = "\n                <div class=\"more-msg\">\n                  <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n                  <span class=\"icomoon icon-dots-three-vertical\"></span>\n                </button>\n                </div>\n                <div class=\"wrap-msg-mana d-none\">\n                  <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n                  ".concat(editText, "\n                  <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n                    <span class=\"icomoon icon-times-circle-o\"></span>\n                    <span>X\xF3a tin nh\u1EAFn</span>\n                    <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-checkmark\"></span>\n                    </button>\n                  </div>\n                </div>\n              ");
                           }
 
-                          return "\n              <div class=\"message text-right ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me ps-rv\">\n                    ").concat(moreMsg, "\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
+                          return "\n              <div class=\"message text-right ml-auto ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                <small class=\"message-time\">").concat(msg.time, "</small>\n                <div>\n                  <div class=\"msg-me ps-rv\">\n                    ").concat(moreMsg, "\n                    ").concat(_contentHtml, "\n                    ").concat(timeEndCall, "\n                  </div>\n                </div>\n              </div>");
                         }
 
                         var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");

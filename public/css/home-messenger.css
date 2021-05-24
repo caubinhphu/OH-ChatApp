@@ -7564,6 +7564,10 @@ body {
   color: #14a76c;
 }
 
+.popup-chat-mini .wrap-msg-mana {
+  width: 158px;
+}
+
 .preview-msg {
   position: absolute;
   right: 60px;
@@ -8120,6 +8124,9 @@ label.send-file:hover .icomoon,
     width: 299px;
     height: 420px;
   }
+  .popup-chat-mini .wrap-msg-mana {
+    width: 110px;
+  }
 }
 
 @keyframes ring {
@@ -8274,6 +8281,7 @@ label.send-file:hover .icomoon,
   width: 100%;
   height: max-content;
   padding: 2px;
+  max-width: 400px;
 }
 
 .message a {
@@ -8398,6 +8406,59 @@ label.send-file:hover .icomoon,
 
 .msg-me .message-content {
   color: #fff;
+}
+
+.edit-box {
+  position: relative;
+  width: 70%;
+}
+
+.edit-box textarea {
+  width: 100%;
+  resize: none;
+  height: 70px;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 0;
+  outline: none;
+  margin-bottom: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.edit-box .edit-ctrl {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  background-color: #fff;
+  padding: 4px;
+}
+
+.edit-box .ctrl .btn:hover {
+  color: #00142a;
+}
+
+.edit-box .ctrl .edit-cancel {
+  font-size: 17px;
+}
+
+.edit-box.load {
+  pointer-events: none;
+  opacity: .7;
+}
+
+.edit-box.load .edit-loader {
+  display: block;
+}
+
+.edit-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
 }
 
 .more-msg {

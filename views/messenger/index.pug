@@ -79,7 +79,7 @@ block contentMain
                   .message.text-center(class=msg.class) !{msg.content}
                 else
                   if (msg.me)
-                    .message.text-right(class=msg.class, data-id=`${msg.id}`)
+                    .message.text-right.ml-auto(class=msg.class, data-id=`${msg.id}`)
                       small.message-time= msg.time
                       div
                         .msg-me.ps-rv
@@ -89,7 +89,7 @@ block contentMain
                                 span.icomoon.icon-dots-three-vertical
                             .wrap-msg-mana.d-none
                               img.msg-mana-loader(src='/images/loader.svg', alt='loader')
-                              if (msg.type === 'text')
+                              if (msg.type === 'text' || msg.type === 'edited')
                                 .msg-mana-item.d-flex.align-items-center.edit-msg
                                   span.icomoon.icon-icon-edit
                                   span Sửa tin nhắn

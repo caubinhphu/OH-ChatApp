@@ -130,6 +130,9 @@ body {
       color: $color-14;
     }
   }
+  .wrap-msg-mana {
+    width: 158px;
+  }
 }
 .preview-msg {
   position: absolute;
@@ -644,6 +647,9 @@ label.send-file,
     &.is-active {
       width: 299px;
       height: 420px;
+    }
+    .wrap-msg-mana {
+      width: 110px;
     }
   } 
 }

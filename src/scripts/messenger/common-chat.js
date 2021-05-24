@@ -602,26 +602,43 @@ const CommonChat = (() => {
     }
   })
 
-  socket.on('msg-updateMessage', ({ messageId, friendId }) => {
-    console.log(messageId, friendId);
-   
+  socket.on('msg-updateMessage', ({ messageId, friendId, type, content }) => {
     const $message = $(`.message[data-id="${messageId}"]`)
-    console.log($message);
     if ($message.length) {
-      $message.attr('class', 'message deleted')
-      $message.find('.msg .message-content').html('Tin nhắn đã bị xóa')
-      $message.find('.time-call').remove()
-      if ($('#main').hasClass('chat-page')) {
-        if ($message.is(':last-child')) {
-          const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
-          if ($friItem.length) {
-            $friItem.find('.last-msg').html(`
-              <div class="last-msg text-dark">
-                <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
-              </div>
-            `)
+      if (type === 'delete') {
+        $message.attr('class', 'message deleted')
+        $message.find('.msg .message-content').html('Tin nhắn đã bị xóa')
+        $message.find('.time-call').remove()
+        if (isPageChat) {
+          if ($message.is(':last-child')) {
+            const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
+            if ($friItem.length) {
+              $friItem.find('.last-msg').html(`
+                <div class="last-msg text-dark">
+                  <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
+                </div>
+              `)
+            }
           }
-         }
+        }
+      } else if (type === 'edit') {
+        if (isValidHttpUrl(content)) {
+          $message.find('.message-content').html(`<a href="${content}" target="_blank">${content}</a>`)
+        } else {
+          $message.find('.message-content').html(content)
+        }
+        if (isPageChat) {
+          if ($message.is(':last-child')) {
+            const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
+            if ($friItem.length) {
+              $friItem.find('.last-msg').html(`
+                <div class="last-msg text-dark">
+                  <small>${content}</small><small>vài giây</small>
+                </div>
+              `)
+            }
+          }
+        }
       }
     }
   })
@@ -766,7 +783,7 @@ const CommonChat = (() => {
             $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>')
             $itemMessage.attr('class', 'message deleted text-right')
 
-            if ($('#main').hasClass('chat-page')) {
+            if (isPageChat) {
               if ($itemMessage.is(':last-child')) {
                 const $friItem = $(($(`.friend-item[data-id="${$('#main-right').attr('data-id')}"]`)))
                 if ($friItem.length) {
@@ -788,7 +805,105 @@ const CommonChat = (() => {
 
   $(document).on('click', '.edit-msg', function (e) {
     e.preventDefault()
+    const $parent = $(this).parents('.message')
+    const $msg = $parent.find('.msg-me')
+    $msg.before(`
+      <div class="edit-box ps-rv ml-auto">
+        <img class="edit-loader" src="/images/loader.svg" alt="loader" />
+        <textarea>${$msg.find('.message-content').text()}</textarea>
+        <div class="edit-ctrl d-flex justify-content-end">
+          <div class="ctrl d-flex">
+            <button class="btn btn-icon xs-btn btn-default mr-2 edit-cancel" title="Hủy">
+              <span class="icomoon icon-close"></span>
+            </button>
+            <button class="btn btn-icon xs-btn btn-default edit-save" title="Lưu">
+              <span class="icomoon icon-checkmark"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `)
+    $msg.addClass('d-none')
+    setTimeout(() => {
+      $msg.find('textarea').focus()
+    }, 200);
   })
+
+  $(document).on('click', '.edit-cancel', function(e) {
+    e.preventDefault()
+    cancelEditMsg($(this).parents('.message'))
+  })
+
+  $(document).on('click', '.edit-save', function(e) {
+    e.preventDefault()
+    const $parent = $(this).parents('.message')
+    const $boxEdit = $parent.find('textarea')
+    if ($boxEdit.val()) {
+      saveEditMsg($parent)
+    } else {
+      cancelEditMsg($parent)
+    }
+  })
+
+  $(document).on('keydown', '.edit-box textarea', function(e) {
+    const code = e.keyCode || e.which
+    if (code === 27) {
+      e.preventDefault()
+      cancelEditMsg($(this).parents('.message'))
+    } else if (code === 13 && !e.shiftKey) {
+      e.preventDefault()
+      saveEditMsg($(this).parents('.message'))
+    }
+  })
+
+  function cancelEditMsg($message) {
+    $message.find('.edit-box').removeClass('load')
+    $message.find('.edit-box').remove()
+    $message.find('.msg-me').removeClass('d-none')
+  }
+
+  function saveEditMsg($message) {
+    $message.find('.edit-box').addClass('load')
+    const content = $message.find('textarea').val()
+    let token = ''
+    if (isPageChat) {
+      token = document.sendMsgForm.elements._token.value
+    } else if ($('.popup-chat-mini.is-active').length) {
+      token = $('.popup-chat-mini.is-active').find('input[name="_token"]').val()
+    }
+    if (token && content) {
+      socket.emit('msg-editMessage', {
+        messageId: $message.attr('data-id'),
+        content,
+        token
+      }, res => {
+        if (res.status === 'ok') {
+          if (isValidHttpUrl(content)) {
+            $message.find('.message-content').html(`<a href="${content}" target="_blank">${content}</a>`)
+          } else {
+            $message.find('.message-content').html(content)
+          }
+          if (isPageChat) {
+            if ($message.is(':last-child')) {
+              const $friItem = $(($(`.friend-item[data-id="${$('#main-right').attr('data-id')}"]`)))
+              if ($friItem.length) {
+                $friItem.find('.last-msg').html(`
+                  <div class="last-msg text-dark">
+                    <small>${content}</small><small>vài giây</small>
+                  </div>
+                `)
+              }
+            }
+          }
+          cancelEditMsg($message)
+        } else {
+          cancelEditMsg($message)
+        }
+      })
+    } else {
+      cancelEditMsg($message)
+    }
+  }
 
 
 
@@ -913,7 +1028,7 @@ const CommonChat = (() => {
       }
     }
     if (me) {
-      div.className = `message text-right ${msgObj.className ? msgObj.className : ''}`;
+      div.className = `message text-right ml-auto ${msgObj.className ? msgObj.className : ''}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
         <div>
           <div class="msg-me ps-rv">

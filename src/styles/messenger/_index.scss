@@ -77,6 +77,7 @@
   width: 100%;
   height: max-content;
   padding: 2px;
+  max-width: 400px;
   a {
     color: $color-10;
     text-decoration: underline;
@@ -175,7 +176,6 @@
     }
   }
 }
-
 .msg {
   width: max-content;
   max-width: 100%;
@@ -201,6 +201,55 @@
   .message-content {
     color: $white;
   }
+}
+.edit-box {
+  position: relative;
+  width: 70%;
+  textarea {
+    width: 100%;
+    resize: none;
+    height: 70px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 0;
+    outline: none;
+    margin-bottom: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .edit-ctrl {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    background-color: $white;
+    padding: 4px;
+  }
+  .ctrl {
+    .btn {
+      &:hover {
+        color: $black;
+      }
+    }
+    .edit-cancel {
+      font-size: 17px;
+    }
+  }
+  &.load {
+    pointer-events: none;
+    opacity: .7;
+    .edit-loader {
+      display: block;
+    }
+  }
+}
+.edit-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
 }
 .more-msg {
   display: none;

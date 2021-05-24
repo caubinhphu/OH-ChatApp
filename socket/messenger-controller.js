@@ -206,6 +206,40 @@ module.exports.onStatusRead = async function (io, { senderId, receiverId, status
   }
 }
 
+// receive signal edit message from a client
+module.exports.onEditMessage = async function (io, { messageId, content, token }, callBack) {
+  try {
+    const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
+    const member = await Member.findOne({ socketId: this.id })
+    if (member && messageId) {
+      const message = await Message.findById(messageId)
+      if (message && message.memberSendId.toString() === member.id.toString() && (message.type === 'text' || message.type === 'edited')) {
+        message.content = content
+        message.type = 'edited'
+        await message.save()
+        callBack({
+          status: 'ok'
+        })
+
+        if (dataToken.memberId && dataToken.memberId.match(/^[0-9a-fA-F]{24}$/)) {
+          const friend = await Member.findById(dataToken.memberId)
+          if (friend && friend.status === 'online' && friend.socketId) {
+            io.to(friend.socketId).emit('msg-updateMessage', {
+              messageId,
+              friendId: member.id.toString(),
+              type: 'edit',
+              content
+            })
+          }
+        }
+      }
+    } else {
+      this.emit('error', 'Sửa tin nhắn thất bại');
+    }
+  } catch (error) {
+    this.emit('error', error.message);
+  }
+}
 // receive signal delete message from a client
 module.exports.onDeleteMessage = async function (io, { messageId, token }, callBack) {
   try {
@@ -245,13 +279,14 @@ module.exports.onDeleteMessage = async function (io, { messageId, token }, callB
           if (friend && friend.status === 'online' && friend.socketId) {
             io.to(friend.socketId).emit('msg-updateMessage', {
               messageId,
-              friendId: member.id.toString()
+              friendId: member.id.toString(),
+              type: 'delete'
             })
           }
         }
       }
     } else {
-      this.emit('error', 'Thành viên không tồn tại');
+      this.emit('error', 'Xóa tin nhắn thất bại');
     }
   } catch (error) { 
     this.emit('error', error.message);
