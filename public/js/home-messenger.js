@@ -40589,34 +40589,12 @@ var CommonChat = function () {
       $('.loader-search-box').addClass('d-none');
     }
   });
-  $(document).on('click', '.more-msg .btn', function (e) {
-    e.preventDefault();
-    var $parent = $(this).parents('.message');
-
-    if (!$parent.hasClass('is-more')) {
-      $('.message').removeClass('is-more');
-      $('.wrap-msg-mana').addClass('d-none');
-      $parent.addClass('is-more');
-      $parent.find('.wrap-msg-mana').removeClass('d-none');
-    } else {
-      $parent.removeClass('is-more');
-      $parent.find('.wrap-msg-mana').addClass('d-none');
-      $parent.find('.confirm-del-msg').addClass('d-none');
-    }
-  }); // click outside more msg
-
-  $(document).on('click', function (e) {
-    var $container = $(".message.is-more .wrap-msg-mana");
-
-    if (!$(e.target).closest('.wrap-msg-mana').is($container) && !$(e.target).closest('.more-msg').hasClass('more-msg')) {
-      $container.parents('.message').removeClass('is-more');
-      $container.addClass('d-none');
-      $container.find('.confirm-del-msg').addClass('d-none');
-    }
+  $(document).on('mouseleave', '.message', function () {
+    $(this).find('.confirm-del-msg').removeClass('is-show');
   });
   $(document).on('click', '.del-msg', function (e) {
     e.preventDefault();
-    $(this).find('.confirm-del-msg').removeClass('d-none');
+    $(this).prevAll('.confirm-del-msg').addClass('is-show');
   });
   $(document).on('click', '.confirm-del-msg', /*#__PURE__*/function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
@@ -40644,10 +40622,9 @@ var CommonChat = function () {
                     token: token
                   }, function (res) {
                     if (res.status === 'ok') {
-                      $itemMessage.find('.more-msg').remove();
                       $itemMessage.find('.wrap-msg-mana').remove();
                       $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>');
-                      $itemMessage.attr('class', 'message deleted text-right');
+                      $itemMessage.attr('class', 'message deleted text-right ml-auto');
 
                       if (isPageChat) {
                         if ($itemMessage.is(':last-child')) {
@@ -40684,7 +40661,7 @@ var CommonChat = function () {
     $msg.before("\n      <div class=\"edit-box ps-rv ml-auto\">\n        <img class=\"edit-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n        <textarea>".concat($msg.find('.message-content').text(), "</textarea>\n        <div class=\"edit-ctrl d-flex justify-content-end\">\n          <div class=\"ctrl d-flex\">\n            <button class=\"btn btn-icon xs-btn btn-default mr-2 edit-cancel\" title=\"H\u1EE7y\">\n              <span class=\"icomoon icon-close\"></span>\n            </button>\n            <button class=\"btn btn-icon xs-btn btn-default edit-save\" title=\"L\u01B0u\">\n              <span class=\"icomoon icon-checkmark\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n    "));
     $msg.addClass('d-none');
     setTimeout(function () {
-      $msg.find('textarea').focus();
+      $parent.find('textarea').focus();
     }, 200);
   });
   $(document).on('click', '.edit-cancel', function (e) {
@@ -40921,11 +40898,11 @@ var CommonChat = function () {
       $message.attr('data-id', realId);
       var editText = '';
 
-      if (type === 'text') {
-        editText = "\n        <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n          <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n        </div>\n        ";
+      if (type === 'text' || type === 'edited') {
+        editText = "\n          <button class=\"btn btn-icon btn-purple xs-btn edit-msg mr-1\" title=\"S\u1EEDa tin nh\u1EAFn\">\n            <span class=\"icomoon icon-icon-edit\"></span>\n          </button>\n        ";
       }
 
-      var moreMsg = "\n        <div class=\"more-msg\">\n          <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n          <span class=\"icomoon icon-dots-three-vertical\"></span>\n        </button>\n        </div>\n        <div class=\"wrap-msg-mana d-none\">\n          <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n          ".concat(editText, "\n          <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n            <span class=\"icomoon icon-times-circle-o\"></span>\n            <span>X\xF3a tin nh\u1EAFn</span>\n            <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n              <span class=\"icomoon icon-checkmark\"></span>\n            </button>\n          </div>\n        </div>\n      ");
+      var moreMsg = "\n        <div class=\"wrap-msg-mana d-flex\">\n          <button class=\"btn btn-icon btn-red xs-btn confirm-del-msg mr-1\" title=\"X\xF3a tin nh\u1EAFn\">\n            <span class=\"icomoon icon-checkmark\"></span>\n          </button>\n          <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n          ".concat(editText, "\n          <button class=\"btn btn-icon btn-red xs-btn del-msg\" title=\"X\xF3a tin nh\u1EAFn\">\n            <span class=\"icomoon icon-close\"></span>\n          </button>\n        </div>\n      ");
       $message.find('.msg-me').prepend(moreMsg);
     }
   }
@@ -40940,11 +40917,11 @@ var CommonChat = function () {
     if ($message.length) {
       var editText = '';
 
-      if (type === 'text') {
-        editText = "\n        <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n          <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n        </div>\n        ";
+      if (type === 'text' || type === 'edited') {
+        editText = "\n          <button class=\"btn btn-icon btn-purple xs-btn edit-msg mr-1\" title=\"S\u1EEDa tin nh\u1EAFn\">\n            <span class=\"icomoon icon-icon-edit\"></span>\n          </button>\n        ";
       }
 
-      var moreMsg = "\n        <div class=\"more-msg\">\n          <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n          <span class=\"icomoon icon-dots-three-vertical\"></span>\n        </button>\n        </div>\n        <div class=\"wrap-msg-mana d-none\">\n          <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n          ".concat(editText, "\n          <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n            <span class=\"icomoon icon-times-circle-o\"></span>\n            <span>X\xF3a tin nh\u1EAFn</span>\n            <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n              <span class=\"icomoon icon-checkmark\"></span>\n            </button>\n          </div>\n        </div>\n      ");
+      var moreMsg = "\n        <div class=\"wrap-msg-mana d-flex\">\n          <button class=\"btn btn-icon btn-red xs-btn confirm-del-msg mr-1\" title=\"X\xF3a tin nh\u1EAFn\">\n            <span class=\"icomoon icon-checkmark\"></span>\n          </button>\n          <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n          ".concat(editText, "\n          <button class=\"btn btn-icon btn-red xs-btn del-msg\" title=\"X\xF3a tin nh\u1EAFn\">\n            <span class=\"icomoon icon-close\"></span>\n          </button>\n        </div>\n      ");
       $message.find('.msg-me').prepend(moreMsg);
     }
   }
@@ -43553,10 +43530,10 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                           var editText = '';
 
                           if (msg.type === 'text' || msg.type === 'edited') {
-                            editText = "\n                  <div class=\"msg-mana-item d-flex align-items-center edit-msg\">\n                    <span class=\"icomoon icon-icon-edit\"></span><span>S\u1EEDa tin nh\u1EAFn</span>\n                  </div>\n                  ";
+                            editText = "\n                    <button class=\"btn btn-icon btn-purple xs-btn edit-msg mr-1\" title=\"S\u1EEDa tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-icon-edit\"></span>\n                    </button>\n                  ";
                           }
 
-                          moreMsg = "\n                  <div class=\"more-msg\">\n                    <button class=\"btn btn-icon btn-white xs-btn\" title=\"Xem th\xEAm\">\n                    <span class=\"icomoon icon-dots-three-vertical\"></span>\n                  </button>\n                  </div>\n                  <div class=\"wrap-msg-mana d-none\">\n                    <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n                    ".concat(editText, "\n                    <div class=\"msg-mana-item d-flex align-items-center del-msg\">\n                      <span class=\"icomoon icon-times-circle-o\"></span>\n                      <span>X\xF3a tin nh\u1EAFn</span>\n                      <button class=\"btn btn-icon btn-red confirm-del-msg d-none xs-btn\" title=\"X\xF3a tin nh\u1EAFn\">\n                        <span class=\"icomoon icon-checkmark\"></span>\n                      </button>\n                    </div>\n                  </div>\n                ");
+                          moreMsg = "\n                  <div class=\"wrap-msg-mana d-flex\">\n                    <button class=\"btn btn-icon btn-red xs-btn confirm-del-msg mr-1\" title=\"X\xF3a tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-checkmark\"></span>\n                    </button>\n                    <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n                    ".concat(editText, "\n                    <button class=\"btn btn-icon btn-red xs-btn del-msg\" title=\"X\xF3a tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-close\"></span>\n                    </button>\n                  </div>\n                ");
                         }
 
                         return "\n                <div class=\"message text-right ml-auto ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me ps-rv\">\n                      ").concat(moreMsg, "\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");

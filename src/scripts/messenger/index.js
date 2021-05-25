@@ -578,27 +578,21 @@ const Index = (async () => {
                 let editText = ''
                 if (msg.type === 'text' || msg.type === 'edited') {
                   editText = `
-                  <div class="msg-mana-item d-flex align-items-center edit-msg">
-                    <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
-                  </div>
+                    <button class="btn btn-icon btn-purple xs-btn edit-msg mr-1" title="Sửa tin nhắn">
+                      <span class="icomoon icon-icon-edit"></span>
+                    </button>
                   `
                 }
                 moreMsg = `
-                  <div class="more-msg">
-                    <button class="btn btn-icon btn-white xs-btn" title="Xem thêm">
-                    <span class="icomoon icon-dots-three-vertical"></span>
-                  </button>
-                  </div>
-                  <div class="wrap-msg-mana d-none">
+                  <div class="wrap-msg-mana d-flex">
+                    <button class="btn btn-icon btn-red xs-btn confirm-del-msg mr-1" title="Xóa tin nhắn">
+                      <span class="icomoon icon-checkmark"></span>
+                    </button>
                     <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
-                    ${editText}
-                    <div class="msg-mana-item d-flex align-items-center del-msg">
-                      <span class="icomoon icon-times-circle-o"></span>
-                      <span>Xóa tin nhắn</span>
-                      <button class="btn btn-icon btn-red confirm-del-msg d-none xs-btn" title="Xóa tin nhắn">
-                        <span class="icomoon icon-checkmark"></span>
-                      </button>
-                    </div>
+                    ${ editText }
+                    <button class="btn btn-icon btn-red xs-btn del-msg" title="Xóa tin nhắn">
+                      <span class="icomoon icon-close"></span>
+                    </button>
                   </div>
                 `
               }

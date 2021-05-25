@@ -7564,10 +7564,6 @@ body {
   color: #14a76c;
 }
 
-.popup-chat-mini .wrap-msg-mana {
-  width: 158px;
-}
-
 .preview-msg {
   position: absolute;
   right: 60px;
@@ -8124,9 +8120,6 @@ label.send-file:hover .icomoon,
     width: 299px;
     height: 420px;
   }
-  .popup-chat-mini .wrap-msg-mana {
-    width: 110px;
-  }
 }
 
 @keyframes ring {
@@ -8376,8 +8369,10 @@ label.send-file:hover .icomoon,
   font-size: 15px;
 }
 
-.message:hover .more-msg, .message.is-more .more-msg {
-  display: block;
+.message:hover .wrap-msg-mana {
+  opacity: 1;
+  top: -28px;
+  pointer-events: all;
 }
 
 .msg {
@@ -8461,58 +8456,22 @@ label.send-file:hover .icomoon,
   display: none;
 }
 
-.more-msg {
-  display: none;
-  position: absolute;
-  right: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .wrap-msg-mana {
   position: absolute;
-  right: calc(100% + 40px);
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #fff;
-  padding: 5px;
+  top: 0;
+  right: 0;
   z-index: 2;
-  border-radius: 5px;
-  top: 50%;
-  box-shadow: 0 0 5px #0c1a2f;
-  width: 200px;
-}
-
-.msg-mana-item {
-  align-items: center;
-  border-radius: 5px;
-  padding: 4px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  color: #0c1a2f;
-}
-
-.msg-mana-item .icomoon:not(.icon-checkmark) {
-  margin-right: 10px;
-}
-
-.msg-mana-item:hover {
-  background: #f2f2f2;
-}
-
-.msg-mana-item:last-child {
-  margin-bottom: 0;
+  opacity: 0;
+  transition: all .25s;
+  pointer-events: none;
 }
 
 .confirm-del-msg {
-  width: 25px;
-  height: 25px;
-  padding: 5px;
-  margin-left: auto;
+  opacity: 0;
 }
 
-.confirm-del-msg .icomoon {
-  font-size: 13px;
+.confirm-del-msg.is-show {
+  opacity: 1;
 }
 
 .msg-mana-loader {

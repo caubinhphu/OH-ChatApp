@@ -169,10 +169,11 @@
       font-size: 15px;
     }
   }
-  &:hover,
-  &.is-more {
-    .more-msg {
-      display: block;
+  &:hover {
+    .wrap-msg-mana {
+      opacity: 1;
+      top: -28px;
+      pointer-events: all;
     }
   }
 }
@@ -251,50 +252,20 @@
   transform: translate(-50%, -50%);
   display: none;
 }
-.more-msg {
-  display: none;
-  position: absolute;
-  right: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%);
-}
+
 .wrap-msg-mana {
   position: absolute;
-  right: calc(100% + 40px);
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: $white;
-  padding: 5px;
+  top: 0;
+  right: 0;
   z-index: 2;
-  border-radius: 5px;
-  top: 50%;
-  box-shadow: 0 0 5px $color-0c;
-  width: 200px;
-}
-.msg-mana-item {
-  align-items: center;
-  border-radius: 5px;
-  padding: 4px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  color: $color-0c;
-  .icomoon:not(.icon-checkmark) {
-    margin-right: 10px;
-  }
-  &:hover {
-    background: #f2f2f2;
-  }
-  &:last-child {
-    margin-bottom: 0;
-  }
+  opacity: 0;
+  transition: all .25s;
+  pointer-events: none;
 }
 .confirm-del-msg {
-  width: 25px;
-  height: 25px;
-  padding: 5px;
-  margin-left: auto;
-  .icomoon {
-    font-size: 13px;
+  opacity: 0;
+  &.is-show {
+    opacity: 1;
   }
 }
 .msg-mana-loader {

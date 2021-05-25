@@ -731,34 +731,13 @@ const CommonChat = (() => {
     }
   });
 
-  $(document).on('click', '.more-msg .btn', function(e) {
-    e.preventDefault()
-    const $parent = $(this).parents('.message')
-    if (!$parent.hasClass('is-more')) {
-      $('.message').removeClass('is-more')
-      $('.wrap-msg-mana').addClass('d-none')
-      $parent.addClass('is-more')
-      $parent.find('.wrap-msg-mana').removeClass('d-none')
-    } else {
-      $parent.removeClass('is-more')
-      $parent.find('.wrap-msg-mana').addClass('d-none')
-      $parent.find('.confirm-del-msg').addClass('d-none')
-    }
+  $(document).on('mouseleave', '.message', function() {
+    $(this).find('.confirm-del-msg').removeClass('is-show')
   })
-
-  // click outside more msg
-  $(document).on('click', function(e) {
-    const $container = $(".message.is-more .wrap-msg-mana");
-    if (!$(e.target).closest('.wrap-msg-mana').is($container) && !$(e.target).closest('.more-msg').hasClass('more-msg')) {
-      $container.parents('.message').removeClass('is-more')
-      $container.addClass('d-none')
-      $container.find('.confirm-del-msg').addClass('d-none')
-    }
-  });
 
   $(document).on('click', '.del-msg', function (e) {
     e.preventDefault()
-    $(this).find('.confirm-del-msg').removeClass('d-none')
+    $(this).prevAll('.confirm-del-msg').addClass('is-show')
   })
 
   $(document).on('click', '.confirm-del-msg', async function (e) {
@@ -778,10 +757,9 @@ const CommonChat = (() => {
           token
         }, (res) => {
           if (res.status === 'ok') {
-            $itemMessage.find('.more-msg').remove()
             $itemMessage.find('.wrap-msg-mana').remove()
             $itemMessage.find('.msg-me').html('<small class="message-content mx-0">Tin nhắn đã bị xóa</small>')
-            $itemMessage.attr('class', 'message deleted text-right')
+            $itemMessage.attr('class', 'message deleted text-right ml-auto')
 
             if (isPageChat) {
               if ($itemMessage.is(':last-child')) {
@@ -825,7 +803,7 @@ const CommonChat = (() => {
     `)
     $msg.addClass('d-none')
     setTimeout(() => {
-      $msg.find('textarea').focus()
+      $parent.find('textarea').focus()
     }, 200);
   })
 
@@ -1062,29 +1040,23 @@ const CommonChat = (() => {
     if ($message.length) {
       $message.attr('data-id', realId)
       let editText = ''
-      if (type === 'text') {
+      if (type === 'text' || type === 'edited') {
         editText = `
-        <div class="msg-mana-item d-flex align-items-center edit-msg">
-          <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
-        </div>
+          <button class="btn btn-icon btn-purple xs-btn edit-msg mr-1" title="Sửa tin nhắn">
+            <span class="icomoon icon-icon-edit"></span>
+          </button>
         `
       }
       const moreMsg = `
-        <div class="more-msg">
-          <button class="btn btn-icon btn-white xs-btn" title="Xem thêm">
-          <span class="icomoon icon-dots-three-vertical"></span>
-        </button>
-        </div>
-        <div class="wrap-msg-mana d-none">
+        <div class="wrap-msg-mana d-flex">
+          <button class="btn btn-icon btn-red xs-btn confirm-del-msg mr-1" title="Xóa tin nhắn">
+            <span class="icomoon icon-checkmark"></span>
+          </button>
           <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
-          ${editText}
-          <div class="msg-mana-item d-flex align-items-center del-msg">
-            <span class="icomoon icon-times-circle-o"></span>
-            <span>Xóa tin nhắn</span>
-            <button class="btn btn-icon btn-red confirm-del-msg d-none xs-btn" title="Xóa tin nhắn">
-              <span class="icomoon icon-checkmark"></span>
-            </button>
-          </div>
+          ${ editText }
+          <button class="btn btn-icon btn-red xs-btn del-msg" title="Xóa tin nhắn">
+            <span class="icomoon icon-close"></span>
+          </button>
         </div>
       `
 
@@ -1097,29 +1069,23 @@ const CommonChat = (() => {
     const $message = $(`.message[data-id="${msgId}"]`)
     if ($message.length) {
       let editText = ''
-      if (type === 'text') {
+      if (type === 'text' || type === 'edited') {
         editText = `
-        <div class="msg-mana-item d-flex align-items-center edit-msg">
-          <span class="icomoon icon-icon-edit"></span><span>Sửa tin nhắn</span>
-        </div>
+          <button class="btn btn-icon btn-purple xs-btn edit-msg mr-1" title="Sửa tin nhắn">
+            <span class="icomoon icon-icon-edit"></span>
+          </button>
         `
       }
       const moreMsg = `
-        <div class="more-msg">
-          <button class="btn btn-icon btn-white xs-btn" title="Xem thêm">
-          <span class="icomoon icon-dots-three-vertical"></span>
-        </button>
-        </div>
-        <div class="wrap-msg-mana d-none">
+        <div class="wrap-msg-mana d-flex">
+          <button class="btn btn-icon btn-red xs-btn confirm-del-msg mr-1" title="Xóa tin nhắn">
+            <span class="icomoon icon-checkmark"></span>
+          </button>
           <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
-          ${editText}
-          <div class="msg-mana-item d-flex align-items-center del-msg">
-            <span class="icomoon icon-times-circle-o"></span>
-            <span>Xóa tin nhắn</span>
-            <button class="btn btn-icon btn-red confirm-del-msg d-none xs-btn" title="Xóa tin nhắn">
-              <span class="icomoon icon-checkmark"></span>
-            </button>
-          </div>
+          ${ editText }
+          <button class="btn btn-icon btn-red xs-btn del-msg" title="Xóa tin nhắn">
+            <span class="icomoon icon-close"></span>
+          </button>
         </div>
       `
 
