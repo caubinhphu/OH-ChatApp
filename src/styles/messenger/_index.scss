@@ -78,6 +78,7 @@
   height: max-content;
   padding: 2px;
   max-width: 400px;
+  position: relative;
   a {
     color: $color-10;
     text-decoration: underline;
@@ -174,6 +175,34 @@
       opacity: 1;
       top: -28px;
       pointer-events: all;
+    }
+  }
+  &.sending {
+    &::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      bottom: 2px;
+      border-radius: 50%;
+      border: 1px solid $color-74;
+      right: -8px;
+    }
+  }
+  &.sended {
+    &::after {
+      content: "\E934";
+      font-family: "icomoon";
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      bottom: 2px;
+      border-radius: 50%;
+      border: 1px solid $color-74;
+      right: -8px;
+      font-size: 7px;
+      text-align: center;
+      line-height: 1;
     }
   }
 }

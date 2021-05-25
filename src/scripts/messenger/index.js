@@ -598,7 +598,7 @@ const Index = (async () => {
               }
 
               return `
-                <div class="message text-right ml-auto ${msg.class}" data-id="${msg.id}">
+                <div class="message message-me text-right ml-auto ${msg.class}" data-id="${msg.id}">
                   <small class="message-time">${msg.time}</small>
                   <div>
                     <div class="msg-me ps-rv">
@@ -640,6 +640,7 @@ const Index = (async () => {
           const curScrollPos = this.scrollTop;
           const oldScroll = this.scrollHeight - this.clientHeight;
           $(this).prepend(htmlMsgs)
+          window.addSendedClass()
           const newScroll = this.scrollHeight - this.clientHeight;
           this.scrollTop = curScrollPos + (newScroll - oldScroll);
 

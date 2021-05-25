@@ -40086,7 +40086,8 @@ var CommonChat = function () {
   $('.popup-has-call .close-popup').on('click', function () {
     $('.wrap-pop-has-call').removeClass('miss-call');
     $('.popup-has-call').addClass('d-none');
-  }); // receive signal offer from sub window call => send to server => receiver
+  });
+  addSendedClass(); // receive signal offer from sub window call => send to server => receiver
 
   $(window).on('signalOffer', function (e) {
     var signalOffer = e.detail.signalOffer;
@@ -40871,7 +40872,7 @@ var CommonChat = function () {
     }
 
     if (me) {
-      div.className = "message text-right ml-auto ".concat(msgObj.className ? msgObj.className : '');
+      div.className = "message message-me text-right ml-auto sending ".concat(msgObj.className ? msgObj.className : '');
       div.innerHTML = "<small class=\"message-time\">".concat(msgObj.time, "</small>\n        <div>\n          <div class=\"msg-me ps-rv\">\n            <small class=\"message-content mx-0 ").concat(classAdd, "\">").concat(content, "</small>\n            ").concat(msgObj.timeCall || '', "\n          </div>\n        <div>");
     } else {
       div.className = "message ".concat(msgObj.className ? msgObj.className : '');
@@ -40896,6 +40897,8 @@ var CommonChat = function () {
 
     if ($message.length) {
       $message.attr('data-id', realId);
+      $('.message.message-me.sended').removeClass('sended');
+      $message.removeClass('sending').addClass('sended');
       var editText = '';
 
       if (type === 'text' || type === 'edited') {
@@ -40925,6 +40928,18 @@ var CommonChat = function () {
       $message.find('.msg-me').prepend(moreMsg);
     }
   }
+
+  function addSendedClass() {
+    var $popup = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    if ($popup) {
+      $popup.find('.message.message-me').last().addClass('sended');
+    } else {
+      $('.message.message-me:last-child').last().addClass('sended');
+    }
+  }
+
+  window.addSendedClass = addSendedClass;
 
   function isValidHttpUrl(string) {
     var url;
@@ -43484,7 +43499,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                 switch (_context2.prev = _context2.next) {
                   case 0:
                     if (!(this.scrollTop === 0 && hasMessenger === true && allowLoadOld)) {
-                      _context2.next = 25;
+                      _context2.next = 26;
                       break;
                     }
 
@@ -43536,7 +43551,7 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                           moreMsg = "\n                  <div class=\"wrap-msg-mana d-flex\">\n                    <button class=\"btn btn-icon btn-red xs-btn confirm-del-msg mr-1\" title=\"X\xF3a tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-checkmark\"></span>\n                    </button>\n                    <img class=\"msg-mana-loader\" src=\"/images/loader.svg\" alt=\"loader\" />\n                    ".concat(editText, "\n                    <button class=\"btn btn-icon btn-red xs-btn del-msg\" title=\"X\xF3a tin nh\u1EAFn\">\n                      <span class=\"icomoon icon-close\"></span>\n                    </button>\n                  </div>\n                ");
                         }
 
-                        return "\n                <div class=\"message text-right ml-auto ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me ps-rv\">\n                      ").concat(moreMsg, "\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
+                        return "\n                <div class=\"message message-me text-right ml-auto ".concat(msg["class"], "\" data-id=\"").concat(msg.id, "\">\n                  <small class=\"message-time\">").concat(msg.time, "</small>\n                  <div>\n                    <div class=\"msg-me ps-rv\">\n                      ").concat(moreMsg, "\n                      ").concat(_contentHtml, "\n                      ").concat(timeEndCall, "\n                    </div>\n                  </div>\n                </div>");
                       }
 
                       var contentHtml = "<small class=\"message-content\">".concat(msg.content, "</small>");
@@ -43561,34 +43576,35 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
                     curScrollPos = this.scrollTop;
                     oldScroll = this.scrollHeight - this.clientHeight;
                     $(this).prepend(htmlMsgs);
+                    window.addSendedClass();
                     newScroll = this.scrollHeight - this.clientHeight;
                     this.scrollTop = curScrollPos + (newScroll - oldScroll);
                     allowLoadOld = true;
-                    _context2.next = 23;
+                    _context2.next = 24;
                     break;
 
-                  case 20:
-                    _context2.prev = 20;
+                  case 21:
+                    _context2.prev = 21;
                     _context2.t0 = _context2["catch"](3);
                     window.outputErrorMessage(_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_error$response = _context2.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message);
 
-                  case 23:
-                    _context2.next = 26;
+                  case 24:
+                    _context2.next = 27;
                     break;
 
-                  case 25:
+                  case 26:
                     if (this.scrollHeight - this.scrollTop >= this.clientHeight + 200) {
                       $(classScBottom).addClass('is-show');
                     } else {
                       $(classScBottom).removeClass('is-show is-has-new-msg');
                     }
 
-                  case 26:
+                  case 27:
                   case "end":
                     return _context2.stop();
                 }
               }
-            }, _callee2, this, [[3, 20]]);
+            }, _callee2, this, [[3, 21]]);
           }))); // scroll to bottom chat box
 
           $(classScBottom).on('click', function () {

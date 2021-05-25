@@ -1079,7 +1079,7 @@ const Messenger = (async () => {
               `
             }
             return `
-              <div class="message text-right ml-auto ${msg.class}" data-id="${msg.id}">
+              <div class="message message-me text-right ml-auto ${msg.class}" data-id="${msg.id}">
                 <small class="message-time">${msg.time}</small>
                 <div>
                   <div class="msg-me ps-rv">
@@ -1122,6 +1122,7 @@ const Messenger = (async () => {
         const curScrollPos = chatMain.scrollTop;
         const oldScroll = chatMain.scrollHeight - chatMain.clientHeight;
         $(chatMain).prepend(htmlMsgs)
+        window.addSendedClass($popup)
         const newScroll = chatMain.scrollHeight - chatMain.clientHeight;
         chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
 

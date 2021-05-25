@@ -150,6 +150,8 @@ const CommonChat = (() => {
     $('.popup-has-call').addClass('d-none')
   })
 
+  addSendedClass()
+
   // receive signal offer from sub window call => send to server => receiver
   $(window).on('signalOffer', (e) => {
     const { signalOffer } = e.detail
@@ -1006,7 +1008,7 @@ const CommonChat = (() => {
       }
     }
     if (me) {
-      div.className = `message text-right ml-auto ${msgObj.className ? msgObj.className : ''}`;
+      div.className = `message message-me text-right ml-auto sending ${msgObj.className ? msgObj.className : ''}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
         <div>
           <div class="msg-me ps-rv">
@@ -1039,6 +1041,8 @@ const CommonChat = (() => {
     const $message = $(`.message[data-id="${tmpId}"]`)
     if ($message.length) {
       $message.attr('data-id', realId)
+      $('.message.message-me.sended').removeClass('sended')
+      $message.removeClass('sending').addClass('sended')
       let editText = ''
       if (type === 'text' || type === 'edited') {
         editText = `
@@ -1092,6 +1096,15 @@ const CommonChat = (() => {
       $message.find('.msg-me').prepend(moreMsg)
     }
   }
+
+  function addSendedClass($popup = null) {
+    if ($popup) {
+      $popup.find('.message.message-me').last().addClass('sended')
+    } else {
+      $('.message.message-me:last-child').last().addClass('sended')
+    }
+  }
+  window.addSendedClass = addSendedClass
 
   function isValidHttpUrl(string) {
     let url;
