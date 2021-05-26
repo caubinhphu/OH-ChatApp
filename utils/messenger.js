@@ -168,7 +168,7 @@ function formatDiffTime(start, end) {
   const m = mPresent.diff(mPass, 'minutes') - h * 60
   const s = mPresent.diff(mPass, 'seconds') - h * 3600 - m * 60
 
-  return `${h ? h + 'h' : ''}${m ? m + 'm' : ''}${(h || m)  && !s ? '' : s + 's'}`
+  return `${h ? h + 'h' : ''}${m ? m + 'p' : ''}${(h || m)  && !s ? '' : s + 's'}`
 }
 
 function isValidHttpUrl(string) {
