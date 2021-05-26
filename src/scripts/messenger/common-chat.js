@@ -1072,6 +1072,8 @@ const CommonChat = (() => {
   function addMorelMsgCallLocal({ msgId, type }) {
     const $message = $(`.message[data-id="${msgId}"]`)
     if ($message.length) {
+      $('.message.message-me.sended').removeClass('sended')
+      $message.removeClass('sending').addClass('sended')
       let editText = ''
       if (type === 'text' || type === 'edited') {
         editText = `
