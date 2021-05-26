@@ -111,6 +111,9 @@
         color: $white;
       }
     }
+    .time-call {
+      color: $color-de;
+    }
   }
   &.call-msg {
     .message-content::before {
@@ -152,7 +155,7 @@
   }
   .time-call {
     display: block;
-    color: $color-de;
+    color: #656565;
     text-align: right;
   }
   &.msg-start {

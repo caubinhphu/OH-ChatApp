@@ -10,19 +10,26 @@
 }
 .wrap-ctrl-call {
   margin-bottom: 30px;
+  .btn {
+    &:hover {
+      & + .popup-text {
+        display: block;
+      }
+    }
+  }
 }
 
 .mic-ctrl-btn{
   &.ctrl-off {
     .icomoon::before {
-      content: "\e923";
+      content: "\e924";
     }
   }
 }
 .video-ctrl-btn{
   &.ctrl-off {
     .icomoon::before {
-      content: "\e918";
+      content: "\e919";
     }
   }
 }
@@ -66,5 +73,30 @@
   }
   video {
     width: 100%;
+  }
+}
+.popup-text {
+  position: absolute;
+  top: -39px;
+  background-color: #000000;
+  padding: 7px;
+  line-height: 1;
+  border-radius: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: white;
+  display: none;
+  z-index: 9999999;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: inherit;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    z-index: 99;
   }
 }

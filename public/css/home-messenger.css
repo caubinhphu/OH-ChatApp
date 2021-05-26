@@ -9021,6 +9021,10 @@ textarea.form-control.msg-mini {
   margin-bottom: 30px;
 }
 
+.wrap-ctrl-call .btn:hover + .popup-text {
+  display: block;
+}
+
 .mic-ctrl-btn.ctrl-off .icomoon::before {
   content: "\E923";
 }
@@ -9072,6 +9076,33 @@ textarea.form-control.msg-mini {
 
 .wrap-friend-video video {
   width: 100%;
+}
+
+.popup-text {
+  position: absolute;
+  top: -39px;
+  background-color: #000000;
+  padding: 7px;
+  line-height: 1;
+  border-radius: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: white;
+  display: none;
+  z-index: 9999999;
+}
+
+.popup-text::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: inherit;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: 99;
 }
 
 .close-popup-con {

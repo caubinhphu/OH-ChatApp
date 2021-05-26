@@ -33,10 +33,9 @@ const ChatAudio = (async () => {
         addTrackAudio(peer)
         // be connected
         connectPeer = true
-        $('.mic-ctrl-btn').removeClass('btn-disabled')
+        $('.mic-ctrl-btn').removeClass('btn-disabled').nextAll('.popup-text').text('Tắt microphone')
         if (window.typeCall === 'video') {
-          $('.video-ctrl-btn').removeClass('btn-disabled')
-          $('.share-ctrl-btn').removeClass('btn-disabled')
+          $('.video-ctrl-btn').removeClass('btn-disabled').nextAll('.popup-text').text('Bật camera')
           $('.wrap-friend-video').removeClass('d-none')
 
           if (localStream.getVideoTracks().length) {
@@ -156,10 +155,9 @@ const ChatAudio = (async () => {
         // be connected
         connectPeer = true
         $('.img-load-call').addClass('d-none')
-        $('.mic-ctrl-btn').removeClass('btn-disabled')
+        $('.mic-ctrl-btn').removeClass('btn-disabled').nextAll('.popup-text').text('Tắt microphone')
         if (window.typeCall === 'video') {
-          $('.video-ctrl-btn').removeClass('btn-disabled')
-          $('.share-ctrl-btn').removeClass('btn-disabled')
+          $('.video-ctrl-btn').removeClass('btn-disabled').nextAll('.popup-text').text('Bật camera')
           $('.wrap-friend-video').removeClass('d-none')
 
           if (localStream.getVideoTracks().length) {
@@ -262,20 +260,15 @@ const ChatAudio = (async () => {
           if ($(this).hasClass('ctrl-off')) {
             // turn off mic
             removeTrackAudio(peer)
-            $(this).removeClass('ctrl-off')
+            $(this).removeClass('ctrl-off').nextAll('.popup-text').text('Bật microphone')
           } else {
             // turn on mic
             addTrackAudio(peer)
-            $(this).addClass('ctrl-off')
+            $(this).addClass('ctrl-off').nextAll('.popup-text').text('Tắt microphone')
           }
         }
       })
 
-      // $('.share-ctrl-btn').on('click', function(e) {
-      //   if ($(this).hasClass('btn-disabled')) {
-      //     e.preventDefault()
-      //   } else {}
-      // })
 
       $('.video-ctrl-btn').on('click', function(e) {
         if ($(this).hasClass('btn-disabled')) {
@@ -289,11 +282,11 @@ const ChatAudio = (async () => {
             peer.send(JSON.stringify({
               type: 'turn-off-video'
             }))
-            $(this).removeClass('ctrl-off')
+            $(this).removeClass('ctrl-off').nextAll('.popup-text').text('Bật camera')
           } else {
             // turn on mic
             addTrackVideo(peer)
-            $(this).addClass('ctrl-off')
+            $(this).addClass('ctrl-off').nextAll('.popup-text').text('Tăt camera')
           }
         }
       })

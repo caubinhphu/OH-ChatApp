@@ -26,7 +26,7 @@ module.exports = {
       './src/styles/app-messenger.scss',
     ],
     'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
-    // 'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
+    'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
     // 'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },
   output: {
