@@ -62,7 +62,15 @@ const roomSchema = new mongoose.Schema({
       type: mongoose.Types.ObjectId,
       ref: 'Message',
     }
-  ]
+  ],
+  type: {
+    type: String,
+    default: 'session'
+  },
+  ownerId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Member',
+  }
 });
 
 // get host of the room

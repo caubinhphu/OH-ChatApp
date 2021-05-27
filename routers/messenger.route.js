@@ -46,6 +46,8 @@ router.put('/setting/url', controller.putUrl)
 
 router.put('/setting/lang-ass', controller.putLanguageAssistant)
 
+router.put('/setting/room', controller.putRoom)
+
 router.put('/setting/chat-mic', controller.putMicChatMethod)
 
 router.put('/profile/avatar', controller.putAvatar)

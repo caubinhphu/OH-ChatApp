@@ -116,6 +116,10 @@ const memberSchema = mongoose.Schema({
     directiveChatText: {
       type: String,
       default: 'chat'
+    },
+    useStaticRoom: {
+      type: Boolean,
+      default: true
     }
   }
 });

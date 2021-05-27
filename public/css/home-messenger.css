@@ -7343,6 +7343,10 @@ input:-webkit-autofill {
   max-width: 1000px;
 }
 
+.max-w-350 {
+  max-width: 350px;
+}
+
 .w-160 {
   width: 160px;
 }
@@ -8315,6 +8319,10 @@ label.send-file:hover .icomoon,
   color: #fff;
 }
 
+.message .msg-me .time-call {
+  color: #dedede;
+}
+
 .message.call-msg .message-content::before {
   font-family: "icomoon";
   margin-right: 10px;
@@ -8350,7 +8358,7 @@ label.send-file:hover .icomoon,
 
 .message .time-call {
   display: block;
-  color: #dedede;
+  color: #656565;
   text-align: right;
 }
 
@@ -8979,7 +8987,14 @@ textarea.form-control.msg-mini {
   font-size: 14px;
 }
 
-#vn-lang-ass-tutor .code-copy-box {
+#vn-lang-ass-tutor .copy-code-btn {
+  position: absolute;
+  right: 0;
+  top: 46px;
+}
+
+.code-copy-box,
+.room-info {
   width: 1px;
   height: 1px;
   resize: none;
@@ -8989,12 +9004,6 @@ textarea.form-control.msg-mini {
   padding: 0;
   margin: 0;
   position: absolute;
-}
-
-#vn-lang-ass-tutor .copy-code-btn {
-  position: absolute;
-  right: 0;
-  top: 46px;
 }
 
 @media only screen and (min-width: 768px) {
@@ -9026,11 +9035,11 @@ textarea.form-control.msg-mini {
 }
 
 .mic-ctrl-btn.ctrl-off .icomoon::before {
-  content: "\E923";
+  content: "\E924";
 }
 
 .video-ctrl-btn.ctrl-off .icomoon::before {
-  content: "\E918";
+  content: "\E919";
 }
 
 .share-ctrl-btn.ctrl-off .icomoon::before {

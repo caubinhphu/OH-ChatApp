@@ -40922,6 +40922,8 @@ var CommonChat = function () {
     var $message = $(".message[data-id=\"".concat(msgId, "\"]"));
 
     if ($message.length) {
+      $('.message.message-me.sended').removeClass('sended');
+      $message.removeClass('sending').addClass('sended');
       var editText = '';
 
       if (type === 'text' || type === 'edited') {

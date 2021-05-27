@@ -33,10 +33,43 @@ const Setting = (async () => {
 
     if (document.formSettingLangAss) {
       document.formSettingLangAss.addEventListener('submit', () => {
-        // $('.wrap-loader').removeClass('d-none')
         window.showLoader()
       })
     }
+
+    if (document.formSettingRoom) {
+      document.formSettingRoom.addEventListener('submit', function(e) {
+        e.preventDefault()
+        if ($('#room-password').val().length === 4 && +$('#room-password').val()) {
+          this.submit()
+          window.showLoader()
+        } else {
+          window.outputErrorMessage('Mật khẩu phải có 4 chữ số')
+        }
+      })
+    }
+
+    $('#room-password').on('focusin', function() {
+      $(this).data('val', $(this).val())
+    }).on('input', function() {
+      if (($(this).val() === '' || +$(this).val() >= 0) && $(this).val().length <= 4) {
+        $(this).val($(this).val())
+        $(this).data('val', $(this).val())
+      } else {
+        $(this).val($(this).data('val'))
+      }
+    })
+
+    $('#copy-info').on('click', e => {
+      e.preventDefault()
+      const ele = document.querySelector('.room-info');
+      ele.select();
+      if (document.execCommand('copy')) {
+        window.outputSuccessMessage('Sao chép thông tin phòng thành công')
+      } else {
+        window.outputErrorMessage('Sao chép thông tin phòng thất bại')
+      }
+    })
 
     if (document.formSettingChatMic) {
       const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -112,8 +145,11 @@ const Setting = (async () => {
         e.preventDefault()
         const ele = document.querySelector('.code-copy-box');
         ele.select();
-        document.execCommand('copy');
-        window.outputSuccessMessage('Sao chép thành công')
+        if (document.execCommand('copy')) {
+          window.outputSuccessMessage('Sao chép thành công')
+        } else {
+          window.outputErrorMessage('Sao chép thất bại')
+        }
       })
     }
   }

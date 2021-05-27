@@ -553,12 +553,15 @@ const CommonChatRoom = (() => {
     ele.select();
 
     /* Copy the text inside the text field */
-    document.execCommand('copy');
+    return document.execCommand('copy');
   }
 
   $('#copy-info').on('click', function() {
-    copyText('#link-info');
-    outputSuccessMessage('Sao chép thông tin phòng thành công')
+    if (copyText('#link-info')) {
+      outputSuccessMessage('Sao chép thông tin phòng thành công')
+    } else {
+      outputErrorMessage('Sao chép thông tin phòng thất bại')
+    }
   });
 
   window.addEventListener('beforeunload', function (e) {

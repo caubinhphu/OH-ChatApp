@@ -12,7 +12,7 @@ const sendMail = require('../utils/send-mail');
 const { validateRegister, validateEmail, validateResetPassword } = require('../validation/login.validation');
 
 const Member = require('../models/Member');
-const { rejects } = require('assert');
+const Room = require('../models/Room');
 
 const mesUrl = '/messenger'
 
@@ -77,12 +77,29 @@ module.exports.postRegister = async (req, res, next) => {
       const verifyToken = await crypto.randomBytes(16);
 
       // create new member
-      await Member.create({
+      const member = await Member.create({
         email,
         name,
         password: passHash,
         verifyToken: verifyToken.toString('hex'),
       });
+
+
+      // create room static
+      // create id room random
+      const idRandom = Math.round(Math.random() * 1e9)
+        .toString()
+        .padStart(9, '0');
+      // create password room random
+      const passwordRandom = Math.round(Math.random() * 1e4)
+        .toString()
+        .padStart(4, '0');
+      await Room.create({
+        roomId: idRandom,
+        password: passwordRandom,
+        type: 'static',
+        ownerId: member.id
+      })
 
       // send email verify account
       let html = await new Promise((resolve, rejects) => {

@@ -11,6 +11,9 @@ block contentMain
             a#v-pills-general-tab.nav-link(class=`${tab[0] ? tab[0] === 'general' ? 'active' : '' : 'active'}`, data-toggle='pill', href='#v-pills-general', role='tab', aria-controls='v-pills-general')
               span.icomoon.icon-cog
               span  Chung
+            a#v-pills-room-tab.nav-link(class=`${tab[0] === 'room' ? 'active' : ''}`, data-toggle='pill', href='#v-pills-room', role='tab', aria-controls='v-pills-room')
+              span.icomoon.icon-users
+              span  Phòng họp
             a#v-pills-security-tab.nav-link(class=`${tab[0] === 'security' ? 'active' : ''}`, data-toggle='pill', href='#v-pills-security', role='tab', aria-controls='v-pills-security')
               span.icomoon.icon-security
               span  Bảo mật
@@ -54,6 +57,28 @@ block contentMain
                             span.icomoon.icon-mic
                   button.btn(type="submit") Lưu
                 button.btn.btn-link.d-none.vn-lang-tutorial(data-toggle="modal" data-target="#vn-lang-ass-tutor") Hướng dẫn kích hoạt trợ lý tiếng Việt
+
+            #v-pills-room.tab-pane.fade(class=`${tab[0] === 'room' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-room-tab')
+              div
+                h4.text-dark Phòng họp tĩnh
+                .wrap-copy-info.mb-3
+                  input.room-info(type="text", value=`${key.host}/meeting/?room=${room.roomId}&pass=${room.password}`)
+                  button#copy-info.btn.btn-link.btn-sm Sao chép
+                form.mb-5(action="/messenger/setting/room", method="post", name="formSettingRoom")
+                  input(type="hidden", name="_method" value="PUT")
+                  .d-flex.align-items-center.mb-3
+                    label.w-160.mb-0(for="room-id") Phòng
+                    input#room-id.form-control.form-control-sm.max-w-350(type="text", disabled, value=room.roomId)
+                  .d-flex.align-items-center.mb-3
+                    label.w-160.mb-0(for="room-password") Mật khẩu phòng
+                    input#room-password.form-control.form-control-sm.max-w-350(type="text", value=room.password, name="password", placeholder="Có 4 chứ số")
+                  .mr-3.mb-3
+                    .form-check.form-check-inline
+                      .custom-control.custom-checkbox
+                        input#use-static-room.custom-control-input(type="checkbox", name="useStatic", value="true", checked=member.setting.useStaticRoom)
+                        label.custom-control-label(for="use-static-room") Sử dụng phòng họp tĩnh
+                  button.btn(type="submit") Lưu
+
             #v-pills-security.tab-pane.fade(class=`${tab[0] === 'security' ? 'show active' : ''}`, role='tabpanel', aria-labelledby='v-pills-security-tab')
               h4.text-dark Bảo mật và đăng nhập
               table.table

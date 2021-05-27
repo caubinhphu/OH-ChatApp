@@ -86,3 +86,22 @@ module.exports.validateSettingUrl = (data) => {
 
   return schema.validate(data);
 };
+
+// validate change url
+module.exports.validateSettingRoom = (data) => {
+  const schema = Joi.object({
+    password: Joi.string()
+    .required()
+    .pattern(/\d{4}/)
+    .length(4)
+    .messages({
+      'string.base': 'Mật khẩu phòng phải là chuỗi',
+      'string.length': 'Mật khẩu phòng phải là 4 chữ số',
+      'string.pattern.base':
+        'Mật khẩu phòng phải là 4 chữ số',
+      'string.empty': 'Chưa nhập mật khẩu phòng',
+    })
+  });
+
+  return schema.validate(data);
+};

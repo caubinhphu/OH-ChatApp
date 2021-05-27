@@ -40922,6 +40922,8 @@ var CommonChat = function () {
     var $message = $(".message[data-id=\"".concat(msgId, "\"]"));
 
     if ($message.length) {
+      $('.message.message-me.sended').removeClass('sended');
+      $message.removeClass('sending').addClass('sended');
       var editText = '';
 
       if (type === 'text' || type === 'edited') {
@@ -45488,10 +45490,44 @@ var Setting = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _
 
             if (document.formSettingLangAss) {
               document.formSettingLangAss.addEventListener('submit', function () {
-                // $('.wrap-loader').removeClass('d-none')
                 window.showLoader();
               });
             }
+
+            if (document.formSettingRoom) {
+              document.formSettingRoom.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                if ($('#room-password').val().length === 4 && +$('#room-password').val()) {
+                  this.submit();
+                  window.showLoader();
+                } else {
+                  window.outputErrorMessage('Mật khẩu phải có 4 chữ số');
+                }
+              });
+            }
+
+            $('#room-password').on('focusin', function () {
+              $(this).data('val', $(this).val());
+            }).on('input', function () {
+              if (($(this).val() === '' || +$(this).val() >= 0) && $(this).val().length <= 4) {
+                $(this).val($(this).val());
+                $(this).data('val', $(this).val());
+              } else {
+                $(this).val($(this).data('val'));
+              }
+            });
+            $('#copy-info').on('click', function (e) {
+              e.preventDefault();
+              var ele = document.querySelector('.room-info');
+              ele.select();
+
+              if (document.execCommand('copy')) {
+                window.outputSuccessMessage('Sao chép thông tin phòng thành công');
+              } else {
+                window.outputErrorMessage('Sao chép thông tin phòng thất bại');
+              }
+            });
 
             if (document.formSettingChatMic) {
               SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -45571,8 +45607,12 @@ var Setting = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _
                 e.preventDefault();
                 var ele = document.querySelector('.code-copy-box');
                 ele.select();
-                document.execCommand('copy');
-                window.outputSuccessMessage('Sao chép thành công');
+
+                if (document.execCommand('copy')) {
+                  window.outputSuccessMessage('Sao chép thành công');
+                } else {
+                  window.outputErrorMessage('Sao chép thất bại');
+                }
               });
             }
           }

@@ -12,11 +12,13 @@ const Text = require('../models/Text');
 const {
   validateProfile,
   validateSettingPassword,
-  validateSettingUrl
+  validateSettingUrl,
+  validateSettingRoom
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
 const { formatMessageList, formatLatestMsg } = require('../utils/messenger');
 const key = require('../config/key');
+const Room = require('../models/Room');
 
 const siteMes = 'OH Chat - Messenger'
 const notMem = 'Thành viên không tồn tại'
@@ -818,15 +820,18 @@ module.exports.getSetting = async (req, res, next) => {
   try {
     const member = await Member.findById(req.user.id);
     if (member) {
-      res.render('messenger/setting', {
-        titleSite: 'OH Chat - Setting',
-        member,
-        key
-      });
-    } else {
-      req.flash('error', notMem);
-      res.redirect('/');
+      const room = await Room.findOne({ ownerId: member.id })
+      if (room) {
+        return res.render('messenger/setting', {
+          titleSite: 'OH Chat - Setting',
+          member,
+          room,
+          key
+        });
+      }
     }
+    req.flash('error', notMem);
+    res.redirect('/');
   } catch (error) {
     next(error);
   }
@@ -953,6 +958,44 @@ module.exports.putLanguageAssistant = async (req, res, next) => {
     }
   } catch (error) {
     next(error)
+  }
+}
+
+// put setting change room
+module.exports.putRoom = async (req, res, next) => {
+  // get info change email
+  const { password, useStatic } = req.body;
+
+  // validate info change
+  const { error } = validateSettingRoom({ password });
+
+  if (error) {
+    // not pass validate
+    req.flash('error', error.details[0].message);
+    req.flash('tab', 'room');
+    return res.redirect(settingUrl)
+  }
+  try {
+    const member = await Member.findById(req.user.id);
+    if (member) {
+      const room = await Room.findOne({ ownerId: member.id })
+      if (room) {
+        room.password = password
+        await room.save()
+
+        member.setting.useStaticRoom = useStatic === '1' ? true : false
+        await member.save()
+
+        req.flash('success', 'Lưu thay đổi thành công');
+        req.flash('tab', 'room');
+        return res.redirect(settingUrl)
+      }
+    }
+    req.flash('error', hasErrMsg);
+      req.flash('tab', 'room');
+      return res.redirect(settingUrl)
+  } catch (err) {
+    next(err);
   }
 }
 

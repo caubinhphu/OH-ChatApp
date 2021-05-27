@@ -10,6 +10,7 @@ const key = require('../config/key');
 const cloudinary = require('../utils/cloudinary');
 
 const Member = require('../models/Member');
+const Room = require('../models/Room');
 
 const loginSuccText = 'Đăng nhập thành công'
 const loginErrorText = 'Thông tin đăng nhập không hợp lệ'
@@ -127,6 +128,22 @@ module.exports.facebook = (passport) => {
               OAuthId: profile.id,
               active: true
             });
+
+            // create room static
+            // create id room random
+            const idRandom = Math.round(Math.random() * 1e9)
+            .toString()
+            .padStart(9, '0');
+            // create password room random
+            const passwordRandom = Math.round(Math.random() * 1e4)
+              .toString()
+              .padStart(4, '0');
+            await Room.create({
+              roomId: idRandom,
+              password: passwordRandom,
+              type: 'static',
+              ownerId: member.id
+            })
           }
 
           // pass login
@@ -185,6 +202,22 @@ module.exports.google = (passport) => {
               OAuthId: profile.id,
               active: true
             });
+
+            // create room static
+            // create id room random
+            const idRandom = Math.round(Math.random() * 1e9)
+            .toString()
+            .padStart(9, '0');
+            // create password room random
+            const passwordRandom = Math.round(Math.random() * 1e4)
+              .toString()
+              .padStart(4, '0');
+            await Room.create({
+              roomId: idRandom,
+              password: passwordRandom,
+              type: 'static',
+              ownerId: member.id
+            })
             return done(null, member, { message: loginSuccText });
           } else {
             // email exists
@@ -209,8 +242,6 @@ function download(uri, filename, callback) {
        if (err) {
          rejects(err)
        } else {
-         // console.log('content-type:', res.headers['content-type']);
-        // console.log('content-length:', res.headers['content-length']);
         request(uri).pipe(fs.createWriteStream(filename))
           .on('close', () => resolve(callback))
           .on('error', (error) => {
