@@ -18,15 +18,19 @@ joinRoomForm.addEventListener('submit', function (e) {
       passRoom: passRoomInput.value,
       username: nameInput.value,
       memberId: memberIdInput.value,
+    }, res => {
+      if (res.status === 'ok') {
+        if (res.isHost) {
+          sessionStorage.setItem('token', res.token)
+          location.href = `/host/chat?room=${res.roomId}`;
+        } else {
+          sessionStorage.setItem('token', res.token)
+          location.href = `/chat?room=${res.roomId}`;
+        }
+      }
     });
     showLoader()
   }
-});
-
-// receive access token from server when join room successful
-socket.on('joinRoomSuccess', ({ token, roomId }) => {
-  sessionStorage.setItem('token', token)
-  location.href = `/chat?room=${roomId}`;
 });
 
 // receive info when join room is blocked

@@ -136,9 +136,11 @@ module.exports.getIndex = async (req, res, next) => {
       if (friends.length > 0) {
         res.redirect(`/messenger/chat/${friends[0].url ? friends[0].url : friends[0].id}`);
       } else {
+        const room = await Room.findOne({ ownerId: member.id })
         res.render('messenger', {
           titleSite: siteMes,
           friends,
+          room: room ? room : {}
         });
       }
     } else {
@@ -165,6 +167,7 @@ module.exports.getChatFriend = async (req, res, next) => {
         },
       });
     if (member) {
+      const room = await Room.findOne({ ownerId: member.id })
       const friends = member.getFriendsHaveMessage();
       const friendChat = friends.find(fr => fr.id === req.params.friendId || fr.url === req.params.friendId);
 
@@ -214,7 +217,8 @@ module.exports.getChatFriend = async (req, res, next) => {
         friendChat,
         messagesActive,
         token,
-        statusText
+        statusText,
+        room: room ? room : {}
       });
     } else {
       next(new Error(notMem));

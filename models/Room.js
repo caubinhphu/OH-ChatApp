@@ -63,10 +63,6 @@ const roomSchema = new mongoose.Schema({
       ref: 'Message',
     }
   ],
-  type: {
-    type: String,
-    default: 'session'
-  },
   ownerId: {
     type: mongoose.Types.ObjectId,
     ref: 'Member',

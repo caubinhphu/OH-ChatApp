@@ -80,7 +80,8 @@ module.exports.onCreateRoom = async function ({
 // receive event join to the room from client
 module.exports.onJoinRoom = async function (
   io,
-  { roomId, passRoom, username, memberId }
+  { roomId, passRoom, username, memberId },
+  callback
 ) {
   // find the room
   const room = await Room.findOne({ roomId });
@@ -99,12 +100,26 @@ module.exports.onJoinRoom = async function (
             memberId = null;
           }
           const member = await Member.findById(memberId);
+          let isHost = false
           if (member) {
-            user = await User.create({
-              name: username,
-              userType: 'member',
-              avatar: member.avatar,
-            });
+            if (room.ownerId && room.ownerId.toString() === member.id.toString()) {
+              isHost = true
+              room.timeStart = new Date()
+              await room.save()
+
+              user = await User.create({
+                name: username,
+                userType: 'member',
+                avatar: member.avatar,
+                host: true
+              });
+            } else {
+              user = await User.create({
+                name: username,
+                userType: 'member',
+                avatar: member.avatar,
+              });
+            }
           } else {
             user = await User.create({
               name: username,
@@ -122,7 +137,13 @@ module.exports.onJoinRoom = async function (
           );
 
           // send token to client
-          this.emit('joinRoomSuccess', { token, roomId });
+          callback({
+            status: 'ok',
+            isHost,
+            token,
+            roomId
+          })
+          // this.emit('joinRoomSuccess', { token, roomId });
         } catch (err) {
           this.emit('error', err.message);
         }
@@ -834,7 +855,22 @@ module.exports.onDisconnect = async function (io, reason) {
             });
           } else {
             // delete the room
-            await Room.deleteOne({ roomId: room.roomId });
+            if (!room.ownerId) {
+              await Room.deleteOne({ roomId: room.roomId });
+            } else {
+              room.users = []
+              room.messages = []
+              room.waitingRoom = []
+              room.status.allowChat = true
+              room.status.allowMic = true
+              room.status.allowVideo = true
+              room.status.allowShare = true
+              room.status.allowRec = true
+              room.status.isShareScreen = false
+              room.status.state = 'open'
+
+              await room.save()
+            }
 
             // if not exists user in the room => delete this room
             // get socketId of users in waiting room to notify for them
@@ -871,7 +907,23 @@ module.exports.onDisconnect = async function (io, reason) {
             const host = room.getUser('id', dataToken.userId);
             if (host && host.host) {
               // delete the room
-              await Room.deleteOne({ roomId: room.roomId });
+              if (!room.ownerId) {
+                await Room.deleteOne({ roomId: room.roomId });
+              } else {
+                room.users = []
+                room.messages = []
+                room.waitingRoom = []
+                room.status.allowChat = true
+                room.status.allowMic = true
+                room.status.allowVideo = true
+                room.status.allowShare = true
+                room.status.allowRec = true
+                room.status.isShareScreen = false
+                room.status.state = 'open'
+
+                await room.save()
+              }
+
 
               // get socketId of users in waiting room to notify for them
               const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();
@@ -986,7 +1038,22 @@ module.exports.onDisconnect = async function (io, reason) {
               });
             } else {
               // delete the room
-              await Room.deleteOne({ roomId: room.roomId });
+              if (!room.ownerId) {
+                await Room.deleteOne({ roomId: room.roomId });
+              } else {
+                room.users = []
+                room.messages = []
+                room.waitingRoom = []
+                room.status.allowChat = true
+                room.status.allowMic = true
+                room.status.allowVideo = true
+                room.status.allowShare = true
+                room.status.allowRec = true
+                room.status.isShareScreen = false
+                room.status.state = 'open'
+
+                await room.save()
+              }
 
               // get socketId of users in waiting room to notify for them
               const socketIdsWaitingRoom = room.getSocketIdWaitingRoom();

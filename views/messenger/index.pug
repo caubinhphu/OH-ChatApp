@@ -8,8 +8,12 @@ block contentMain
           h4.mb-0 Nhắn tin
           #room.d-flex.align-items-center.justify-content-center
             span.text-secondary.mr-3 Phòng họp 
-            a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng", target="_blank")
-              span.icomoon.icon-plus
+            if (room.ownerId)
+              a.btn.btn-icon.btn-green(href=`/join/?room=${room.roomId}&pass=${room.password}&type=create`, role="button", title="Tạo phòng", target="_blank")
+                span.icomoon.icon-plus
+            else
+              a.btn.btn-icon.btn-green(href="/create", role="button", title="Tạo phòng", target="_blank")
+                span.icomoon.icon-plus
             a.btn.btn-icon.btn-purple.ml-2(href="/join", role="button", title="Tham gia vào phòng", target="_blank")
               span.icomoon.icon-sign-in
         #main-left-search.mt-2

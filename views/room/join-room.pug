@@ -17,11 +17,19 @@ block contentMain
         label.mt-2(for="room")
           span Phòng
           span.text-danger &nbsp;*
-        input#room.form-control(type="text", name="roomId", required=true, placeholder="Nhập id phòng", value=roomId)
+        if (type === 'create')
+          input#room(type="hidden", name="roomId", required=true, value=roomId)
+          input.form-control(type="text", disabled, placeholder="Nhập id phòng", value=roomId)
+        else
+          input#room.form-control(type="text", name="roomId", required=true, placeholder="Nhập id phòng", value=roomId)
         label.mt-2(for="passRoom")
           span Mật khẩu phòng
           span.text-danger &nbsp;*
-        input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng", value=password)
+        if (type === 'create')
+          input#passRoom(type="hidden", name="passRoom", required=true, value=password)
+          input.form-control(type="text", disabled, placeholder="Nhập mật khẩu phòng", value=password)
+        else
+          input#passRoom.form-control(type="password", name="passRoom", required=true, placeholder="Nhập mật khẩu phòng", value=password)
         .d-flex.justify-content-center.p-3
           button.btn.mr-4 Tham gia
           a.btn.btn-white(role="button", href="javascript:history.back()") Quay lại

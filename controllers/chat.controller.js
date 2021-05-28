@@ -109,7 +109,7 @@ module.exports.getJoin = (req, res) => {
   let memberId = '';
   let roomId = '';
   let password = '';
-  const { room, pass } = req.query;
+  const { room, pass, type } = req.query;
   if (room) {
     roomId = room
   }
@@ -128,7 +128,8 @@ module.exports.getJoin = (req, res) => {
     name,
     memberId,
     roomId,
-    password
+    password,
+    type
   });
 };
 

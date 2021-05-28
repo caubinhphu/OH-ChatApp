@@ -19,8 +19,8 @@ const socket = function (io) {
     socket.on('createRoom', roomController.onCreateRoom);
 
     // receive event join to the room from client
-    socket.on('joinRoom', function (data) {
-      roomController.onJoinRoom.bind(this, io, data)();
+    socket.on('joinRoom', function (data, callback) {
+      roomController.onJoinRoom.bind(this, io, data, callback)();
     });
 
     // receive event joinChat from client
