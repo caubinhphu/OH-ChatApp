@@ -101,19 +101,19 @@ module.exports.facebook = (passport) => {
             // member not exists
             // download avatar member in facebook and upload to cloudinary
             let avatar = '/images/default-avatar.jpg';
-            const pathFile = path.join(
-              __dirname,
-              '..',
-              'public/images/user/avatar',
-              profile.id + '.jpg'
-            );
+            // const pathFile = path.join(
+            //   __dirname,
+            //   '..',
+            //   'public/images/user/avatar',
+            //   profile.id + '.jpg'
+            // );
             if (profile.photos) {
               // download
-              await download(profile.photos[0].value, pathFile, () => { /* */ });
+              // await download(profile.photos[0].value, pathFile, () => { /* */ });
 
               // upload
               const result = await cloudinary.upload(
-                pathFile,
+                profile.photos[0].value,
                 profile.id,
                 'ohchat/avatar'
               );
@@ -175,18 +175,18 @@ module.exports.google = (passport) => {
             // member not exists
             // download avatar of member from google account and the upload to cloundinary
             let avatar = '/images/default-avatar.jpg';
-            const pathFile = path.join(
-              __dirname,
-              '..',
-              'public/images/user/avatar',
-              profile.id + '.jpg'
-            );
+            // const pathFile = path.join(
+            //   __dirname,
+            //   '..',
+            //   'public/images/user/avatar',
+            //   profile.id + '.jpg'
+            // );
             if (profile.photos) {
               // download
-              await download(profile.photos[0].value, pathFile, () => {});
+              // await download(profile.photos[0].value, pathFile, () => {});
               // upload
               const result = await cloudinary.upload(
-                pathFile,
+                profile.photos[0].value,
                 profile.id,
                 'ohchat/avatar'
               );
