@@ -27,7 +27,7 @@ module.exports = {
     ],
     'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
     'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
-    // 'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
+    'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -55,7 +55,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 url: false,
-                minimize: false,
+                minimize: true,
               },
             },
             // Compiles Sass to CSS
@@ -69,7 +69,7 @@ module.exports = {
                 sourceMap: true,
                 sourceMapContents: true,
                 url: false,
-                minimize: false,
+                minimize: true,
               },
             },
           ],
@@ -94,12 +94,12 @@ module.exports = {
     }),
     new webpack.LoaderOptionsPlugin({
       optimization: {
-        // minimizer: [new UglifyJSPlugin()],
-        minimizer: false,
+        minimizer: [new UglifyJSPlugin()],
+        minimizer: true,
       },
     }),
   ],
   optimization: {
-    minimize: false,
+    minimize: true,
   },
 };

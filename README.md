@@ -118,3 +118,11 @@
   - Meeting
     - Chặn giao tiếp từng thành viên
 </details>
+<details>
+  <summary>Version 3.1.2 (28/05/2021)</summary>
+  Chức năng thêm:
+  
+  - Messenger
+    - Xóa, sửa tin nhắn
+    - Tạo phòng họp tĩnh
+</details>
