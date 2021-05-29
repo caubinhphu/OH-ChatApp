@@ -2,7 +2,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const fs = require('fs');
-const request = require('request');
+// const request = require('request');
 const path = require('path');
 const bcrypt = require('bcrypt');
 
@@ -236,18 +236,18 @@ module.exports.google = (passport) => {
 };
 
 // down load file from an uri
-function download(uri, filename, callback) {
-  return new Promise((resolve, rejects) => {
-     request.head(uri, function (err, res, body) {
-       if (err) {
-         rejects(err)
-       } else {
-        request(uri).pipe(fs.createWriteStream(filename))
-          .on('close', () => resolve(callback))
-          .on('error', (error) => {
-            rejects(error)
-          });
-       }
-    });
-  })
-}
+// function download(uri, filename, callback) {
+//   return new Promise((resolve, rejects) => {
+//      request.head(uri, function (err, res, body) {
+//        if (err) {
+//          rejects(err)
+//        } else {
+//         request(uri).pipe(fs.createWriteStream(filename))
+//           .on('close', () => resolve(callback))
+//           .on('error', (error) => {
+//             rejects(error)
+//           });
+//        }
+//     });
+//   })
+// }
