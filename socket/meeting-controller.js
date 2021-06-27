@@ -801,17 +801,31 @@ module.exports.onDisconnect = async function (io, reason) {
   const member = await Member.findOne({ socketId: this.id }).populate('friends._id');
   if (member) {
     // set offline for member
-    member.socketId = ''
-    member.status = new Date().toISOString()
-    member.isCalling = false
+    const index = member.socketId.findIndex(socket => socket === this.id)
+    if (index !== -1) {
+      member.socketId.splice(index, 1)
+    }
+    
+    // console.log(member.socketId);
 
-    await member.save()
-
-    // send signal offline to friends are online
-    member.friends.forEach(fr => {
-      if (fr._id.status === 'online' && fr._id.socketId) {
-        io.to(fr._id.socketId).emit('msg-friendOffline', { memberId: member.id });
-      }
+    if (member.socketId.length === 0) {
+      member.status = new Date().toISOString()
+      member.isCalling = false
+      member.markModified('status')
+      member.markModified('socketId')
+      member.markModified('isCalling')
+      // send signal offline to friends are online
+      member.friends.forEach(fr => {
+        if (fr._id.status === 'online' && fr._id.socketId.length) {
+          // io.to(fr._id.socketId).emit('msg-friendOffline', { memberId: member.id });
+          io.in(fr._id._id.toString()).emit('msg-friendOffline', { memberId: member.id })
+        }
+      })
+    }
+    await member.updateOne({
+      socketId: member.socketId,
+      isCalling: false,
+      status: member.status
     })
   } else {
     // find user by socketId to find the room

@@ -372,6 +372,41 @@ const Messenger = (async () => {
     }
   }
 
+  window.socket.on('msg-messenger-me', async ({ receiverId, msg: msgObj, token }) => {
+    const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
+    if ($(`.popup-chat-mini[data-id=${receiverId}]`).length) {
+      const $popup = $(`.popup-chat-mini[data-id=${receiverId}]`)
+      const $chatMain = $popup.find(classChatMain)
+
+      window.outputMessage(msgObj, true, $chatMain);
+
+      window.addMorelMsgLocal({
+        tmpId: msgObj.id,
+        realId: msgObj.id,
+        type: msgObj.type,
+        fileName: msgObj.nameFile,
+        url: msgObj.message
+      })
+
+      if ($popup.hasClass(nClassCloseMini)) {
+        $popup.removeClass(nClassCloseMini)
+        const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
+        $popup.addClass(classIsActive)
+        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+        if (classIsActive === nClassNoAct) {
+          outputPreviewMsg($popup, `Bạn: ${msgObj.message}`);
+        }
+      } else if ($popup.hasClass(nClassNoAct)) {
+        outputPreviewMsg($popup, `Bạn: ${msgObj.message}`);
+      }
+    } else {
+      const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
+      await createMiniPopup(receiverId, msgObj, token, classIsActive)
+      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+    }
+  })
+
+
   // receive msg obj from server
   window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
     if (!document.hasFocus()) {
@@ -1064,6 +1099,12 @@ const Messenger = (async () => {
                     <span class="icomoon icon-icon-edit"></span>
                   </button>
                 `
+              } else if (msg.fileName) {
+                editText = `
+                  <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msg.content}" data-file="${msg.fileName}">
+                    <span class="icomoon icon-download"></span>
+                  </button>
+                `
               }
               moreMsg = `
               <div class="wrap-msg-mana d-flex">
@@ -1104,11 +1145,22 @@ const Messenger = (async () => {
           } else if (msg.isLink) {
             contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
           }
+          let moreMsg = ''
+          if (msg.fileName) {
+            moreMsg = `
+              <div class="wrap-msg-mana d-flex">
+                <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msg.content}" data-file="${msg.fileName}">
+                  <span class="icomoon icon-download"></span>
+                </button>
+              </div>
+            `
+          }
           return `
             <div class="message ${msg.class}" data-id="${msg.id}">
               <small class="message-time">${msg.time}</small>
               <div>
                 <div class="msg">
+                  ${ moreMsg }
                   <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
                   ${ contentHtml }
                   ${ timeEndCall }
@@ -1199,7 +1251,9 @@ const Messenger = (async () => {
               window.addMorelMsgLocal({
                 tmpId: $parent.attr('data-id'),
                 realId: res.msgId,
-                type: 'file'
+                type: 'file',
+                fileName: file.name,
+                url: file.url
               })
             }
           });
@@ -1271,7 +1325,9 @@ const Messenger = (async () => {
               window.addMorelMsgLocal({
                 tmpId: $parent.attr('data-id'),
                 realId: res.msgId,
-                type: 'file'
+                type: 'file',
+                fileName: fileFind.name,
+                url: fileFind.url
               })
             }
           });

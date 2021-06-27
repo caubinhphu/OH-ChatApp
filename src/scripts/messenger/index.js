@@ -582,6 +582,12 @@ const Index = (async () => {
                       <span class="icomoon icon-icon-edit"></span>
                     </button>
                   `
+                } else if (msg.fileName) {
+                  editText = `
+                    <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msg.content}" data-file="${msg.fileName}">
+                      <span class="icomoon icon-download"></span>
+                    </button>
+                  `
                 }
                 moreMsg = `
                   <div class="wrap-msg-mana d-flex">
@@ -623,11 +629,22 @@ const Index = (async () => {
             } else if (msg.isLink) {
               contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
             }
+            let moreMsg = ''
+            if (msg.fileName) {
+              moreMsg = `
+                <div class="wrap-msg-mana d-flex">
+                  <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msg.content}" data-file="${msg.fileName}">
+                    <span class="icomoon icon-download"></span>
+                  </button>
+                </div>
+              `
+            }
             return `
               <div class="message ${msg.class}" data-id="${msg.id}">
                 <small class="message-time">${msg.time}</small>
                 <div>
                   <div class="msg">
+                    ${ moreMsg }
                     <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
                     ${ contentHtml }
                     ${ timeEndCall }
@@ -802,6 +819,33 @@ const Index = (async () => {
       }
     })
 
+    window.socket.on('msg-messenger-me', ({ receiverId, msg: msgObj }) => {
+      const $itemFri = $(`.friend-item[data-id="${receiverId}"]`)
+      if (friendIdChatting === receiverId) {
+        // output message
+        window.outputMessage(msgObj, true);
+        
+        window.addMorelMsgLocal({
+          tmpId: msgObj.id,
+          realId: msgObj.id,
+          type: msgObj.type,
+          fileName: msgObj.nameFile,
+          url: msgObj.message
+        })
+        $itemFri.find('.last-msg').removeClass('un-read')
+      }
+      moveToTop(receiverId, friendIdChatting === receiverId)
+      if (msgObj.type && msgObj.type === 'file') {
+        $itemFri.find('.last-msg').html(
+          `<small>Bạn đã gửi 1 đính kèm</small><small>vài giây</small>`
+        )
+      } else {
+        $itemFri.find('.last-msg').html(
+          `<small>Bạn: ${msgObj.message}</small><small>vài giây</small>`
+        )
+      }
+    })
+
     // receive msg obj from server
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
       if (!document.hasFocus()) {
@@ -951,7 +995,9 @@ const Index = (async () => {
                 window.addMorelMsgLocal({
                   tmpId: $parent.attr('data-id'),
                   realId: res.msgId,
-                  type: 'file'
+                  type: 'file',
+                  fileName: file.name,
+                  url: file.url
                 })
               }
             });
@@ -1022,7 +1068,9 @@ const Index = (async () => {
                 window.addMorelMsgLocal({
                   tmpId: $parent.attr('data-id'),
                   realId: res.msgId,
-                  type: 'file'
+                  type: 'file',
+                  fileName: file.name,
+                  url: file.url
                 })
               }
             });

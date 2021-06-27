@@ -76,21 +76,50 @@ module.exports.onMemberOnline = async function (io, { memberId }) {
     if (member) {
       // change status and socketId
       member.status = 'online'
-      member.socketId = this.id
-      member.isCalling = false
-      member.markModified('status')
-      await member.save()
+      const cloneSocketId = [...member.socketId]
+      const socketInActive = io.sockets.adapter.rooms[member.id.toString()]
 
-      // send signal online to friends are online
-      member.friends.forEach(fr => {
-        if (fr._id.status === 'online' && fr._id.socketId) {
-          io.to(fr._id.socketId).emit('msg-friendOnline', { memberId: member.id });
-        }
-      })
+      if (socketInActive && socketInActive.length) {
+        member.socketId = cloneSocketId.reduce((acc, cur) => {
+          if (socketInActive.sockets[cur]) {
+            acc.push(cur)
+          }
+          return acc
+        }, [])
+      } else {
+        member.socketId = []
+      }
+      
+      member.socketId.push(this.id)
+      this.join(member._id.toString())
+      // member.isCalling = false
+      member.markModified('status')
+      member.markModified('socketId')
+      member.markModified('isCalling')
+      setTimeout(async () => {
+        await member.updateOne({
+          socketId: member.socketId,
+          isCalling: false,
+          status: 'online'
+        })
+      }, 200);
+
+      if (member.socketId.length === 1) {
+        // send signal online to friends are online
+        member.friends.forEach(fr => {
+          if (fr._id.status === 'online' && fr._id.socketId.length) {
+            io.in(fr._id._id.toString()).emit('msg-friendOnline', { memberId: member.id })
+            // fr._id.socketId.forEach(socket => {
+            //   io.to(socket).emit('msg-friendOnline', { memberId: member.id });
+            // })
+          }
+        })
+      }
     } else {
       this.emit('error', 'Không tồn tại thành viên');
     }
   } catch (error) {
+    console.log(error);
     this.emit('error', error.message);
   }
 };
@@ -100,6 +129,7 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
   try {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(dataToken);
 
     const me = await Member.findOne({ socketId: this.id })
       .populate({
@@ -111,6 +141,8 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
       })
       .populate('friends.groupMessageId')
     if (me) {
+      console.log(me);
+      console.log(me.friends);
       // save msg to db
       // find friend related from friends of me and friend id
       const friendRelated =  me.friends.find(fr => fr._id)
@@ -121,6 +153,8 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
           msg.type = 'file'
           msg.nameFile = nameFile
           msg.resourceType = resourceType
+        } else {
+          msg.type = 'text'
         }
         msg.url = me.url
         // me save msg
@@ -152,14 +186,21 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
           process.env.JWT_SECRET
         );
 
+        const tokenFriend = jwt.sign(
+          { data: { memberId: friendRelated._id.id } },
+          process.env.JWT_SECRET
+        );
+
         // if friend is online => send msg by socket
-        if (friendRelated._id.status === 'online' && friendRelated._id.socketId) {
+        if (friendRelated._id.status === 'online' && friendRelated._id.socketId.length) {
           // member is online => emit socket
-          io.to(friendRelated._id.socketId).emit(
-            'msg-messenger',
-            { senderId: me.id, msg, token: tokenMe }
-          );
+          // io.to(friendRelated._id.socketId).emit(
+          //   'msg-messenger',
+          //   { senderId: me.id, msg, token: tokenMe }
+          // );
+          io.in(friendRelated._id.id.toString()).emit('msg-messenger', { senderId: me.id, msg, token: tokenMe })
         }
+        this.to(me.id).emit('msg-messenger-me', { receiverId: friendRelated._id.id, msg, token: tokenFriend })
       } else {
         this.emit('error', 'Không thể chat với người không phải là bạn của bạn');
       }

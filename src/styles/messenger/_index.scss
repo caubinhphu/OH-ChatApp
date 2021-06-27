@@ -159,6 +159,7 @@
     text-align: right;
   }
   &.msg-start {
+    margin: 0 auto;
     img {
       max-width: 65px;
       border-radius: 50%;
@@ -218,6 +219,7 @@
   line-height: 23px;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .msg-me {
@@ -293,6 +295,11 @@
   opacity: 0;
   transition: all .25s;
   pointer-events: none;
+}
+.message:not(.message-me) {
+  .wrap-msg-mana {
+    left: 0;
+  }
 }
 .confirm-del-msg {
   opacity: 0;

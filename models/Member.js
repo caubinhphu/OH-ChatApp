@@ -76,13 +76,9 @@ const memberSchema = mongoose.Schema({
     }
   ],
   socketId: {
-    type: String,
-    default: ''
+    type: Array,
+    default: []
   },
-  // newEmail: {
-  //   type: String,
-  //   default: '',
-  // },
   status: {
     // type: 'online' or time text latest online
     type: String,

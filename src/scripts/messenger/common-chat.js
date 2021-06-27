@@ -1017,10 +1017,21 @@ const CommonChat = (() => {
           </div>
         <div>`;
     } else {
+      let moreMsg = ''
+      if (msgObj.nameFile) {
+        moreMsg = `
+          <div class="wrap-msg-mana d-flex">
+            <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msgObj.message}" data-file="${msgObj.nameFile}">
+              <span class="icomoon icon-download"></span>
+            </button>
+          </div>
+        `
+      }
       div.className = `message ${msgObj.className ? msgObj.className : ''}`;
       div.innerHTML = `<small class="message-time">${msgObj.time}</small>
       <div>
         <div class="msg">
+          ${ moreMsg }
           <img class="message-avatar" src="${msgObj.avatar}" alt="${msgObj.username}" />
           <small class="message-content ${classAdd}">${content}</small>
           ${ msgObj.timeCall || '' }
@@ -1037,7 +1048,7 @@ const CommonChat = (() => {
   }
   window.outputMessage = outputMessage
 
-  function addMorelMsgLocal({ tmpId, realId, type }) {
+  function addMorelMsgLocal({ tmpId, realId, type, fileName, url }) {
     const $message = $(`.message[data-id="${tmpId}"]`)
     if ($message.length) {
       $message.attr('data-id', realId)
@@ -1048,6 +1059,12 @@ const CommonChat = (() => {
         editText = `
           <button class="btn btn-icon btn-purple xs-btn edit-msg mr-1" title="Sửa tin nhắn">
             <span class="icomoon icon-icon-edit"></span>
+          </button>
+        `
+      } else if (fileName && url) {
+        editText = `
+          <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${url}" data-file="${fileName}">
+            <span class="icomoon icon-download"></span>
           </button>
         `
       }

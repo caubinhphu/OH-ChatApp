@@ -40,7 +40,7 @@ module.exports.validateProfile = (data) => {
         'string.pattern.base':'Số điện thoại không hợp lệ',
       }),
     address: Joi.string()
-      .pattern(/^[^<>/`~!@#$%^&*(){}[\]=;:"|?+_\\]+$/)
+      .pattern(/^[^<>/`~!@#$%^&*(){}[\]=;:"|?+\\]+$/)
       .allow('')
       .messages({
         'string.base': 'Địa chỉ không hợp lệ',
@@ -87,7 +87,7 @@ module.exports.validateSettingUrl = (data) => {
   return schema.validate(data);
 };
 
-// validate change url
+// validate change password static room
 module.exports.validateSettingRoom = (data) => {
   const schema = Joi.object({
     password: Joi.string()
