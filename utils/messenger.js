@@ -74,7 +74,9 @@ const formatMsg = function (msg, me, friend) {
   } else if (msg.type === 'deleted') {
     msgFormat.content = 'Tin nhắn đã bị xóa'
     msgFormat.class = 'deleted'
-  } else if (msg.type === 'text' || msg.type === 'edited') {
+  } else if (msg.type === 'edited') {
+    msgFormat.class = 'edited'
+  } else if (msg.type === 'text') {
   } else if (msg.type === 'start') {
     msgFormat.content = `
       <img src="${friend.avatar}" alt="${friend.name}"/>

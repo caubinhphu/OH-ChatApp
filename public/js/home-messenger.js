@@ -40477,25 +40477,44 @@ var CommonChat = function () {
     var messageId = _ref6.messageId,
         friendId = _ref6.friendId,
         type = _ref6.type,
-        content = _ref6.content;
+        content = _ref6.content,
+        me = _ref6.me;
     var $message = $(".message[data-id=\"".concat(messageId, "\"]"));
 
     if ($message.length) {
       if (type === 'delete') {
-        $message.attr('class', 'message deleted');
-        $message.find('.msg .message-content').html('Tin nhắn đã bị xóa');
-        $message.find('.time-call').remove();
+        if (me) {
+          $message.addClass('deleted');
+          $message.find('.msg-me .message-content').html('Tin nhắn đã bị xóa');
+          $message.find('.time-call').remove();
 
-        if (isPageChat) {
-          if ($message.is(':last-child')) {
-            var $friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+          if (isPageChat) {
+            if ($message.is(':last-child')) {
+              var $friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
 
-            if ($friItem.length) {
-              $friItem.find('.last-msg').html("\n                <div class=\"last-msg text-dark\">\n                  <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                </div>\n              ");
+              if ($friItem.length) {
+                $friItem.find('.last-msg').html("\n                  <div class=\"last-msg text-dark\">\n                    <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                  </div>\n                ");
+              }
+            }
+          }
+        } else {
+          $message.attr('class', 'message deleted');
+          $message.find('.msg .message-content').html('Tin nhắn đã bị xóa');
+          $message.find('.time-call').remove();
+
+          if (isPageChat) {
+            if ($message.is(':last-child')) {
+              var _$friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+
+              if (_$friItem.length) {
+                _$friItem.find('.last-msg').html("\n                  <div class=\"last-msg text-dark\">\n                    <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                  </div>\n                ");
+              }
             }
           }
         }
       } else if (type === 'edit') {
+        $message.addClass('edited');
+
         if (isValidHttpUrl(content)) {
           $message.find('.message-content').html("<a href=\"".concat(content, "\" target=\"_blank\">").concat(content, "</a>"));
         } else {
@@ -40504,10 +40523,10 @@ var CommonChat = function () {
 
         if (isPageChat) {
           if ($message.is(':last-child')) {
-            var _$friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+            var _$friItem2 = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
 
-            if (_$friItem.length) {
-              _$friItem.find('.last-msg').html("\n                <div class=\"last-msg text-dark\">\n                  <small>".concat(content, "</small><small>v\xE0i gi\xE2y</small>\n                </div>\n              "));
+            if (_$friItem2.length) {
+              _$friItem2.find('.last-msg').find('small:first-child').html(content);
             }
           }
         }
@@ -40747,6 +40766,8 @@ var CommonChat = function () {
         token: token
       }, function (res) {
         if (res.status === 'ok') {
+          $message.addClass('edited');
+
           if (isValidHttpUrl(content)) {
             $message.find('.message-content').html("<a href=\"".concat(content, "\" target=\"_blank\">").concat(content, "</a>"));
           } else {

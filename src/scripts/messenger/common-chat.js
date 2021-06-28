@@ -604,26 +604,45 @@ const CommonChat = (() => {
     }
   })
 
-  socket.on('msg-updateMessage', ({ messageId, friendId, type, content }) => {
+  socket.on('msg-updateMessage', ({ messageId, friendId, type, content, me }) => {
     const $message = $(`.message[data-id="${messageId}"]`)
     if ($message.length) {
       if (type === 'delete') {
-        $message.attr('class', 'message deleted')
-        $message.find('.msg .message-content').html('Tin nhắn đã bị xóa')
-        $message.find('.time-call').remove()
-        if (isPageChat) {
-          if ($message.is(':last-child')) {
-            const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
-            if ($friItem.length) {
-              $friItem.find('.last-msg').html(`
-                <div class="last-msg text-dark">
-                  <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
-                </div>
-              `)
+        if (me) {
+          $message.addClass('deleted')
+          $message.find('.msg-me .message-content').html('Tin nhắn đã bị xóa')
+          $message.find('.time-call').remove()
+          if (isPageChat) {
+            if ($message.is(':last-child')) {
+              const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
+              if ($friItem.length) {
+                $friItem.find('.last-msg').html(`
+                  <div class="last-msg text-dark">
+                    <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
+                  </div>
+                `)
+              }
+            }
+          }
+        } else {
+          $message.attr('class', 'message deleted')
+          $message.find('.msg .message-content').html('Tin nhắn đã bị xóa')
+          $message.find('.time-call').remove()
+          if (isPageChat) {
+            if ($message.is(':last-child')) {
+              const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
+              if ($friItem.length) {
+                $friItem.find('.last-msg').html(`
+                  <div class="last-msg text-dark">
+                    <small><em>Tin nhắn đã bị xóa</em></small><small>vài giây</small>
+                  </div>
+                `)
+              }
             }
           }
         }
       } else if (type === 'edit') {
+        $message.addClass('edited')
         if (isValidHttpUrl(content)) {
           $message.find('.message-content').html(`<a href="${content}" target="_blank">${content}</a>`)
         } else {
@@ -633,11 +652,7 @@ const CommonChat = (() => {
           if ($message.is(':last-child')) {
             const $friItem = $(($(`.friend-item[data-id="${friendId}"]`)))
             if ($friItem.length) {
-              $friItem.find('.last-msg').html(`
-                <div class="last-msg text-dark">
-                  <small>${content}</small><small>vài giây</small>
-                </div>
-              `)
+              $friItem.find('.last-msg').find('small:first-child').html(content)
             }
           }
         }
@@ -858,6 +873,7 @@ const CommonChat = (() => {
         token
       }, res => {
         if (res.status === 'ok') {
+          $message.addClass('edited')
           if (isValidHttpUrl(content)) {
             $message.find('.message-content').html(`<a href="${content}" target="_blank">${content}</a>`)
           } else {

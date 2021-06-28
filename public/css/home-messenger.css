@@ -8306,6 +8306,21 @@ label.send-file:hover .icomoon,
   font-style: italic;
 }
 
+.message.edited .message-time::after {
+  content: "\110\E3    s\1EED   a";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(-100% + 10px);
+  width: 40px;
+}
+
+.message.edited.message-me .message-time::after {
+  left: calc(-100% + 10px);
+  right: auto;
+  text-align: right;
+}
+
 .message.is-load {
   pointer-events: none;
   opacity: .6;
@@ -8545,8 +8560,9 @@ label.send-file:hover .icomoon,
 
 .message-time {
   color: #a7a7a7;
-  margin: 0 10px;
+  padding: 0 10px;
   font-size: x-small;
+  position: relative;
 }
 
 .message-content {

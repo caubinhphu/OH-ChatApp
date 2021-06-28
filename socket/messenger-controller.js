@@ -129,7 +129,6 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
   try {
     // verify token
     const { data: dataToken } = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(dataToken);
 
     const me = await Member.findOne({ socketId: this.id })
       .populate({
@@ -141,8 +140,6 @@ module.exports.onMessageChat = async function (io, { message, token, type, nameF
       })
       .populate('friends.groupMessageId')
     if (me) {
-      console.log(me);
-      console.log(me.friends);
       // save msg to db
       // find friend related from friends of me and friend id
       const friendRelated =  me.friends.find(fr => fr._id)
@@ -218,8 +215,8 @@ module.exports.onNotification = async function (io, { notification }) {
     const member = await Member.findById(notification.memberId)
     if (member) {
       // send signal has notification
-      if (member.status === 'online' && member.socketId) {
-        io.to(member.socketId).emit('msg-hasNotification', { notification });
+      if (member.status === 'online' && member.socketId.length) {
+        io.in(member.id).emit('msg-hasNotification', { notification });
       }
     } else {
       this.emit('error', 'Thành viên không tồn tại');
@@ -264,12 +261,21 @@ module.exports.onEditMessage = async function (io, { messageId, content, token }
 
         if (dataToken.memberId && dataToken.memberId.match(/^[0-9a-fA-F]{24}$/)) {
           const friend = await Member.findById(dataToken.memberId)
-          if (friend && friend.status === 'online' && friend.socketId) {
-            io.to(friend.socketId).emit('msg-updateMessage', {
+          if (friend && friend.status === 'online' && friend.socketId.length) {
+            io.in(friend.id).emit('msg-updateMessage', {
               messageId,
-              friendId: member.id.toString(),
+              friendId: member.id,
               type: 'edit',
               content
+            })
+          }
+          if (member.socketId.length > 1) {
+            io.in(member.id).emit('msg-updateMessage', {
+              messageId,
+              friendId: friend.id,
+              type: 'edit',
+              content,
+              me: true
             })
           }
         }
@@ -317,11 +323,19 @@ module.exports.onDeleteMessage = async function (io, { messageId, token }, callB
 
         if (dataToken.memberId && dataToken.memberId.match(/^[0-9a-fA-F]{24}$/)) {
           const friend = await Member.findById(dataToken.memberId)
-          if (friend && friend.status === 'online' && friend.socketId) {
-            io.to(friend.socketId).emit('msg-updateMessage', {
+          if (friend && friend.status === 'online' && friend.socketId.length) {
+            io.in(friend.id).emit('msg-updateMessage', {
               messageId,
               friendId: member.id.toString(),
               type: 'delete'
+            })
+          }
+          if (member.socketId.length > 1) {
+            io.in(member.id).emit('msg-updateMessage', {
+              messageId,
+              friendId: friend.id,
+              type: 'delete',
+              me: true
             })
           }
         }
