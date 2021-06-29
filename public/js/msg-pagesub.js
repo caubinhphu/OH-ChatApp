@@ -40087,7 +40087,7 @@ var CommonChat = function () {
       window.callInComSound.pause();
     }
 
-    window.window.socket.emit('msg-refuseCall', {
+    socket.emit('msg-refuseCall', {
       callerId: window.callerId,
       receiverId: meId,
       typeCall: window.typeCall
@@ -40332,20 +40332,25 @@ var CommonChat = function () {
 
   socket.on('msg-answerSignal', function (_ref2) {
     var signal = _ref2.signal;
-    // send signal answer to sub window
-    clearTimeout(window.timeoutCallId);
+    console.log(signal);
+    console.log(window.windowCall);
 
-    if (window.callOutGoSound) {
-      window.callOutGoSound.pause();
-    }
+    if (window.windowCall) {
+      // send signal answer to sub window
+      clearTimeout(window.timeoutCallId);
 
-    var event = new CustomEvent('signalAnswer', {
-      detail: {
-        signalAnswer: signal
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause();
       }
-    });
-    window.windowCall.dispatchEvent(event);
-    $(classOvCalling).addClass('d-none');
+
+      var event = new CustomEvent('signalAnswer', {
+        detail: {
+          signalAnswer: signal
+        }
+      });
+      window.windowCall.dispatchEvent(event);
+      $(classOvCalling).addClass('d-none');
+    }
   }); // receive signal call error
 
   socket.on('msg-callError', function (_ref3) {
@@ -40363,7 +40368,11 @@ var CommonChat = function () {
     window.outputErrorMessage(msg);
   }); // receive signal refuse call
 
-  socket.on('msg-receiverRefuseCall', function () {
+  socket.on('msg-receiverRefuseCall', function (_ref4) {
+    var messageId = _ref4.messageId,
+        receiverId = _ref4.receiverId,
+        typeCall = _ref4.typeCall;
+
     if (window.windowCall) {
       clearTimeout(window.timeoutCallId);
 
@@ -40396,12 +40405,28 @@ var CommonChat = function () {
           type: 'call'
         });
       }
+    } else {
+      if (isPageChat) {
+        // create msg end call local
+        createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), false, true, messageId);
+        addMorelMsgCallLocal({
+          msgId: messageId,
+          type: 'call'
+        });
+      } else {
+        // create msg end call local
+        window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), false, true, messageId);
+        addMorelMsgCallLocal({
+          msgId: messageId,
+          type: 'call'
+        });
+      }
     }
   }); // receive signal miss call from server (caller)
 
-  socket.on('msg-missedCall', function (_ref4) {
-    var callerId = _ref4.callerId,
-        typeCall = _ref4.typeCall;
+  socket.on('msg-missedCall', function (_ref5) {
+    var callerId = _ref5.callerId,
+        typeCall = _ref5.typeCall;
 
     if (!window.isRefuseCall) {
       if (window.callInComSound) {
@@ -40428,11 +40453,11 @@ var CommonChat = function () {
     }
   }); // receive signal end call from server (it self end call)
 
-  socket.on('msg-endCall', function (_ref5) {
-    var callerId = _ref5.callerId,
-        receiverId = _ref5.receiverId,
-        sender = _ref5.sender,
-        typeCall = _ref5.typeCall;
+  socket.on('msg-endCall', function (_ref6) {
+    var callerId = _ref6.callerId,
+        receiverId = _ref6.receiverId,
+        sender = _ref6.sender,
+        typeCall = _ref6.typeCall;
     window.isCall = false;
     window.outputInfoMessage('Cuộc gọi kết thúc');
 
@@ -40473,12 +40498,12 @@ var CommonChat = function () {
       }
     }
   });
-  socket.on('msg-updateMessage', function (_ref6) {
-    var messageId = _ref6.messageId,
-        friendId = _ref6.friendId,
-        type = _ref6.type,
-        content = _ref6.content,
-        me = _ref6.me;
+  socket.on('msg-updateMessage', function (_ref7) {
+    var messageId = _ref7.messageId,
+        friendId = _ref7.friendId,
+        type = _ref7.type,
+        content = _ref7.content,
+        me = _ref7.me;
     var $message = $(".message[data-id=\"".concat(messageId, "\"]"));
 
     if ($message.length) {
@@ -40648,7 +40673,7 @@ var CommonChat = function () {
     $(this).prevAll('.confirm-del-msg').addClass('is-show');
   });
   $(document).on('click', '.confirm-del-msg', /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
       var $itemMessage, token;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -40702,7 +40727,7 @@ var CommonChat = function () {
     }));
 
     return function (_x) {
-      return _ref8.apply(this, arguments);
+      return _ref9.apply(this, arguments);
     };
   }());
   $(document).on('click', '.edit-msg', function (e) {
@@ -40947,13 +40972,13 @@ var CommonChat = function () {
 
   window.outputMessage = outputMessage;
 
-  function addMorelMsgLocal(_ref9) {
-    var tmpId = _ref9.tmpId,
-        realId = _ref9.realId,
-        type = _ref9.type,
-        fileName = _ref9.fileName,
-        url = _ref9.url;
-    var $message = $(".message[data-id=\"".concat(tmpId, "\"]"));
+  function addMorelMsgLocal(_ref10) {
+    var tmpId = _ref10.tmpId,
+        realId = _ref10.realId,
+        type = _ref10.type,
+        fileName = _ref10.fileName,
+        url = _ref10.url;
+    var $message = $(".message.message-me[data-id=\"".concat(tmpId, "\"]"));
 
     if ($message.length) {
       $message.attr('data-id', realId);
@@ -40974,10 +40999,10 @@ var CommonChat = function () {
 
   window.addMorelMsgLocal = addMorelMsgLocal;
 
-  function addMorelMsgCallLocal(_ref10) {
-    var msgId = _ref10.msgId,
-        type = _ref10.type;
-    var $message = $(".message[data-id=\"".concat(msgId, "\"]"));
+  function addMorelMsgCallLocal(_ref11) {
+    var msgId = _ref11.msgId,
+        type = _ref11.type;
+    var $message = $(".message.message-me[data-id=\"".concat(msgId, "\"]"));
 
     if ($message.length) {
       $('.message.message-me.sended').removeClass('sended');
@@ -46843,14 +46868,19 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
         case 89:
           window.socket.on('msg-messenger-me', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
-              var receiverId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive;
+              var receiverId, msgObj, token, type, activeLength, $popup, $chatMain, classIsActive, _classIsActive, _$popup, _$chatMain, _classIsActive2, _classIsActive3;
 
               return regeneratorRuntime.wrap(function _callee$(_context) {
                 while (1) {
                   switch (_context.prev = _context.next) {
                     case 0:
-                      receiverId = _ref2.receiverId, msgObj = _ref2.msg, token = _ref2.token;
+                      receiverId = _ref2.receiverId, msgObj = _ref2.msg, token = _ref2.token, type = _ref2.type;
                       activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
+
+                      if (!(type === 'call-missed')) {
+                        _context.next = 16;
+                        break;
+                      }
 
                       if (!$(".popup-chat-mini[data-id=".concat(receiverId, "]")).length) {
                         _context.next = 10;
@@ -46859,14 +46889,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                       $popup = $(".popup-chat-mini[data-id=".concat(receiverId, "]"));
                       $chatMain = $popup.find(classChatMain);
-                      window.outputMessage(msgObj, true, $chatMain);
-                      window.addMorelMsgLocal({
-                        tmpId: msgObj.id,
-                        realId: msgObj.id,
-                        type: msgObj.type,
-                        fileName: msgObj.nameFile,
-                        url: msgObj.message
-                      });
+                      window.outputMessage(msgObj, false, $chatMain);
 
                       if ($popup.hasClass(nClassCloseMini)) {
                         $popup.removeClass(nClassCloseMini);
@@ -46875,10 +46898,10 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 
                         if (classIsActive === nClassNoAct) {
-                          outputPreviewMsg($popup, "B\u1EA1n: ".concat(msgObj.message));
+                          outputPreviewMsg($popup, "".concat(msgObj.message));
                         }
                       } else if ($popup.hasClass(nClassNoAct)) {
-                        outputPreviewMsg($popup, "B\u1EA1n: ".concat(msgObj.message));
+                        outputPreviewMsg($popup, "".concat(msgObj.message));
                       }
 
                       _context.next = 14;
@@ -46893,6 +46916,54 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 
                     case 14:
+                      _context.next = 28;
+                      break;
+
+                    case 16:
+                      if (!$(".popup-chat-mini[data-id=".concat(receiverId, "]")).length) {
+                        _context.next = 24;
+                        break;
+                      }
+
+                      _$popup = $(".popup-chat-mini[data-id=".concat(receiverId, "]"));
+                      _$chatMain = _$popup.find(classChatMain);
+                      window.outputMessage(msgObj, true, _$chatMain);
+                      window.addMorelMsgLocal({
+                        tmpId: msgObj.id,
+                        realId: msgObj.id,
+                        type: msgObj.type,
+                        fileName: msgObj.nameFile,
+                        url: msgObj.message
+                      });
+
+                      if (_$popup.hasClass(nClassCloseMini)) {
+                        _$popup.removeClass(nClassCloseMini);
+
+                        _classIsActive2 = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+
+                        _$popup.addClass(_classIsActive2);
+
+                        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+
+                        if (_classIsActive2 === nClassNoAct) {
+                          outputPreviewMsg(_$popup, "B\u1EA1n: ".concat(msgObj.message));
+                        }
+                      } else if (_$popup.hasClass(nClassNoAct)) {
+                        outputPreviewMsg(_$popup, "B\u1EA1n: ".concat(msgObj.message));
+                      }
+
+                      _context.next = 28;
+                      break;
+
+                    case 24:
+                      _classIsActive3 = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                      _context.next = 27;
+                      return createMiniPopup(receiverId, msgObj, token, _classIsActive3);
+
+                    case 27:
+                      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
+
+                    case 28:
                     case "end":
                       return _context.stop();
                   }
@@ -46907,7 +46978,7 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
           window.socket.on('msg-messenger', /*#__PURE__*/function () {
             var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref4) {
-              var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive2;
+              var senderId, msgObj, token, activeLength, $popup, $chatMain, classIsActive, _classIsActive4;
 
               return regeneratorRuntime.wrap(function _callee2$(_context2) {
                 while (1) {
@@ -46969,15 +47040,15 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                       break;
 
                     case 11:
-                      _classIsActive2 = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
+                      _classIsActive4 = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
                       _context2.next = 14;
-                      return createMiniPopup(senderId, msgObj, token, _classIsActive2);
+                      return createMiniPopup(senderId, msgObj, token, _classIsActive4);
 
                     case 14:
                       window.socket.emit('msg-statusRead', {
                         senderId: senderId,
                         receiverId: meId,
-                        status: _classIsActive2 === 'is-active'
+                        status: _classIsActive4 === 'is-active'
                       });
                       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 

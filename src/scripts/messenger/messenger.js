@@ -372,37 +372,62 @@ const Messenger = (async () => {
     }
   }
 
-  window.socket.on('msg-messenger-me', async ({ receiverId, msg: msgObj, token }) => {
+  window.socket.on('msg-messenger-me', async ({ receiverId, msg: msgObj, token, type }) => {
     const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
-    if ($(`.popup-chat-mini[data-id=${receiverId}]`).length) {
-      const $popup = $(`.popup-chat-mini[data-id=${receiverId}]`)
-      const $chatMain = $popup.find(classChatMain)
+    if (type === 'call-missed') {
+      if ($(`.popup-chat-mini[data-id=${receiverId}]`).length) {
+        const $popup = $(`.popup-chat-mini[data-id=${receiverId}]`)
+        const $chatMain = $popup.find(classChatMain)
+  
+        window.outputMessage(msgObj, false, $chatMain);
 
-      window.outputMessage(msgObj, true, $chatMain);
-
-      window.addMorelMsgLocal({
-        tmpId: msgObj.id,
-        realId: msgObj.id,
-        type: msgObj.type,
-        fileName: msgObj.nameFile,
-        url: msgObj.message
-      })
-
-      if ($popup.hasClass(nClassCloseMini)) {
-        $popup.removeClass(nClassCloseMini)
-        const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
-        $popup.addClass(classIsActive)
-        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
-        if (classIsActive === nClassNoAct) {
-          outputPreviewMsg($popup, `Bạn: ${msgObj.message}`);
+        if ($popup.hasClass(nClassCloseMini)) {
+          $popup.removeClass(nClassCloseMini)
+          const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
+          $popup.addClass(classIsActive)
+          window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+          if (classIsActive === nClassNoAct) {
+            outputPreviewMsg($popup, `${msgObj.message}`);
+          }
+        } else if ($popup.hasClass(nClassNoAct)) {
+          outputPreviewMsg($popup, `${msgObj.message}`);
         }
-      } else if ($popup.hasClass(nClassNoAct)) {
-        outputPreviewMsg($popup, `Bạn: ${msgObj.message}`);
+      } else {
+        const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
+        await createMiniPopup(receiverId, msgObj, token, classIsActive)
+        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
       }
     } else {
-      const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
-      await createMiniPopup(receiverId, msgObj, token, classIsActive)
-      window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+      if ($(`.popup-chat-mini[data-id=${receiverId}]`).length) {
+        const $popup = $(`.popup-chat-mini[data-id=${receiverId}]`)
+        const $chatMain = $popup.find(classChatMain)
+  
+        window.outputMessage(msgObj, true, $chatMain);
+  
+        window.addMorelMsgLocal({
+          tmpId: msgObj.id,
+          realId: msgObj.id,
+          type: msgObj.type,
+          fileName: msgObj.nameFile,
+          url: msgObj.message
+        })
+  
+        if ($popup.hasClass(nClassCloseMini)) {
+          $popup.removeClass(nClassCloseMini)
+          const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
+          $popup.addClass(classIsActive)
+          window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+          if (classIsActive === nClassNoAct) {
+            outputPreviewMsg($popup, `Bạn: ${msgObj.message}`);
+          }
+        } else if ($popup.hasClass(nClassNoAct)) {
+          outputPreviewMsg($popup, `Bạn: ${msgObj.message}`);
+        }
+      } else {
+        const classIsActive = (activeLength || $('.open-search-mini').hasClass('is-open')) ? nClassNoAct : nClassAct
+        await createMiniPopup(receiverId, msgObj, token, classIsActive)
+        window.dispatchEvent(new CustomEvent('changeStatusPopupMini'))
+      }
     }
   })
 

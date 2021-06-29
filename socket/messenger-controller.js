@@ -357,7 +357,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
     if (callerMem) {
       // get receiver obj
       const receiverMem = callerMem.friends.find(fr => fr._id)
-      if (receiverMem && receiverMem._id.status === 'online' && receiverMem._id.socketId) {
+      if (receiverMem && receiverMem._id.status === 'online' && receiverMem._id.socketId.length) {
         if (callerMem.isCalling) {
           this.emit('msg-callError', {
             msg: 'Không thể thực hiện cuộc gọi vì bạn đang có một cuộc gọi khác'
@@ -393,7 +393,7 @@ module.exports.onOfferSignal = async function (io, { receiverId, callerId, signa
               receiverId
             })
 
-            io.to(receiverMem._id.socketId).emit('msg-hasCallMedia', {
+            io.to(receiverMem._id.socketId[0]).emit('msg-hasCallMedia', {
               signal,
               callerId,
               callerName: callerMem.name,
@@ -430,7 +430,7 @@ module.exports.onAnswerSignal = async function (io, { signal, callerId, receiver
         )
         if (groupMessage && groupMessage.messages.length) {
           if (callerMem.isCalling) {
-            io.to(callerMem.socketId).emit('msg-answerSignal', { signal })
+            io.in(callerMem.id).emit('msg-answerSignal', { signal })
           } else {
             groupMessage.messages[0].type = typeCall === 'audio' ? 'call-audio-refuse' : 'call-video-refuse'
             await groupMessage.messages[0].save()
@@ -469,19 +469,55 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
         }
 
         // send signal end call to !sender
-        if (sender === 'caller' && receiverMem._id.status === 'online' && receiverMem._id.socketId) {
-          io.to(receiverMem._id.socketId).emit('msg-endCall', {
+        if (sender === 'caller' && receiverMem._id.status === 'online' && receiverMem._id.socketId.length) {
+          io.to(receiverMem._id.id).emit('msg-endCall', {
             callerId,
             receiverId,
             sender,
             typeCall
           })
-        } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId) {
-          io.to(callerMem.socketId).emit('msg-endCall', {
+          const tokenFriend = jwt.sign(
+            { data: { memberId: receiverMem._id.id } },
+            process.env.JWT_SECRET
+          );
+          const msg = formatMessage(
+            receiverMem._id.name,
+            typeCall === 'audio' ? 'Cuộc gọi đi' : 'Cuộc gọi video đi',
+            receiverMem._id.avatar
+          )
+          msg.id = groupMessage.messages[0].id
+          msg.className = typeCall === 'audio' ? 'call-msg call-outgoing' : 'call-msg call-outgoing call-video'
+          this.to(callerMem.id).emit('msg-messenger-me', {
+            receiverId: receiverMem._id.id,
+            msg,
+            token: tokenFriend,
+            type: 'call-end',
+            sender
+          })
+        } else if (sender === 'receiver' && callerMem.status === 'online' && callerMem.socketId.length) {
+          io.to(callerMem.id).emit('msg-endCall', {
             callerId,
             receiverId,
             sender,
             typeCall
+          })
+          const tokenFriend = jwt.sign(
+            { data: { memberId: callerMem.id } },
+            process.env.JWT_SECRET
+          );
+          const msg = formatMessage(
+            callerMem.name,
+            typeCall === 'audio' ? 'Cuộc gọi đến' : 'Cuộc gọi video đến',
+            callerMem.avatar
+          )
+          msg.id = groupMessage.messages[0].id
+          msg.className = typeCall === 'audio' ? 'call-msg call-incoming' : 'call-msg call-incoming call-video'
+          this.to(receiverMem._id.id).emit('msg-messenger-me', {
+            receiverId: callerMem.id,
+            msg,
+            token: tokenFriend,
+            type: 'call-end',
+            sender
           })
         }
       }
@@ -516,7 +552,24 @@ module.exports.onRefuseCall = async function (io, { callerId, receiverId, typeCa
             await groupMessage.messages[0].save()
 
             // send signal to caller
-            io.to(callerMem.socketId).emit('msg-receiverRefuseCall')
+            io.in(callerMem.id).emit('msg-receiverRefuseCall', {
+              messageId: groupMessage.messages[0].id,
+              receiverId: receiverMem._id.id,
+              typeCall
+            })
+            const tokenFriend = jwt.sign(
+              { data: { memberId: callerMem.id } },
+              process.env.JWT_SECRET
+            );
+            const msg = formatMessage(callerMem.name, 'Cuộc gọi nhỡ', callerMem.avatar)
+            msg.id = groupMessage.messages[0].id
+            msg.className = typeCall === 'audio' ? 'call-msg call-missed' : 'call-msg call-missed call-missed-video'
+            this.to(receiverMem._id.id).emit('msg-messenger-me', {
+              receiverId: callerMem.id,
+              msg,
+              token: tokenFriend,
+              type: 'call-missed'
+            })
           }
         }
       }

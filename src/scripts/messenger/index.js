@@ -819,30 +819,53 @@ const Index = (async () => {
       }
     })
 
-    window.socket.on('msg-messenger-me', ({ receiverId, msg: msgObj }) => {
+    window.socket.on('msg-messenger-me', ({ receiverId, msg: msgObj, type, sender }) => {
       const $itemFri = $(`.friend-item[data-id="${receiverId}"]`)
-      if (friendIdChatting === receiverId) {
-        // output message
-        window.outputMessage(msgObj, true);
-        
-        window.addMorelMsgLocal({
-          tmpId: msgObj.id,
-          realId: msgObj.id,
-          type: msgObj.type,
-          fileName: msgObj.nameFile,
-          url: msgObj.message
-        })
-        $itemFri.find('.last-msg').removeClass('un-read')
-      }
-      moveToTop(receiverId, friendIdChatting === receiverId)
-      if (msgObj.type && msgObj.type === 'file') {
+      if (type === 'call-missed') {
+        if (friendIdChatting === receiverId) {
+          // output message
+          window.outputMessage(msgObj, false);
+          $itemFri.find('.last-msg').removeClass('un-read')
+        }
+        moveToTop(receiverId, friendIdChatting === receiverId)
         $itemFri.find('.last-msg').html(
-          `<small>Bạn đã gửi 1 đính kèm</small><small>vài giây</small>`
+          `<small>${msgObj.message}</small><small>vài giây</small>`
+        )
+      } else if (type === 'call-end') {
+        if (friendIdChatting === receiverId) {
+          // output message
+          const msgMe = sender === 'receiver'
+          window.outputMessage(msgObj, msgMe);
+          $itemFri.find('.last-msg').removeClass('un-read')
+        }
+        moveToTop(receiverId, friendIdChatting === receiverId)
+        $itemFri.find('.last-msg').html(
+          `<small>${msgObj.message}</small><small>vài giây</small>`
         )
       } else {
-        $itemFri.find('.last-msg').html(
-          `<small>Bạn: ${msgObj.message}</small><small>vài giây</small>`
-        )
+        if (friendIdChatting === receiverId) {
+          // output message
+          window.outputMessage(msgObj, true);
+          
+          window.addMorelMsgLocal({
+            tmpId: msgObj.id,
+            realId: msgObj.id,
+            type: msgObj.type,
+            fileName: msgObj.nameFile,
+            url: msgObj.message
+          })
+          $itemFri.find('.last-msg').removeClass('un-read')
+        }
+        moveToTop(receiverId, friendIdChatting === receiverId)
+        if (msgObj.type && msgObj.type === 'file') {
+          $itemFri.find('.last-msg').html(
+            `<small>Bạn đã gửi 1 đính kèm</small><small>vài giây</small>`
+          )
+        } else {
+          $itemFri.find('.last-msg').html(
+            `<small>Bạn: ${msgObj.message}</small><small>vài giây</small>`
+          )
+        }
       }
     })
 

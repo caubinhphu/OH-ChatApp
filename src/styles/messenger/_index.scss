@@ -95,6 +95,9 @@
     .message-content {
       color: $white;
       font-style: italic;
+      &::before {
+        content: none !important;
+      }
     }
   }
   &.edited {

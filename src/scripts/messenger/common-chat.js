@@ -103,7 +103,7 @@ const CommonChat = (() => {
     if (window.callInComSound) {
       window.callInComSound.pause()
     }
-    window.window.socket.emit('msg-refuseCall', {
+    socket.emit('msg-refuseCall', {
       callerId: window.callerId,
       receiverId: meId,
       typeCall: window.typeCall
@@ -421,16 +421,20 @@ const CommonChat = (() => {
 
   // receive signal answer
   socket.on('msg-answerSignal', ({ signal }) => {
-    // send signal answer to sub window
-    clearTimeout(window.timeoutCallId)
-    if (window.callOutGoSound) {
-      window.callOutGoSound.pause()
+    console.log(signal);
+    console.log(window.windowCall);
+    if (window.windowCall) {
+      // send signal answer to sub window
+      clearTimeout(window.timeoutCallId)
+      if (window.callOutGoSound) {
+        window.callOutGoSound.pause()
+      }
+      const event = new CustomEvent('signalAnswer', {
+        detail: { signalAnswer: signal }
+      });
+      window.windowCall.dispatchEvent(event)
+      $(classOvCalling).addClass('d-none')
     }
-    const event = new CustomEvent('signalAnswer', {
-      detail: { signalAnswer: signal }
-    });
-    window.windowCall.dispatchEvent(event)
-    $(classOvCalling).addClass('d-none')
   })
 
   // receive signal call error
@@ -447,7 +451,7 @@ const CommonChat = (() => {
   })
 
   // receive signal refuse call
-  socket.on('msg-receiverRefuseCall', () => {
+  socket.on('msg-receiverRefuseCall', ({ messageId, receiverId, typeCall }) => {
     if (window.windowCall) {
       clearTimeout(window.timeoutCallId)
       if (window.callOutGoSound) {
@@ -490,6 +494,36 @@ const CommonChat = (() => {
         )
         addMorelMsgCallLocal({
           msgId: msgCallId,
+          type: 'call'
+        })
+      }
+    } else {
+      if (isPageChat) {
+        // create msg end call local
+        createCallMsgLocal(
+          receiverId,
+          callTextCaller,
+          classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true,
+          messageId
+        )
+        addMorelMsgCallLocal({
+          msgId: messageId,
+          type: 'call'
+        })
+      } else {
+        // create msg end call local
+        window.createCallMsgLocalMiniChat(
+          receiverId,
+          callTextCaller,
+          classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+          false,
+          true,
+          messageId
+        )
+        addMorelMsgCallLocal({
+          msgId: messageId,
           type: 'call'
         })
       }
@@ -1065,7 +1099,7 @@ const CommonChat = (() => {
   window.outputMessage = outputMessage
 
   function addMorelMsgLocal({ tmpId, realId, type, fileName, url }) {
-    const $message = $(`.message[data-id="${tmpId}"]`)
+    const $message = $(`.message.message-me[data-id="${tmpId}"]`)
     if ($message.length) {
       $message.attr('data-id', realId)
       $('.message.message-me.sended').removeClass('sended')
@@ -1103,7 +1137,7 @@ const CommonChat = (() => {
   window.addMorelMsgLocal = addMorelMsgLocal
 
   function addMorelMsgCallLocal({ msgId, type }) {
-    const $message = $(`.message[data-id="${msgId}"]`)
+    const $message = $(`.message.message-me[data-id="${msgId}"]`)
     if ($message.length) {
       $('.message.message-me.sended').removeClass('sended')
       $message.removeClass('sending').addClass('sended')

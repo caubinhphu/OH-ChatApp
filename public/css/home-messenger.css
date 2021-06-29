@@ -8306,6 +8306,10 @@ label.send-file:hover .icomoon,
   font-style: italic;
 }
 
+.message.deleted .message-content::before {
+  content: none !important;
+}
+
 .message.edited .message-time::after {
   content: "\110\E3    s\1EED   a";
   position: absolute;
