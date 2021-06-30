@@ -821,21 +821,15 @@ const Index = (async () => {
 
     window.socket.on('msg-messenger-me', ({ receiverId, msg: msgObj, type, sender }) => {
       const $itemFri = $(`.friend-item[data-id="${receiverId}"]`)
-      if (type === 'call-missed') {
+      if (type === 'call-missed' || type === 'call-end') {
         if (friendIdChatting === receiverId) {
           // output message
-          window.outputMessage(msgObj, false);
-          $itemFri.find('.last-msg').removeClass('un-read')
-        }
-        moveToTop(receiverId, friendIdChatting === receiverId)
-        $itemFri.find('.last-msg').html(
-          `<small>${msgObj.message}</small><small>vài giây</small>`
-        )
-      } else if (type === 'call-end') {
-        if (friendIdChatting === receiverId) {
-          // output message
-          const msgMe = sender === 'receiver'
+          const msgMe = sender === 'caller'
           window.outputMessage(msgObj, msgMe);
+          window.addMorelMsgCallLocal({
+            msgId: msgObj.id,
+            type: 'call',
+          })
           $itemFri.find('.last-msg').removeClass('un-read')
         }
         moveToTop(receiverId, friendIdChatting === receiverId)

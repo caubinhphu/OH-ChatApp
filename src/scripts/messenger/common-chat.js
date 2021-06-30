@@ -47,12 +47,14 @@ const CommonChat = (() => {
 
   window.soundRecord = new Audio('/sounds/record.mp3')
 
+  let friendIdChatting = null
+
   // is page chat
   if (isPageChat && msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
 
-    const friendIdChatting = $('#main-right').attr('data-id')
+    friendIdChatting = $('#main-right').attr('data-id')
 
     // call audio to friend
     $('#call-friend-btn').on('click', () => { callFriend(friendIdChatting) })
@@ -421,8 +423,8 @@ const CommonChat = (() => {
 
   // receive signal answer
   socket.on('msg-answerSignal', ({ signal }) => {
-    console.log(signal);
-    console.log(window.windowCall);
+    // console.log(signal);
+    // console.log(window.windowCall);
     if (window.windowCall) {
       // send signal answer to sub window
       clearTimeout(window.timeoutCallId)
@@ -571,69 +573,125 @@ const CommonChat = (() => {
   })
 
   // receive signal end call from server (it self end call)
-  socket.on('msg-endCall', ({ callerId, receiverId, sender, typeCall }) => {
+  socket.on('msg-endCall', ({ callerId, receiverId, sender, typeCall, msg }) => {
     window.isCall = false
     window.outputInfoMessage('Cuộc gọi kết thúc')
     if (sender === 'caller') {
       // computer of receiver
-      window.windowReceive = undefined
-      if (isPageChat) {
-        createCallMsgLocal(
-          callerId,
-          callTextReceiver,
-          classCallCome + (typeCall === 'video' ? classCallVideo : ''),
-          true,
-          false,
-          msgCallId
-        )
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        })
+      if (window.windowReceive) {
+        window.windowReceive = undefined
+        if (isPageChat) {
+          createCallMsgLocal(
+            callerId,
+            callTextReceiver,
+            classCallCome + (typeCall === 'video' ? classCallVideo : ''),
+            true,
+            false,
+            msgCallId
+          )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
+        } else {
+          window.createCallMsgLocalMiniChat(
+            callerId,
+            callTextReceiver,
+            classCallCome + (typeCall === 'video' ? classCallVideo : ''),
+            true,
+            false,
+            msgCallId
+          )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
+        }
       } else {
-        window.createCallMsgLocalMiniChat(
-          callerId,
-          callTextReceiver,
-          classCallCome + (typeCall === 'video' ? classCallVideo : ''),
-          true,
-          false,
-          msgCallId
-        )
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        })
+        if (isPageChat) {
+          const $friItem = $(`.friend-item[data-id="${callerId}"]`);
+          if ($friItem.length) {
+            if (callerId === friendIdChatting) {
+              outputMessage(msg, false)
+              addMorelMsgCallLocal({
+                msgId: msg.id,
+                type: 'call'
+              })
+            }
+          }
+        } else {
+          window.createCallMsgLocalMiniChat(
+            callerId,
+            callTextReceiver,
+            classCallCome + (typeCall === 'video' ? classCallVideo : ''),
+            true,
+            false,
+            msg.id
+          )
+          addMorelMsgCallLocal({
+            msgId: msg.id,
+            type: 'call'
+          })
+        }
       }
     } else if (sender === 'receiver') {
       // computer of caller
-      window.sendSignalCallDone = false
-      window.windowCall = undefined
-      if (isPageChat) {
-        createCallMsgLocal(
-          receiverId,
-          callTextCaller,
-          classCallOut + (typeCall === 'video' ? classCallVideo : ''),
-          true,
-          true,
-          msgCallId
-        )
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        })
+      if (window.windowCall) {
+        window.sendSignalCallDone = false
+        window.windowCall = undefined
+        if (isPageChat) {
+          createCallMsgLocal(
+            receiverId,
+            callTextCaller,
+            classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+            true,
+            true,
+            msgCallId
+          )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
+        } else {
+          window.createCallMsgLocalMiniChat(
+            receiverId,
+            callTextCaller,
+            classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+            true,
+            true,
+            msgCallId
+          )
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          })
+        }
       } else {
-        window.createCallMsgLocalMiniChat(
-          receiverId,
-          callTextCaller,
-          classCallOut + (typeCall === 'video' ? classCallVideo : ''),
-          true,
-          true,
-          msgCallId
-        )
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        })
+        if (isPageChat) {
+          const $friItem = $(`.friend-item[data-id="${receiverId}"]`);
+          if ($friItem.length) {
+            if (receiverId === friendIdChatting) {
+              outputMessage(msg, true)
+              addMorelMsgCallLocal({
+                msgId: msg.id,
+                type: 'call'
+              })
+            }
+          }
+        } else {
+          window.createCallMsgLocalMiniChat(
+            receiverId,
+            callTextCaller,
+            classCallOut + (typeCall === 'video' ? classCallVideo : ''),
+            true,
+            true,
+            msg.id
+          )
+          addMorelMsgCallLocal({
+            msgId: msg.id,
+            type: 'call'
+          })
+        }
       }
     }
   })
@@ -951,20 +1009,25 @@ const CommonChat = (() => {
     let timeCall = null
     if (isCallEnd && window.timeStartCall) {
       time = moment(window.timeStartCall).format('H:mm')
-      timeCall = `<small class="time-call">${formatDiffTime(window.timeStartCall, new Date())}</small>`
+      const timeNow = new Date()
+      timeNow.setSeconds(timeNow.getSeconds() + 2)
+      timeCall = `<small class="time-call">${formatDiffTime(window.timeStartCall, timeNow)}</small>`
       window.timeStartCall = undefined
     }
     if ($friItem.length) {
       if (me) {
-        outputMessage({
-          time,
-          username: 'Me',
-          message: msg,
-          className,
-          timeCall,
-          id: tmpId
-        }, true)
-        scrollBottomChatBox()
+        if (friendId === friendIdChatting) {
+          outputMessage({
+            time,
+            username: 'Me',
+            message: msg,
+            className,
+            timeCall,
+            id: tmpId
+          }, true)
+          scrollBottomChatBox()
+        }
+        
         if (className !== 'wrap-msg-file') {
           $friItem.find('.last-msg').html(`
             <small>Bạn: ${ msg }</small><small>vài giây</small>
@@ -976,16 +1039,18 @@ const CommonChat = (() => {
         }
         
       } else {
-        outputMessage({
-          time,
-          username: $friItem.find(classNameFriend).text(),
-          message: msg,
-          avatar: $friItem.find('img').attr('src'),
-          className,
-          timeCall,
-          id: tmpId
-        }, false)
-        scrollBottomChatBox()
+        if (friendId === friendIdChatting) {
+          outputMessage({
+            time,
+            username: $friItem.find(classNameFriend).text(),
+            message: msg,
+            avatar: $friItem.find('img').attr('src'),
+            className,
+            timeCall,
+            id: tmpId
+          }, false)
+          scrollBottomChatBox()
+        }
         $friItem.find('.last-msg').html(`
           <small>${ msg }</small><small>vài giây</small>
         `).removeClass('un-read')
@@ -1165,6 +1230,7 @@ const CommonChat = (() => {
       $message.find('.msg-me').prepend(moreMsg)
     }
   }
+  window.addMorelMsgCallLocal = addMorelMsgCallLocal
 
   function addSendedClass($popup = null) {
     if ($popup) {

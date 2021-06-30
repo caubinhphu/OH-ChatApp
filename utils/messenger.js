@@ -61,7 +61,7 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.class = 'call-msg call-incoming call-video'
     } else {
       msgFormat.content = 'Cuộc gọi đi'
-      msgFormat.class = 'call-msg call-outgoing call-video'
+      msgFormat.class = 'call-msg call-outgoing'
     }
   } else if (msg.type === 'call-video-refuse') {
     if (msg.memberSendId.toString() !== me.id) {
@@ -69,7 +69,7 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.class = 'call-msg call-missed call-missed-video'
     } else {
       msgFormat.content = 'Cuộc gọi video đi'
-      msgFormat.class = 'call-msg call-outgoing call-video call-video'
+      msgFormat.class = 'call-msg call-outgoing call-video'
     }
   } else if (msg.type === 'deleted') {
     msgFormat.content = 'Tin nhắn đã bị xóa'

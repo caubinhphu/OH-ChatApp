@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const moment = require('moment');
 
 const Member = require('../models/Member');
 const Message = require('../models/Message');
@@ -8,6 +9,7 @@ const GroupMessage = require('../models/GroupMessage');
 
 const formatMessage = require('../utils/message');
 const cloudinary = require('../utils/cloudinary');
+const { formatDiffTime } = require('../utils/messenger');
 
 /**
  * Function get caller member and its info
@@ -454,6 +456,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
       await callerMem.save()
 
       const receiverMem = callerMem.friends.find(fr => fr._id)
+      console.log(receiverMem);
       if (receiverMem && code === 'ERR_DATA_CHANNEL') {
         receiverMem._id.isCalling = false
         await receiverMem._id.save()
@@ -468,13 +471,23 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
           await groupMessage.messages[0].save()
         }
 
+        const timeCall = `<small class="time-call">${formatDiffTime(groupMessage.messages[0].time, groupMessage.messages[0].timeEndCall)}</small>`
+        const time = moment(groupMessage.messages[0].time).format('H:mm')
+
         // send signal end call to !sender
         if (sender === 'caller' && receiverMem._id.status === 'online' && receiverMem._id.socketId.length) {
           io.to(receiverMem._id.id).emit('msg-endCall', {
             callerId,
             receiverId,
             sender,
-            typeCall
+            typeCall,
+            msg: {
+              id: groupMessage.messages[0].id,
+              message: typeCall === 'audio' ? 'Cuộc gọi đến' : 'Cuộc gọi video đến',
+              className: typeCall === 'audio' ? 'call-msg call-incoming' : 'call-msg call-incoming call-video',
+              timeCall,
+              time
+            }
           })
           const tokenFriend = jwt.sign(
             { data: { memberId: receiverMem._id.id } },
@@ -487,6 +500,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
           )
           msg.id = groupMessage.messages[0].id
           msg.className = typeCall === 'audio' ? 'call-msg call-outgoing' : 'call-msg call-outgoing call-video'
+          msg.timeCall = timeCall
           this.to(callerMem.id).emit('msg-messenger-me', {
             receiverId: receiverMem._id.id,
             msg,
@@ -499,7 +513,14 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
             callerId,
             receiverId,
             sender,
-            typeCall
+            typeCall,
+            msg: {
+              id: groupMessage.messages[0].id,
+              message: typeCall === 'audio' ? 'Cuộc gọi đi' : 'Cuộc gọi video đi',
+              className: typeCall === 'audio' ? 'call-msg call-outgoing' : 'call-msg call-outgoing call-video',
+              timeCall,
+              time
+            }
           })
           const tokenFriend = jwt.sign(
             { data: { memberId: callerMem.id } },
@@ -512,6 +533,7 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
           )
           msg.id = groupMessage.messages[0].id
           msg.className = typeCall === 'audio' ? 'call-msg call-incoming' : 'call-msg call-incoming call-video'
+          msg.timeCall = timeCall
           this.to(receiverMem._id.id).emit('msg-messenger-me', {
             receiverId: callerMem.id,
             msg,

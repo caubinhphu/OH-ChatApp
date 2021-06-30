@@ -40029,12 +40029,13 @@ var CommonChat = function () {
   var msgForm = document.sendMsgForm;
   var meId = $('#member-id').text();
   var msgCallId = '';
-  window.soundRecord = new Audio('/sounds/record.mp3'); // is page chat
+  window.soundRecord = new Audio('/sounds/record.mp3');
+  var friendIdChatting = null; // is page chat
 
   if (isPageChat && msgForm) {
     // scroll bottom
     chatMain.scrollTop = chatMain.scrollHeight;
-    var friendIdChatting = $('#main-right').attr('data-id'); // call audio to friend
+    friendIdChatting = $('#main-right').attr('data-id'); // call audio to friend
 
     $('#call-friend-btn').on('click', function () {
       callFriend(friendIdChatting);
@@ -40332,9 +40333,9 @@ var CommonChat = function () {
 
   socket.on('msg-answerSignal', function (_ref2) {
     var signal = _ref2.signal;
-    console.log(signal);
-    console.log(window.windowCall);
 
+    // console.log(signal);
+    // console.log(window.windowCall);
     if (window.windowCall) {
       // send signal answer to sub window
       clearTimeout(window.timeoutCallId);
@@ -40457,44 +40458,89 @@ var CommonChat = function () {
     var callerId = _ref6.callerId,
         receiverId = _ref6.receiverId,
         sender = _ref6.sender,
-        typeCall = _ref6.typeCall;
+        typeCall = _ref6.typeCall,
+        msg = _ref6.msg;
     window.isCall = false;
     window.outputInfoMessage('Cuộc gọi kết thúc');
 
     if (sender === 'caller') {
       // computer of receiver
-      window.windowReceive = undefined;
+      if (window.windowReceive) {
+        window.windowReceive = undefined;
 
-      if (isPageChat) {
-        createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        });
+        if (isPageChat) {
+          createCallMsgLocal(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
+        } else {
+          window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
+        }
       } else {
-        window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msgCallId);
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        });
+        if (isPageChat) {
+          var $friItem = $(".friend-item[data-id=\"".concat(callerId, "\"]"));
+
+          if ($friItem.length) {
+            if (callerId === friendIdChatting) {
+              outputMessage(msg, false);
+              addMorelMsgCallLocal({
+                msgId: msg.id,
+                type: 'call'
+              });
+            }
+          }
+        } else {
+          window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msg.id);
+          addMorelMsgCallLocal({
+            msgId: msg.id,
+            type: 'call'
+          });
+        }
       }
     } else if (sender === 'receiver') {
       // computer of caller
-      window.sendSignalCallDone = false;
-      window.windowCall = undefined;
+      if (window.windowCall) {
+        window.sendSignalCallDone = false;
+        window.windowCall = undefined;
 
-      if (isPageChat) {
-        createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        });
+        if (isPageChat) {
+          createCallMsgLocal(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
+        } else {
+          window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
+          addMorelMsgCallLocal({
+            msgId: msgCallId,
+            type: 'call'
+          });
+        }
       } else {
-        window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msgCallId);
-        addMorelMsgCallLocal({
-          msgId: msgCallId,
-          type: 'call'
-        });
+        if (isPageChat) {
+          var _$friItem = $(".friend-item[data-id=\"".concat(receiverId, "\"]"));
+
+          if (_$friItem.length) {
+            if (receiverId === friendIdChatting) {
+              outputMessage(msg, true);
+              addMorelMsgCallLocal({
+                msgId: msg.id,
+                type: 'call'
+              });
+            }
+          }
+        } else {
+          window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msg.id);
+          addMorelMsgCallLocal({
+            msgId: msg.id,
+            type: 'call'
+          });
+        }
       }
     }
   });
@@ -40529,10 +40575,10 @@ var CommonChat = function () {
 
           if (isPageChat) {
             if ($message.is(':last-child')) {
-              var _$friItem = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+              var _$friItem2 = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
 
-              if (_$friItem.length) {
-                _$friItem.find('.last-msg').html("\n                  <div class=\"last-msg text-dark\">\n                    <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                  </div>\n                ");
+              if (_$friItem2.length) {
+                _$friItem2.find('.last-msg').html("\n                  <div class=\"last-msg text-dark\">\n                    <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                  </div>\n                ");
               }
             }
           }
@@ -40548,10 +40594,10 @@ var CommonChat = function () {
 
         if (isPageChat) {
           if ($message.is(':last-child')) {
-            var _$friItem2 = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
+            var _$friItem3 = $($(".friend-item[data-id=\"".concat(friendId, "\"]")));
 
-            if (_$friItem2.length) {
-              _$friItem2.find('.last-msg').find('small:first-child').html(content);
+            if (_$friItem3.length) {
+              _$friItem3.find('.last-msg').find('small:first-child').html(content);
             }
           }
         }
@@ -40840,21 +40886,25 @@ var CommonChat = function () {
 
     if (isCallEnd && window.timeStartCall) {
       time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
-      timeCall = "<small class=\"time-call\">".concat(formatDiffTime(window.timeStartCall, new Date()), "</small>");
+      var timeNow = new Date();
+      timeNow.setSeconds(timeNow.getSeconds() + 2);
+      timeCall = "<small class=\"time-call\">".concat(formatDiffTime(window.timeStartCall, timeNow), "</small>");
       window.timeStartCall = undefined;
     }
 
     if ($friItem.length) {
       if (me) {
-        outputMessage({
-          time: time,
-          username: 'Me',
-          message: msg,
-          className: className,
-          timeCall: timeCall,
-          id: tmpId
-        }, true);
-        scrollBottomChatBox();
+        if (friendId === friendIdChatting) {
+          outputMessage({
+            time: time,
+            username: 'Me',
+            message: msg,
+            className: className,
+            timeCall: timeCall,
+            id: tmpId
+          }, true);
+          scrollBottomChatBox();
+        }
 
         if (className !== 'wrap-msg-file') {
           $friItem.find('.last-msg').html("\n            <small>B\u1EA1n: ".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n          "));
@@ -40862,16 +40912,19 @@ var CommonChat = function () {
           $friItem.find('.last-msg').html("\n            <small>B\u1EA1n \u0111\xE3 g\u1EEDi 1 \u0111\xEDnh k\xE8m</small><small>v\xE0i gi\xE2y</small>\n          ");
         }
       } else {
-        outputMessage({
-          time: time,
-          username: $friItem.find(classNameFriend).text(),
-          message: msg,
-          avatar: $friItem.find('img').attr('src'),
-          className: className,
-          timeCall: timeCall,
-          id: tmpId
-        }, false);
-        scrollBottomChatBox();
+        if (friendId === friendIdChatting) {
+          outputMessage({
+            time: time,
+            username: $friItem.find(classNameFriend).text(),
+            message: msg,
+            avatar: $friItem.find('img').attr('src'),
+            className: className,
+            timeCall: timeCall,
+            id: tmpId
+          }, false);
+          scrollBottomChatBox();
+        }
+
         $friItem.find('.last-msg').html("\n          <small>".concat(msg, "</small><small>v\xE0i gi\xE2y</small>\n        ")).removeClass('un-read');
       }
     }
@@ -41017,6 +41070,8 @@ var CommonChat = function () {
       $message.find('.msg-me').prepend(moreMsg);
     }
   }
+
+  window.addMorelMsgCallLocal = addMorelMsgCallLocal;
 
   function addSendedClass() {
     var $popup = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
