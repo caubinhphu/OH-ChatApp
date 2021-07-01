@@ -456,7 +456,6 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
       await callerMem.save()
 
       const receiverMem = callerMem.friends.find(fr => fr._id)
-      console.log(receiverMem);
       if (receiverMem && code === 'ERR_DATA_CHANNEL') {
         receiverMem._id.isCalling = false
         await receiverMem._id.save()
@@ -486,7 +485,8 @@ module.exports.onConnectPeerFail = async function (io, { callerId, receiverId, c
               message: typeCall === 'audio' ? 'Cuộc gọi đến' : 'Cuộc gọi video đến',
               className: typeCall === 'audio' ? 'call-msg call-incoming' : 'call-msg call-incoming call-video',
               timeCall,
-              time
+              time,
+              avatar: callerMem.avatar
             }
           })
           const tokenFriend = jwt.sign(

@@ -372,14 +372,15 @@ const Messenger = (async () => {
     }
   }
 
-  window.socket.on('msg-messenger-me', async ({ receiverId, msg: msgObj, token, type }) => {
+  window.socket.on('msg-messenger-me', async ({ receiverId, msg: msgObj, token, type, sender }) => {
     const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
-    if (type === 'call-missed') {
+    if (type === 'call-missed' || type === 'call-end') {
       if ($(`.popup-chat-mini[data-id=${receiverId}]`).length) {
         const $popup = $(`.popup-chat-mini[data-id=${receiverId}]`)
         const $chatMain = $popup.find(classChatMain)
+        const msgMe = sender === 'caller'
   
-        window.outputMessage(msgObj, false, $chatMain);
+        window.outputMessage(msgObj, msgMe, $chatMain);
 
         if ($popup.hasClass(nClassCloseMini)) {
           $popup.removeClass(nClassCloseMini)
@@ -1018,10 +1019,10 @@ const Messenger = (async () => {
   }
 
   // function create call msg local mini chat
-  function createCallMsgLocalMiniChat(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '') {
+  function createCallMsgLocalMiniChat(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '', timeCall = null) {
     const $popup = $(`.popup-chat-mini[data-id=${friendId}]`)
     if ($popup.length) {
-      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me, tmpId)
+      createCallMsgLocalMini(friendId, msg, className, isCallEnd, me, tmpId, timeCall)
       if ($popup.hasClass(nClassNoAct)) {
         outputPreviewMsg($popup, msg);
       }
@@ -1037,10 +1038,10 @@ const Messenger = (async () => {
    * @param {boolean} isCallEnd isCallEnd
    * @param {boolean} me is me
    */
-  function createCallMsgLocalMini(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '') {
+  function createCallMsgLocalMini(friendId, msg = '', className = '', isCallEnd = false, me = false, tmpId = '', timeCall) {
     const $chatBox = $(`.popup-chat-mini[data-id="${friendId}"]`);
     let time = moment().format('H:mm')
-    let timeCall = null
+    // let timeCall = null
     if (isCallEnd && window.timeStartCall) {
       time = moment(window.timeStartCall).format('H:mm')
       timeCall = `<small class="time-call">${window.formatDiffTime(window.timeStartCall, new Date())}</small>`

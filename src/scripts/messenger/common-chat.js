@@ -618,6 +618,9 @@ const CommonChat = (() => {
                 type: 'call'
               })
             }
+            $friItem.find('.last-msg').html(
+              `<small>${msg.message}</small><small>vài giây</small>`
+            )
           }
         } else {
           window.createCallMsgLocalMiniChat(
@@ -626,7 +629,8 @@ const CommonChat = (() => {
             classCallCome + (typeCall === 'video' ? classCallVideo : ''),
             true,
             false,
-            msg.id
+            msg.id,
+            msg.timeCall
           )
           addMorelMsgCallLocal({
             msgId: msg.id,
@@ -676,6 +680,9 @@ const CommonChat = (() => {
                 msgId: msg.id,
                 type: 'call'
               })
+              $friItem.find('.last-msg').html(
+                `<small>${msg.message}</small><small>vài giây</small>`
+              )
             }
           }
         } else {
@@ -685,7 +692,8 @@ const CommonChat = (() => {
             classCallOut + (typeCall === 'video' ? classCallVideo : ''),
             true,
             true,
-            msg.id
+            msg.id,
+            msg.timeCall
           )
           addMorelMsgCallLocal({
             msgId: msg.id,

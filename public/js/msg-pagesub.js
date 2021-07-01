@@ -40493,9 +40493,11 @@ var CommonChat = function () {
                 type: 'call'
               });
             }
+
+            $friItem.find('.last-msg').html("<small>".concat(msg.message, "</small><small>v\xE0i gi\xE2y</small>"));
           }
         } else {
-          window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msg.id);
+          window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msg.id, msg.timeCall);
           addMorelMsgCallLocal({
             msgId: msg.id,
             type: 'call'
@@ -40532,10 +40534,12 @@ var CommonChat = function () {
                 msgId: msg.id,
                 type: 'call'
               });
+
+              _$friItem.find('.last-msg').html("<small>".concat(msg.message, "</small><small>v\xE0i gi\xE2y</small>"));
             }
           }
         } else {
-          window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msg.id);
+          window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msg.id, msg.timeCall);
           addMorelMsgCallLocal({
             msgId: msg.id,
             type: 'call'
@@ -46151,9 +46155,9 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
             var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
             var tmpId = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
+            var timeCall = arguments.length > 6 ? arguments[6] : undefined;
             var $chatBox = $(".popup-chat-mini[data-id=\"".concat(friendId, "\"]"));
-            var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm');
-            var timeCall = null;
+            var time = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('H:mm'); // let timeCall = null
 
             if (isCallEnd && window.timeStartCall) {
               time = moment__WEBPACK_IMPORTED_MODULE_0___default()(window.timeStartCall).format('H:mm');
@@ -46193,10 +46197,11 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
             var isCallEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
             var me = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
             var tmpId = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
+            var timeCall = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : null;
             var $popup = $(".popup-chat-mini[data-id=".concat(friendId, "]"));
 
             if ($popup.length) {
-              createCallMsgLocalMini(friendId, msg, className, isCallEnd, me, tmpId);
+              createCallMsgLocalMini(friendId, msg, className, isCallEnd, me, tmpId, timeCall);
 
               if ($popup.hasClass(nClassNoAct)) {
                 outputPreviewMsg($popup, msg);
@@ -46923,28 +46928,29 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
         case 89:
           window.socket.on('msg-messenger-me', /*#__PURE__*/function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
-              var receiverId, msgObj, token, type, activeLength, $popup, $chatMain, classIsActive, _classIsActive, _$popup, _$chatMain, _classIsActive2, _classIsActive3;
+              var receiverId, msgObj, token, type, sender, activeLength, $popup, $chatMain, msgMe, classIsActive, _classIsActive, _$popup, _$chatMain, _classIsActive2, _classIsActive3;
 
               return regeneratorRuntime.wrap(function _callee$(_context) {
                 while (1) {
                   switch (_context.prev = _context.next) {
                     case 0:
-                      receiverId = _ref2.receiverId, msgObj = _ref2.msg, token = _ref2.token, type = _ref2.type;
+                      receiverId = _ref2.receiverId, msgObj = _ref2.msg, token = _ref2.token, type = _ref2.type, sender = _ref2.sender;
                       activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;
 
-                      if (!(type === 'call-missed')) {
-                        _context.next = 16;
+                      if (!(type === 'call-missed' || type === 'call-end')) {
+                        _context.next = 17;
                         break;
                       }
 
                       if (!$(".popup-chat-mini[data-id=".concat(receiverId, "]")).length) {
-                        _context.next = 10;
+                        _context.next = 11;
                         break;
                       }
 
                       $popup = $(".popup-chat-mini[data-id=".concat(receiverId, "]"));
                       $chatMain = $popup.find(classChatMain);
-                      window.outputMessage(msgObj, false, $chatMain);
+                      msgMe = sender === 'caller';
+                      window.outputMessage(msgObj, msgMe, $chatMain);
 
                       if ($popup.hasClass(nClassCloseMini)) {
                         $popup.removeClass(nClassCloseMini);
@@ -46959,24 +46965,24 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         outputPreviewMsg($popup, "".concat(msgObj.message));
                       }
 
-                      _context.next = 14;
+                      _context.next = 15;
                       break;
 
-                    case 10:
+                    case 11:
                       _classIsActive = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                      _context.next = 13;
+                      _context.next = 14;
                       return createMiniPopup(receiverId, msgObj, token, _classIsActive);
 
-                    case 13:
+                    case 14:
                       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 
-                    case 14:
-                      _context.next = 28;
+                    case 15:
+                      _context.next = 29;
                       break;
 
-                    case 16:
+                    case 17:
                       if (!$(".popup-chat-mini[data-id=".concat(receiverId, "]")).length) {
-                        _context.next = 24;
+                        _context.next = 25;
                         break;
                       }
 
@@ -47007,18 +47013,18 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                         outputPreviewMsg(_$popup, "B\u1EA1n: ".concat(msgObj.message));
                       }
 
-                      _context.next = 28;
+                      _context.next = 29;
                       break;
 
-                    case 24:
+                    case 25:
                       _classIsActive3 = activeLength || $('.open-search-mini').hasClass('is-open') ? nClassNoAct : nClassAct;
-                      _context.next = 27;
+                      _context.next = 28;
                       return createMiniPopup(receiverId, msgObj, token, _classIsActive3);
 
-                    case 27:
+                    case 28:
                       window.dispatchEvent(new CustomEvent('changeStatusPopupMini'));
 
-                    case 28:
+                    case 29:
                     case "end":
                       return _context.stop();
                   }

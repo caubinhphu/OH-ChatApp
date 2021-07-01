@@ -40493,9 +40493,11 @@ var CommonChat = function () {
                 type: 'call'
               });
             }
+
+            $friItem.find('.last-msg').html("<small>".concat(msg.message, "</small><small>v\xE0i gi\xE2y</small>"));
           }
         } else {
-          window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msg.id);
+          window.createCallMsgLocalMiniChat(callerId, callTextReceiver, classCallCome + (typeCall === 'video' ? classCallVideo : ''), true, false, msg.id, msg.timeCall);
           addMorelMsgCallLocal({
             msgId: msg.id,
             type: 'call'
@@ -40532,10 +40534,12 @@ var CommonChat = function () {
                 msgId: msg.id,
                 type: 'call'
               });
+
+              _$friItem.find('.last-msg').html("<small>".concat(msg.message, "</small><small>v\xE0i gi\xE2y</small>"));
             }
           }
         } else {
-          window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msg.id);
+          window.createCallMsgLocalMiniChat(receiverId, callTextCaller, classCallOut + (typeCall === 'video' ? classCallVideo : ''), true, true, msg.id, msg.timeCall);
           addMorelMsgCallLocal({
             msgId: msg.id,
             type: 'call'
@@ -44020,8 +44024,6 @@ var Index = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _ca
             if (type === 'call-missed' || type === 'call-end') {
               if (friendIdChatting === receiverId) {
                 // output message
-                console.log(msgObj);
-                console.log(sender);
                 var msgMe = sender === 'caller';
                 window.outputMessage(msgObj, msgMe);
                 window.addMorelMsgCallLocal({
