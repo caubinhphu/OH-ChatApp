@@ -40010,7 +40010,7 @@ var CommonChat = function () {
     window.outputErrorMessage(msg);
   });
   var isPageChat = $('#main.chat-page').length > 0;
-  var callTimeout = 20000;
+  var callTimeout = 5000;
   var chatMain = document.getElementById('main-right-chat-content');
   var idBtnCallBack = '#btn-call-back';
   var classPoHasCall = '.popup-has-call';
@@ -40163,6 +40163,10 @@ var CommonChat = function () {
             });
           } else {
             window.createCallMsgLocalMiniChat(window.receiverId, callTextCaller, classCallOut + (window.typeCall === 'video' ? classCallVideo : ''), false, true, msgCallId);
+            addMorelMsgCallLocal({
+              msgId: msgCallId,
+              type: 'call'
+            });
           }
         }, callTimeout);
       }
@@ -40427,7 +40431,8 @@ var CommonChat = function () {
 
   socket.on('msg-missedCall', function (_ref5) {
     var callerId = _ref5.callerId,
-        typeCall = _ref5.typeCall;
+        typeCall = _ref5.typeCall,
+        msgId = _ref5.msgId;
 
     if (!window.isRefuseCall) {
       if (window.callInComSound) {
@@ -40439,15 +40444,15 @@ var CommonChat = function () {
       $popup.find(idBtnCallBack).attr('data-callerid', callerId);
 
       if (isPageChat) {
-        createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId);
+        createCallMsgLocal(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId ? msgCallId : msgId);
         addMorelMsgCallLocal({
-          msgId: msgCallId,
+          msgId: msgCallId ? msgCallId : msgId,
           type: 'call'
         });
       } else {
-        window.createCallMsgLocalMiniChat(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId);
+        window.createCallMsgLocalMiniChat(callerId, callMissText, classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''), false, false, msgCallId ? msgCallId : msgId);
         addMorelMsgCallLocal({
-          msgId: msgCallId,
+          msgId: msgCallId ? msgCallId : msgId,
           type: 'call'
         });
       }

@@ -628,9 +628,30 @@ module.exports.onCallTimeout = async function (io, { callerId, receiverId, typeC
             await groupMessage.messages[0].save()
 
             // send to receiver signal call timeout
-            io.to(receiverMem._id.socketId).emit('msg-missedCall', {
+            io.in(receiverMem._id.id).emit('msg-missedCall', {
               callerId,
-              typeCall
+              typeCall,
+              msgId: groupMessage.messages[0].id
+            })
+
+            const tokenFriend = jwt.sign(
+              { data: { memberId: receiverMem._id.id } },
+              process.env.JWT_SECRET
+            );
+
+            const msg = formatMessage(
+              receiverMem._id.name,
+              typeCall === 'audio' ? 'Cuộc gọi đi' : 'Cuộc gọi video đi',
+              receiverMem._id.avatar
+            )
+            msg.id = groupMessage.messages[0].id
+            msg.className = typeCall === 'audio' ? 'call-msg call-outgoing' : 'call-msg call-outgoing call-video'
+            this.to(callerMem.id).emit('msg-messenger-me', {
+              receiverId: receiverMem._id.id,
+              msg,
+              token: tokenFriend,
+              type: 'call-end',
+              sender: 'caller'
             })
           }
         }

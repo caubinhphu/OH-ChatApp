@@ -23,7 +23,7 @@ const CommonChat = (() => {
 
   const isPageChat = $('#main.chat-page').length > 0
 
-  const callTimeout = 20000
+  const callTimeout = 5000
   const chatMain = document.getElementById('main-right-chat-content');
   const idBtnCallBack = '#btn-call-back'
   const classPoHasCall = '.popup-has-call'
@@ -213,6 +213,10 @@ const CommonChat = (() => {
               true,
               msgCallId
             )
+            addMorelMsgCallLocal({
+              msgId: msgCallId,
+              type: 'call'
+            })
           }
         }, callTimeout);
       }
@@ -533,7 +537,7 @@ const CommonChat = (() => {
   })
 
   // receive signal miss call from server (caller)
-  socket.on('msg-missedCall', ({ callerId, typeCall }) => {
+  socket.on('msg-missedCall', ({ callerId, typeCall, msgId }) => {
     if (!window.isRefuseCall) {
       if (window.callInComSound) {
         window.callInComSound.pause()
@@ -549,10 +553,10 @@ const CommonChat = (() => {
           classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''),
           false,
           false,
-          msgCallId
+          msgCallId ? msgCallId : msgId
         )
         addMorelMsgCallLocal({
-          msgId: msgCallId,
+          msgId: msgCallId ? msgCallId : msgId,
           type: 'call'
         })
       } else {
@@ -562,10 +566,10 @@ const CommonChat = (() => {
           classCallMissed + (typeCall === 'video' ? classCallMissedVideo : ''),
           false,
           false,
-          msgCallId
+          msgCallId ? msgCallId : msgId
         )
         addMorelMsgCallLocal({
-          msgId: msgCallId,
+          msgId: msgCallId ? msgCallId : msgId,
           type: 'call'
         })
       }
