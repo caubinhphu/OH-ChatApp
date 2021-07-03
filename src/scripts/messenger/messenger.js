@@ -791,7 +791,7 @@ const Messenger = (async () => {
       outputPreviewMsg($popup, msgObj.message);
     }
 
-    await loadOldMsg($popup)
+    await loadOldMsg($popup, true)
     $popup.find('.wrap-loader-mini').addClass('d-none')
 
     window.emojisForMiniChat($popup)
@@ -1074,12 +1074,18 @@ const Messenger = (async () => {
   }
   window.createCallMsgLocalMini = createCallMsgLocalMini
 
-  async function loadOldMsg($popup) {
+  async function loadOldMsg($popup, init = false) {
     if (+$popup.attr('data-hasMsg') && +$popup.attr('data-allow-load')) {
       $popup.attr('data-allow-load', '0')
       const currentPage = +$popup.attr('data-page')
+      let timeReal
+      if (!$popup.attr('data-timeend')) {
+        timeReal = new Date().toISOString()
+      } else {
+        timeReal = $popup.attr('data-timeend')
+      }
       try {
-        const responsive = await axios.get(`/messenger/chatold/?friendid=${$popup.attr('data-id')}&page=${currentPage}`);
+        const responsive = await axios.get(`/messenger/chatold/?friendid=${$popup.attr('data-id')}&page=${currentPage}&time=${timeReal}`);
         const { messages, hasMsg, friendStatus } = responsive.data;
         // $('.wrap-loader-chat').addClass('d-none')
         $popup.attr('data-page', currentPage + 1)
@@ -1205,6 +1211,10 @@ const Messenger = (async () => {
         chatMain.scrollTop = curScrollPos + (newScroll - oldScroll);
 
         $popup.attr('data-allow-load', '1')
+        if (init && messages.length) {
+          console.log(messages[messages.length - 1]);
+          $popup.attr('data-timeend', messages[messages.length - 1].timeReal)
+        }
       } catch (error) {
         window.outputErrorMessage(error?.response?.data?.message)
       }

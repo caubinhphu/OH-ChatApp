@@ -626,8 +626,23 @@ textarea.form-control.msg-mini {
     margin-bottom: 0;
   }
 }
+.gallery {
+  position: absolute;
+  right: -305px;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  background-color: $white;
+  box-shadow: 5px 4px 10px 0px $black;
+  overflow: auto;
+  transition: all .25s;
+  padding: 15px 20px;
+  &.is-show {
+    right: 0;
+  }
+}
 @media only screen and (max-width: 850px) {
-  .friend-item-info {
+  .friend-item-info { 
     display: none;
   }
 

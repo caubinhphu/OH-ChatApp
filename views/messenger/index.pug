@@ -67,17 +67,22 @@ block contentMain
                 br
                 small.text-status !{statusText}
             #main-right-top-right.d-flex
-              button#call-friend-btn.btn.btn-icon.small-btn.btn-green(type="button", title="Gọi").mr-2
+              button#call-friend-btn.btn.btn-icon.small-btn.btn-green.mr-2(type="button", title="Gọi")
                 span.icomoon.icon-phone
-              button#video-friend-btn.btn.btn-icon.small-btn.btn-purple(type="button", title="Gọi video")
+              button#video-friend-btn.btn.btn-icon.small-btn.btn-purple.mr-2(type="button", title="Gọi video")
                 span.icomoon.icon-camera
+              button#gallery-btn.btn.btn-icon.small-btn.btn-red(type="button", title="Bộ sưu tập")
+                span.icomoon.icon-image
           .wrap-msg-box.ps-rv.flex-fill
+            .gallery
+              .wrap-loader-gallery.d-none
+                img(src="/images/loader.svg", alt="loader")
             .wrap-loader-chat.d-none
               img(src="/images/loader.svg", alt="loader")
             .scroll-bottom.text-center
               .has-new-msg Tin nhắn mới
               span.icomoon.icon-circle-down
-            #main-right-chat-content.p-2.h-100
+            #main-right-chat-content.p-2.h-100(data-timeend=timeReadEnd)
               each msg in messagesActive
                 if (msg.class === 'msg-start')
                   .message.text-center(class=msg.class) !{msg.content}

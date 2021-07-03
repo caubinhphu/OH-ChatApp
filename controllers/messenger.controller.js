@@ -211,6 +211,10 @@ module.exports.getChatFriend = async (req, res, next) => {
       // format list msg friend is chatting
       const messagesActive = formatMessageList(friendChat.messages, member, friendChat)
 
+      let timeReadEnd
+      if (messagesActive.length) {
+        timeReadEnd = messagesActive[messagesActive.length - 1].timeReal
+      }
       res.render('messenger', {
         titleSite: siteMes,
         friends,
@@ -218,7 +222,8 @@ module.exports.getChatFriend = async (req, res, next) => {
         messagesActive,
         token,
         statusText,
-        room: room ? room : {}
+        room: room ? room : {},
+        timeReadEnd
       });
     } else {
       next(new Error(notMem));
@@ -487,7 +492,13 @@ module.exports.getFriendInvitations = async (req, res) => {
 
 // get old msg
 module.exports.getChatOld = async (req, res) => {
-  const { friendid: friendId, page } = req.query
+  const { friendid: friendId, page, time } = req.query
+  let timeEnd
+  if (time) {
+    timeEnd = new Date(time)
+  } else {
+    timeEnd = new Date()
+  }
   try {
     const member = await Member.findById(req.user.id)
       .populate({
@@ -498,6 +509,7 @@ module.exports.getChatOld = async (req, res) => {
         path: 'friends.groupMessageId',
         populate: {
           path: 'messages',
+          match: { time: { $lte: timeEnd } },
           options: {
             // limit: msgPerLoad + 1,
             sort: { _id: -1},
@@ -520,6 +532,7 @@ module.exports.getChatOld = async (req, res) => {
     }
     return res.status(404).json({ message: notMem })
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: hasErrMsg })
   }
 }
