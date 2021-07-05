@@ -626,6 +626,11 @@ textarea.form-control.msg-mini {
     margin-bottom: 0;
   }
 }
+.gallery-wrap {
+  padding: 15px 20px;
+  height: 100%;
+  overflow: auto;
+}
 .gallery {
   position: absolute;
   right: -305px;
@@ -636,10 +641,38 @@ textarea.form-control.msg-mini {
   box-shadow: 5px 4px 10px 0px $black;
   overflow: auto;
   transition: all .25s;
-  padding: 15px 20px;
+  z-index: 3;
   &.is-show {
     right: 0;
   }
+  &-head {
+    user-select: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1;
+  }
+  &-file-item {
+    line-height: 1.5;
+    margin-bottom: 5px;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.wrap-loader-gallery {
+  background-color: $color-ol;
+  z-index: 2;
+}
+.gallery-media-item {
+  width: 90px;
+  height: 90px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+  background-color: $color-ol;
+  border: 1px solid $color-ol;
 }
 @media only screen and (max-width: 850px) {
   .friend-item-info { 

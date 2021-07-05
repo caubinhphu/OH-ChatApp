@@ -16,7 +16,7 @@ const {
   validateSettingRoom
 } = require('../validation/profile.validation');
 const cloudinary = require('../utils/cloudinary');
-const { formatMessageList, formatLatestMsg } = require('../utils/messenger');
+const { formatMessageList, formatLatestMsg, formatGallery } = require('../utils/messenger');
 const key = require('../config/key');
 const Room = require('../models/Room');
 
@@ -528,6 +528,57 @@ module.exports.getChatOld = async (req, res) => {
           hasMsg = true
         }
         return res.status(200).json({ messages, hasMsg, friendStatus: friendRelated._id.status })
+      }
+    }
+    return res.status(404).json({ message: notMem })
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: hasErrMsg })
+  }
+}
+
+// get gallery
+module.exports.getGallery = async (req, res) => {
+  const { friendid: friendId, page, time, type } = req.query
+  let timeEnd
+  if (time) {
+    timeEnd = new Date(time)
+  } else {
+    timeEnd = new Date()
+  }
+  try {
+    const member = await Member.findById(req.user.id)
+      .populate({
+        path: 'friends._id',
+        match: { _id: friendId }
+      })
+      .populate({
+        path: 'friends.groupMessageId',
+        populate: {
+          path: 'messages',
+          match: {
+            // time: { $lte: timeEnd },
+            type: type === 'file' ? 'raw' : { $in: ['image', 'video'] },
+            time: { $lte: timeEnd }
+          },
+          options: {
+            // limit: msgPerLoad + 1,
+            sort: { _id: -1},
+            skip: msgPerLoad * page
+          },
+          perDocumentLimit: msgPerLoad + 1,
+        }
+      })
+    if (member) {
+      const friendRelated =  member.friends.find(fr => fr._id)
+      if (friendRelated) {
+        const gallery = formatGallery(friendRelated.groupMessageId.messages)
+        let hasGallery = false
+        if (gallery.length > msgPerLoad) {
+          gallery.shift()
+          hasGallery = true
+        }
+        return res.status(200).json({ gallery, hasGallery })
       }
     }
     return res.status(404).json({ message: notMem })

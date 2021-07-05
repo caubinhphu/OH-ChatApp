@@ -632,6 +632,29 @@ label.send-file,
     }
   }
 }
+.popup-media {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $color-ol;
+  z-index: 3;
+}
+.popup-media-content {
+  background-color: $black;
+  position: absolute;
+  width: 90%;
+  height: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.popup-media-ctrl {
+  position: absolute;
+  right: 10%;
+  top: 10%;
+}
 
 @media only screen and (max-width: 850px) {
   #user {

@@ -745,6 +745,7 @@ const CommonChat = (() => {
             }
           }
         }
+        $(`.gallery-item[data-id="${messageId}"]`).remove()
       } else if (type === 'edit') {
         $message.addClass('edited')
         if (isValidHttpUrl(content)) {
@@ -893,6 +894,7 @@ const CommonChat = (() => {
                   `)
                 }
               }
+              $(`.gallery-item[data-id="${$itemMessage.attr('data-id')}"]`).remove()
             }
           } else {
             $itemMessage.removeClass('is-load')

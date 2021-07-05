@@ -8,6 +8,8 @@ const Index = (async () => {
   let hasMessenger = true // has old msg
   let currentPageChat = 0 // current page load old chat
   let allowLoadOld = true
+  let currentPageGallery = 0
+  let currentPageMediaGallery = 0
 
   const oldSearchFriRes = {}
 
@@ -54,6 +56,11 @@ const Index = (async () => {
 
     const friendIdChatting = $('#main-right').attr('data-id')
     const $gallery = $('.gallery')
+    const $galleryFile = $('#gallery-file')
+    const $galleryMedia = $('#gallery-media')
+    const $wrapGalleryFile = $('#wrap-gallery-file')
+    const $wrapGalleryMedia = $('#wrap-gallery-media')
+    const $mediaLoader = $('.wrap-loader-gallery')
     let galleryLoaded = false
 
     let timeEndRead = $('#main-right-chat-content').attr('data-timeend')
@@ -786,148 +793,46 @@ const Index = (async () => {
       fileTake = file
     })
 
-    $('#gallery-btn').on('click', function(e) {
+    $('#gallery-btn').on('click', async function(e) {
       e.preventDefault()
       if ($gallery.hasClass('is-show')) {
         $gallery.removeClass('is-show')
       } else {
         $gallery.addClass('is-show')
-        // if (!galleryLoaded) {
-        //   if (this.scrollTop === 0 && hasMessenger === true && allowLoadOld) {
-        //     allowLoadOld = false
-        //     $('.wrap-loader-chat').removeClass('d-none')
-        //     try {
-        //       const responsive = await axios.get(`/messenger/chatold/?friendid=${friendIdChatting}&page=${currentPageChat + 1}`);
-        //       const { messages, hasMsg } = responsive.data;
-        //       $('.wrap-loader-chat').addClass('d-none')
-        //       currentPageChat++
-        //       hasMessenger = hasMsg
-    
-    
-        //       const htmlMsgs = messages.map(msg => {
-        //         if (msg.class === 'msg-start') {
-        //           return  `
-        //             <div class="message text-center ${msg.class}">
-        //               ${msg.content}
-        //             </div>`
-        //         }
-        //         const timeEndCall = msg.timeCall ? `<small class="time-call">${msg.timeCall}</small>` : ''
-        //         if (msg.me) {
-        //           let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
-        //           if (msg.fileName) {
-        //             if (msg.type === 'image') {
-        //               contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
-        //             } else if (msg.type === 'video') {
-        //               contentHtml = `<small class="message-content mx-0 d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
-        //             } else if (msg.type === 'audio') {
-        //               contentHtml = `<small class="message-content mx-0 d-flex"><audio class="pre-video pre-audio" controls src="${msg.content}"><audio/></small>`  
-        //             } else {
-        //               contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
-        //             }
-        //           } else if (msg.isLink) {
-        //             contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
-        //           }
-    
-        //           let moreMsg = ''
-        //           if (msg.type !== 'deleted') {
-        //             let editText = ''
-        //             if (msg.type === 'text' || msg.type === 'edited') {
-        //               editText = `
-        //                 <button class="btn btn-icon btn-purple xs-btn edit-msg mr-1" title="Sửa tin nhắn">
-        //                   <span class="icomoon icon-icon-edit"></span>
-        //                 </button>
-        //               `
-        //             } else if (msg.fileName) {
-        //               editText = `
-        //                 <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msg.content}" data-file="${msg.fileName}">
-        //                   <span class="icomoon icon-download"></span>
-        //                 </button>
-        //               `
-        //             }
-        //             moreMsg = `
-        //               <div class="wrap-msg-mana d-flex">
-        //                 <button class="btn btn-icon btn-red xs-btn confirm-del-msg mr-1" title="Xóa tin nhắn">
-        //                   <span class="icomoon icon-checkmark"></span>
-        //                 </button>
-        //                 <img class="msg-mana-loader" src="/images/loader.svg" alt="loader" />
-        //                 ${ editText }
-        //                 <button class="btn btn-icon btn-red xs-btn del-msg" title="Xóa tin nhắn">
-        //                   <span class="icomoon icon-close"></span>
-        //                 </button>
-        //               </div>
-        //             `
-        //           }
-    
-        //           return `
-        //             <div class="message message-me text-right ml-auto ${msg.class}" data-id="${msg.id}">
-        //               <small class="message-time">${msg.time}</small>
-        //               <div>
-        //                 <div class="msg-me ps-rv">
-        //                   ${ moreMsg }
-        //                   ${ contentHtml }
-        //                   ${ timeEndCall }
-        //                 </div>
-        //               </div>
-        //             </div>`
-        //         }
-        //         let contentHtml = `<small class="message-content">${msg.content}</small>`
-        //         if (msg.fileName) {
-        //           if (msg.type === 'image') {
-        //             contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
-        //           } else if (msg.type === 'video') {
-        //             contentHtml = `<small class="message-content d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
-        //           } else if (msg.type === 'audio') {
-        //             contentHtml = `<small class="message-content d-flex"><audio class="pre-video pre-audio" controls src="${msg.content}"><audio/></small>`  
-        //           } else {
-        //             contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.fileName}</a></small>`
-        //           }
-        //         } else if (msg.isLink) {
-        //           contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank">${msg.content}</a></small>`
-        //         }
-        //         let moreMsg = ''
-        //         if (msg.fileName) {
-        //           moreMsg = `
-        //             <div class="wrap-msg-mana d-flex">
-        //               <button class="btn btn-icon btn-green xs-btn download-file mr-1" title="Tải xuống" data-url="${msg.content}" data-file="${msg.fileName}">
-        //                 <span class="icomoon icon-download"></span>
-        //               </button>
-        //             </div>
-        //           `
-        //         }
-        //         return `
-        //           <div class="message ${msg.class}" data-id="${msg.id}">
-        //             <small class="message-time">${msg.time}</small>
-        //             <div>
-        //               <div class="msg">
-        //                 ${ moreMsg }
-        //                 <img class="message-avatar" src="${msg.avatar}" alt="${msg.name}">
-        //                 ${ contentHtml }
-        //                 ${ timeEndCall }
-        //               </div>
-        //             </div>
-        //           </div>`
-        //       }).join('')
-    
-        //       // prepend msg list and hold position scroll top of chat box
-        //       const curScrollPos = this.scrollTop;
-        //       const oldScroll = this.scrollHeight - this.clientHeight;
-        //       $(this).prepend(htmlMsgs)
-        //       window.addSendedClass()
-        //       const newScroll = this.scrollHeight - this.clientHeight;
-        //       this.scrollTop = curScrollPos + (newScroll - oldScroll);
-    
-        //       allowLoadOld = true
-        //     } catch (error) {
-        //       window.outputErrorMessage(error?.response?.data?.message)
-        //     }
-        //   }
-        // }
+        if (!galleryLoaded) {
+          // load file
+          $mediaLoader.removeClass('d-none')
+          const { htmlGallery, hasGallery, gallery } = await loadGallery(currentPageGallery, 'file')
+          currentPageGallery++
+          htmlGallery.forEach(item => {
+            $galleryFile.append(item)
+          })
+          $galleryFile.attr('data-hasfile', hasGallery)
+          if (gallery.length) {
+            $galleryFile.attr('data-timeend', gallery[0].timeReal)
+          }
+          if (hasGallery) {
+            $wrapGalleryFile.append(`<button class="btn btn-link load-more-file">Xem thêm</button>`)
+          }
+
+          // load media
+          const { htmlGallery: htmlGalleryMedia, hasGallery: hasGalleryMedia, gallery: galleryMedia } = await loadGallery(currentPageMediaGallery, 'media')
+          currentPageMediaGallery++
+          galleryLoaded = true
+          htmlGalleryMedia.forEach(item => {
+            $galleryMedia.append(item)
+          })
+          $galleryMedia.attr('data-hasfile', hasGalleryMedia)
+          if (galleryMedia.length) {
+            $galleryMedia.attr('data-timeend', galleryMedia[0].timeReal)
+          }
+          if (hasGalleryMedia) {
+            $wrapGalleryMedia.append(`<button class="btn btn-link load-more-media">Xem thêm</button>`)
+          }
+          $mediaLoader.addClass('d-none')
+        }
       }
     })
-
-    function loadGallery (page, ) {
-
-    }
 
     $(document).on('click', (e) => {
       const $target = $(e.target)
@@ -935,6 +840,86 @@ const Index = (async () => {
         $gallery.removeClass('is-show')
       }
     })
+
+    $(document).on('click', '.load-more-file', async function(e) {
+      e.preventDefault()
+      if ($galleryFile.attr('data-hasfile') === 'true') {
+        $mediaLoader.removeClass('d-none')
+        const { htmlGallery, hasGallery } = await loadGallery(currentPageGallery, 'file', $galleryFile.attr('data-timeend'))
+        currentPageGallery++
+        htmlGallery.forEach(item => {
+          $galleryFile.append(item)
+        })
+        $galleryFile.attr('data-hasfile', hasGallery)
+        if (!hasGallery) {
+          $(this).remove()
+        }
+        $mediaLoader.addClass('d-none')
+      }
+    })
+
+    $(document).on('click', '.load-more-media', async function(e) {
+      e.preventDefault()
+      if ($galleryMedia.attr('data-hasfile') === 'true') {
+        $mediaLoader.removeClass('d-none')
+        const { htmlGallery, hasGallery } = await loadGallery(currentPageMediaGallery, 'media', $galleryMedia.attr('data-timeend'))
+        currentPageMediaGallery++
+        htmlGallery.forEach(item => {
+          $galleryMedia.append(item)
+        })
+        $galleryMedia.attr('data-hasfile', hasGallery)
+        if (!hasGallery) {
+          $(this).remove()
+        }
+        $mediaLoader.addClass('d-none')
+      }
+    })
+
+    async function loadGallery (page, type, timeEnd) {
+      let timeEndRead = timeEnd
+      if (!timeEnd) {
+        timeEndRead = new Date().toISOString()
+      }
+      try {
+        const responsive = await axios.get(`/messenger/gallery/?friendid=${friendIdChatting}&type=${type}&page=${page}&time=${timeEndRead}`);
+        const { gallery, hasGallery } = responsive.data;
+        // $('.wrap-loader-chat').addClass('d-none')
+
+        const htmlGallery = gallery.map(item => formatHTMLGallery(item, type))
+
+        return {
+          htmlGallery,
+          hasGallery,
+          gallery
+        }
+      } catch (error) {
+        window.outputErrorMessage(error?.response?.data?.message)
+      }
+    }
+
+    function formatHTMLGallery(item, type) {
+      if (type === 'file') {
+        return `
+          <div class="gallery-item gallery-file-item download-file" data-id="${item.id}" data-url="${item.url}" data-file="${item.name}">${item.name}</div>
+        `
+      }
+
+      if (item.type === 'image') {
+        return `
+          <div class="gallery-item gallery-media-item open-popup-image type-bg bg"
+            data-id="${item.id}" data-url="${item.url}" data-file="${item.name}"
+            style="background-image: url('${item.url}')"
+          >
+          </div>
+        `
+      }
+      return `
+        <div class="gallery-item gallery-media-item open-popup-video" data-id="${item.id}">
+          <video class="w-100 h-100" src="${item.url}">
+          </video>
+        </div>
+      `
+    }
 
     if (isChatMicVoice) {
       $('.send-rec').on('mousedown', function() {
@@ -997,6 +982,23 @@ const Index = (async () => {
         if (friendIdChatting === receiverId) {
           // output message
           window.outputMessage(msgObj, true);
+
+          if (galleryLoaded && msgObj.type === 'file' && msgObj.resourceType !== 'audio') {
+            const galleryItem = formatHTMLGallery(
+              {
+                id: msgObj.id,
+                url: msgObj.message,
+                name: msgObj.nameFile,
+                type: msgObj.resourceType
+              },
+              msgObj.resourceType === 'raw' ? 'file' : 'media'
+            )
+            if (msgObj.resourceType === 'raw') {
+              $galleryFile.prepend(galleryItem)
+            } else {
+              $galleryMedia.prepend(galleryItem)
+            }
+          }
           
           window.addMorelMsgLocal({
             tmpId: msgObj.id,
@@ -1024,18 +1026,37 @@ const Index = (async () => {
     window.socket.on('msg-messenger', ({senderId, msg: msgObj}) => {
       if (!document.hasFocus()) {
         soundMessage.play()
-        window.timeIdTitle = setInterval(() => {
-          if (document.title === titleSite) {
-            document.title = `${msgObj.username} đã gửi 1 tin nhắn cho bạn`
-          } else {
-            document.title = titleSite
-          }
-        }, 1500);
+        if (!window.timeIdTitle) {
+          window.timeIdTitle = setInterval(() => {
+            if (document.title === titleSite) {
+              document.title = `${msgObj.username} đã gửi 1 tin nhắn cho bạn`
+            } else {
+              document.title = titleSite
+            }
+          }, 1500);
+        }
       }
       const $itemFri = $(`.friend-item[data-id="${senderId}"]`)
       if (friendIdChatting === senderId) {
         // output message
         window.outputMessage(msgObj);
+
+        if (galleryLoaded && msgObj.type === 'file' && msgObj.resourceType !== 'audio') {
+          const galleryItem = formatHTMLGallery(
+            {
+              id: msgObj.id,
+              url: msgObj.message,
+              name: msgObj.nameFile,
+              type: msgObj.resourceType
+            },
+            msgObj.resourceType === 'raw' ? 'file' : 'media'
+          )
+          if (msgObj.resourceType === 'raw') {
+            $galleryFile.prepend(galleryItem)
+          } else {
+            $galleryMedia.prepend(galleryItem)
+          }
+        }
 
         if ($(classScBottom).hasClass('is-show')) {
           $(classScBottom).addClass('is-has-new-msg')          
@@ -1173,7 +1194,22 @@ const Index = (async () => {
                   fileName: file.name,
                   url: file.url
                 })
-                window.numMsgRealTime++
+                if (galleryLoaded && file.resourceType !== 'audio') {
+                  const galleryItem = formatHTMLGallery(
+                    {
+                      id: res.msgId,
+                      url: file.url,
+                      name: file.name,
+                      type: file.resourceType
+                    },
+                    file.resourceType === 'raw' ? 'file' : 'media'
+                  )
+                  if (file.resourceType === 'raw') {
+                    $galleryFile.prepend(galleryItem)
+                  } else {
+                    $galleryMedia.prepend(galleryItem)
+                  }
+                }
               }
             });
           } else {
@@ -1247,7 +1283,23 @@ const Index = (async () => {
                   fileName: file.name,
                   url: file.url
                 })
-                window.numMsgRealTime++
+
+                if (galleryLoaded && !audio) {
+                  const galleryItem = formatHTMLGallery(
+                    {
+                      id: res.msgId,
+                      url: file.url,
+                      name: file.name,
+                      type: file.resourceType
+                    },
+                    'media'
+                  )
+                  if (file.resourceType === 'raw') {
+                    $galleryFile.prepend(galleryItem)
+                  } else {
+                    $galleryMedia.prepend(galleryItem)
+                  }
+                }
               }
             });
           } else {

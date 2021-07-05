@@ -69,6 +69,21 @@ const Common = (() => {
     downloadResource(this.dataset.url, this.dataset.file)
   })
 
+  $(document).on('click', '.open-popup-video', function(e) {
+    e.preventDefault()
+    const $popup = $('.popup-media')
+    $popup.removeClass('d-none')
+    const url = $(this).find('video').attr('src')
+    $popup.find('.popup-media-content').html(`
+      <video class="w-100 h-100" src="${url}" controls autoplay></video>
+    `)
+    $popup.find('.download-file').attr('data-url', url)
+  })
+
+  $('.close-popup-media').on('click', () => {
+    $('.popup-media').addClass('d-none')
+  })
+
   browserDetection()
   systemDetection()
 })()

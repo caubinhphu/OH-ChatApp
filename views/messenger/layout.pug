@@ -168,6 +168,13 @@ block main
                     span(class='cd-num' + n)= n--
             video(autoplay=true, muted=true, controls=false)
   #is-taking.d-none
+  .popup-media.d-none
+    .d-flex.popup-media-ctrl
+      button.btn.btn-icon.btn-green.mr-2.download-file(title="Tải xuống")
+        span.icomoon.icon-download
+      button.btn.btn-icon.btn-red.close-popup-media(title="Đóng")
+        span.icomoon.icon-close
+    .popup-media-content
 
 append scripts
   script(src="/socket.io/socket.io.js")

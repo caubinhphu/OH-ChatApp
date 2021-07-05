@@ -75,8 +75,24 @@ block contentMain
                 span.icomoon.icon-image
           .wrap-msg-box.ps-rv.flex-fill
             .gallery
-              .wrap-loader-gallery.d-none
-                img(src="/images/loader.svg", alt="loader")
+              .wrap-loader-gallery.d-none.ps-as
+                .ps-as.d-flex.justify-content-center.align-items-center
+                  img(src="/images/loader.svg", alt="loader")
+              .gallery-wrap
+                .mb-3
+                  h4.gallery-head.d-flex.align-items-center(data-toggle='collapse', href='#wrap-gallery-file', role='button', aria-expanded='false', aria-controls='wrap-gallery-file')
+                    span.icomoon.icon-file-text.mr-1
+                    span Tệp đính kèm
+                    span.icomoon.icon-chevron-down.ml-1
+                  #wrap-gallery-file.collapse.show
+                    #gallery-file
+                h4.gallery-head.d-flex.align-items-center(data-toggle='collapse', href='#wrap-gallery-media', role='button', aria-expanded='false', aria-controls='wrap-gallery-media')
+                  span.icomoon.icon-image.mr-1
+                  span Đa phương tiện
+                  span.icomoon.icon-chevron-down.ml-1
+                #wrap-gallery-media.collapse
+                  #gallery-media.d-flex.justify-content-between.flex-wrap
+
             .wrap-loader-chat.d-none
               img(src="/images/loader.svg", alt="loader")
             .scroll-bottom.text-center

@@ -16,6 +16,8 @@ router.get('/search-friend', controller.getSearchFriend)
 
 router.get('/chatold', controller.getChatOld)
 
+router.get('/gallery', controller.getGallery)
+
 router.get('/notifyold', controller.getNotifiesOld)
 
 router.route('/profile')

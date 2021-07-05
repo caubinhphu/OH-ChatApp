@@ -437,13 +437,15 @@ const Messenger = (async () => {
   window.socket.on('msg-messenger', async ({senderId, msg: msgObj, token}) => {
     if (!document.hasFocus()) {
       soundMessage.play()
-      window.timeIdTitle = setInterval(() => {
-        if (document.title === titleSite) {
-          document.title = `${msgObj.username} đã gửi 1 tin nhắn cho bạn`
-        } else {
-          document.title = titleSite
-        }
-      }, 1500);
+      if (!window.timeIdTitle) {
+        window.timeIdTitle = setInterval(() => {
+          if (document.title === titleSite) {
+            document.title = `${msgObj.username} đã gửi 1 tin nhắn cho bạn`
+          } else {
+            document.title = titleSite
+          }
+        }, 1500);
+      }
     }
     const activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length
     if ($(`.popup-chat-mini[data-id=${senderId}]`).length) {

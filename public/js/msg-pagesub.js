@@ -39508,6 +39508,17 @@ module.exports = function (regExp, replace) {
   $(document).on('click', '.download-file', function () {
     downloadResource(this.dataset.url, this.dataset.file);
   });
+  $(document).on('click', '.open-popup-video', function (e) {
+    e.preventDefault();
+    var $popup = $('.popup-media');
+    $popup.removeClass('d-none');
+    var url = $(this).find('video').attr('src');
+    $popup.find('.popup-media-content').html("\n      <video class=\"w-100 h-100\" src=\"".concat(url, "\" controls autoplay></video>\n    "));
+    $popup.find('.download-file').attr('data-url', url);
+  });
+  $('.close-popup-media').on('click', function () {
+    $('.popup-media').addClass('d-none');
+  });
   browserDetection();
   systemDetection();
 }();
@@ -40592,6 +40603,8 @@ var CommonChat = function () {
             }
           }
         }
+
+        $(".gallery-item[data-id=\"".concat(messageId, "\"]")).remove();
       } else if (type === 'edit') {
         $message.addClass('edited');
 
@@ -40765,6 +40778,8 @@ var CommonChat = function () {
                             $friItem.find('.last-msg').html("\n                    <div class=\"last-msg text-dark\">\n                      <small><em>Tin nh\u1EAFn \u0111\xE3 b\u1ECB x\xF3a</em></small><small>v\xE0i gi\xE2y</small>\n                    </div>\n                  ");
                           }
                         }
+
+                        $(".gallery-item[data-id=\"".concat($itemMessage.attr('data-id'), "\"]")).remove();
                       }
                     } else {
                       $itemMessage.removeClass('is-load');
@@ -47084,13 +47099,16 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                       if (!document.hasFocus()) {
                         soundMessage.play();
-                        window.timeIdTitle = setInterval(function () {
-                          if (document.title === titleSite) {
-                            document.title = "".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 tin nh\u1EAFn cho b\u1EA1n");
-                          } else {
-                            document.title = titleSite;
-                          }
-                        }, 1500);
+
+                        if (!window.timeIdTitle) {
+                          window.timeIdTitle = setInterval(function () {
+                            if (document.title === titleSite) {
+                              document.title = "".concat(msgObj.username, " \u0111\xE3 g\u1EEDi 1 tin nh\u1EAFn cho b\u1EA1n");
+                            } else {
+                              document.title = titleSite;
+                            }
+                          }, 1500);
+                        }
                       }
 
                       activeLength = $('.wrap-chat-mini .popup-chat-mini.is-active').length;

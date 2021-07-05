@@ -181,7 +181,20 @@ function isValidHttpUrl(string) {
   return url.protocol === 'http:' || url.protocol === 'https:';
 }
 
+function formatGallery(gallery) {
+  return gallery.map(item => {
+    return {
+      id: item.id,
+      url: item.content,
+      name: item.fileName,
+      timeReal: item.time,
+      type: item.type
+    }
+  })
+}
+
 module.exports.formatMessageList = formatMessageList
 module.exports.formatMsg = formatMsg
 module.exports.formatLatestMsg = formatLatestMsg
 module.exports.formatDiffTime = formatDiffTime
+module.exports.formatGallery = formatGallery
