@@ -72,12 +72,32 @@ const Common = (() => {
   $(document).on('click', '.open-popup-video', function(e) {
     e.preventDefault()
     const $popup = $('.popup-media')
-    $popup.removeClass('d-none')
     const url = $(this).find('video').attr('src')
+    const name = $(this).find('video').attr('data-file')
     $popup.find('.popup-media-content').html(`
       <video class="w-100 h-100" src="${url}" controls autoplay></video>
     `)
-    $popup.find('.download-file').attr('data-url', url)
+    $popup.find('.download-file').attr('data-url', url).attr('data-file', name)
+    $popup.removeClass('d-none')
+  })
+
+  $(document).on('click', '.open-popup-image', function(e) {
+    e.preventDefault()
+    const $popup = $('.popup-media')
+    let url
+    let name
+    if ($(this).hasClass('type-bg')) {
+      url = $(this).attr('data-url')
+      name = $(this).attr('data-file')
+    } else {
+      url = $(this).find('img').attr('src')
+      name = $(this).find('img').attr('alt')
+    }
+    $popup.find('.popup-media-content').html(`
+      <img src="${url}" alt="${name}" />
+    `)
+    $popup.find('.download-file').attr('data-url', url).attr('data-file', name)
+    $popup.removeClass('d-none')
   })
 
   $('.close-popup-media').on('click', () => {

@@ -8143,10 +8143,20 @@ label.send-file:hover .icomoon,
   transform: translate(-50%, -50%);
 }
 
+.popup-media-content img {
+  max-width: 100%;
+  height: auto;
+}
+
 .popup-media-ctrl {
   position: absolute;
   right: 10%;
-  top: 10%;
+  top: 9%;
+}
+
+.open-popup-video,
+.open-popup-image {
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 850px) {
@@ -8921,6 +8931,7 @@ textarea.form-control.msg-mini {
 .gallery-file-item {
   line-height: 1.5;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 
 .gallery-file-item:hover {

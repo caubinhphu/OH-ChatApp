@@ -1121,9 +1121,17 @@ const CommonChat = (() => {
     if (isValidHttpUrl(msgObj.message)) {
       if (msgObj.type === 'file') {
         if (msgObj.resourceType === 'image') {
-          content = `<a href="${msgObj.message}" target="_blank" title="${msgObj.nameFile}"><img class="pre-img" src="${msgObj.message}" alt="${msgObj.nameFile}" /></a>`  
+          content = `
+            <div class="open-popup-image d-flex">
+              <img class="pre-img" src="${msgObj.message}" alt="${msgObj.nameFile}" />
+            </div>
+          `  
         } else if (msgObj.resourceType === 'video') {
-          content = `<video class="pre-video" controls src="${msgObj.message}"></video>`  
+          content = `
+            <div class="open-popup-video d-flex">
+              <video class="pre-video" src="${msgObj.message}" autoplay loop data-file="${msgObj.nameFile}"></video>
+            </div>
+          `  
           classAdd = 'd-flex'
         } else if (msgObj.resourceType === 'audio') {
           content = `<audio class="pre-video pre-audio" controls src="${msgObj.message}"><audio/>`  

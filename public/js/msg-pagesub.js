@@ -39511,10 +39511,29 @@ module.exports = function (regExp, replace) {
   $(document).on('click', '.open-popup-video', function (e) {
     e.preventDefault();
     var $popup = $('.popup-media');
-    $popup.removeClass('d-none');
     var url = $(this).find('video').attr('src');
+    var name = $(this).find('video').attr('data-file');
     $popup.find('.popup-media-content').html("\n      <video class=\"w-100 h-100\" src=\"".concat(url, "\" controls autoplay></video>\n    "));
-    $popup.find('.download-file').attr('data-url', url);
+    $popup.find('.download-file').attr('data-url', url).attr('data-file', name);
+    $popup.removeClass('d-none');
+  });
+  $(document).on('click', '.open-popup-image', function (e) {
+    e.preventDefault();
+    var $popup = $('.popup-media');
+    var url;
+    var name;
+
+    if ($(this).hasClass('type-bg')) {
+      url = $(this).attr('data-url');
+      name = $(this).attr('data-file');
+    } else {
+      url = $(this).find('img').attr('src');
+      name = $(this).find('img').attr('alt');
+    }
+
+    $popup.find('.popup-media-content').html("\n      <img src=\"".concat(url, "\" alt=\"").concat(name, "\" />\n    "));
+    $popup.find('.download-file').attr('data-url', url).attr('data-file', name);
+    $popup.removeClass('d-none');
   });
   $('.close-popup-media').on('click', function () {
     $('.popup-media').addClass('d-none');
@@ -41010,9 +41029,9 @@ var CommonChat = function () {
     if (isValidHttpUrl(msgObj.message)) {
       if (msgObj.type === 'file') {
         if (msgObj.resourceType === 'image') {
-          content = "<a href=\"".concat(msgObj.message, "\" target=\"_blank\" title=\"").concat(msgObj.nameFile, "\"><img class=\"pre-img\" src=\"").concat(msgObj.message, "\" alt=\"").concat(msgObj.nameFile, "\" /></a>");
+          content = "\n            <div class=\"open-popup-image d-flex\">\n              <img class=\"pre-img\" src=\"".concat(msgObj.message, "\" alt=\"").concat(msgObj.nameFile, "\" />\n            </div>\n          ");
         } else if (msgObj.resourceType === 'video') {
-          content = "<video class=\"pre-video\" controls src=\"".concat(msgObj.message, "\"></video>");
+          content = "\n            <div class=\"open-popup-video d-flex\">\n              <video class=\"pre-video\" src=\"".concat(msgObj.message, "\" autoplay loop data-file=\"").concat(msgObj.nameFile, "\"></video>\n            </div>\n          ");
           classAdd = 'd-flex';
         } else if (msgObj.resourceType === 'audio') {
           content = "<audio class=\"pre-video pre-audio\" controls src=\"".concat(msgObj.message, "\"><audio/>");
@@ -45858,12 +45877,12 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                           $(ele).parents('.wrap-msg-file').addClass('load-done');
 
                           if (fileFind.resourceType === 'image') {
-                            $(ele).parents('.message-content').html("<a href=\"".concat(fileFind.url, "\" target=\"_blank\" title=\"").concat(fileFind.name, "\"><img class=\"pre-img\" src=\"").concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" /></a>"));
+                            $(ele).parents('.message-content').html("<div class=\"open-popup-image d-flex\"><img class=\"pre-img\" src=\"".concat(fileFind.url, "\" alt=\"").concat(fileFind.name, "\" /></div>"));
                           } else if (fileFind.resourceType === 'video') {
                             if (audio) {
                               $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(fileFind.url, "\"><audio/>"));
                             } else {
-                              $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(fileFind.url, "\"></video>"));
+                              $(ele).parents('.message-content').addClass('d-flex').html("\n                <div class=\"open-popup-video d-flex\">\n                  <video class=\"pre-video\" src=\"".concat(fileFind.url, "\" autoplay loop data-file=\"").concat(fileFind.name, "\"></video>\n                </div>\n              "));
                             }
                           } else {
                             ele.href = fileFind.url;
@@ -45962,9 +45981,9 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
                           $(ele).parents('.wrap-msg-file').addClass('load-done');
 
                           if (file.resourceType === 'image') {
-                            $(ele).parents('.message-content').html("<a href=\"".concat(file.url, "\" target=\"_blank\" title=\"").concat(file.name, "\"><img class=\"pre-img\" src=\"").concat(file.url, "\" alt=\"").concat(file.name, "\" /></a>"));
+                            $(ele).parents('.message-content').html("<div class=\"open-popup-image d-flex\"><img class=\"pre-img\" src=\"".concat(file.url, "\" alt=\"").concat(file.name, "\" /></div>"));
                           } else if (file.resourceType === 'video') {
-                            $(ele).parents('.message-content').addClass('d-flex').html("<video class=\"pre-video\" controls src=\"".concat(file.url, "\"></video>"));
+                            $(ele).parents('.message-content').addClass('d-flex').html("\n              <div class=\"open-popup-video d-flex\">\n                <video class=\"pre-video\" src=\"".concat(file.url, "\" autoplay loop data-file=\"").concat(file.name, "\"></video>\n              </div>\n            "));
                           } else if (file.resourceType === 'audio') {
                             $(ele).parents('.message-content').addClass('d-flex').html("<audio class=\"pre-video pre-audio\" controls src=\"".concat(file.url, "\"></audio>"));
                           } else {
@@ -46109,9 +46128,9 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                           if (msg.fileName) {
                             if (msg.type === 'image') {
-                              _contentHtml = "<small class=\"message-content mx-0\"><a href=\"".concat(msg.content, "\" target=\"_blank\" title=\"").concat(msg.fileName, "\"><img class=\"pre-img\" src=\"").concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></a></small>");
+                              _contentHtml = "<small class=\"message-content mx-0\"><div class=\"open-popup-image d-flex\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></div></small>");
                             } else if (msg.type === 'video') {
-                              _contentHtml = "<small class=\"message-content mx-0 d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video/></small>");
+                              _contentHtml = "\n                  <small class=\"message-content mx-0 d-flex\">\n                    <div class=\"open-popup-video d-flex\">\n                      <video class=\"pre-video\" src=\"".concat(msg.content, "\" autoplay loop data-file=\"").concat(msg.fileName, "\"></video>\n                    </div>\n                  </small>\n                ");
                             } else if (msg.type === 'audio') {
                               _contentHtml = "<small class=\"message-content mx-0 d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio/></small>");
                             } else {
@@ -46142,9 +46161,9 @@ var Messenger = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function
 
                         if (msg.fileName) {
                           if (msg.type === 'image') {
-                            contentHtml = "<small class=\"message-content\"><a href=\"".concat(msg.content, "\" target=\"_blank\" title=\"").concat(msg.fileName, "\"><img class=\"pre-img\" src=\"").concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></a></small>");
+                            contentHtml = "<small class=\"message-content\"><div class=\"open-popup-image d-flex\"><img class=\"pre-img\" src=\"".concat(msg.content, "\" alt=\"").concat(msg.fileName, "\" /></div></small>");
                           } else if (msg.type === 'video') {
-                            contentHtml = "<small class=\"message-content d-flex\"><video class=\"pre-video\" controls src=\"".concat(msg.content, "\"></video></small>");
+                            contentHtml = "\n                <small class=\"message-content d-flex\">\n                  <div class=\"open-popup-video d-flex\">\n                    <video class=\"pre-video\" src=\"".concat(msg.content, "\" autoplay loop data-file=\"").concat(msg.fileName, "\"></video>\n                  </div>\n                </small>");
                           } else if (msg.type === 'audio') {
                             contentHtml = "<small class=\"message-content d-flex\"><audio class=\"pre-video pre-audio\" controls src=\"".concat(msg.content, "\"></audio></small>");
                           } else {

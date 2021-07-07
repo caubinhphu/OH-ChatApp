@@ -1113,9 +1113,15 @@ const Messenger = (async () => {
             let contentHtml = `<small class="message-content mx-0">${msg.content}</small>`
             if (msg.fileName) {
               if (msg.type === 'image') {
-                contentHtml = `<small class="message-content mx-0"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
+                contentHtml = `<small class="message-content mx-0"><div class="open-popup-image d-flex"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></div></small>`  
               } else if (msg.type === 'video') {
-                contentHtml = `<small class="message-content mx-0 d-flex"><video class="pre-video" controls src="${msg.content}"></video/></small>`  
+                contentHtml = `
+                  <small class="message-content mx-0 d-flex">
+                    <div class="open-popup-video d-flex">
+                      <video class="pre-video" src="${msg.content}" autoplay loop data-file="${msg.fileName}"></video>
+                    </div>
+                  </small>
+                `  
               } else if (msg.type === 'audio') {
                 contentHtml = `<small class="message-content mx-0 d-flex"><audio class="pre-video pre-audio" controls src="${msg.content}"></audio/></small>`  
               } else {
@@ -1168,9 +1174,14 @@ const Messenger = (async () => {
           let contentHtml = `<small class="message-content">${msg.content}</small>`
           if (msg.fileName) {
             if (msg.type === 'image') {
-              contentHtml = `<small class="message-content"><a href="${msg.content}" target="_blank" title="${msg.fileName}"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></a></small>`  
+              contentHtml = `<small class="message-content"><div class="open-popup-image d-flex"><img class="pre-img" src="${msg.content}" alt="${msg.fileName}" /></div></small>`  
             } else if (msg.type === 'video') {
-              contentHtml = `<small class="message-content d-flex"><video class="pre-video" controls src="${msg.content}"></video></small>`  
+              contentHtml = `
+                <small class="message-content d-flex">
+                  <div class="open-popup-video d-flex">
+                    <video class="pre-video" src="${msg.content}" autoplay loop data-file="${msg.fileName}"></video>
+                  </div>
+                </small>`  
             } else if (msg.type === 'audio') {
               contentHtml = `<small class="message-content d-flex"><audio class="pre-video pre-audio" controls src="${msg.content}"></audio></small>`  
             } else {
@@ -1269,9 +1280,13 @@ const Messenger = (async () => {
         if (file) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
           if (file.resourceType === 'image') {
-            $(ele).parents('.message-content').html(`<a href="${file.url}" target="_blank" title="${file.name}"><img class="pre-img" src="${file.url}" alt="${file.name}" /></a>`)
+            $(ele).parents('.message-content').html(`<div class="open-popup-image d-flex"><img class="pre-img" src="${file.url}" alt="${file.name}" /></div>`)
           } else if (file.resourceType === 'video') {
-            $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${file.url}"></video>`)
+            $(ele).parents('.message-content').addClass('d-flex').html(`
+              <div class="open-popup-video d-flex">
+                <video class="pre-video" src="${file.url}" autoplay loop data-file="${file.name}"></video>
+              </div>
+            `)
           } else if (file.resourceType === 'audio') {
             $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${file.url}"></audio>`)
           } else {
@@ -1341,12 +1356,16 @@ const Messenger = (async () => {
         if (fileFind) {
           $(ele).parents('.wrap-msg-file').addClass('load-done')
           if (fileFind.resourceType === 'image') {
-            $(ele).parents('.message-content').html(`<a href="${fileFind.url}" target="_blank" title="${fileFind.name}"><img class="pre-img" src="${fileFind.url}" alt="${fileFind.name}" /></a>`)
+            $(ele).parents('.message-content').html(`<div class="open-popup-image d-flex"><img class="pre-img" src="${fileFind.url}" alt="${fileFind.name}" /></div>`)
           } else if (fileFind.resourceType === 'video') {
             if (audio) {
               $(ele).parents('.message-content').addClass('d-flex').html(`<audio class="pre-video pre-audio" controls src="${fileFind.url}"><audio/>`)
             } else {
-              $(ele).parents('.message-content').addClass('d-flex').html(`<video class="pre-video" controls src="${fileFind.url}"></video>`) 
+              $(ele).parents('.message-content').addClass('d-flex').html(`
+                <div class="open-popup-video d-flex">
+                  <video class="pre-video" src="${fileFind.url}" autoplay loop data-file="${fileFind.name}"></video>
+                </div>
+              `) 
             }
           } else {
             ele.href = fileFind.url

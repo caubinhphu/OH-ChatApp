@@ -124,10 +124,11 @@ block contentMain
                           if (msg.fileName)
                             small.message-content.mx-0.d-flex
                               if (msg.type === 'image')
-                                a(href=msg.content, target="_blank", title=msg.fileName)
+                                .open-popup-image.d-flex
                                   img.pre-img(src=msg.content, alt=msg.fileName)
                               else if (msg.type === 'video')
-                                video.pre-video(src=msg.content, controls)
+                                .open-popup-video.d-flex
+                                  video.pre-video(src=msg.content, autoplay, loop, data-file=msg.fileName)
                               else if (msg.type === 'audio')
                                 audio.pre-video.pre-audio(src=msg.content, controls)
                               else
@@ -152,10 +153,11 @@ block contentMain
                           if (msg.fileName)
                             small.message-content.d-flex
                               if (msg.type === 'image')
-                                a(href=msg.content, target="_blank", title=msg.fileName)
+                                .open-popup-image.d-flex
                                   img.pre-img(src=msg.content, alt=msg.fileName)
                               else if (msg.type === 'video')
-                                video.pre-video(src=msg.content, controls)
+                                .open-popup-video.d-flex
+                                  video.pre-video(src=msg.content, controls, autoplay, loop, data-file=msg.fileName)
                               else if (msg.type === 'audio')
                                 audio.pre-video.pre-audio(src=msg.content, controls)
                               else

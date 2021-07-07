@@ -645,17 +645,25 @@ label.send-file,
   background-color: $black;
   position: absolute;
   width: 90%;
-  height: 70%;
+  height: 80%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+  }
 }
 .popup-media-ctrl {
   position: absolute;
   right: 10%;
-  top: 10%;
+  top: 3%;
 }
-
+.open-popup-video,
+.open-popup-image {
+  cursor: pointer;
+}
 @media only screen and (max-width: 850px) {
   #user {
     display: none;
