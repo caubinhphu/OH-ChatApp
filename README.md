@@ -126,3 +126,10 @@
     - Xóa, sửa tin nhắn
     - Tạo phòng họp tĩnh
 </details>
+<details>
+  <summary>Version 3.1.3 (07/07/2021)</summary>
+  Chức năng thêm:
+  
+  - Messenger
+    - Hiển thị danh sách file và đa phương tiện đã gửi
+</details>
