@@ -27,6 +27,7 @@ const Text = (async () => {
       toolbar: toolbarOptions
     }
   });
+  let isAuthorText = false
 
   quill.enable(false)
 
@@ -50,6 +51,7 @@ const Text = (async () => {
 
     const { isAuthor } = response.data
     if (isAuthor) {
+      isAuthorText = true
       quill.enable()
 
       $(window).bind('keydown', function(event) {
@@ -88,11 +90,10 @@ const Text = (async () => {
     $('#text-name').val(name)
   })
 
-  $('.submit-text-name').on('click', async (e) => {
+  $('#text-name').on('change', async function (e) {
     $('.wrap-text-name').addClass('loader-put')
-    e.preventDefault()
-    const value = $('#text-name').val()
-    if (value) {
+    const value = $(this).val()
+    if (value && isAuthorText) {
       try {
         const response = await axios.put('/utility/text',
           { name: value, id: textId },

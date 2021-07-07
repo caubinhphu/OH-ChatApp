@@ -112,6 +112,17 @@ body {
   }
 }
 .text-name-loader {
-  max-width: 45px;
   display: none;
+}
+#text-name {
+  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid $black;
+  border-radius: 0;
+  &:disabled {
+    background-color: #e4e3e38f;
+  }
+}
+img, svg {
+  vertical-align: baseline;
 }
