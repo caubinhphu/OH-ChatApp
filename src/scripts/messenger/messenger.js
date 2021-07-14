@@ -1118,7 +1118,7 @@ const Messenger = (async () => {
                 contentHtml = `
                   <small class="message-content mx-0 d-flex">
                     <div class="open-popup-video d-flex">
-                      <video class="pre-video" src="${msg.content}" autoplay loop data-file="${msg.fileName}"></video>
+                      <video class="pre-video" src="${msg.content}" autoplay loop muted data-file="${msg.fileName}"></video>
                     </div>
                   </small>
                 `  
@@ -1179,7 +1179,7 @@ const Messenger = (async () => {
               contentHtml = `
                 <small class="message-content d-flex">
                   <div class="open-popup-video d-flex">
-                    <video class="pre-video" src="${msg.content}" autoplay loop data-file="${msg.fileName}"></video>
+                    <video class="pre-video" src="${msg.content}" autoplay loop muted data-file="${msg.fileName}"></video>
                   </div>
                 </small>`  
             } else if (msg.type === 'audio') {
@@ -1284,7 +1284,7 @@ const Messenger = (async () => {
           } else if (file.resourceType === 'video') {
             $(ele).parents('.message-content').addClass('d-flex').html(`
               <div class="open-popup-video d-flex">
-                <video class="pre-video" src="${file.url}" autoplay loop data-file="${file.name}"></video>
+                <video class="pre-video" src="${file.url}" autoplay loop muted data-file="${file.name}"></video>
               </div>
             `)
           } else if (file.resourceType === 'audio') {
@@ -1363,7 +1363,7 @@ const Messenger = (async () => {
             } else {
               $(ele).parents('.message-content').addClass('d-flex').html(`
                 <div class="open-popup-video d-flex">
-                  <video class="pre-video" src="${fileFind.url}" autoplay loop data-file="${fileFind.name}"></video>
+                  <video class="pre-video" src="${fileFind.url}" autoplay loop muted data-file="${fileFind.name}"></video>
                 </div>
               `) 
             }

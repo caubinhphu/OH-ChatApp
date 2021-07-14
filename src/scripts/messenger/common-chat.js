@@ -1129,7 +1129,7 @@ const CommonChat = (() => {
         } else if (msgObj.resourceType === 'video') {
           content = `
             <div class="open-popup-video d-flex">
-              <video class="pre-video" src="${msgObj.message}" autoplay loop data-file="${msgObj.nameFile}"></video>
+              <video class="pre-video" src="${msgObj.message}" autoplay loop muted data-file="${msgObj.nameFile}"></video>
             </div>
           `  
           classAdd = 'd-flex'

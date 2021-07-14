@@ -128,7 +128,7 @@ block contentMain
                                   img.pre-img(src=msg.content, alt=msg.fileName)
                               else if (msg.type === 'video')
                                 .open-popup-video.d-flex
-                                  video.pre-video(src=msg.content, autoplay, loop, data-file=msg.fileName)
+                                  video.pre-video(src=msg.content, autoplay, loop, muted, data-file=msg.fileName)
                               else if (msg.type === 'audio')
                                 audio.pre-video.pre-audio(src=msg.content, controls)
                               else
@@ -157,7 +157,7 @@ block contentMain
                                   img.pre-img(src=msg.content, alt=msg.fileName)
                               else if (msg.type === 'video')
                                 .open-popup-video.d-flex
-                                  video.pre-video(src=msg.content, controls, autoplay, loop, data-file=msg.fileName)
+                                  video.pre-video(src=msg.content, autoplay, loop, muted, data-file=msg.fileName)
                               else if (msg.type === 'audio')
                                 audio.pre-video.pre-audio(src=msg.content, controls)
                               else
