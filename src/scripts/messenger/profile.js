@@ -126,10 +126,10 @@ const Profile = (() => {
           if (this.status === 200) {
             // OK
             $('img.avatar').attr('src', data.src)
-            window.outputSuccessMessage(data.mgs)
+            window.outputSuccessMessage(data.message)
           } else {
             // error
-            window.outputErrorMessage(data.mgs)
+            window.outputErrorMessage(data.message)
           }
         }
       };
