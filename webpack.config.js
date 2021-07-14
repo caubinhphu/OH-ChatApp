@@ -11,22 +11,22 @@ const babelPolyfill = 'babel-polyfill'
 
 module.exports = {
   entry: {
-    // home: [
-    //   babelPolyfill,
-    //   './src/scripts/home.js',
-    //   './src/styles/app-meeting.scss',
-    // ],
-    // 'create-room': [babelPolyfill, './src/scripts/create-room.js'],
-    // 'join-room': [babelPolyfill, './src/scripts/join-room.js'],
-    // 'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
-    // 'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
+    home: [
+      babelPolyfill,
+      './src/scripts/home.js',
+      './src/styles/app-meeting.scss',
+    ],
+    'create-room': [babelPolyfill, './src/scripts/create-room.js'],
+    'join-room': [babelPolyfill, './src/scripts/join-room.js'],
+    'chat-room-host': [babelPolyfill, './src/scripts/chat-room-host.js'],
+    'chat-room': [babelPolyfill, './src/scripts/chat-room.js'],
     'home-messenger': [
       babelPolyfill,
       './src/scripts/home-messenger.js',
       './src/styles/app-messenger.scss',
     ],
-    // 'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
-    // 'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
+    'msg-pagesub': [babelPolyfill, './src/scripts/msg-pagesub.js'],
+    'msg-chat-media': [babelPolyfill, './src/scripts/msg-chat-media.js'],
     'text': [babelPolyfill, './src/scripts/text.js', './src/styles/app-text.scss'],
   },
   output: {
@@ -55,7 +55,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 url: false,
-                minimize: false,
+                minimize: true,
               },
             },
             // Compiles Sass to CSS
@@ -69,7 +69,7 @@ module.exports = {
                 sourceMap: true,
                 sourceMapContents: true,
                 url: false,
-                minimize: false,
+                minimize: true,
               },
             },
           ],
@@ -94,12 +94,12 @@ module.exports = {
     }),
     new webpack.LoaderOptionsPlugin({
       optimization: {
-        // minimizer: [new UglifyJSPlugin()],
-        minimizer: false,
+        minimizer: [new UglifyJSPlugin()],
+        minimizer: true,
       },
     }),
   ],
   optimization: {
-    minimize: false,
+    minimize: true,
   },
 };

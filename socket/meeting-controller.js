@@ -17,6 +17,8 @@ const botAvatar = '/images/oh-bot.jpg';
 
 const hasErr = 'Có lỗi xảy ra'
 
+const maxUser = 10
+
 // handle error
 module.exports.onError = function (errorMsg) {
   this.emit('errorMessage', errorMsg);
@@ -92,60 +94,64 @@ module.exports.onJoinRoom = async function (
     // check password of room
     if (room.password === passRoom) {
       if (room.status.state === 'open') {
-        try {
-          // join successful
-          // create and save a new user
-          let user = null;
-          if (memberId === '') {
-            memberId = null;
-          }
-          const member = await Member.findById(memberId);
-          let isHost = false
-          if (member) {
-            if (room.ownerId && room.ownerId.toString() === member.id.toString()) {
-              isHost = true
-              room.timeStart = new Date()
-              await room.save()
-
-              user = await User.create({
-                name: username,
-                userType: 'member',
-                avatar: member.avatar,
-                host: true
-              });
+        if (room.users.length >= maxUser) {
+          this.emit('error', 'Phòng đã đầy');
+        } else {
+          try {
+            // join successful
+            // create and save a new user
+            let user = null;
+            if (memberId === '') {
+              memberId = null;
+            }
+            const member = await Member.findById(memberId);
+            let isHost = false
+            if (member) {
+              if (room.ownerId && room.ownerId.toString() === member.id.toString()) {
+                isHost = true
+                room.timeStart = new Date()
+                await room.save()
+  
+                user = await User.create({
+                  name: username,
+                  userType: 'member',
+                  avatar: member.avatar,
+                  host: true
+                });
+              } else {
+                user = await User.create({
+                  name: username,
+                  userType: 'member',
+                  avatar: member.avatar,
+                });
+              }
             } else {
               user = await User.create({
                 name: username,
-                userType: 'member',
-                avatar: member.avatar,
               });
             }
-          } else {
-            user = await User.create({
-              name: username,
-            });
+  
+            // add the new user to the room
+            room.users.push(user._id);
+            await room.save();
+  
+            // generate jwt token
+            const token = jwt.sign(
+              { data: { userId: user.id, roomId } },
+              process.env.JWT_SECRET
+            );
+  
+            // send token to client
+            callback({
+              status: 'ok',
+              isHost,
+              token,
+              roomId
+            })
+            // this.emit('joinRoomSuccess', { token, roomId });
+          } catch (err) {
+            this.emit('error', err.message);
           }
-
-          // add the new user to the room
-          room.users.push(user._id);
-          await room.save();
-
-          // generate jwt token
-          const token = jwt.sign(
-            { data: { userId: user.id, roomId } },
-            process.env.JWT_SECRET
-          );
-
-          // send token to client
-          callback({
-            status: 'ok',
-            isHost,
-            token,
-            roomId
-          })
-          // this.emit('joinRoomSuccess', { token, roomId });
-        } catch (err) {
-          this.emit('error', err.message);
         }
       } else if (room.status.state === 'locked') {
         // room is locked
@@ -358,31 +364,35 @@ module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
       // get user of this socket and check user is host the room
       const host = room.getUser('id', dataToken.userId);
       if (host && host.host) {
-        const user = room.allowJoinRoom(userId);
-        if (user) {
-          user.allowJoin = true;
-          await user.save();
-          // save room data
-          await room.save();
-
-          // generate token
-          const tokenJoin = jwt.sign(
-            {
-              data: { userId: user.id, roomId: room.roomId },
-            },
-            process.env.JWT_SECRET
-          );
-
-          // send token to client request join room
-          io.to(user.socketId).emit('joinRoomSuccess', { token: tokenJoin, room: room.roomId });
+        if (room.users.length >= maxUser) {
+          this.emit('error', 'Phòng đã đầy');
         } else {
-          this.emit('error', 'Thành viên này đã rời phòng chờ');
+          const user = room.allowJoinRoom(userId);
+          if (user) {
+            user.allowJoin = true;
+            await user.save();
+            // save room data
+            await room.save();
+  
+            // generate token
+            const tokenJoin = jwt.sign(
+              {
+                data: { userId: user.id, roomId: room.roomId },
+              },
+              process.env.JWT_SECRET
+            );
+  
+            // send token to client request join room
+            io.to(user.socketId).emit('joinRoomSuccess', { token: tokenJoin, room: room.roomId });
+          } else {
+            this.emit('error', 'Thành viên này đã rời phòng chờ');
+          }
+  
+          // send to host of this room info waiting room
+          io.to(host.socketId).emit('changeWaitingRoom', {
+            waitingRoom: room.getWaitingRoom(),
+          });
         }
-
-        // send to host of this room info waiting room
-        io.to(host.socketId).emit('changeWaitingRoom', {
-          waitingRoom: room.getWaitingRoom(),
-        });
       } else {
         this.emit('error', 'Bạn không phải chủ phòng, bạn không có quyền này');
       }

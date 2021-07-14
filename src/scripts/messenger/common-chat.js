@@ -23,7 +23,7 @@ const CommonChat = (() => {
 
   const isPageChat = $('#main.chat-page').length > 0
 
-  const callTimeout = 5000
+  const callTimeout = 20000
   const chatMain = document.getElementById('main-right-chat-content');
   const idBtnCallBack = '#btn-call-back'
   const classPoHasCall = '.popup-has-call'
