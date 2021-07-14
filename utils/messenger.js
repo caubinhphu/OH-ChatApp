@@ -61,8 +61,8 @@ const formatMsg = function (msg, me, friend) {
       msgFormat.content = 'Cuộc gọi video đến'
       msgFormat.class = 'call-msg call-incoming call-video'
     } else {
-      msgFormat.content = 'Cuộc gọi đi'
-      msgFormat.class = 'call-msg call-outgoing'
+      msgFormat.content = 'Cuộc gọi video đi'
+      msgFormat.class = 'call-msg call-outgoing call-video'
     }
   } else if (msg.type === 'call-video-refuse') {
     if (msg.memberSendId.toString() !== me.id) {
