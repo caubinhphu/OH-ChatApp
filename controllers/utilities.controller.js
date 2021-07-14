@@ -64,7 +64,6 @@ module.exports.deleteText = async (req, res) => {
     const text = await Text.findById(id)
     if (member && text && text.authorId.toString() === req.user.id) {
       await text.deleteOne()
-
       res.status(200).json({ message: 'Xóa Text thành công' })
     }
   } catch (error) {

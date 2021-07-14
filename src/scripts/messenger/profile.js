@@ -227,8 +227,8 @@ const Profile = (() => {
               'X-Requested-With': 'XMLHttpRequest'
             }
           });
-          const { messages } = responsive.data;
-          window.outputSuccessMessage(messages)
+          const { message } = responsive.data;
+          window.outputSuccessMessage(message)
           $rowText.remove()
 
           const $wrap = $('.wrap-text-list')
