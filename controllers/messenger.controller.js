@@ -1051,7 +1051,7 @@ module.exports.putRoom = async (req, res, next) => {
         room.password = password
         await room.save()
 
-        member.setting.useStaticRoom = useStatic === '1' ? true : false
+        member.setting.useStaticRoom = useStatic === 'true' ? true : false
         await member.save()
 
         req.flash('success', 'Lưu thay đổi thành công');
