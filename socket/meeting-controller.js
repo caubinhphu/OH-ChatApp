@@ -368,7 +368,6 @@ module.exports.onAllowJoinRoom = async function (io, { userId, token }) {
           this.emit('error', 'Phòng đã đầy');
         } else {
           const user = room.allowJoinRoom(userId);
-          console.log(user);
           if (user) {
             user.allowJoin = true;
             await user.save();
