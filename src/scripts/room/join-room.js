@@ -33,6 +33,12 @@ joinRoomForm.addEventListener('submit', function (e) {
   }
 });
 
+// receive access token from server when join room successful
+socket.on('joinRoomSuccess', ({ token, roomId }) => {
+  sessionStorage.setItem('token', token)
+  location.href = `/chat?room=${roomId}`;
+});
+
 // receive info when join room is blocked
 socket.on('joinRoomBlocked', (msg) => {
   outputJoinRoomBlocked(msg);
